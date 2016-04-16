@@ -1,0 +1,28 @@
+Notes about optimizing performance with MiniGL
+30-06-02 by Christian Michael
+
+Pay special attention to the following define in config.h:
+
+CLAMP_COLORS : This enables color-clamping in glColor* functions. Clamping must be done where appropiate in the application if this is undefined.
+Color clamping will usually only generate overhead so use
+with care.
+
+The define must be set when the linklibrary is compiled
+
+
+The following glHint's should be noted:
+
+MGL_W_ONE_HINT will enable/disable faster transformations in
+cases where the w coordinate is equal to 1 (as with all
+instances of glVertex3f)
+
+GL_PERSPECTIVE_CORRECTION_HINT will NOT affect perspective mapping.
+Use glDisable(MGL_PERSPECTIVE_MAPPING) to disable
+perspective-correct texture-mapping
+
+
+Last: Use the mglmacros.h if possible.
+It will eliminate most of the API overhead associated with
+vertexbuffer construction.
+
+

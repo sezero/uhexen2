@@ -1,0 +1,51 @@
+Short:    MiniGL v1.2 - OpenGL(tm) compatible API
+Author:   Hyperion Entertainment (Hans-Joerg Frieden, Thomas Frieden, Christian Michael)
+Uploader: ChristianM@hyperion-entertainment.com
+Type:     dev/c
+Version:  1.2
+Replaces: dev/c/minigl.lha
+Requires: dev/c/minigl_data.lha
+
+
+This is primarily a bugfix release
+
+See changelog.txt inside this archive
+
+minigl_data.lha contains demo-textures.
+demo-textures have not changed since first aminet release
+
+---------------------------------------------------------------------------
+
+MiniGL is a 3D API which is compatible to OpenGL(tm).
+It implements a subset of that API and was designed for speed.
+Therefore it directly interfaces with  Warp3D.
+This also means that there is currently no software mode.
+
+Due to the speed issues, there are certain restrictions
+regarding the features and functions available.
+See the doc/ directory for documentation.
+
+
+---------------------------------------------------------------------------
+
+Hyperion MiniGL Open Source License
+
+(C) 2000-2002 Hyperion
+
+
+This software is provided 'as-is', without any express or implied warranty.
+In no event will Hyperion or the authors be held liable for any damages
+arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, subject to the following conditions:
+
+1. MiniGL may only be compiled for/incorporated in code running on
+   AmigaOS. This only applies to MiniGL, you are free to port an
+   application using MiniGL to another OpenGL implementation on other
+   platforms.
+
+2. The functional source-code of all and any modifications and improvements
+   must be made publically available to the Amiga developer community.
+
+

@@ -1,0 +1,75 @@
+30-06-02 by Christian Michael
+
+
+Notes about vertexarray-implementation in MiniGL:
+
+- No support for GL_DOUBLE as type for glVertexPointer
+- No support for glNormalPointer
+- No support for glInterleavedArrays yet
+- No multitexture support yet.
+
+- Indexing supported: (glBegin, glArrayElement.., glEnd),
+  NOTE: NOT OpenGL conforming since glArrayElement cannot be
+  mixed with other commands between glBegin and glEnd
+
+- glDrawArrays, glDrawElements supported
+
+- IMPORTANT: The vertexbuffer MUST have a size that is at
+  least twice as large as the number of last element in
+  the applications vertex-data-arrays.
+  glDrawElements currently has to assume some safe place for
+  clipping to avoid index-scans.
+
+- Currently supported primitives: (all drawing methods)
+  GL_TRIANGLES
+  GL_TRIANGLE_FAN
+  GL_TRIANGLE_STRIP
+  GL_POLYGON
+  MGL_FLATFAN
+
+- GL_EXT_compiled_vertex_array is supported:
+  (glLockArrays .... glUnlockArrays) 
+  Note that the texcoordpointer and colorpointer are never
+  considered locked. The official OpenGL specifiction is
+  very unclear as to what should be allowed inside a lock.
+  Anyways, with MiniGL, texcoords and colors can be updated
+  within the locked range without adverse effects between
+  drawing calls, which can be any mixture of the following:
+	glDrawElements(*),
+	glDrawArrays(*),
+	glBegin(*) glArrayElement(*) glEnd()
+
+
+
+- Special MiniGL-speciffic features:
+
+  The colorformats MGL_UBYTE_ARGB and MGL_UBYTE_BGRA are
+  supported.
+
+  Integer vertexcoords are supported with fixpoint pipeline.
+  Use GL_INT as type in glVertexPointer calls.
+  Note that the range for integer vertexcoords is narrow
+  (+-256 might be the limit)
+
+  Pipeline for vertexarrays can be toggled with glEnable,
+  glDisable and the parameter MGL_ARRAY_TRANSFORMATIONS.
+  This is useful for 2D, because the pipeline wraps directly
+  to Warp3D as opposed to the MGL_FLATFAN.
+  The default setting for the pipeline is enabled.
+  With the pipeline disabled, the number of texcoord-
+  elements in an array MUST be 4, where the 4th element
+  contains the w coordinate used for perspective correction
+  by Warp3D.
+
+- Performance tips:
+  If a given polygon-mesh contains a lot of shared verts,
+  then use glLockArrays(first, count), glDrawElements(*) ...
+  glUnlockArrays() to avoid excessive transformations.
+  If a vertex can have more than 1 set of texcoords, then
+  optimize the array for identical verts without caring
+  about this. Texcoords can be overwritten on the fly within
+  glLockArrays/glUnlockArrays construct.
+
+  As a general rule, always use glDrawElements within
+  glLockArrays/glUnlockArrays since the MiniGL pipeline is
+  optimized for this extension.

@@ -1,0 +1,78 @@
+StormMesa 3.x EGCS/GCC Version
+-------------------------------
+
+INTRODUCTION
+------------
+
+This is the EGCS/GCC adaption of the StormMesa 3.0 Shared Libraries. With
+3.0, StormMesa finally went to shared libraries, including GLU, GLUT (including
+the 3.7 stuff) and some other goodies. This archive contains everything you need
+to use StormMesa with EGCS or GCC (from the GG distribution).
+
+REQUIREMENTS
+------------
+
+EGCS or GCC from the Geek Gadgets ftp site
+StormMesa archives (StMesa_Libs68K.lha will suffice).
+Some GL programs
+
+(to rebuild)
+GNU Make
+EGCS/GCC Fully working installation
+an Assembler that can cope with the .s files (e.g. PhxAss)
+
+INSTALLATION
+------------
+
+Manual:
+	Copy libgl.a to /usr/lib
+	make symbolic links to /usr/lib/libglu.a and /usr/lib/libglut.a
+
+Automatic:
+	type 'make install'
+
+The library is installed as libgl.a as well as libglu.a and libglut.a
+to keep configure scripts happy. Most of the time, you will not need to
+edit the Makefiles, either.
+
+
+REBUILDING
+----------
+
+You'll need a fully working GCC/EGCS environment to use this. In the directory,
+type "make all" to build. You might need to adjust a few things in the makefile,
+most notably the way the assembler files are translated. PhxAss works fine,
+but most other assemblers should do (I had difficulties with SAS asm, though).
+Afterwards, type "make install" to put the libgl.a into a place where it feels
+all right.
+
+USING
+-----
+
+Unpack the StormMesa distribution as normal. After installation, copy the
+contents of include/GL to somewhere in your include path, for example to
+/usr/include/GL/*.h
+
+Now try getting a simle test program, like gears.c. Then enter the following:
+
+gcc -O2 -o gears.o -c gears.c
+gcc gears.o -o gears -lgl
+
+This should build a 'gears' executable. Try it with "./gears".
+You could also have used
+
+gcc gears.o -o gears -lgl -lglu -lglut
+
+but this is not strictly needed. Note that the startup code always opens
+all StormMesa libraries, regardless of what's really used. Even linking
+"only" against libgl will open them all, glu and glut are dummies, anyway.
+
+PROBLEMS?
+---------
+
+Should you have problems, do not hesitate to contact me. My email is
+
+hfrieden@uni-trier.de
+
+This package is Public Domain. Use as you see fit. Standard Disclaimer
+applies (Read: It wasn't my fault anyway).

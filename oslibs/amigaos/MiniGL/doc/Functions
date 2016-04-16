@@ -1,0 +1,297 @@
+API description
+---------------
+
+Here's a short outline of the API. As it's OpenGL(tm) compatible,
+only the differences to this API is outlined. If in doubt, have a
+look at the source code and the demos. Sorry if this is not really
+worth to be called "documentation", but our time right now is too
+tight to work on anything larger.
+
+
+The following functions are implemented:
+
+glAlphaFunc            glFrontFace              glScaled            glNormal3f
+glBegin                glFrustum                glScalef            glTexEnvi
+glEnd                  glGenTextures            glScissor           glTexEnvf
+glTexGeni              glGetError               glShadeModel        glTexEnviv
+glBindTexture          glGetString              glTexCoord2f        glTexEnvfv
+glBlendFunc            glHint                   glTexCoord2fv       glTexParameteri
+glClear                glLoadIdentity           glTexImage2D        glTexParameterf
+glClearColor           glLoadMatrixf            glTexSubImage2D     glTexParameteriv
+glClearDepth           glLoadMatrixd            glTranslated        glTexParameterfv
+glColorTable           glMatrixMode             glTranslatef
+glCullFace             glMultMatrixd            glViewport
+glDeleteTextures       glMultMatrixf            glVertex4f
+glDepthFunc            glOrtho                  glVertex2f
+glDepthMask            glPixelStorei            glVertex2i
+glEnable               glPixelStoref            glVertex3f
+glDisable              glPolygonMode            glVertex3fv
+glDrawBuffer           glPushMatrix             glDepthRange
+glFinish               glPopMatrix              glColor4f
+glFlush                glReadPixels             glColor4fv
+glFogf                 glRotated                glColor3f
+glFogfv                glRotatef                glColor3fv
+glFogi                                          glColor4ub
+                                                glColor4ubv
+glEnableClientState				  glColor3ub
+glDisableClientState				  glColor3ubv
+
+glColorPointer
+glTexCoordPointer
+glVertexPointer
+glDrawArrays
+
+gluLookAt
+gluPerspective
+
+- See GL_MGL_ARB_multitexture for multitexture-stuff
+
+
+These functions are more or less compatible. You  should  have  a
+look at the source code for determining what's really supported.
+
+
+
+These functions are MiniGL specific:
+
+void MGLInit()
+void MGLTerm()
+    MGLInit should be the first MiniGL function called, while MGLTerm should be the last.
+    They Open/Close required libraries...
+
+
+
+void *mglCreateContext(int offx, int offy, int w, int h);
+
+    This function creates a rendering context for MiniGL. Currently, there can be only
+    one context per application.
+
+    offx, offy - currently ignored, set to 0 for future compatibility.
+    w,h        - dimensions of the display to be opened.
+
+    The function returns 0 if it failed, and non-zero if successfull. The return value
+    is a pointer to the created context, which is private, and currently of no use, anyway.
+
+
+
+void * mglCreateContextFromID(GLint id, GLint *w, GLint *h);
+
+    This function creates a context, with id being a valid display mode for Warp3D.
+
+    id  - display mode (see mglGetSupportedScreenModes for obtaining it). It's either
+          an Amiga display mode, MGL_SM_WINDOWMODE (indicating "use window mode"), or
+          MGL_SM_BESTMODE (indicating "use best mode").
+    w,h - pointers to variables that are fille with the actual dimensions of the display.
+
+    The functions return value are equal to that of mglCreateContext.
+
+
+
+void mglDeleteContext();
+
+    Deletes a context previously created by mglCreateContex/mglCreateContextFromID.
+
+
+
+void mglResizeContext(GLsizei width, GLsizei height);
+
+    Resize the drawing area. The screen is closed and opened again with the
+    new dimension.
+    Note: This function currently only resizes a full screen context.
+
+    width, height - new dimensions for the display.
+
+
+
+void mglEnableSync(GLboolean enable);
+
+    Enables or disables vertical syncing of the display.
+
+    enable - either GL_TRUE, or GL_FALSE.
+
+    This function takes effect immediatly, and can be called before or after creating
+    of the context.
+
+
+
+void mglWriteShotPPM(char *filename);
+
+    Write the contents of the current front buffer to a PPM file.
+
+    filename - name of the file to write to.
+
+
+
+void mglTexMemStat(GLint *Current, GLint *peak);
+
+    This functions requests information about the texture memory usage.
+
+    Current - pointer to a GLint that will be filled with the amount of texture
+              memory currently in use.
+    Peak    - pointer to a GLint that will be filled with the highest amount of
+              texture memory that was allocated at one time.
+
+
+
+GLboolean mglLockDisplay(void);
+
+    This function locks the hardware for rendering, and must be called before
+    rendering anything. This function is not needed if the lock mode is set
+    to SMART (see the discussion of mglLockMode for an explanation).
+
+    The return value is a GLboolean, with GL_TRUE meaning the lock has succeeded,
+    and GL_FALSE otherwise.
+
+
+
+void mglUnlockDisplay(void);
+
+    A lock obtained with mglLockDisplay or mglLockBack (see below) must be released
+    once the frame is finished. mglUnlockDisplay will take care of that. Note that
+    it is safe to call this function without a lock, or with SMART lock enabled.
+
+
+
+GLboolean mglLockBack(MGLLockInfo *info);
+
+    Gives access to the back buffer. The structure pointed to by info is fille with the
+    appropriate values, and GL_TRUE is return when the lock succeeded, GL_FALSE otherwise.
+    If the current lock mode (see mglLockMode) is MANUAL, you'll have to unlock yourself.
+
+    info - pointer to a structure to be filled (see include/mgl/modes.h)
+
+
+
+void mglLockMode(GLenum lockMode);
+
+    Defines the way display locking is done. Currently, there are two mechanisms:
+    MGL_LOCK_MANUAL - You must perform locking yourself (see mglLockDisplay/mglUnlockDisplay)
+    MGL_LOCK_SMART  - Locking is performed automatically. This is the save method, as the
+                      lock is not kept more than 1/20th second. Per-frame-locking may,
+                      at higher resolutions, stall the system, possibily causing a dead-lock.
+
+    lockMode - one of the above
+
+
+
+void mglMainLoop(void);
+
+    MiniGL supports a mechanism similar to X or glut: you have a library-provided
+    main loop, and define some callback functions that are called on special events.
+    This function starts the main loop. It will not terminate, unless mglExit is
+    called.
+
+    You can set event handlers with the functions mglKeyFunc, mglMouseFunc, and mglIdelFunc.
+    To terminate the loop, use mglExit.
+
+
+
+void mglKeyFunc(KeyHandlerFn k);
+
+    This function sets the key handler function.
+
+    k - Pointer to a KeyHandlerFn function. KeyHandlerFn is defined as
+        void (*KeyHandlerFn)(char key); The key function will get a Vanilla key
+        as it's argument.
+
+
+
+void mglMouseFunc(MouseHandlerFn m);
+
+    Sets the mouse handler function.
+
+    m - Pointer to a MoseHandlerFn. The prototype for the handler function
+        is void (*MouseHandlerFn)(GLint x, GLint y, GLbitfield buttons);
+
+
+
+void mglIdleFunc(IdleFn *i);
+
+    The name is misleading, this function is called every time the main loop
+    makes an iteration. This function can be used for displaying one frame.
+
+    i - Pointer to a function to be called every frame. The prototype is
+        void (*IdleFn)(void);
+
+
+void mglExit(void);
+
+    Calling this function in any of the callback functions will terminate
+    the main loop, causing mglMainLoop to return.
+
+
+
+void mglSwitchDisplay(void);
+
+    When called, mglSwitchDisplay causes the current drawing area to be made visible.
+    Depending on sync state, this function may wait for a vertical blanking
+
+
+
+
+void *mglGetWindowHandle(void);
+
+    Returns the window handle which is used for rendering. This function provides
+    a way for more complicated applications that do not want to use the mglMainLoop
+    interface. The window has no IDCMP flags set, use ModifyIDCMP to actually
+    get something.
+
+    The return value is a struct Window *.
+
+
+
+GLint mglGetSupportedScreenModes(MGLScreenModeCallback CallbackFn);
+
+    This function can be used to get all available screen modes supported by MiniGL.
+    It calls the callback function with every screenmode.
+
+    CallbackFn - Pointer to a function for enumerating the screen modes.
+                 The function has the following prototype:
+                 GLboolean ScreenModeCallback(MGLScreenMode *mode);
+                 (The MGLScreenMode is defined in include/mgl/modes.h).
+                 mglGetSupportedScreenModes will continue feeding modes to
+                 the callback until it runs out of modes, or the callback
+                 returns GL_TRUE, indicating it has found a suitable mode.
+
+    The return value is the mode id which was accepted by the callback function,
+    or MGL_SM_BESTMODE.
+
+
+
+void mglChooseWindowMode(GLboolean window_mode);
+
+    This function is called before creating a context. It can tell MiniGL to
+    open it's display as a window on the workbench.
+
+    window_mode - GL_TRUE makes the display a window on the workbench,
+                  GL_FALSE opens a screen.
+
+
+
+void mglChooseVertexBufferSize(GLint size);
+
+    MiniGL doesn't render it's primitives at one. It collects everything between
+    glBegin and glEnd, and renders with the glEnd call. The buffer for the
+    vertex data is called the vertex buffer. As this is created with the
+    context, it must be set before creating it.
+
+    size - number of entries in the vertex buffer. Default is 30.
+           Set this to a value equal to, or larger than your "longest"
+           primitive, i.e. the biggest amount of glVertex calls at between
+           glBegin and glEnd.
+
+    Example:
+
+        glBegin(GL_TRIANGLES);
+            glVertex3f(1.0, 1.0, 1.0);
+            glColor3f(0.1, 1.0, 0.2);
+
+            glVertex3f(1.0, 1.0, 0.0);
+            glColor3f(0.1, 1.0, 1.0);
+
+            glVertex3f(1.0, 0.0, 1.0);
+            glColor3f(0.1, 0.0, 0.2);
+        glEnd();
+
+        There are three glVertex calls (the glColor calls do not affect this. These
+        just set the current vertex's color).

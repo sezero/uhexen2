@@ -1,0 +1,49 @@
+MiniGL preliminary documentation
+--------------------------------
+
+MiniGL is  a  3D  API  which  is  compatible  to  OpenGL(tm).  It
+implements  a  subset  of  that  API  and was designed for speed,
+therefore it directly interfaces with  Warp3D.  This  also  means
+that  there  is  currently  no  software mode.
+
+Due to the speed issues, there are certain restrictions regarding
+the  features  and  functions available. See the file "Functions"
+for documentation.
+
+
+Build instructions:
+-------------------
+
+gcc:
+
+Two makefiles are provided, one for 68k, one for ppc.  Build  the
+library  for  a  specific processor by make -f makefile.xxx, with
+xxx being 68k or ppc. For StormC, just  load  the  project  files
+from the Build directories.
+
+The library is build in lib resp.  libppc.  Precompiled  versions
+are available there.
+
+
+vbcc:
+
+makefiles are provided for 68k and ppc
+vbcc v0.8 or later is required
+
+
+
+Credits:
+--------
+
+Author:         Hans-Jörg Frieden (Hans-JoergF@hyperion-entertainment.com)
+Coauthors:      Thomas Frieden (ThomasF@hyperion-entertainment.com)
+                Christian Michael (ChristianM@hyperion-entertainment.com)
+
+Contributions:      Massimiliano Tretene
+                    Joe Sera
+                    Frank Wille
+                    Steffen Häuser
+                    Kris Collingwood
+                    Olivier Fabre
+
+Maintainer:         Christian Michael (ChristianM@hyperion-entertainment.com)

@@ -1,0 +1,20 @@
+30-06-2002 by Christian Michael
+
+Notes about guardband clipping:
+
+MiniGL accepts a sort of guardband specified by:
+mglChooseGuardBand(GL_TRUE); (default is GL_FALSE)
+
+With guardband activated, MiniGL will bypass the clipping to
+frustum borders in most cases if the viewport-border matches
+the screenborder. Warp3D will then use scissoring for
+clipping. This method is useful on current hardware
+(603/604 PPC and Voodoo3) because fillrate never becomes a
+bottleneck.
+
+NOTE: Guardband may degrade performance on Permedia2.
+
+mglChooseGuardband must be issued before mglCreateContext to
+take effect, just like the other "choose" funcs.
+
+The guardband is only used for some of the primitives.

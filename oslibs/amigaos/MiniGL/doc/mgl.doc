@@ -1,0 +1,675 @@
+TABLE OF CONTENTS
+
+mgl.lib/--info--
+mgl.lib/MGLInit
+mgl.lib/MGLTerm
+mgl.lib/mglChooseNumberOfBuffers
+mgl.lib/mglChoosePixelDepth
+mgl.lib/mglChooseTextureBufferSize
+mgl.lib/mglChooseVertexBufferSize
+mgl.lib/mglChooseWindowMode
+mgl.lib/mglCreateContext
+mgl.lib/mglCreateContextFromID
+mgl.lib/mglDeleteContext
+mgl.lib/mglEnableSync
+mgl.lib/mglExit
+mgl.lib/mglGetSupportedScreenModes
+mgl.lib/mglGetWindowHandle
+mgl.lib/mglIdleFunc
+mgl.lib/mglKeyFunc
+mgl.lib/mglLockBack
+mgl.lib/mglLockDisplay
+mgl.lib/mglLockMode
+mgl.lib/mglMainLoop
+mgl.lib/mglMouseFunc
+mgl.lib/mglResizeContext
+mgl.lib/mglSpecialFunc
+mgl.lib/mglSwitchDisplay
+mgl.lib/mglTexMemStat
+mgl.lib/mglUnlockDisplay
+mgl.lib/mglWriteShotPPM
+
+mgl.lib/--info--
+
+	$VER: 0.03 (20000622)
+	
+	0.03 (20000622) - Added SpecialFunc/ChoosePixelDepth/ChooseTextureBufferSize
+										all from header and source files
+	0.02 (20000604) - Added mgl.lib/mglChooseNumberOfBuffers from warp.c code
+	0.01 (20000604) - Setup from Basic documentation
+
+	API description
+	---------------
+
+	Here's a short outline of the API. As it's OpenGL(tm) compatible,
+	only the differences to this API is outlined. If in doubt, have a
+	look at the source code and the demos.
+
+	The following functions are implemented:
+
+	glAlphaFunc            glFrontFace              glScaled            glNormal3f
+	glBegin                glFrustum                glScalef            glTexEnvi
+	glEnd                  glGenTextures            glScissor           glTexEnvf
+	glTexGeni              glGetError               glShadeModel        glTexEnviv
+	glBindTexture          glGetString              glTexCoord2f        glTexEnvfv
+	glBlendFunc            glHint                   glTexCoord2fv       glTexParameteri
+	glClear                glLoadIdentity           glTexImage2D        glTexParameterf
+	glClearColor           glLoadMatrixf            glTexSubImage2D     glTexParameteriv
+	glClearDepth           glLoadMatrixd            glTranslated        glTexParameterfv
+	glColorTable           glMatrixMode             glTranslatef
+	glCullFace             glMultMatrixd            glViewport
+	glDeleteTextures       glMultMatrixf            glVertex4f
+	glDepthFunc            glOrtho                  glVertex2f
+	glDepthMask            glPixelStorei            glVertex2i
+	glEnable               glPixelStoref            glVertex3f
+	glDisable              glPolygonMode            glVertex3fv
+	glDrawBuffer           glPushMatrix             glDepthRange
+	glFinish               glPopMatrix              glColor4f
+	glFlush                glReadPixels             glColor4fv
+	glFogf                 glRotated                glColor3f
+	glFogfv                glRotatef                glColor3fv
+	glFogi                                          glColor4ub
+  	                                              glColor4ubv
+    	                                            glColor3ub
+      	                                          glColor3ubv
+
+
+	gluLookAt
+	gluPerspective
+
+
+	These functions are more or less compatible. You  should  have  a
+	look at the source code for determining what's really supported.
+
+mgl.lib/MGLInit
+
+		NAME
+		MGLInit
+		
+		SYNOPSIS
+		MGLInit()
+		
+		MGLInit()
+		
+		FUNCTION
+		Open the required libraries etc.
+		
+		NOTES
+		This MUST be the first MGL call
+
+		SEEALSO
+		MGLTerm()
+		
+mgl.lib/MGLTerm
+
+		NAME
+		MGLTerm
+		
+		SYNOPSIS
+		MGLTerm()
+		
+		MGLTerm()
+		
+		FUNCTION
+		Close the opened libraries etc.
+		
+		NOTES
+		This MUST be the last MGL call
+
+		SEEALSO
+		MGLInit()
+
+mgl.lib/mglChooseNumberOfBuffers
+
+		NAME
+		mglChooseNumberOfBuffers
+		
+		SYNOPSIS
+		mglChooseNumberOfBuffers( buffers )
+		
+		mglChooseNumberOfBuffers( GLint )
+		
+		FUNCTION
+		Set's the buffering method, Single/Double/Tripple etc.
+		
+		INPUTS
+		buffers - No. of buffers to be used
+
+		NOTES
+		The default no. of buffers is 2
+		
+		SEEALSO
+		mglSwitchDisplay()
+
+mgl.lib/mglChoosePixelDepth
+
+		NAME
+		mglChoosePixelDepth
+		
+		SYNOPSIS
+		mglChoosePixelDepth( depth )
+		
+		mglChoosePixelDepth( GLint )
+		
+		FUNCTION
+		Sets the bits per pixel
+		
+		INPUTS
+		depth - Bits per pixel wanted
+		
+		NOTES
+		The default is 15
+		
+mgl.lib/mglChooseTextureBufferSize
+
+		NAME
+		mglChooseTextureBufferSize
+		
+		SYNOPSIS
+		mglChooseTextureBufferSize( size )
+		
+		mglChooseTextureBufferSize( GLint )
+		
+		FUNCTION
+		Set the number of texture objects
+		
+		INPUTS
+		size - number of texture objects
+
+		NOTES
+		The default is 2048, Whcih should be enough
+
+mgl.lib/mglChooseVertexBufferSize
+
+		NAME
+		mglChooseVertexBufferSize
+		
+		SYNOPSIS
+		mglChooseVertexBufferSize( size )
+		
+		mglChooseVertexBufferSize( GLint )
+
+		FUNCTION
+    MiniGL doesn't render it's primitives at one. It collects everything between
+    glBegin and glEnd, and renders with the glEnd call. The buffer for the
+    vertex data is called the vertex buffer. As this is created with the
+    context, it must be set before creating it.
+
+		INPUTS
+    size - number of entries in the vertex buffer. Default is 30.
+           Set this to a value equal to, or larger than your "longest"
+           primitive, i.e. the biggest amount of glVertex() calls at between
+           glBegin() and glEnd().
+
+    EXAMPLE
+		glBegin( GL_TRIANGLES );
+			glVertex3f(1.0, 1.0, 1.0);
+			glColor3f (0.1, 1.0, 0.2);
+
+			glVertex3f(1.0, 1.0, 0.0);
+			glColor3f (0.1, 1.0, 1.0);
+
+			glVertex3f(1.0, 0.0, 1.0);
+			glColor3f (0.1, 0.0, 0.2);
+		glEnd();
+
+		NOTES
+		There are three glVertex calls (the glColor calls do not affect this. These
+		just set the current vertex's color).
+
+		According to the source context.c, the DEFAULT is 40
+		
+		SEEALSO
+		glBegin(), glEnd(), glVertex()
+
+mgl.lib/mglChooseWindowMode
+
+		NAME
+		mglChooseWindowMode
+		
+		SYNOPSIS
+		mglChooseWindowMode( window_mode )
+		
+		mglChooseWindowMode( GLboolean )
+		
+		FUNCTION
+    This function is called before creating a context. It can tell MiniGL to
+    open it's display as a window on the workbench.
+
+		INPUTS
+    window_mode - GL_TRUE makes the display a window on the workbench,
+                  GL_FALSE opens a screen. (default)
+
+mgl.lib/mglCreateContext
+
+		NAME
+		mglCreateContext
+		
+		SYNOPSIS
+		context  = mglCreateContext( offx, offy, w, h )
+
+		GLvoid * = mglCreateContext( GLint, GLint, GLint, GLint )
+
+		FUNCTION
+    This function creates a rendering context for MiniGL. Currently, there can be only
+    one context per application.
+
+		INPUTS
+    offx, offy - currently ignored, set to 0 for future compatibility.
+    w,h        - dimensions of the display to be opened.
+
+		RESULT
+		context	-	Pointer to the created context, or NULL on failure.
+		
+		NOTES
+		Returned pointer is private and of no use anyway (currently).	
+
+		SEEALSO
+		mglCreateContextFromID(), mglChooseWindowMode()
+
+mgl.lib/mglCreateContextFromID
+
+		NAME
+		mglCreateContextFromID
+		
+		SYNOPSIS
+		context  = mglCreateContextFromID( id, w, h )
+		
+		GLvoid * = mglCreateContextFromID( GLint, GLint *, GLint * )
+
+		FUNCTION
+    This function creates a context, with id being a valid display mode for Warp3D.
+
+		INPUTS
+    id  - display mode (see mglGetSupportedScreenModes for obtaining it). It's either
+          an Amiga display mode, MGL_SM_WINDOWMODE (indicating "use window mode"), or
+          MGL_SM_BESTMODE (indicating "use best mode").
+    w,h - pointers to variables that are filled with the actual dimensions of the
+    			display.
+
+		RESULT
+		context	-	Pointer to the created context, or NULL on failure.
+		
+		NOTES
+		Returned pointer is private and of no use anyway (currently).	
+
+		SEEALSO
+		mglCreateContext(), mglGetSupportedScreenModes()
+
+mgl.lib/mglDeleteContext
+
+		NAME
+		mglDeleteContext
+
+		SYNOPSIS
+		mglDeleteContext()
+		
+		mglDeleteContext()
+		
+		FUNCTION
+    Deletes a context previously created by mglCreateContex/mglCreateContextFromID.
+
+		SEEALSO
+		mglCreateContext(), mglCreateContextFromID()
+
+mgl.lib/mglEnableSync
+
+		NAME
+		mglEnableSync
+		
+		SYNOPSIS
+		mglEnableSync( enable )
+		
+		mglEnableSync( GLboolean )
+		
+		FUNCTION
+    Enables or disables vertical syncing of the display.
+
+		INPUTS
+    enable - either GL_TRUE, or GL_FALSE.
+
+		NOTES
+    This function takes effect immediatly, and can be called before or after creating
+    of the context.
+
+mgl.lib/mglExit
+
+		NAME
+		mglExit
+		
+		SYNOPSIS
+		mglExit()
+		
+		mglExit()
+		
+		FUNCTION
+    Calling this function in any of the callback functions will terminate
+    the main loop, causing mglMainLoop to return.
+    
+    SEEALSO
+    mglMainLoop(), mglIdleFunc(), mglKeyFunc(), mglMouseFunc()
+
+mgl.lib/mglGetSupportedScreenModes
+
+		NAME
+		mglGetSupportedScreenModes
+		
+		SYNOPSIS
+		id    = mglGetSupportedScreenModes( CallbackFn )
+		
+		GLint = mglGetSupportedScreenModes( MGLScreenModeCallback )
+		
+		FUNCTION
+    This function can be used to get all available screen modes supported by MiniGL.
+    It calls the callback function with every screenmode.
+
+		INPUTS
+    CallbackFn - Pointer to a function for enumerating the screen modes.
+                 The function has the following prototype:
+                 GLboolean ScreenModeCallback(MGLScreenMode *mode);
+                 (The MGLScreenMode is defined in include/mgl/modes.h).
+                 mglGetSupportedScreenModes will continue feeding modes to
+                 the callback until it runs out of modes, or the callback
+                 returns GL_TRUE, indicating it has found a suitable mode.
+
+		RESULT
+		id	-	Mode id which was accepted by the callback function, MGL_SM_BESTMODE.
+
+
+mgl.lib/mglGetWindowHandle
+
+		NAME
+		mglGetWindowHandle
+		
+		SYNOPSIS
+		       window   = mglGetWindowHandle()
+
+		struct Window * = mglGetWindowHandle()
+		
+		FUNCTION
+		This function provides a way for more complicated applications that do not
+		want to use the mglMainLoop interface.
+
+		RESULTS
+		window - Returns the window handle which is used for rendering.
+
+		NOTES
+		The window has no IDCMP flags set. So you must modify these to get something.
+		
+		SEEALSO
+		ModifyIDCMP()
+
+mgl.lib/mglIdleFunc
+
+		NAME
+		mglIdleFunc
+		
+		SYNOPSIS
+		mglIdleFunc( i )
+		
+		mglIdleFunc( IdleFn * );
+
+		FUNCTION
+    The name is misleading, this function is called every time the main loop
+    makes an iteration. This function can be used for displaying one frame.
+
+		INPUTS
+    i - Pointer to a function to be called every frame. The prototype is
+        void (*IdleFn)(void);
+
+		SEEALSO
+		mglMainLoop(), mglKeyFunc(), mglMouseFunc()
+
+mgl.lib/mglKeyFunc
+
+		NAME
+		mglKeyFunc
+		
+		SYNOPSIS
+		mglKeyFunc( k )
+		
+		mglKeyFunc( KeyHandlerFn * )
+		
+		FUNCTION
+		This function sets the key handler function.
+		
+		INPUTS
+    k - Pointer to a KeyHandlerFn function. KeyHandlerFn is defined as
+        void (*KeyHandlerFn)(char key); The key function will get a Vanilla key
+        as it's argument.
+
+		SEEALSO
+		mglMouseFunc(), mglIdleFunc()
+
+mgl.lib/mglLockBack
+
+		NAME
+		mglLockBack
+		
+		SYNOPSIS
+		gotBB     - mglLockBack( info )
+		
+		GLboolean - mglLockBack( MGLLockInfo )
+
+		FUNCTION
+    Gives access to the back buffer.
+    
+		INPUTS
+    info - pointer to a structure to be filled (see include/mgl/modes.h)
+
+		RESULTS
+		gotBB - GL_TRUE,  managed to lock the backbuffer.
+						GL_FALSE, Obviously a failure.
+		    
+		NOTES
+    If the current lock mode (see mglLockMode) is MANUAL,
+    you'll have to unlock yourself.
+
+		SEEALSO
+		mglUnlockDisplay()
+
+mgl.lib/mglLockDisplay
+
+		NAME
+		mglLockDisplay
+		
+		SYNOPSIS
+		gotHW     - mglLockDisplay()
+		
+		GLboolean - mglLockDisplay()
+		
+		FUNCTION
+		This function locks the hardware for rendering, and must be called before
+    rendering anything. This function is not needed if the lock mode is set
+    to SMART (see the discussion of mglLockMode for an explanation).
+
+		RESULT
+		gotHW - GL_TRUE meaning the lock has succeeded,
+    				GL_FALSE otherwise.
+
+		SEEALSO
+		mglUnlockDisplay()
+
+mgl.lib/mglLockMode
+
+		NAME
+		mglLockMode
+		
+		SYNOPSIS
+		mglLockMode( lockmode )
+		
+		mglLockMode( GLenum )
+		
+		FUNCTION
+    Defines the way display locking is done. Currently, there are two mechanisms:
+
+		INPUTS
+    lockMode - one of below
+
+    MGL_LOCK_MANUAL - You must perform locking yourself. 
+    MGL_LOCK_SMART  - Locking is performed automatically. This is the safe method,
+    									as the lock is not kept more than 1/20th second.
+    									Per-frame-locking may, at higher resolutions, stall the system,
+    									possibily causing a dead-lock.
+
+
+
+		SEEALSO
+		mglLockDisplay(), mglUnlockDisplay()
+
+mgl.lib/mglMainLoop
+
+		NAME
+		mglMainLoop
+		
+		SYNOPSIS
+		mglMainLoop()
+		
+		mglMainLoop()
+		
+		FUNCTION
+    MiniGL supports a mechanism similar to X or glut: you have a library-provided
+    main loop, and define some callback functions that are called on special events.
+    This function starts the main loop. It will not terminate, unless mglExit is
+    called.
+
+		NOTES
+		Make sure to see the event functions.
+		
+		SEEALSO
+		mglKeyFunc(), mglMouseFunc(), and mglIdelFunc(), mglExit()
+
+mgl.lib/mglMouseFunc
+
+		NAME
+		mglMouseFunc
+		
+		SYNOPSIS
+		mglMouseFunc( m )
+		
+		mglMouseFunc( MouseHandlerFn * )
+
+		FUNCTION
+    Sets the mouse handler function.
+
+		INPUTS
+    m - Pointer to a MoseHandlerFn. The prototype for the handler function
+        is void (*MouseHandlerFn)(GLint x, GLint y, GLbitfield buttons);
+
+		SEEALSO
+		mglKeyFunc(), mglIdleFunc()
+
+mgl.lib/mglResizeContext
+
+		NAME
+		mglResizeContext
+		
+		SYNOPSIS
+		mglResizeContext( width, height )
+		
+		mglResizeContext( GLsizei, GLsizei )
+		
+		FUNCTION
+    Resize the drawing area. The screen is closed and opened again with the
+    new dimension.
+
+		INPUTS
+    width, height - new dimensions for the display.
+
+		NOTES
+    Note: This function currently only resizes a full screen context.
+
+mgl.lib/mglSpecialFunc
+
+		NAME
+		mglSpecialFunc
+		
+		SYNOPSIS
+		mglSpecialFunc( s )
+		
+		mglSpecialFunc( SpecialHandlerFn * )
+
+		FUNCTION
+    Sets the special key handler function.
+
+		INPUTS
+    s - Pointer to a SpecialHandlerFn. The prototype for the handler function
+        is void (*SpecialHandlerFn)( MGLspecial key );
+
+		SEEALSO
+		mglKeyFunc(), mglIdleFunc()
+
+		NOTES
+		See context.h for MGLspecial
+
+mgl.lib/mglSwitchDisplay
+
+		NAME
+		mglSwitchDisplay
+		
+		SYNOPSIS
+		mglSwitchDisplay()
+		
+		mglSwitchDisplay()
+
+		FUNCTION
+    When called, causes the current drawing area to be made visible.
+    Depending on sync state, this function may wait for a vertical blanking
+
+		SEEALSO
+		mglEnableSync()
+
+mgl.lib/mglTexMemStat
+
+		NAME
+		mglTexMemStat
+		
+		SYNOPSIS
+		mglTexMemStat( current, peak )
+		
+		mglTexMemStat( GLint *, GLint * )
+
+		FUNCTION
+    This functions requests information about the texture memory usage.
+
+		INPUTS
+    current - pointer to a GLint that will be filled with the amount of texture
+              memory currently in use.
+    peak    - pointer to a GLint that will be filled with the highest amount of
+              texture memory that was allocated at one time.
+
+mgl.lib/mglUnlockDisplay
+
+		NAME
+		mglUnlockDisplay
+		
+		SYNOPSIS
+		mglUnlockDisplay()
+		
+		mglUnlockDisplay()
+		
+		FUNCTION
+    A lock obtained with mglLockDisplay or mglLockBack (see below) must be released
+    once the frame is finished. mglUnlockDisplay will take care of that. Note that
+    it is safe to call this function without a lock, or with SMART lock enabled.
+
+		SEEALSO
+		mglLockDisplay(), mglLockBack()
+
+mgl.lib/mglWriteShotPPM
+
+		NAME
+		mglWriteShotPPM
+		
+		SYNOPSIS
+		mglWriteShotPPM( filename )
+		
+		mglWriteShotPPM( char * )
+		
+		FUNCTION
+    Write the contents of the current front buffer to a PPM file.
+
+		INPUTS
+    filename - name of the file to write to.
+
+

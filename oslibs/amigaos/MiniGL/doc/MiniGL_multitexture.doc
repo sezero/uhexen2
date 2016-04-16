@@ -1,0 +1,101 @@
+30-06-02 by Christian Michael
+
+GL_MGL_ARB_multitexture specification:
+
+Special MiniGL implementation whith 1 HW and 1 virtual TMU
+
+- Supported texture units: GL_TEXTURE0_ARB, GL_TEXTURE1_ARB
+- Supported primitives: GL_POLYGON (more to come)
+
+New functions:
+
+  glActiveTextureARB (GLenum unit)
+  glMultiTexCoord2fARB (GLenum unit, GLfloat s, GLfloat t)
+  glMultiTexCoord2fvARB (GLfloat *coord)
+
+  mglDrawMultitexBuffer(GLenum BlendSrc, GLenum BlendDst, GLenum TexEnv)
+
+
+Significant differences from official GL_ARB_multitexture extension:
+
+- Unit1 can only do texmapping if unit0 is active.
+- Texture parameters are not unit-speciffic.
+- The texture environment for unit1 is completely ignored.
+  It has to be specified when the buffer is drawn,
+  together with a pair of blend components.
+- Texture units are not independant: unit1 has its own
+  texture-binding and TEXTURE_2D state, but that's all
+- Vertexarrays do not support multitexturing (yet)
+- MiniGL buffers all geometry and does not draw anything
+  until the following function is called:
+
+  mglDrawMultitexBuffer(GLenum BlendSrc, GLenum BlendDst, GLenum TexEnv)
+
+NOTE: The current state will be used for unit0.
+	Parameters apply to the virtual unit1.
+
+The call(s) to this function should generally be delayed as
+long as possible since polygons are accumulated in an
+internal buffer in order to avoid excessive state changes.
+
+This function must be called before certain global
+state-changes that could produce undesirable effects.
+Examples are texture overwriting, shademodel, zbuffer state.
+
+
+Usage:
+
+// Enable texture unit 0:
+
+	glActiveTextureARB (GL_TEXTURE0_ARB);
+	glBindTexture(GL_TEXTURE_2D, solidtexture);
+	glEnable (GL_TEXTURE_2D);
+	glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+// Enable texture unit 1:
+
+	glActiveTextureARB (GL_TEXTURE1_ARB);
+	glBindTexture(GL_TEXTURE_2D, alphatexture);
+	glEnable (GL_TEXTURE_2D);
+	glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); //ignored by MiniGL implementation
+
+	glShadeModel(GL_FLAT);
+
+	glColor4f(1,1,1,1);
+
+// Draw a multitextured polygon:
+
+	float *v = poly->verts[0];
+
+	glBegin(GL_POLYGON);
+
+	for(i=0; i<poly->numverts; i++, v+=stride)
+	{
+	  glMultiTexCoord2fARB (GL_TEXTURE0_ARB, v[3], v[4]); 
+	  glMultiTexCoord2fARB (GL_TEXTURE1_ARB, v[5], v[6]); 
+	  glVertex3f (v[0], v[1], v[2]);
+	}
+
+	glEnd();
+
+// Draw some more polys here.....
+
+
+// Disable multitexturing : (not necessary)
+
+	glDisable(GL_TEXTURE_2D); //unit 1 was active
+
+	glActiveTextureARB (GL_TEXTURE0_ARB);
+
+
+// MiniGL implementation-speciffic function call:
+// This is NOT part of the official
+// GL_ARB_multixture extension
+// Note that texture-unit 0 must be active
+
+	mglDrawMultitexBuffer (GL_ONE, GL_SRC_COLOR, GL_MODULATE);
+
+// Now it is safe to change certain global states:
+
+
+

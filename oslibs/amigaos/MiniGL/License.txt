@@ -1,0 +1,19 @@
+Hyperion MiniGL Open Source License
+
+(C) 2000-2002 Hyperion
+
+This software is provided 'as-is', without any express or implied
+warranty. In no event will Hyperion or the authors be held liable for
+any damages arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, subject to the following conditions:
+
+1. MiniGL may only be compiled for/incorporated in code running on
+   AmigaOS. This only applies to MiniGL, you are free to port an
+   application using MiniGL to another OpenGL implementation on other
+   platforms.
+
+2. The functional source-code of all and any modifications and improvements
+   must be made publically available to the Amiga developer community.
+

@@ -1,0 +1,717 @@
+diff -urp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
+--- MiniGL~/Build_gcc/makefile	2002-11-30 08:14:20.000000000 +0200
++++ MiniGL/Build_gcc/makefile	2016-04-15 17:55:10.000000000 +0300
+@@ -13,16 +13,26 @@
+ #
+ 
+ VPATH = ../src/ ../demos
++
+ INCLUDE = -I../include
+-CFLAGS = $(INCLUDE) -m68060 -D__M68K__ $(DEBUG) $(ADDFLAG) -ffast-math -fomit-frame-pointer
++
+ DEBUG = -DNDEBUG
++
++CFLAGS = -m68060 -D__M68K__ $(DEBUG) $(ADDFLAG) -ffast-math -fomit-frame-pointer
++CFLAGS+= -O3 -DINLINE=__inline
++CFLAGS+= -g
++CFLAGS+= -noixemul
++CFLAGS+= -Wall -Wno-unused
++CFLAGS+= $(INCLUDE)
+ LIBNAME = ../lib/libmgl.a
+ 
+ DEMOS = GLTest varray warp mtex gears driverinfo
++DEBUGLIB= -ldebug
++LDFLAGS = -noixemul
++LDLIBS  = -L../lib -lmgl $(DEBUGLIB) -lm
+ 
+-CC = m68k-amigaos-gcc -O3 -g -DINLINE=__inline
+-
+-AR = ar
++CC = m68k-amigaos-gcc
++AR = m68k-amigaos-ar
+ RANLIB = m68k-amigaos-ranlib
+ 
+ LIBOBJ = context.o vertexbuffer.o draw.o texture.o fog.o \
+@@ -31,79 +41,65 @@ LIBOBJ = context.o vertexbuffer.o draw.o
+ 	others.o matrix.o
+ 
+ 
+-DEBUGLIB = -ldebug
+-
+-EXEOBJ = GLTest.o
+-
+ all: $(LIBNAME) $(DEMOS)
+ 
+ install:
+-		cp ../include/mgl/*.h /usr/os-include/mgl
+-		cp ../lib/libmgl.a /usr/m68k-amigaos/lib
++	cp ../include/mgl/*.h /usr/os-include/mgl
++	cp ../lib/libmgl.a /usr/m68k-amigaos/lib
+ 
+ clean:
+-		-rm *.o ../lib/libmgl.a
++	rm -f *.o
++distclean: clean
++	rm -f ../lib/libmgl.a $(DEMOS)
+ 
+ lib: $(LIBNAME)
+ 		@echo "Done"
+ 
+ 
++$(LIBNAME): $(LIBOBJ)
++	$(AR) rcs $(LIBNAME) $(LIBOBJ)
++	$(RANLIB) $(LIBNAME)
++
+ GLTest: GLTest.o $(LIBNAME)
+-		$(CC) -o GLTest $(INCLUDE) GLTest.o -L../lib -lmgl $(DEBUGLIB)
++	$(CC) $(LDFLAGS) -o GLTest GLTest.o $(LDLIBS)
+ 
+ gears: gears.o $(LIBNAME)
+-		$(CC) -o gears $(INCLUDE) gears.o -L../lib -lmgl $(DEBUGLIB)
+-#		/c/copy gears ../gears
++	$(CC) $(LDFLAGS) -o gears gears.o $(LDLIBS)
+ 
+ gears_stats: gears_stats.o $(LIBNAME)
+-		$(CC) -o gears_stats $(INCLUDE) gears_stats.o -L../lib -lmgl $(DEBUGLIB)
+-#		/c/copy gears_stats ../gears_stats
++	$(CC) $(LDFLAGS) -o gears_stats gears_stats.o $(LDLIBS)
+ 
+ driverinfo: driverinfo.o $(LIBNAME)
+-		$(CC) -o driverinfo $(INCLUDE) driverinfo.o -L../lib -lmgl $(DEBUGLIB)
+-#		/c/copy driverinfo ../driverinfo
++	$(CC) $(LDFLAGS) -o driverinfo driverinfo.o $(LDLIBS)
+ 
+ varray_new: varray_new.o $(LIBNAME)
+-		$(CC) -o varray_new $(INCLUDE) varray_new.o -L../lib -lmgl $(DEBUGLIB)
+-#		/c/copy varray_new ../varray_new
++	$(CC) $(LDFLAGS) -o varray_new varray_new.o $(LDLIBS)
+ 
+ mtex: mtex.o $(LIBNAME)
+-		$(CC) -o mtex $(INCLUDE) mtex.o -L../lib -lmgl $(DEBUGLIB)
+-#		/c/copy mtex ../mtex
++	$(CC) $(LDFLAGS) -o mtex mtex.o $(LDLIBS)
+ 
+ bounce: bounce.o $(LIBNAME)
+-		$(CC) -o bounce $(INCLUDE) bounce.o -L../lib -lmgl $(DEBUGLIB)
+-#		/c/copy bounce ../bounce
++	$(CC) $(LDFLAGS) -o bounce bounce.o $(LDLIBS)
+ 
+ smtest: smtest.o $(LIBNAME)
+-		$(CC) -o smtest $(INCLUDE) smtest.o -L../lib -lmgl $(DEBUGLIB)
+-#		/c/copy smtest ../smtest
++	$(CC) $(LDFLAGS) -o smtest smtest.o $(LDLIBS)
+ 
+ texsub: texsub.o $(LIBNAME)
+-		$(CC) -o texsub $(INCLUDE) texsub.o -L../lib -lmgl $(DEBUGLIB)
+-#		/c/copy texsub ../texsub
++	$(CC) $(LDFLAGS) -o texsub texsub.o $(LDLIBS)
+ 
+ ../gears: gears.o $(LIBNAME)
+-		$(CC) -o gears $(INCLUDE) gears.o -L../lib -lmgl $(DEBUGLIB)
+-#		/c/copy gears ../gears
++	$(CC) $(LDFLAGS) -o gears gears.o $(LDLIBS)
+ 
+ warp: warp.o $(LIBNAME)
+-		$(CC) -o warp $(INCLUDE) warp.o -L../lib -lmgl $(DEBUGLIB)
+-#		/c/copy warp ../warp
++	$(CC) $(LDFLAGS) -o warp warp.o $(LDLIBS)
+ 
+ rasonly: rasonly.o $(LIBNAME)
+-		$(CC) -o rasonly $(INCLUDE) rasonly.o -L../lib -lmgl $(DEBUGLIB)
+-#		/c/copy rasonly ../rasonly
++	$(CC) $(LDFLAGS) -o rasonly rasonly.o $(LDLIBS)
+ 
+ varray: varray.o $(LIBNAME)
+-		$(CC) -o varray $(INCLUDE) varray.o -L../lib -lmgl $(DEBUGLIB)
+-#		/c/copy varray ../varray
+-
+-$(LIBNAME):  $(LIBOBJ)
+-		$(AR) rcs $(LIBNAME) $(LIBOBJ)
+-
++	$(CC) $(LDFLAGS) -o varray varray.o $(LDLIBS)
+ 
+ 
+ depend:
+-		makedepend $(INCLUDE) src/*.c
++	makedepend $(INCLUDE) src/*.c
+ 
+diff -urp MiniGL~/include/mgl/gl.h MiniGL/include/mgl/gl.h
+--- MiniGL~/include/mgl/gl.h	2002-11-30 08:15:20.000000000 +0200
++++ MiniGL/include/mgl/gl.h	2016-04-15 17:55:10.000000000 +0300
+@@ -309,6 +309,13 @@ enum
+ 	MGL_UNSIGNED_SHORT_4_4_4_4,
+ 	MGL_FIXPOINTTRANS_HINT,
+ 	MGL_ARRAY_TRANSFORMATIONS,
++
++	/**/
++	GL_STENCIL_BITS,
++	GL_STENCIL_TEST,
++	GL_KEEP,
++	GL_INCR,
++	GL_STENCIL_BUFFER_BIT,
+ };
+ 
+ #define GL_COLOR_BUFFER_BIT     0x00000001
+@@ -378,7 +385,7 @@ extern GLcontext mini_CurrentContext;
+ 
+ void        GLActiveTextureARB(GLcontext context, GLenum unit);
+ void        GLMultiTexCoord2fARB(GLcontext context, GLenum unit, GLfloat s, GLfloat t);
+-void        GLMultiTexCoord2fvARB(GLcontext context, GLenum unit, GLfloat *v);
++void        GLMultiTexCoord2fvARB(GLcontext context, GLenum unit, const GLfloat *v);
+ 
+ void MGLDrawMultitexBuffer (GLcontext context, GLenum BSrc, GLenum BDst, GLenum TexEnv);
+ 
+@@ -393,14 +400,14 @@ void        GLBlendFunc(GLcontext contex
+ void        GLClear(GLcontext context, GLbitfield mask);
+ void        GLClearColor(GLcontext context, GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
+ void        GLClearDepth(GLcontext context, GLclampd depth);
+-void        GLColor3fv(GLcontext context, GLfloat *v);
+-void        GLColor3ubv(GLcontext context, GLubyte *v);
++void        GLColor3fv(GLcontext context, const GLfloat *v);
++void        GLColor3ubv(GLcontext context, const GLubyte *v);
+ void        GLColor4f(GLcontext context, GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+-void        GLColor4fv(GLcontext context, GLfloat *v);
++void        GLColor4fv(GLcontext context, const GLfloat *v);
+ void        GLColor4ub(GLcontext context, GLubyte red, GLubyte green, GLubyte blue, GLubyte alhpa);
+-void        GLColor4ubv(GLcontext context, GLubyte *v);
++void        GLColor4ubv(GLcontext context, const GLubyte *v);
+ //void        GLColorPointer(GLcontext context, GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
+-void        GLColorTable(GLcontext context, GLenum target, GLenum internalformat, GLint width, GLenum format, GLenum type, GLvoid *data);
++void        GLColorTable(GLcontext context, GLenum target, GLenum internalformat, GLint width, GLenum format, GLenum type, const GLvoid *data);
+ void        GLCullFace(GLcontext context, GLenum mode);
+ void        GLDeleteTextures(GLcontext context, GLsizei n, const GLuint *textures);
+ void        GLDepthFunc(GLcontext context, GLenum func);
+@@ -421,7 +428,7 @@ void        GLEnd(GLcontext context);
+ void        GLFinish(GLcontext context);
+ void        GLFlush(GLcontext context);
+ void        GLFogf(GLcontext context, GLenum pname, GLfloat param);
+-void        GLFogfv(GLcontext context, GLenum pname, GLfloat *param);
++void        GLFogfv(GLcontext context, GLenum pname, const GLfloat *param);
+ void        GLFrontFace(GLcontext context, GLenum mode);
+ void        GLFrustum(GLcontext context, GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar);
+ void        GLGenTextures(GLcontext context, GLsizei n, GLuint *textures);
+@@ -482,9 +489,9 @@ void        GLScalef(GLcontext context, 
+ void        GLScissor(GLcontext context, GLint x, GLint y, GLsizei width, GLsizei height);
+ void        GLShadeModel(GLcontext context, GLenum mode);
+ void        GLTexCoord2f(GLcontext context, GLfloat s, GLfloat t);
+-void        GLTexCoord2fv(GLcontext context, GLfloat *v);
++void        GLTexCoord2fv(GLcontext context, const GLfloat *v);
+ void        GLTexCoord4f(GLcontext context, GLfloat s, GLfloat t, GLfloat r, GLfloat q);
+-void        GLTexCoord4fv(GLcontext context, GLfloat *v);
++void        GLTexCoord4fv(GLcontext context, const GLfloat *v);
+ //void        GLTexCoordPointer(GLcontext context, GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
+ void        GLTexEnvi(GLcontext context, GLenum target, GLenum pname, GLint param);
+ void        GLTexGeni(GLcontext context, GLenum coord, GLenum mode, GLenum map);
+@@ -496,9 +503,9 @@ void        GLTranslatef(GLcontext conte
+ void        GLVertex4f(GLcontext context, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+ void        GLVertex2f(GLcontext context, GLfloat x, GLfloat y);
+ 
+-void        GLVertex4fv(GLcontext context, GLfloat *v);
+-void        GLVertex3fv(GLcontext context, GLfloat *v);
+-void        GLVertex2fv(GLcontext context, GLfloat *v);
++void        GLVertex4fv(GLcontext context, const GLfloat *v);
++void        GLVertex3fv(GLcontext context, const GLfloat *v);
++void        GLVertex2fv(GLcontext context, const GLfloat *v);
+ 
+ //void        GLVertexPointer(GLcontext context, GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
+ void        GLViewport(GLcontext context, GLint x, GLint y, GLsizei width, GLsizei height);
+@@ -534,7 +541,7 @@ void        MGLSwitchBuffer(GLcontext co
+ void        MGLSwitchDisplay(GLcontext context);
+ void        MGLTexMemStat(GLcontext context, GLint *Current, GLint *Peak);
+ void        MGLUnlockDisplay(GLcontext context);
+-void        MGLWriteShotPPM(GLcontext context, char *filename);
++void        MGLWriteShotPPM(GLcontext context, const char *filename);
+ GLboolean        MGLInit(void);
+ void        MGLTerm(void);
+ 
+@@ -887,6 +894,9 @@ void        GLDrawArrays(GLcontext conte
+ #define gluLookAt(ex, ey, ez, cx, cy, cz, ux, uy, uz) GLULookAt(ex, ey, ez, cx, cy, cz, ux, uy, uz);
+ #define gluPerspective(fovy, aspect, znear, zfar) GLUPerspective(fovy, aspect, znear, zfar);
+ 
++#define glStencilFunc(f,r,m) do{(void)f;(void)r; (void)m; }while(0)
++#define glStencilOp(f,zf,zp) do{(void)f;(void)zf;(void)zp;}while(0)
++#define glClearStencil(s)    do{(void)s;                  }while(0)
+ 
+ #endif // USE_MGLAPI not defined
+ 
+diff -urp MiniGL~/include/mgl/mglmacros.h MiniGL/include/mgl/mglmacros.h
+--- MiniGL~/include/mgl/mglmacros.h	2002-11-30 08:15:22.000000000 +0200
++++ MiniGL/include/mgl/mglmacros.h	2016-04-15 17:55:10.000000000 +0300
+@@ -387,4 +387,4 @@ CC->CurrentPointSize = (GLfloat)(size);}
+ 
+ #endif
+ 
+-#endif
+\ No newline at end of file
++#endif
+diff -urp MiniGL~/include/mgl/minigl.h MiniGL/include/mgl/minigl.h
+--- MiniGL~/include/mgl/minigl.h	2002-11-30 08:15:22.000000000 +0200
++++ MiniGL/include/mgl/minigl.h	2016-04-15 17:55:10.000000000 +0300
+@@ -32,12 +32,12 @@ MGLAPI void   glPointSize(GLfloat s)
+ 	 CC->CurrentPointSize = s;
+ }
+ 
+-MGLAPI void   glTexEnviv(GLenum target, GLenum pname, GLint *param)
++MGLAPI void   glTexEnviv(GLenum target, GLenum pname, const GLint *param)
+ {
+ 	 GLTexEnvi(CC, target, pname, *(param)) ;
+ }
+ 
+-MGLAPI void   glTexEnvfv(GLenum target, GLenum pname, GLfloat *param)
++MGLAPI void   glTexEnvfv(GLenum target, GLenum pname, const GLfloat *param)
+ {
+ 	GLTexEnvi(CC, target, pname, (GLint)(*(param))) ;
+ }
+@@ -111,7 +111,7 @@ MGLAPI void glColor3f(GLfloat red, GLflo
+ 	CC->UpdateCurrentColor = GL_TRUE;
+ }
+ 
+-MGLAPI void glColor3fv(GLfloat *v)
++MGLAPI void glColor3fv(const GLfloat *v)
+ {
+ 	GLfloat red, green, blue;
+ 
+@@ -134,7 +134,7 @@ MGLAPI void glColor3fv(GLfloat *v)
+ 	CC->UpdateCurrentColor = GL_TRUE;
+ }
+ 
+-MGLAPI void glColor3ubv(GLubyte *v)
++MGLAPI void glColor3ubv(const GLubyte *v)
+ {
+ 	const W3D_Float f = 1.f/255.f;
+ 	CC->CurrentColor.r = (W3D_Float)v[0]*f;
+@@ -174,7 +174,7 @@ MGLAPI void glColor4f(GLfloat red, GLflo
+ 	CC->UpdateCurrentColor = GL_TRUE;
+ }
+ 
+-MGLAPI void glColor4fv(GLfloat *v)
++MGLAPI void glColor4fv(const GLfloat *v)
+ {
+ 	GLfloat red, green, blue, alpha;
+ 
+@@ -210,7 +210,7 @@ MGLAPI void glColor4ub(GLubyte red, GLub
+ 	CC->UpdateCurrentColor = GL_TRUE;
+ }
+ 
+-MGLAPI void glColor4ubv(GLubyte *v)
++MGLAPI void glColor4ubv(const GLubyte *v)
+ {
+ 	const W3D_Float f = 1.f/255.f;
+ 	CC->CurrentColor.r = (W3D_Float)v[0]*f;
+@@ -285,7 +285,7 @@ MGLAPI void glFogi(GLenum pname, GLint p
+ 	GLFogf(CC, pname, (GLfloat)param);
+ }
+ 
+-MGLAPI void glFogfv(GLenum pname, GLfloat *param)
++MGLAPI void glFogfv(GLenum pname, const GLfloat *param)
+ {
+ 	GLFogfv(CC, pname, param);
+ }
+@@ -443,7 +443,7 @@ MGLAPI void glTexCoord2f(GLfloat s, GLfl
+ 	#undef thisvertex
+ }
+ 
+-MGLAPI void glTexCoord2fv(GLfloat *v)
++MGLAPI void glTexCoord2fv(const GLfloat *v)
+ {
+ 	#define thisvertex CC->VertexBuffer[CC->VertexBufferPointer]
+ 
+@@ -466,7 +466,7 @@ MGLAPI void glTexCoord4f(GLfloat s, GLfl
+ 	#undef thisvertex
+ }
+ 
+-MGLAPI void glTexCoord4fv(GLfloat *v)
++MGLAPI void glTexCoord4fv(const GLfloat *v)
+ {
+ 	#define thisvertex CC->VertexBuffer[CC->VertexBufferPointer]
+ 
+@@ -548,7 +548,7 @@ MGLAPI void glVertex2f(GLfloat x, GLfloa
+ 	#undef thisvertex
+ }
+ 
+-MGLAPI void glVertex2fv(GLfloat *v)
++MGLAPI void glVertex2fv(const GLfloat *v)
+ {
+ 	#define thisvertex CC->VertexBuffer[CC->VertexBufferPointer]
+ 
+@@ -596,7 +596,7 @@ MGLAPI void glVertex3f(GLfloat x, GLfloa
+ 	#undef thisvertex
+ }
+ 
+-MGLAPI void glVertex3fv(GLfloat *v)
++MGLAPI void glVertex3fv(const GLfloat *v)
+ {
+ 	#define thisvertex CC->VertexBuffer[CC->VertexBufferPointer]
+ 
+@@ -644,7 +644,7 @@ MGLAPI void glVertex4f(GLfloat x, GLfloa
+ 	#undef thisvertex
+ }
+ 
+-MGLAPI void glVertex4fv(GLfloat *v)
++MGLAPI void glVertex4fv(const GLfloat *v)
+ {
+ 	#define thisvertex CC->VertexBuffer[CC->VertexBufferPointer]
+ 
+@@ -773,7 +773,7 @@ MGLAPI void mglUnlockDisplay(void)
+ 	MGLUnlockDisplay(CC);
+ }
+ 
+-MGLAPI void mglWriteShotPPM(char *filename)
++MGLAPI void mglWriteShotPPM(const char *filename)
+ {
+ 	MGLWriteShotPPM(CC, filename);
+ }
+@@ -788,12 +788,12 @@ MGLAPI void mglSetZOffset(GLfloat offset
+ 	MGLSetZOffset(CC, offset);
+ }
+ 
+-MGLAPI void glColorTable(GLenum target, GLenum internalformat, GLint width, GLenum format, GLenum type, GLvoid *data)
++MGLAPI void glColorTable(GLenum target, GLenum internalformat, GLint width, GLenum format, GLenum type, const GLvoid *data)
+ {
+ 	GLColorTable(CC, target, internalformat, width, format, type, data);
+ }
+ 
+-MGLAPI void glColorTableEXT(GLenum target, GLenum internalformat, GLint width, GLenum format, GLenum type, GLvoid *data)
++MGLAPI void glColorTableEXT(GLenum target, GLenum internalformat, GLint width, GLenum format, GLenum type, const GLvoid *data)
+ {
+ 	GLColorTable(CC, target, internalformat, width, format, type, data);
+ }
+@@ -951,7 +951,7 @@ MGLAPI void glMultiTexCoord2fARB(GLenum 
+ #undef thisvertex
+ }
+ 
+-MGLAPI void glMultiTexCoord2fvARB(GLenum unit, GLfloat *v)
++MGLAPI void glMultiTexCoord2fvARB(GLenum unit, const GLfloat *v)
+ {
+ 	int u = unit - GL_TEXTURE0_ARB;
+ 
+@@ -979,4 +979,8 @@ MGLAPI void mglDrawMultitexBuffer(GLenum
+ 	MGLDrawMultitexBuffer (CC, s, d, env);
+ }
+ 
++MGLAPI void glStencilFunc(GLenum func, GLint ref, GLuint mask) { }
++MGLAPI void glStencilOp(GLenum fail, GLenum zfail, GLenum zpass) { }
++MGLAPI void glClearStencil(GLint s) { }
++
+ #endif
+diff -urp MiniGL~/src/context.c MiniGL/src/context.c
+--- MiniGL~/src/context.c	2002-11-30 08:15:36.000000000 +0200
++++ MiniGL/src/context.c	2016-04-15 17:55:10.000000000 +0300
+@@ -224,15 +224,15 @@ static GLboolean vid_ReopenDisplay(GLcon
+ 
+ 	struct TagItem OpenWinTags[] =
+ 	{
+-		WA_CustomScreen,        0,
+-		WA_Width,               0,
+-		WA_Height,              0,
+-		WA_Left,                0,
+-		WA_Top,                 0,
+-		WA_Title,               0,
+-		WA_Flags,               WFLG_ACTIVATE|WFLG_BORDERLESS|WFLG_BACKDROP|WFLG_REPORTMOUSE|WFLG_RMBTRAP,
+-		WA_IDCMP,               0,
+-		TAG_DONE,               0
++		{WA_CustomScreen,0},
++		{WA_Width,       0},
++		{WA_Height,      0},
++		{WA_Left,        0},
++		{WA_Top,         0},
++		{WA_Title,       0},
++		{WA_Flags,       WFLG_ACTIVATE|WFLG_BORDERLESS|WFLG_BACKDROP|WFLG_REPORTMOUSE|WFLG_RMBTRAP},
++		{WA_IDCMP,       0},
++		{TAG_DONE,       0}
+ 	};
+ 
+ 	if (!context)
+diff -urp MiniGL~/src/draw.c MiniGL/src/draw.c
+--- MiniGL~/src/draw.c	2002-11-30 08:15:40.000000000 +0200
++++ MiniGL/src/draw.c	2016-04-15 17:55:10.000000000 +0300
+@@ -31,9 +31,7 @@
+ #include <math.h>
+ 
+ #include <stdlib.h>
+-#ifdef __VBCC__
+ #include <stdio.h>
+-#endif
+ 
+ #ifdef DISABLE_TRANSFORMATION
+ #warning "Compiling without transformation pipeline. Only flat geometry supported"
+diff -urp MiniGL~/src/fog.c MiniGL/src/fog.c
+--- MiniGL~/src/fog.c	2002-11-30 08:15:40.000000000 +0200
++++ MiniGL/src/fog.c	2016-04-15 17:55:10.000000000 +0300
+@@ -64,7 +64,7 @@ void GLFogf(GLcontext context, GLenum pn
+ 
+ 
+ 
+-void GLFogfv(GLcontext context, GLenum pname, GLfloat *param)
++void GLFogfv(GLcontext context, GLenum pname, const GLfloat *param)
+ {
+ 	context->FogDirty = GL_TRUE;
+ 
+diff -urp MiniGL~/src/others.c MiniGL/src/others.c
+--- MiniGL~/src/others.c	2002-11-30 08:15:44.000000000 +0200
++++ MiniGL/src/others.c	2016-04-15 17:55:10.000000000 +0300
+@@ -60,7 +60,7 @@ void GLAlphaFunc(GLcontext context, GLen
+ 			break;
+ 		default:
+ 			GLFlagError(context, 1, GL_INVALID_ENUM);
+-			break;
++			return;
+ 	}
+ 
+ 	W3D_SetAlphaMode(context->w3dContext, w3dmode, &refvalue);
+@@ -129,6 +129,7 @@ void GLBlendFunc(GLcontext context, GLen
+ 		BLS(SRC_ALPHA_SATURATE);
+ 	default:
+ 		GLFlagError(context, 1, GL_INVALID_ENUM);
++		return;
+ 	}
+ 
+ 	switch(dfactor)
+@@ -141,6 +142,8 @@ void GLBlendFunc(GLcontext context, GLen
+ 		BLD(ONE_MINUS_SRC_ALPHA);
+ 		BLD(DST_ALPHA);
+ 		BLD(ONE_MINUS_DST_ALPHA);
++
++	default: return;
+ 	}
+ 
+ 	// Try to set the mode, if unavailable, switch to
+@@ -179,7 +182,7 @@ void GLHint(GLcontext context, GLenum ta
+ 		case GL_DONT_CARE:  hint = W3D_H_AVERAGE; break;
+ 		default:
+ 			GLFlagError(context, 1, GL_INVALID_ENUM);
+-			break;
++			return;
+ 	}
+ 
+ 	switch(target)
+@@ -200,6 +203,7 @@ void GLHint(GLcontext context, GLenum ta
+ 			break;
+ 		default:
+ 			GLFlagError(context, 1, GL_INVALID_ENUM);
++			return;
+ 	}
+ }
+ 
+@@ -264,6 +268,9 @@ void  GLGetIntegerv(GLcontext context, G
+ 	case GL_MAX_TEXTURE_UNITS_ARB:
+ 		*params = MAX_TEXUNIT;
+ 	   return ;
++	case GL_STENCIL_BITS:
++		*params = 0;/* */
++	   return ;
+       default:
+       	*params = 0 ;
+          GLFlagError(context, 1, GL_INVALID_ENUM);
+@@ -360,6 +367,9 @@ GLboolean GLIsEnabled(GLcontext context,
+    	case GL_BLEND:
+          return( context->Blend_State ) ;
+ 
++      case GL_ALPHA_TEST:
++         return( context->AlphaTest_State ) ;
++
+       case GL_DEPTH_TEST:
+          return( context->DepthTest_State ) ;
+ 
+@@ -369,9 +379,8 @@ GLboolean GLIsEnabled(GLcontext context,
+ 	default:
+ 	#ifndef __VBCC__
+ 		GLFlagError(context, 1, GL_INVALID_ENUM);
+-	#else
+-		return GL_FALSE;
+ 	#endif
++		return GL_FALSE;
+ 	}
+ }
+ 
+@@ -381,7 +390,7 @@ void MGLSetZOffset(GLcontext context, GL
+ 	context->ZOffset = offset;
+ }
+ 
+-void MGLWriteShotPPM(GLcontext context, char *filename)
++void MGLWriteShotPPM(GLcontext context, const char *filename)
+ {
+ 	GLubyte *pixelline;
+ 	FILE *f;
+@@ -481,7 +490,7 @@ void MGLMainLoop(GLcontext context)
+ 
+ 	while (context->Running == GL_TRUE)
+ 	{
+-		while (imsg = (struct IntuiMessage *)GetMsg(window->UserPort))
++		while ((imsg = (struct IntuiMessage *)GetMsg(window->UserPort)))
+ 		{
+ 			Class  = imsg->Class;
+ 			Code   = imsg->Code;
+diff -urp MiniGL~/src/texture.c MiniGL/src/texture.c
+--- MiniGL~/src/texture.c	2002-11-30 08:15:44.000000000 +0200
++++ MiniGL/src/texture.c	2016-04-15 17:55:10.000000000 +0300
+@@ -1035,6 +1035,7 @@ ULONG MGLConvert(GLcontext context, cons
+ 			}
+ 			break;
+ 	}
++	return 0; /* ERROR !!! */
+ }
+ 
+ void GLTexImage2DNoMIP(GLcontext context, GLenum gltarget, GLint level,
+@@ -1159,6 +1160,7 @@ void GLTexImage2D(GLcontext context, GLe
+ 	*/
+ 
+ 	useFormat = MGLConvert(context, pixels, (UWORD *)target, width, height, internalformat, format);
++	if (!useFormat) return; /* ERROR */
+ 
+ 	/*
+ 	** Create a new W3D_Texture if none was present, using the converted
+@@ -1294,6 +1296,7 @@ void GLTexImage2DNoMIP(GLcontext context
+ 	** Convert the data to the target address
+ 	*/
+ 	useFormat = MGLConvert(context, pixels, (UWORD *)target, width, height, internalformat, format);
++	if (!useFormat) return; /* ERROR */
+ 
+ 	/*
+ 	** Create a new W3D_Texture if none was present, using the converted
+@@ -1655,17 +1658,17 @@ void GLTexGeni(GLcontext context, GLenum
+ //    GLFlagError(context, 1, GL_INVALID_OPERATION);
+ }
+ 
+-void GLColorTable(GLcontext context, GLenum target, GLenum internalformat, GLint width, GLenum format, GLenum type, GLvoid *data)
++void GLColorTable(GLcontext context, GLenum target, GLenum internalformat, GLint width, GLenum format, GLenum type, const GLvoid *data)
+ {
+ 	int i;
+-	GLubyte *palette;
++	const GLubyte *palette;
+ 	GLubyte *where;
+ 	GLubyte a,r,g,b;
+ 
+ 	GLFlagError(context, width>256, GL_INVALID_VALUE);
+ 	GLFlagError(context, target!=GL_COLOR_TABLE, GL_INVALID_OPERATION);
+ 
+-	palette = (GLubyte *)data;
++	palette = (const GLubyte *)data;
+ 	where   = (GLubyte *)context->PaletteData;
+ 
+ 	GLFlagError(context, where == NULL, GL_INVALID_OPERATION);
+diff -urp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
+--- MiniGL~/src/vertexbuffer.c	2002-11-30 08:15:46.000000000 +0200
++++ MiniGL/src/vertexbuffer.c	2016-04-15 17:55:10.000000000 +0300
+@@ -354,7 +354,7 @@ void GLColor3f(GLcontext context, GLfloa
+ 	context->UpdateCurrentColor = GL_TRUE;
+ }
+ 
+-void GLColor4fv(GLcontext context, GLfloat *v)
++void GLColor4fv(GLcontext context, const GLfloat *v)
+ {
+ 	//LOG(2, glColor4fv, "%f %f %f %f", v[0], v[1], v[2], v[3]);
+ 
+@@ -382,7 +382,7 @@ void GLColor4fv(GLcontext context, GLflo
+ 	context->UpdateCurrentColor = GL_TRUE;
+ }
+ 
+-void GLColor3fv(GLcontext context, GLfloat *v)
++void GLColor3fv(GLcontext context, const GLfloat *v)
+ {
+ 	//LOG(2, glColor3fv, "%f %f %f", v[0], v[1], v[2]);
+ 
+@@ -436,7 +436,7 @@ void GLColor3ub(GLcontext context, GLuby
+ 	context->UpdateCurrentColor = GL_TRUE;
+ }
+ 
+-void GLColor4ubv(GLcontext context, GLubyte *v)
++void GLColor4ubv(GLcontext context, const GLubyte *v)
+ {
+ 	register W3D_Float f = 1/255.0;
+ 
+@@ -450,7 +450,7 @@ void GLColor4ubv(GLcontext context, GLub
+ 	context->UpdateCurrentColor = GL_TRUE;
+ }
+ 
+-void GLColor3ubv(GLcontext context, GLubyte *v)
++void GLColor3ubv(GLcontext context, const GLubyte *v)
+ {
+ 	register W3D_Float f = 1/255.0;
+ 	//LOG(2, glColor3ubv, "%f %f %f", v[0]*f, v[1]*f, v[2]*f);
+@@ -501,7 +501,7 @@ void GLMultiTexCoord2fARB(GLcontext cont
+ 	}
+ }
+ 
+-void GLMultiTexCoord2fvARB(GLcontext context, GLenum unit, GLfloat *v)
++void GLMultiTexCoord2fvARB(GLcontext context, GLenum unit, const GLfloat *v)
+ {
+ 	int u = unit - GL_TEXTURE0_ARB;
+ 
+@@ -532,7 +532,7 @@ void GLTexCoord2f(GLcontext context, GLf
+ 	#undef thisvertex
+ }
+ 
+-void GLTexCoord2fv(GLcontext context, GLfloat *v)
++void GLTexCoord2fv(GLcontext context, const GLfloat *v)
+ {
+ 	#define thisvertex context->VertexBuffer[context->VertexBufferPointer]
+ 
+@@ -557,7 +557,7 @@ void GLTexCoord4f(GLcontext context, GLf
+ 	#undef thisvertex
+ }
+ 
+-void GLTexCoord4fv(GLcontext context, GLfloat *v)
++void GLTexCoord4fv(GLcontext context, const GLfloat *v)
+ {
+ 	#define thisvertex context->VertexBuffer[context->VertexBufferPointer]
+ 
+@@ -596,7 +596,7 @@ void GLVertex4f(GLcontext context, GLflo
+ 	#undef thisvertex
+ }
+ 
+-void GLVertex4fv(GLcontext context, GLfloat *v)
++void GLVertex4fv(GLcontext context, const GLfloat *v)
+ {
+ 	#define thisvertex context->VertexBuffer[context->VertexBufferPointer]
+ 
+@@ -619,7 +619,7 @@ void GLVertex4fv(GLcontext context, GLfl
+ 	#undef thisvertex
+ }
+ 
+-void GLVertex3fv(GLcontext context, GLfloat *v)
++void GLVertex3fv(GLcontext context, const GLfloat *v)
+ {
+ 	#define thisvertex context->VertexBuffer[context->VertexBufferPointer]
+ 
+@@ -667,7 +667,7 @@ void GLVertex2f(GLcontext context, GLflo
+ 	#undef thisvertex
+ }
+ 
+-void GLVertex2fv(GLcontext context, GLfloat *v)
++void GLVertex2fv(GLcontext context, const GLfloat *v)
+ {
+ 	#define thisvertex context->VertexBuffer[context->VertexBufferPointer]
+ 
+diff -urp MiniGL~/src/vertexelements.c MiniGL/src/vertexelements.c
+--- MiniGL~/src/vertexelements.c	2002-11-30 08:15:48.000000000 +0200
++++ MiniGL/src/vertexelements.c	2016-04-15 17:55:10.000000000 +0300
+@@ -2787,12 +2787,9 @@ void GLDrawElements(GLcontext context, G
+                 idx[1] = ub[1];
+                 idx[2] = ub[2];
+ 
+-                i = 3;
+-
+-                while (i < count)
++                for (i = 3; i < count; ++i)
+                 {
+                         idx[i] = ub[i];
+-                i++;
+                 }
+       break;
+ 
+@@ -2808,12 +2805,9 @@ void GLDrawElements(GLcontext context, G
+                 idx[1] = ul[1];
+                 idx[2] = ul[2];
+ 
+-                i = 3;
+-
+-                while (i < count)
++                for (i = 3; i < count; ++i)
+                 {
+                         idx[i] = ul[i];
+-                i++;
+                 }
+ 
+       break;
+
