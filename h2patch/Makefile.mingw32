@@ -25,6 +25,8 @@ CFLAGS += -DWIN32_LEAN_AND_MEAN
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
 endif
+RC_DEFS = -DWIN32_LEAN_AND_MEAN
+RCFLAGS = --output-format=coff --target=pe-i386
 LDFLAGS = -mconsole
 
 XDELTA_DIR:= $(LIBS_DIR)/xdelta3
@@ -69,7 +71,7 @@ xdelta3.o: $(XD3DEPS)
 # and uiAccess as "false".  Not needed for AMD64, but it doesn't hurt,
 # either.
 h2patch3.res: h2patch3.rc h2patch.exe.manifest
-	$(WINDRES) -DWIN32_LEAN_AND_MEAN --output-format=coff -o $@ $<
+	$(WINDRES) $(RC_DEFS) $(RCFLAGS) -o $@ $<
 
 h2patch.exe: $(OBJECTS)
 	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@

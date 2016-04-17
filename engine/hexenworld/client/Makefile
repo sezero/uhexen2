@@ -177,7 +177,7 @@ INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 # nasm includes: the trailing directory separator matters
 NASM_INC= -I./ -I$(COMMON_HW)/ -I$(COMMONDIR)/
 # windows resource compiler includes
-RES_INC = -I. -I$(COMMON_HW) -I$(COMMONDIR)
+RC_INC  = -I. -I$(COMMON_HW) -I$(COMMONDIR)
 
 ifeq ($(COMPILE_32BITS),yes)
 CFLAGS += -m32
@@ -547,6 +547,8 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),win32)
 
+RC_DEFS=$(CPPFLAGS)
+RCFLAGS=--output-format=coff --target=pe-i386
 NASMFLAGS=-f win32
 GL_LINK=-lopengl32
 
@@ -622,6 +624,7 @@ endif
 ifeq ($(TARGET_OS),win64)
 
 NASMFLAGS=-f win64 -d_NO_PREFIX
+RCFLAGS=--output-format=coff --target=pe-x86-64
 GL_LINK=-lopengl32
 
 ifeq ($(USE_SOUND),yes)
@@ -1012,11 +1015,11 @@ endif
 %.o: $(COMMONDIR)/%.asm
 	$(NASM) $(NASM_INC) $(NASMFLAGS) -o $@ $<
 %.res: %.rc
-	$(WINDRES) $(RES_INC) $(CPPFLAGS) --output-format=coff -o $@ $<
+	$(WINDRES) $(RC_DEFS) $(RC_INC) $(RCFLAGS) -o $@ $<
 %.res: $(COMMON_HW)/%.rc
-	$(WINDRES) $(RES_INC) $(CPPFLAGS) --output-format=coff -o $@ $<
+	$(WINDRES) $(RC_DEFS) $(RC_INC) $(RCFLAGS) -o $@ $<
 %.res: $(COMMONDIR)/%.rc
-	$(WINDRES) $(RES_INC) $(CPPFLAGS) --output-format=coff -o $@ $<
+	$(WINDRES) $(RC_DEFS) $(RC_INC) $(RCFLAGS) -o $@ $<
 
 # Objects
 
