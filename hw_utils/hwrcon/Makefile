@@ -14,10 +14,6 @@
 # suitable MACH_TYPE=xxx (ppc, x86, x86_64, or ppc64) argument to
 # make. Also see build_cross_osx.sh.
 #
-# To (cross-)compile for DOS: either pass the DOSBUILD=1 argument
-# to make, or export it. Also see build_cross_dos.sh. Requires: a
-# djgpp compiler toolchain.
-#
 # To build a debug version:		make DEBUG=1 [other stuff]
 #
 
@@ -64,9 +60,9 @@ LDFLAGS =
 INCLUDES= -I. -I$(UHEXEN2_SHARED)
 
 ifeq ($(USE_WINSOCK2),yes)
-LIBWINSOCK=-lws2_32
+LIBWINSOCK=ws2_32
 else
-LIBWINSOCK=-lwsock32
+LIBWINSOCK=wsock32
 endif
 
 # Other build flags
@@ -76,8 +72,10 @@ CPPFLAGS+= -DWIN32_LEAN_AND_MEAN
 ifeq ($(USE_WINSOCK2),yes)
 CPPFLAGS+= -D_USE_WINSOCK2
 endif
+CFLAGS  += -m32
+LDFLAGS += -m32 -mconsole
 INCLUDES+= -I$(OSLIBS)/windows/misc/include
-LDFLAGS += $(LIBWINSOCK) -mconsole
+LDFLAGS += -l$(LIBWINSOCK)
 endif
 
 ifeq ($(TARGET_OS),win64)
@@ -85,8 +83,10 @@ CPPFLAGS+= -DWIN32_LEAN_AND_MEAN
 ifeq ($(USE_WINSOCK2),yes)
 CPPFLAGS+= -D_USE_WINSOCK2
 endif
+CFLAGS  += -m64
+LDFLAGS += -m64 -mconsole
 INCLUDES+= -I$(OSLIBS)/windows/misc/include
-LDFLAGS += $(LIBWINSOCK) -mconsole
+LDFLAGS += -l$(LIBWINSOCK)
 endif
 
 ifeq ($(TARGET_OS),darwin)
@@ -154,7 +154,7 @@ $(HWTERM) : $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)
 	$(LINKER) $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS) $(LDFLAGS) -o $@
 
 ifeq ($(TARGET_OS),amigaos)
-# Ewwww: workaround stupid AmiTCP SDK mess for old amigaos. Ewww..
+# workaround stupid AmiTCP SDK mess for old aos3
 hwrcon.o: INCLUDES+= $(NET_INC)
 hwterm.o: INCLUDES+= $(NET_INC)
 endif

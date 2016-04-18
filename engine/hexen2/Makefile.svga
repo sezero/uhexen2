@@ -18,9 +18,6 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
 
 # GENERAL OPTIONS (customize as required)
 
-# compile only as a 32 bit binary even on a 64 bit platform?
-COMPILE_32BITS=no
-
 # use fast x86 assembly on ia32 machines? (auto-disabled for
 # any other cpu.)
 USE_X86_ASM=yes
@@ -99,11 +96,6 @@ INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 # nasm includes: the trailing directory separator matters
 NASM_INC= -I./ -I$(COMMONDIR)/
 
-ifeq ($(COMPILE_32BITS),yes)
-CFLAGS += -m32
-LDFLAGS+= -m32
-endif
-
 # end of compiler flags
 #############################################################
 
@@ -114,15 +106,7 @@ endif
 
 # disable x86 assembly if it is not an x86.
 ifneq ($(MACH_TYPE),x86)
-ifeq ($(MACH_TYPE),x86_64)
-#  but keep the ia32 assembly on x86_64 if
-#  compiling as 32 bits for the s/w renderer
-ifneq ($(COMPILE_32BITS),yes)
 USE_X86_ASM=no
-endif
-else
-USE_X86_ASM=no
-endif
 endif
 
 ifdef DEMO

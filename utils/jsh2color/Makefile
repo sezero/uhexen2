@@ -14,10 +14,6 @@
 # suitable MACH_TYPE=xxx (ppc, x86, x86_64, or ppc64) argument to
 # make. Also see build_cross_osx.sh.
 #
-# To (cross-)compile for DOS: either pass the DOSBUILD=1 argument
-# to make, or export it. Also see build_cross_dos.sh. Requires: a
-# djgpp compiler toolchain.
-#
 # To build a debug version:		make DEBUG=1 [other stuff]
 #
 
@@ -64,14 +60,16 @@ endif
 ifeq ($(TARGET_OS),win32)
 CFLAGS  += -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows/misc/include
-LDFLAGS += -mconsole
+CFLAGS  += -m32
+LDFLAGS += -m32 -mconsole
 # default 2 MB stack is not enough
 LDFLAGS += -Wl,--stack,4194304
 endif
 ifeq ($(TARGET_OS),win64)
 CFLAGS  += -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows/misc/include
-LDFLAGS += -mconsole
+CFLAGS  += -m64
+LDFLAGS += -m64 -mconsole
 # default 2 MB stack is not enough
 LDFLAGS += -Wl,--stack,4194304
 endif

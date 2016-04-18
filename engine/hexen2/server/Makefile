@@ -37,9 +37,6 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
 
 # GENERAL OPTIONS (customize as required)
 
-# compile only as a 32 bit binary even on a 64 bit platform?
-COMPILE_32BITS=no
-
 # use WinSock2 instead of WinSock-1.1? (disabled for w32 for compat.
 # with old Win95 machines.) (enabled for Win64 in the win64 section.)
 USE_WINSOCK2=no
@@ -84,11 +81,6 @@ SYSLIBS =
 # compiler includes
 INCLUDES= -I. -I.. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 
-ifeq ($(COMPILE_32BITS),yes)
-CFLAGS += -m32
-LDFLAGS+= -m32
-endif
-
 # end of compiler flags
 #############################################################
 
@@ -96,6 +88,7 @@ endif
 #############################################################
 # Other build flags
 #############################################################
+
 CPPFLAGS+= -DSERVERONLY
 
 ifdef DEMO
@@ -146,15 +139,16 @@ ifeq ($(TARGET_OS),win32)
 CPPFLAGS+= -DWIN32_LEAN_AND_MEAN
 
 ifeq ($(USE_WINSOCK2),yes)
-CPPFLAGS+= -D_USE_WINSOCK2
-LIBWINSOCK=-lws2_32
+CPPFLAGS+=-D_USE_WINSOCK2
+LIBWINSOCK=ws2_32
 else
-LIBWINSOCK=-lwsock32
+LIBWINSOCK=wsock32
 endif
 
 INCLUDES+= -I$(OSLIBS)/windows/misc/include
-LDFLAGS += -mconsole
-LDFLAGS += $(LIBWINSOCK) -lwinmm
+CFLAGS  += -m32
+LDFLAGS += -m32 -mconsole
+LDFLAGS += -l$(LIBWINSOCK) -lwinmm
 
 endif
 # End of Win32 settings
@@ -172,15 +166,16 @@ CPPFLAGS+= -DWIN32_LEAN_AND_MEAN
 USE_WINSOCK2=yes
 
 ifeq ($(USE_WINSOCK2),yes)
-CPPFLAGS+= -D_USE_WINSOCK2
-LIBWINSOCK=-lws2_32
+CPPFLAGS+=-D_USE_WINSOCK2
+LIBWINSOCK=ws2_32
 else
-LIBWINSOCK=-lwsock32
+LIBWINSOCK=wsock32
 endif
 
 INCLUDES+= -I$(OSLIBS)/windows/misc/include
-LDFLAGS += -mconsole
-LDFLAGS += $(LIBWINSOCK) -lwinmm
+CFLAGS  += -m64
+LDFLAGS += -m64 -mconsole
+LDFLAGS += -l$(LIBWINSOCK) -lwinmm
 
 endif
 # End of Win64 settings
@@ -382,7 +377,7 @@ $(BINARY): $(OBJECTS)
 	$(LINKER) $(OBJECTS) $(LDFLAGS) $(SYSLIBS) -o $@
 
 ifeq ($(TARGET_OS),amigaos)
-# Ewwww: workaround stupid AmiTCP SDK mess for old amigaos. Ewww..
+# workaround stupid AmiTCP SDK mess for old aos3
 net_bsd.o: INCLUDES+= $(NET_INC)
 net_udp.o: INCLUDES+= $(NET_INC)
 net_dgrm.o: INCLUDES+= $(NET_INC)

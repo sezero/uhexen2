@@ -19,7 +19,7 @@ WINDRES ?= windres
 LINKER = $(CC)
 
 CPUFLAGS= -march=i586
-CFLAGS  = -g -Wall
+CFLAGS  = -m32 -g -Wall
 CFLAGS += $(CPUFLAGS)
 CFLAGS += -DWIN32_LEAN_AND_MEAN
 ifndef DEBUG
@@ -27,7 +27,7 @@ CFLAGS += -O2 -DNDEBUG=1
 endif
 RC_DEFS = -DWIN32_LEAN_AND_MEAN
 RCFLAGS = --output-format=coff --target=pe-i386
-LDFLAGS = -mconsole
+LDFLAGS = -m32 -mconsole
 
 XDELTA_DIR:= $(LIBS_DIR)/xdelta3
 XDFLAGS:= -DXD3_DEBUG=0

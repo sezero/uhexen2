@@ -64,6 +64,16 @@ CFLAGS +=-mmacosx-version-min=10.5
 endif
 endif
 
+ifeq ($(TARGET_OS),win32)
+CFLAGS += -m32
+INCLUDES += -I$(OSLIBS)/windows/misc/include
+endif
+
+ifeq ($(TARGET_OS),win64)
+CFLAGS += -m64
+INCLUDES += -I$(OSLIBS)/windows/misc/include
+endif
+
 ifeq ($(TARGET_OS),morphos)
 CFLAGS += -noixemul
 endif

@@ -53,9 +53,6 @@ SDL_CONFIG =sdl-config
 SDL_CFLAGS = $(shell $(SDL_CONFIG) --cflags 2> /dev/null)
 SDL_LIBS   = $(shell $(SDL_CONFIG) --libs 2> /dev/null)
 
-# compile only as a 32 bit binary even on a 64 bit platform?
-COMPILE_32BITS=no
-
 # use fast x86 assembly on ia32 machines? (auto-disabled for
 # any other cpu.)
 USE_X86_ASM=yes
@@ -216,11 +213,6 @@ NASM_INC= -I./ -I$(COMMONDIR)/
 # windows resource compiler includes
 RC_INC  = -I. -I$(COMMONDIR)
 
-ifeq ($(COMPILE_32BITS),yes)
-CFLAGS += -m32
-LDFLAGS+= -m32
-endif
-
 # end of compiler flags
 #############################################################
 
@@ -231,15 +223,7 @@ endif
 
 # disable x86 assembly if it is not an x86.
 ifneq ($(MACH_TYPE),x86)
-ifeq ($(MACH_TYPE),x86_64)
-#  but keep the ia32 assembly on x86_64 if
-#  compiling as 32 bits for the s/w renderer
-ifneq ($(COMPILE_32BITS),yes)
 USE_X86_ASM=no
-endif
-else
-USE_X86_ASM=no
-endif
 endif
 
 ifdef DEMO
@@ -611,16 +595,17 @@ USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 
 ifeq ($(USE_WINSOCK2),yes)
-CPPFLAGS+= -D_USE_WINSOCK2
-LIBWINSOCK=-lws2_32
+CPPFLAGS+=-D_USE_WINSOCK2
+LIBWINSOCK=ws2_32
 else
-LIBWINSOCK=-lwsock32
+LIBWINSOCK=wsock32
 endif
 
 CPPFLAGS+= -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows/misc/include -I$(OSLIBS)/windows/dxsdk/include
-LDFLAGS += -mwindows
-LDFLAGS += $(LIBWINSOCK) -lwinmm
+CFLAGS  += -m32
+LDFLAGS += -m32 -mwindows
+LDFLAGS += -l$(LIBWINSOCK) -lwinmm
 
 ifneq ($(LINK_DIRECTX),yes)
 CPPFLAGS+= -DDX_DLSYM
@@ -692,16 +677,17 @@ USE_MGL=no
 USE_WINSOCK2=yes
 
 ifeq ($(USE_WINSOCK2),yes)
-CPPFLAGS+= -D_USE_WINSOCK2
-LIBWINSOCK=-lws2_32
+CPPFLAGS+=-D_USE_WINSOCK2
+LIBWINSOCK=ws2_32
 else
-LIBWINSOCK=-lwsock32
+LIBWINSOCK=wsock32
 endif
 
 CPPFLAGS+= -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows/misc/include -I$(OSLIBS)/windows/dxsdk/include
-LDFLAGS += -mwindows
-LDFLAGS += $(LIBWINSOCK) -lwinmm
+CFLAGS  += -m64
+LDFLAGS += -m64 -mwindows
+LDFLAGS += -l$(LIBWINSOCK) -lwinmm
 
 ifneq ($(LINK_DIRECTX),yes)
 CPPFLAGS+= -DDX_DLSYM
@@ -1480,7 +1466,7 @@ endif
 $(GL_BINARY): CPPFLAGS+= $(GL_DEFS)
 
 ifeq ($(TARGET_OS),amigaos)
-# Ewwww: workaround stupid AmiTCP SDK mess for old amigaos. Ewww..
+# workaround stupid AmiTCP SDK mess for old aos3
 net_bsd.o: INCLUDES+= $(NET_INC)
 net_udp.o: INCLUDES+= $(NET_INC)
 net_dgrm.o: INCLUDES+= $(NET_INC)
