@@ -610,6 +610,7 @@ endif
 ifeq ($(TARGET_OS),win64)
 
 NASMFLAGS=-f win64 -d_NO_PREFIX
+RC_DEFS=$(CPPFLAGS)
 RCFLAGS=--output-format=coff --target=pe-x86-64
 GL_LINK=-lopengl32
 
