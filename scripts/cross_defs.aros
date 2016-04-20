@@ -8,7 +8,7 @@
 TARGET=i386-aros
 PREFIX=/opt/cross_aros
 
-PATH="$PREFIX:$PATH"
+PATH="$PREFIX/bin:$PATH"
 export PATH
 
 AROSBUILD=1
