@@ -782,9 +782,9 @@ Index: engine/h2shared/draw.c
  /*
 Index: engine/h2shared/vid_sdl.c
 ===================================================================
---- engine/h2shared/vid_sdl.c	(revision 5493)
+--- engine/h2shared/vid_sdl.c	(revision 5544)
 +++ engine/h2shared/vid_sdl.c	(working copy)
-@@ -512,8 +512,10 @@
+@@ -513,8 +513,10 @@
  		return false;
  
  	// initial success. adjust vid vars.

@@ -12,9 +12,9 @@ Basic experimental fog code extracted from jshexen2 (activate with
 
 Index: engine/h2shared/gl_func.h
 ===================================================================
---- engine/h2shared/gl_func.h	(revision 4837)
+--- engine/h2shared/gl_func.h	(revision 5538)
 +++ engine/h2shared/gl_func.h	(working copy)
-@@ -71,6 +71,11 @@
+@@ -73,6 +73,11 @@
  GL_FUNCTION(void, glColor3f, (GLfloat,GLfloat,GLfloat))
  GL_FUNCTION(void, glClearColor, (GLclampf,GLclampf,GLclampf,GLclampf))
  

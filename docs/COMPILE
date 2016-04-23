@@ -1,4 +1,4 @@
-Hexen II: Hammer of Thyrion (uHexen2) - v1.5.7
+Hexen II: Hammer of Thyrion (uHexen2) - v1.5.8
 
 Instructions for Compiling:
 ===========================
@@ -30,7 +30,7 @@ binutils:	A GNU collection of binary utilities.
 
 NASM	:	Netwide Assembler. An x86 assembler.
 		Minimum version required is 0.98.38 or 0.98.39 from the
-		old series. Versions 2.09.10 or 2.11.04 from the new 2.x
+		old series. Versions 2.09.10 or 2.12.01 from the new 2.x
 		series are recommended.
 
 		YASM, a re-write of NASM, is also supported:  yasm-0.5.0
@@ -144,8 +144,7 @@ Download a prebuilt MinGW installer and install it to C:\MinGW .  Then
 download MSys and install it to c:\msys
 As x86 assembler, download nasm version 2.09.10, put nasm.exe into the
 C:\MinGW\bin directory. Adding the mingw directory to your PATH may be
-a good idea, too.  MinGW-3.1.0 comes with gcc-3.2.3.  MinGW-5.1.4, on
-the other hand, comes with gcc-3.4.5 and is recommended.
+a good idea, too.  MinGW-5.1.4 comes with gcc-3.4.5 and is recommended.
 
 Open a console window, cd into \msys and type "msys sh.exe". You will be
 in a unixish sh environment.  The rest is like doing things in linux:

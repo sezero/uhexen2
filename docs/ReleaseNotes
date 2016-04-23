@@ -1,6 +1,28 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
+Changes in v1.5.8: (XXX. XX, XXXX.)
+========================================================================
+
+This is a minor bug fix and maintenance release:
+
+- Software renderer: Fixed a reported crash if the engine is compiled
+  with certain Visual Studio versions (bug #62.)
+
+- Hexenworld server: Added "-protocol x" command line option to force
+  the server to use a specific protocol (25 or 26), if so required.
+
+- Amiga: Video fixes.
+
+- DOS, 3dfx opengl: Macronix (MX86251) variants of Voodoo Rush boards
+  are now functional. Further updates/fixes to opengl and glide drivers.
+  Updates to DXE exports so that more opengl driver builds would work
+  without requiring an engine recompile.
+
+- Other minor fixes/tidy-ups elsewhere in the source.
+
+
+========================================================================
 Changes in v1.5.7: (Jan. 10, 2016.)
 ========================================================================
 
