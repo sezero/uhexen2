@@ -32,7 +32,7 @@ diff -urp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
  RANLIB = m68k-amigaos-ranlib
  
  LIBOBJ = context.o vertexbuffer.o draw.o texture.o fog.o \
-@@ -31,79 +41,65 @@ LIBOBJ = context.o vertexbuffer.o draw.o
+@@ -31,79 +41,62 @@ LIBOBJ = context.o vertexbuffer.o draw.o
  	others.o matrix.o
  
  
@@ -104,12 +104,11 @@ diff -urp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
  texsub: texsub.o $(LIBNAME)
 -		$(CC) -o texsub $(INCLUDE) texsub.o -L../lib -lmgl $(DEBUGLIB)
 -#		/c/copy texsub ../texsub
-+	$(CC) $(LDFLAGS) -o texsub texsub.o $(LDLIBS)
- 
- ../gears: gears.o $(LIBNAME)
+-
+-../gears: gears.o $(LIBNAME)
 -		$(CC) -o gears $(INCLUDE) gears.o -L../lib -lmgl $(DEBUGLIB)
 -#		/c/copy gears ../gears
-+	$(CC) $(LDFLAGS) -o gears gears.o $(LDLIBS)
++	$(CC) $(LDFLAGS) -o texsub texsub.o $(LDLIBS)
  
  warp: warp.o $(LIBNAME)
 -		$(CC) -o warp $(INCLUDE) warp.o -L../lib -lmgl $(DEBUGLIB)
@@ -714,4 +713,170 @@ diff -urp MiniGL~/src/vertexelements.c MiniGL/src/vertexelements.c
                  }
  
        break;
-
+diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
+--- MiniGL~/demos/addtest.c	2002-11-30 08:14:54.000000000 +0200
++++ MiniGL/demos/addtest.c	2016-04-15 17:55:10.000000000 +0300
+@@ -6,6 +6,7 @@
+ #define M_PI 3.14159265
+ #endif
+ #include <stdio.h>
++#include <string.h>
+ 
+ GLint width=640; GLint height=480;
+ GLfloat startilt = 0.0;
+diff -urNp MiniGL~/demos/driverinfo.c MiniGL/demos/driverinfo.c
+--- MiniGL~/demos/driverinfo.c	2002-11-30 08:14:56.000000000 +0200
++++ MiniGL/demos/driverinfo.c	2016-04-15 17:55:10.000000000 +0300
+@@ -23,6 +23,11 @@
+ 	#elif defined(__STORM__)
+ 		#include <clib/Warp3D_protos.h>
+ 	#endif
++	#ifdef __PPC__
++	extern struct Library *Warp3DPPCBase;
++	#else
++	extern struct Library *Warp3DBase;
++	#endif
+ #endif
+ #include <stdio.h>
+ #include <stdlib.h>
+diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
+--- MiniGL~/demos/gears.c	2002-11-30 08:14:58.000000000 +0200
++++ MiniGL/demos/gears.c	2016-04-15 17:55:10.000000000 +0300
+@@ -24,6 +24,7 @@
+ #define M_PI 3.14159265
+ #endif
+ #include <stdio.h>
++#include <string.h>
+ 
+ /* For portability... */
+ #undef fcos
+@@ -475,12 +476,12 @@ draw_outside(float w1, float w2, float r
+ }
+ 
+ Profile gear_profile[] =
+-{0.000, 0.0,
+-  0.300, 7.0,
+-  0.340, 0.4,
+-  0.550, 0.64,
+-  0.600, 0.4,
+-  0.950, 1.0
++{ {0.000, 0.0},
++  {0.300, 7.0},
++  {0.340, 0.4},
++  {0.550, 0.64},
++  {0.600, 0.4},
++  {0.950, 1.0}
+ };
+ 
+ float a1 = 27.0;
+diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
+--- MiniGL~/demos/gears_stats.c	2002-11-30 08:14:58.000000000 +0200
++++ MiniGL/demos/gears_stats.c	2016-04-15 17:55:10.000000000 +0300
+@@ -570,12 +570,12 @@ draw_outside(float w1, float w2, float r
+ }
+ 
+ Profile gear_profile[] =
+-{0.000, 0.0,
+-  0.300, 7.0,
+-  0.340, 0.4,
+-  0.550, 0.64,
+-  0.600, 0.4,
+-  0.950, 1.0
++{ {0.000, 0.0},
++  {0.300, 7.0},
++  {0.340, 0.4},
++  {0.550, 0.64},
++  {0.600, 0.4},
++  {0.950, 1.0}
+ };
+ 
+ float a1 = 27.0;
+diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
+--- MiniGL~/demos/gravity.c	2002-11-30 08:14:58.000000000 +0200
++++ MiniGL/demos/gravity.c	2016-04-15 17:55:10.000000000 +0300
+@@ -1,6 +1,7 @@
+ #include <mgl/gl.h>
+ 
+ #include <stdlib.h>
++#include <string.h>
+ 
+ 
+ GLint width=640; GLint height=480;
+@@ -214,18 +215,6 @@ void DoFrame(void)
+ 	mglSwitchDisplay();
+ }
+ 
+-#ifndef __VBCC__
+-void keys(unsigned char c)
+-{
+-
+-	switch (c)
+-	{
+-		case 0x1b:
+-			mglExit();
+-			break;
+-	}
+-}
+-#else
+ void keys(char c)
+ {
+ 
+@@ -236,13 +225,8 @@ void keys(char c)
+ 			break;
+ 	}
+ }
+-#endif
+ 
+-#ifdef __VBCC__
+ int
+-#else
+-void
+-#endif
+ main(int argc, char *argv[])
+ {
+ 	int i;
+@@ -283,7 +267,5 @@ main(int argc, char *argv[])
+ 
+ 	mglDeleteContext();
+ 	MGLTerm();
+-#ifdef __VBCC__
+ 	return 0;
+-#endif
+ }
+diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
+--- MiniGL~/demos/smtest.c	2002-11-30 08:15:00.000000000 +0200
++++ MiniGL/demos/smtest.c	2016-04-15 17:55:10.000000000 +0300
+@@ -3,6 +3,7 @@
+ 
+ 
+ #include <stdio.h>
++#include <string.h>
+ #include <mgl/gl.h>
+ 
+ #include <proto/dos.h>          // For Delay()
+@@ -60,10 +61,10 @@ int main(int argc, char **argv)
+ 		Delay(100);
+ 
+ 
+-		printf("Display info:\nDimensions:%d×%d×%d\n", li.width, li.height, li.depth);
+-		printf("Pixel format: %d\n", li.pixel_format);
+-		printf("Base address: 0x%x\n", li.base_address);
+-		printf("Pitch: %d\n", li.pitch);
++		printf("Display info:\nDimensions:%lu×%lu×%lu\n", li.width, li.height, li.depth);
++		printf("Pixel format: %lu\n", li.pixel_format);
++		printf("Base address: 0x%x\n", (unsigned) li.base_address);
++		printf("Pitch: %lu\n", li.pitch);
+ 	}
+ 	else
+ 	{
+diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
+--- MiniGL~/demos/texsub.c	2002-11-30 08:15:00.000000000 +0200
++++ MiniGL/demos/texsub.c	2016-04-15 17:55:10.000000000 +0300
+@@ -53,6 +53,7 @@
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
++#include <string.h>
+ #include <math.h>
+ 
+ /*  Create checkerboard textures  */
