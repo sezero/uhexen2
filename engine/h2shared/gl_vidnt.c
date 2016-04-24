@@ -955,7 +955,7 @@ static void GL_Init (void)
 
 	Con_SafePrintf ("Video mode %s initialized\n", VID_GetModeDescription (vid_modenum));
 	memset(&new_pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
-	// DescribePixelFormat fails with old 3dfx minigl drivers: don't Sys_Error
+	/* FIXME: DescribePixelFormat() fails with old 3dfx minigl drivers: don't Sys_Error() for now. */
 	if (DescribePixelFormat(maindc, GetPixelFormat(maindc), sizeof(PIXELFORMATDESCRIPTOR), &new_pfd))
 	{
 		Con_SafePrintf("Pixel format: c: %d, z: %d, s: %d\n",
@@ -2010,7 +2010,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 				break;
 
 			case 32:
-#if 0	// O.S: don't mess with silly 24 bit lowres modes, they don't work correctly
+#if 0	/* O.S: don't mess with silly 24 bit lowres modes, they may not work correctly */
 				bpp = 24;
 				break;
 
