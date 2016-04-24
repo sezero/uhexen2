@@ -848,13 +848,13 @@ static void CheckNonPowerOfTwoTextures (void)
 	}
 }
 
-static void CheckStencilBuffer (void)
+static void CheckStencilBuffer (const PIXELFORMATDESCRIPTOR *pf)
 {
 	have_stencil = false;
 
-	if (pfd.cStencilBits)
+	if (pf->cStencilBits)
 	{
-		Con_SafePrintf("Stencil buffer created with %d bits\n", pfd.cStencilBits);
+		Con_SafePrintf("Stencil buffer created with %d bits\n", pf->cStencilBits);
 		have_stencil = true;
 	}
 }
@@ -954,6 +954,7 @@ static void GL_Init (void)
 	PIXELFORMATDESCRIPTOR	new_pfd;
 
 	Con_SafePrintf ("Video mode %s initialized\n", VID_GetModeDescription (vid_modenum));
+	memset(&new_pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
 	// DescribePixelFormat fails with old 3dfx minigl drivers: don't Sys_Error
 	if (DescribePixelFormat(maindc, GetPixelFormat(maindc), sizeof(PIXELFORMATDESCRIPTOR), &new_pfd))
 	{
@@ -1002,7 +1003,7 @@ static void GL_Init (void)
 	CheckMultiTextureExtensions();
 	CheckAnisotropyExtensions();
 	CheckNonPowerOfTwoTextures();
-	CheckStencilBuffer();
+	CheckStencilBuffer(&new_pfd);
 
 	glClearColor_fp (1,0,0,0);
 	glCullFace_fp(GL_FRONT);
