@@ -92,7 +92,7 @@ IPTR EffectFuncTramp()
 HOOKPROTO(EffectFunc, IPTR, struct AHIAudioCtrl *aac, struct AHIEffChannelInfo *aeci)
 {
 #endif
-	struct AHIdata *adata = hook->h_Data;
+	struct AHIdata *adata = (struct AHIdata *) hook->h_Data;
 	adata->readpos = aeci->ahieci_Offset[0];
 
 	return 0;
@@ -108,7 +108,7 @@ static qboolean S_AHI_Init(dma_t *dma)
 	if (ad)
 		return true;
 
-	ad = AllocVec(sizeof(*ad), MEMF_ANY);
+	ad = (struct AHIdata *) AllocVec(sizeof(*ad), MEMF_ANY);
 	if (!ad)
 		return false;
 
@@ -163,7 +163,7 @@ static qboolean S_AHI_Init(dma_t *dma)
 						ad->samplebuffer = AllocVec(BUFFER_SIZE*(speed/11025)*(bits/8)*channels, MEMF_ANY|MEMF_CLEAR);
 						if (ad->samplebuffer)
 						{
-							shm->buffer = ad->samplebuffer;
+							shm->buffer = (unsigned char *) ad->samplebuffer;
 
 							if (channels == 1)
 							{

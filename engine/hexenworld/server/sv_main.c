@@ -1655,7 +1655,7 @@ void SV_Init (void)
 	host_hunklevel = Hunk_LowMark ();
 
 	host_initialized = true;
-	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
+	Con_Printf ("Exe: " __TIME__ " " __DATE__ "\n");
 	Con_Printf ("%4.1f megabyte heap\n", host_parms->memsize/(1024*1024.0));
 	Con_Printf ("======== HexenWorld Initialized ========\n");
 

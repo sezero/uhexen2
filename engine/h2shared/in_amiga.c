@@ -329,7 +329,7 @@ void IN_Init (void)
 
 	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 
-	pointermem = AllocVec(256, MEMF_CHIP | MEMF_CLEAR);
+	pointermem = (UWORD *) AllocVec(256, MEMF_CHIP | MEMF_CLEAR);
 
 	IN_StartupMouse ();
 	IN_StartupJoystick ();
@@ -526,7 +526,7 @@ static int PortIndex (int idx)
 	return idx;
 }
 
-static char *JoystickName(int port)
+static const char *JoystickName(int port)
 {
 	ULONG joyflag = ReadJoyPort(PortIndex(port));
 
@@ -752,7 +752,7 @@ void IN_SendKeyEvents (void)
 				if (!Key_IsGameKey())
 				{
 					UBYTE bufascii;
-					if (MapRawKey(&imsgs[i], &bufascii, sizeof(bufascii), NULL) > 0)
+					if (MapRawKey(&imsgs[i], (STRPTR) &bufascii, sizeof(bufascii), NULL) > 0)
 					{
 						//Con_Printf("%d\n", bufascii);
 						sym = (bufascii == 8) ? K_BACKSPACE	: bufascii;

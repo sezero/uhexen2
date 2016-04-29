@@ -222,7 +222,7 @@ int main (int argc, char **argv)
 	Cmd_Init ();
 	SV_InitNet();
 
-	printf ("Exe: "__TIME__" "__DATE__"\n");
+	printf ("Exe: " __TIME__ " " __DATE__ "\n");
 	printf("======== HW master %d.%d.%d initialized ========\n\n",
 		VER_HWMASTER_MAJ, VER_HWMASTER_MID, VER_HWMASTER_MIN);
 

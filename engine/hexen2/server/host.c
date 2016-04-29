@@ -211,7 +211,7 @@ static void Host_FindMaxClients (void)
 static void Host_Version_f (void)
 {
 	Con_Printf ("Version %4.2f\n", ENGINE_VERSION);
-	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
+	Con_Printf ("Exe: " __TIME__ " " __DATE__ "\n");
 }
 
 /* cvar callback functions : */
@@ -667,7 +667,7 @@ void Host_Init (void)
 	Mod_Init ();
 	NET_Init ();
 
-	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
+	Con_Printf ("Exe: " __TIME__ " " __DATE__ "\n");
 	Con_Printf ("%4.1f megabyte heap\n", host_parms->memsize/(1024*1024.0));
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");

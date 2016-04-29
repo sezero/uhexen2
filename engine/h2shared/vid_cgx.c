@@ -48,7 +48,7 @@
 struct Window *window = NULL; // used by in_amiga.c
 static struct Screen *screen = NULL;
 static char pal[256 * 4];
-static char *buffer = NULL;
+static pixel_t *buffer = NULL;
 static byte *directbitmap = NULL;
 #if defined(__AMIGA__) && !defined(__MORPHOS__)
 struct Library *CyberGfxBase = NULL;
@@ -479,7 +479,7 @@ static qboolean VID_SetMode (int modenum, unsigned char *palette)
 		if (pointermem) {*/
 			vid.height = vid.conheight = modelist[modenum].height;
 			vid.rowbytes = vid.conrowbytes = vid.width = vid.conwidth = modelist[modenum].width;
-			buffer = AllocVec(vid.width * vid.height, MEMF_ANY);
+			buffer = (pixel_t *) AllocVec(vid.width * vid.height, MEMF_ANY);
 
 			if (buffer)
 			{

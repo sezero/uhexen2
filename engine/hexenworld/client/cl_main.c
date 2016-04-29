@@ -164,7 +164,7 @@ CL_Version_f
 static void CL_Version_f (void)
 {
 	Con_Printf ("Version %4.2f\n", ENGINE_VERSION);
-	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
+	Con_Printf ("Exe: " __TIME__ " " __DATE__ "\n");
 }
 
 
@@ -1387,7 +1387,7 @@ void Host_Init (void)
 
 	Mod_Init ();
 
-	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
+	Con_Printf ("Exe: " __TIME__ " " __DATE__ "\n");
 	Con_Printf ("%4.1f megs RAM used.\n", host_parms->memsize/(1024*1024.0));
 
 	R_InitTextures ();

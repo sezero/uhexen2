@@ -1088,7 +1088,7 @@ xd3_decode_bytes (xd3_stream *stream, uint8_t *buf, usize_t *pos, usize_t size)
 	}
 
       want = size - *pos;
-      take = min (want, stream->avail_in);
+      take = xd3_min (want, stream->avail_in);
 
       memcpy (buf + *pos, stream->next_in, (size_t) take);
 
@@ -1718,7 +1718,7 @@ xd3_process_stream (int            is_encode,
 		    usize_t        output_size_max)
 {
   usize_t ipos = 0;
-  usize_t n = min(stream->winsize, input_size);
+  usize_t n = xd3_min(stream->winsize, input_size);
 
   (*output_size) = 0;
 
@@ -1734,7 +1734,7 @@ xd3_process_stream (int            is_encode,
 	{
 	case XD3_OUTPUT: { /* memcpy below */ break; }
 	case XD3_INPUT: {
-	  n = min(stream->winsize, input_size - ipos);
+	  n = xd3_min(stream->winsize, input_size - ipos);
 	  if (n == 0) {
 	    goto done;
 	  }
@@ -1807,9 +1807,9 @@ xd3_process_memory (int            is_encode,
   if (is_encode)
     {
       config.srcwin_maxsz = source_size;
-      config.winsize = min(input_size, (usize_t) XD3_DEFAULT_WINSIZE);
-      config.iopt_size = min(input_size / 32, XD3_DEFAULT_IOPT_SIZE);
-      config.iopt_size = max(config.iopt_size, 128U);
+      config.winsize = xd3_min(input_size, (usize_t) XD3_DEFAULT_WINSIZE);
+      config.iopt_size = xd3_min(input_size / 32, XD3_DEFAULT_IOPT_SIZE);
+      config.iopt_size = xd3_max(config.iopt_size, 128U);
       config.sprevsz = xd3_pow2_roundup (config.winsize);
     }
 

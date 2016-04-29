@@ -190,7 +190,7 @@ main_set_source (xd3_stream *stream,
 
   if (use_options->verbose && use_options->debug_print)
     {
-      use_options->debug_print("source %s %"Q"u bytes, blksize %u bytes, window %u bytes, #bufs %u\n",
+      use_options->debug_print("source %s %" Q "u bytes, blksize %u bytes, window %u bytes, #bufs %u\n",
 	  sfile->filename, source_size, blksize, use_options->srcwinsz, lru_size);
     }
 
@@ -259,7 +259,7 @@ main_read_seek_source (xd3_stream *stream,
 	  if (use_options->debug_print)
 	    {
 	      use_options->debug_print("source can't seek backwards; requested block offset "
-		  "%"Q"u source position is %"Q"u\n",
+		  "%" Q "u source position is %" Q "u\n",
 		  pos, sfile->source_position);
 	    }
 
@@ -274,7 +274,7 @@ main_read_seek_source (xd3_stream *stream,
        * condition.  */
       if (!sfile->seek_failed && use_options->verbose && use_options->debug_print)
 	{
-	  use_options->debug_print("seek error at offset %"Q"u: %s\n"
+	  use_options->debug_print("seek error at offset %" Q "u: %s\n"
 				   "source can't seek, will use FIFO for %s\n",
 		  pos, xd3_mainerror (ret), sfile->filename);
 	}

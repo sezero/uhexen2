@@ -738,10 +738,10 @@ main_get_winsize (main_file *ifile) {
 
   if (main_file_stat (ifile, &file_size) == 0)
     {
-      size = (usize_t) min(file_size, (xoff_t) size);
+      size = (usize_t) xd3_min(file_size, (xoff_t) size);
     }
 
-  size = max(size, XD3_ALLOCSIZE);
+  size = xd3_max(size, XD3_ALLOCSIZE);
 
   if (use_options->verbose && use_options->debug_print)
     {
@@ -817,7 +817,7 @@ main_input (main_file   *ifile,
 
       input_remain = XOFF_T_MAX - input_offset;
 
-      try_read = (usize_t) min ((xoff_t) config.winsize, input_remain);
+      try_read = (usize_t) xd3_min ((xoff_t) config.winsize, input_remain);
 
       if ((ret = main_read_primary_input (ifile, main_bdata,
 					  try_read, & nread)))

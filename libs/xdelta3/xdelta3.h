@@ -231,30 +231,8 @@ typedef int              (xd3_comp_table_func) (xd3_stream *stream,
 #define XD3_ASSERT(x) (void)0
 #endif  /* XD3_DEBUG */
 
-#ifdef __GNUC__
-#ifndef max
-#define max(x,y) ({ \
-	const typeof(x) _x = (x);	\
-	const typeof(y) _y = (y);	\
-	(void) (&_x == &_y);		\
-	_x > _y ? _x : _y; })
-#endif /* __GNUC__ */
-
-#ifndef min
-#define min(x,y) ({ \
-	const typeof(x) _x = (x);	\
-	const typeof(y) _y = (y);	\
-	(void) (&_x == &_y);		\
-	_x < _y ? _x : _y; })
-#endif
-#else  /* __GNUC__ */
-#ifndef max
-#define max(x,y) ((x) < (y) ? (y) : (x))
-#endif
-#ifndef min
-#define min(x,y) ((x) < (y) ? (x) : (y))
-#endif
-#endif  /* __GNUC__ */
+#define xd3_max(x,y) ((x) < (y) ? (y) : (x))
+#define xd3_min(x,y) ((x) < (y) ? (x) : (y))
 
 /****************************************************************
  PUBLIC ENUMS

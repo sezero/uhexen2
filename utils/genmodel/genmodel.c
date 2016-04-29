@@ -211,7 +211,7 @@ int main(int argc, char **argv)
 	int		i, j;
 	char	path[1024], bakname[1024];
 
-	printf("GENMODEL Version "VERSION_TEXT" ("__DATE__")\n\n");
+	printf("GENMODEL Version " VERSION_TEXT " (" __DATE__ ")\n\n");
 
 	if (argc == 1) {
 	_usage:
