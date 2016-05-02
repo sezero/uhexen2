@@ -55,10 +55,13 @@ Things not tested, but should work:
   to disable joystick, use the command line argument -nojoy.
 
 * 3Dfx / OpenGL:  OpenGL rendering is supported on 3Dfx Voodoo cards.
-  Pick a DOS GL driver (gl.dxe) from the 3dfx directory and pick the
-  correct glide driver (glide3x.dxe) for your 3dfx card from the
-  3dfx\voodoo directory, and copy them to your main hexen2 directory:
-  glh2dos should run using your 3dfx card.
+  - Pick the correct Glide driver (glide3x.dxe) for your 3dfx card
+    from the 3dfx\voodoo directory and copy it to your main hexen2
+    directory.
+  - The default gl driver (gl.dxe) in your main hexen2 directory is
+    based on Mesa-3.4.x and is most compatible. If you want, replace
+    it with a different driver from the 3dfx directory.
+  Now glh2dos should run using your 3dfx accelerator card.
 
 
 NOTES:

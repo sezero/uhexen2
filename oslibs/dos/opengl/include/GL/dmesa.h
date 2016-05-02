@@ -138,7 +138,7 @@ void DMesaSetCI (int ndx, GLfloat red, GLfloat green, GLfloat blue);
 /*
  * DMesa functions
  */
-typedef void (*DMesaProc) (void);
+typedef void (*DMesaProc) ();
 DMesaProc DMesaGetProcAddress (const char *name);
 
 /*
