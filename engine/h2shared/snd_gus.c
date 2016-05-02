@@ -665,8 +665,7 @@ static void ClearGf1Ints (void)
 	GetGf18(DMA_CONTROL);
 	GetGf18(RECORD_CONTROL);
 	for (i = 0; i < 32; i++)
-		;
-	GetGf18(GET_IRQV);
+		GetGf18(GET_IRQV);
 }
 
 
