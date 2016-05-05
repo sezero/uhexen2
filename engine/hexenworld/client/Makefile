@@ -835,6 +835,7 @@ NET_INC   = -I$(OSLIBS)/amigaos/netinclude
 AMIGA_GLIMP=minigl
 ifeq ($(AMIGA_GLIMP),minigl)
 GL_DEFS+= -DREFGL_MINIGL
+#GL_DEFS+= -DUSE_MGLAPI=1
 GL_DEFS+= -I$(OSLIBS)/amigaos/MiniGL/include
 GL_LINK = -L$(OSLIBS)/amigaos/MiniGL/lib -lmgl
 endif

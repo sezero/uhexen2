@@ -21,19 +21,16 @@
 #include <proto/tinygl.h>
 #include <tgl/gl.h>
 
-#elif defined(__AROS__)
-/*#include <GL/arosmesa.h>*/
+#elif defined(__AROS__) /* ABIv0, AROSMesa */
 #include <GL/gl.h>
 
 #elif defined(__amigaos4__)
-/*#include <mgl/gl.h>*/
 #include <GL/gl.h>
 
 #elif defined(__AMIGA__) /* AOS3 */
-#if defined(REFGL_MINIGL)		/* Hyperion's MiniGL 1.2 */
-#define USE_MGLAPI 1
+#if defined(REFGL_MINIGL)  /* Hyperion's MiniGL 1.2 */
 #include <mgl/gl.h>
-#elif defined(REFGL_AMESA)			/* StormMesa */
+#elif defined(REFGL_AMESA) /* StormMesa */
 #include <GL/gl.h>
 #else
 #error Which Amiga GL API to use not specified

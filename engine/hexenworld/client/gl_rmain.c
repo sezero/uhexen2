@@ -1045,8 +1045,13 @@ static void R_DrawAliasModel (entity_t *e)
 		glShadeModel_fp (GL_SMOOTH);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
+#if defined(__AMIGA__) && defined(REFGL_MINIGL)
+	if (gl_affinemodels.integer)
+		glDisable_fp (MGL_PERSPECTIVE_MAPPING);
+#else
 	if (gl_affinemodels.integer)
 		glHint_fp (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+#endif
 
 	R_SetupAliasFrame (e, paliashdr);
 
@@ -1068,8 +1073,13 @@ static void R_DrawAliasModel (entity_t *e)
 	glTexEnvf_fp (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
 	glShadeModel_fp (GL_FLAT);
+#if defined(__AMIGA__) && defined(REFGL_MINIGL)
+	if (gl_affinemodels.integer)
+		glEnable_fp (MGL_PERSPECTIVE_MAPPING);
+#else
 	if (gl_affinemodels.integer)
 		glHint_fp (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+#endif
 
 	glPopMatrix_fp ();
 

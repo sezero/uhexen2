@@ -35,11 +35,24 @@
 #include <proto/graphics.h>
 #include <proto/cybergraphics.h>
 
-#ifdef __AROS__
+#ifdef __AROS__ /* ABIv0, AROSMesa. -- TODO: ABIv1 glA interface support. */
 #include <GL/arosmesa.h>
-#endif
-#if defined __MORPHOS__
+#elif defined __MORPHOS__
 #include <intuition/intuitionbase.h>
+#elif defined __amigaos4__
+#error AmigaOS4 support not yet available
+#elif defined(__AMIGA__) && defined(REFGL_MINIGL)
+#include <mgl/gl.h>
+#elif defined(__AMIGA__) && defined(REFGL_AMESA)
+#include <GL/Amigamesa.h>
+#else
+#error Unknown/unsupported AmigaOS variant
+#endif
+
+#ifdef __AROS__
+typedef AROSMesaProc AMIGAGL_Proc;
+#else
+typedef void (*AMIGAGL_Proc)();
 #endif
 
 #include "quakedef.h"
@@ -129,6 +142,7 @@ typedef struct {
 } attributes_t;
 static attributes_t	vid_attribs;
 
+static void VID_KillContext (void);
 struct Window *window = NULL; // used by in_amiga.c
 static struct Screen *screen = NULL;
 #ifdef __AROS__
@@ -136,8 +150,10 @@ static AROSMesaContext context = NULL;
 #elif defined __MORPHOS__
 GLContext *__tglContext = NULL;
 static qboolean contextinit = false;
-#else
-#error OS-specific vars missing for gl context
+#elif defined(__AMIGA__) && defined(REFGL_MINIGL)
+static int lockmode = MGL_LOCK_MANUAL;
+#elif defined(__AMIGA__) && defined(REFGL_AMESA)
+static AmigaMesaContext context = NULL;
 #endif
 static qboolean	vid_menu_fs;
 static qboolean	fs_toggle_works = true;
@@ -362,6 +378,13 @@ static qboolean VID_SetMode (int modenum)
 
 	Con_SafePrintf ("Requested mode %d: %dx%dx%d\n", modenum, modelist[modenum].width, modelist[modenum].height, bpp);
 
+#if defined(REFGL_MINIGL)
+	/* Hyperion's MiniGL 1.2 handles window creation within itself. */
+	if (vid_config_fscr.integer)
+		mglChooseWindowMode(GL_FALSE);
+	else	mglChooseWindowMode(GL_TRUE );
+
+#else /* ! REFGL_MINIGL */
 	if (vid_config_fscr.integer)
 	{
 	    ULONG ModeID;
@@ -372,7 +395,7 @@ static qboolean VID_SetMode (int modenum)
 			CYBRBIDTG_NominalHeight, modelist[modenum].height,
 			TAG_DONE);
 
-#ifndef __MORPHOS__
+		#ifndef __MORPHOS__
 		screen = OpenScreenTags(0,
 			ModeID != INVALID_ID ? SA_DisplayID : TAG_IGNORE, ModeID,
 			SA_Width, modelist[modenum].width,
@@ -380,7 +403,7 @@ static qboolean VID_SetMode (int modenum)
 			SA_Depth, bpp,
 			SA_Quiet, TRUE,
 			TAG_DONE);
-#else
+		#else
 		screen = OpenScreenTags(0,
 			ModeID != INVALID_ID ? SA_DisplayID : TAG_IGNORE, ModeID,
 			SA_Width, modelist[modenum].width,
@@ -390,7 +413,7 @@ static qboolean VID_SetMode (int modenum)
 			SA_GammaControl, TRUE,
 			SA_3DSupport, TRUE,
 			TAG_DONE);
-#endif
+		#endif
 	}
 
 	if (screen)
@@ -413,6 +436,7 @@ static qboolean VID_SetMode (int modenum)
 		TAG_DONE);
 
 	if (!window) goto fail;
+#endif /* ! REFGL_MINIGL */
 
 	WRWidth = vid.width = vid.conwidth = modelist[modenum].width;
 	WRHeight = vid.height = vid.conheight = modelist[modenum].height;
@@ -444,8 +468,28 @@ static qboolean VID_SetMode (int modenum)
 			goto fail;
 	}
 
-#else
-#error OS-specific code missing for context creation
+#elif defined(__AMIGA__) && defined(REFGL_MINIGL)
+	if (!mglCreateContext(0,0,vid.width,vid.height))
+		goto fail;
+	mglLockMode(lockmode);
+	window = MGLGetWindowHandle(mini_CurrentContext);
+	ModifyIDCMP(window, IDCMP_CLOSEWINDOW | IDCMP_ACTIVEWINDOW | IDCMP_INACTIVEWINDOW);
+
+#elif defined(__AMIGA__) && defined(REFGL_AMESA)
+	context = AmigaMesaCreateContextTags(
+			AMA_Window, window,
+			AMA_Left, screen ? 0 : window->BorderLeft,
+			AMA_Bottom, screen ? 0 : window->BorderBottom,
+			AMA_Width, vid.width,
+			AMA_Height, vid.height,
+			screen ? AMA_Screen : TAG_IGNORE, screen,
+			AMA_DoubleBuf, GL_TRUE,
+			AMA_RGBMode, GL_TRUE,
+			AMA_NoAccum, GL_TRUE,
+			TAG_DONE);
+
+	if (!context) goto fail;
+	AmigaMesaMakeCurrent(context, context->buffer);
 #endif
 
 	vid.height = vid.conheight = modelist[modenum].height;
@@ -469,7 +513,7 @@ static qboolean VID_SetMode (int modenum)
 	return true;
 
 fail:
-	VID_Shutdown();
+	VID_KillContext();
 
 	in_mode_set = false;
 
@@ -479,7 +523,13 @@ fail:
 
 //====================================
 
-#ifdef __MORPHOS__
+#if defined(__AROS__)
+static AMIGAGL_Proc AMIGAGL_GetProcAddress (const char *s)
+{
+	return AROSMesaGetProcAddress((const GLubyte *) s);
+}
+
+#elif defined(__MORPHOS__)
 static void myglMultiTexCoord2fARB (GLenum unit, GLfloat s, GLfloat t)
 {
 	GLMultiTexCoord2fARB(__tglContext, unit, s, t);
@@ -490,18 +540,56 @@ static void myglActiveTextureARB (GLenum unit)
 	GLActiveTextureARB(__tglContext, unit);
 }
 
-static void *AROSMesaGetProcAddress (const char *s)
+static AMIGAGL_Proc AMIGAGL_GetProcAddress (const char *s)
 {
 	if (strcmp(s, "glMultiTexCoord2fARB") == 0)
-		return (void *)myglMultiTexCoord2fARB;
+		return (AMIGAGL_Proc)myglMultiTexCoord2fARB;
 	if (strcmp(s, "glActiveTextureARB") == 0)
-		return (void *)myglActiveTextureARB;
+		return (AMIGAGL_Proc)myglActiveTextureARB;
 
 	return NULL;
 }
-#elif !defined(__AROS__)
-static void *AROSMesaGetProcAddress (const char *s)
+
+#elif defined(__AMIGA__) && defined(REFGL_MINIGL)
+static void myglMultiTexCoord2fARB (GLenum unit, GLfloat s, GLfloat t)
 {
+	GLMultiTexCoord2fARB(mini_CurrentContext, unit, s, t);
+}
+
+static void myglActiveTextureARB (GLenum unit)
+{
+	GLActiveTextureARB(mini_CurrentContext, unit);
+}
+
+static AMIGAGL_Proc AMIGAGL_GetProcAddress (const char *s)
+{
+	if (strcmp(s, "glMultiTexCoord2fARB") == 0)
+		return (AMIGAGL_Proc)myglMultiTexCoord2fARB;
+	if (strcmp(s, "glActiveTextureARB") == 0)
+		return (AMIGAGL_Proc)myglActiveTextureARB;
+
+	return NULL;
+}
+
+#elif defined(__AMIGA__) && defined(REFGL_AMESA)
+/* NOTE: StormMesa 3.0 has EXT_multitexture, not ARB_multitexture.. */
+static void myglMultiTexCoord2fARB (GLenum unit, GLfloat s, GLfloat t)
+{
+	glMultiTexCoord2fEXT (unit + GL_TEXTURE0_EXT - GL_TEXTURE0_ARB, s, t);
+}
+
+static void myglActiveTextureARB (GLenum unit)
+{
+	glSelectTextureEXT (unit + GL_TEXTURE0_EXT - GL_TEXTURE0_ARB);
+}
+
+static AMIGAGL_Proc AMIGAGL_GetProcAddress (const char *s)
+{
+	if (strcmp(s, "glMultiTexCoord2fARB") == 0)
+		return (AMIGAGL_Proc)myglMultiTexCoord2fARB;
+	if (strcmp(s, "glActiveTextureARB") == 0)
+		return (AMIGAGL_Proc)myglActiveTextureARB;
+
 	return NULL;
 }
 #endif
@@ -512,18 +600,18 @@ static void CheckSetGlobalPalette (void)
 
 	if (GL_ParseExtensionList(gl_extensions, "3DFX_set_global_palette"))
 	{
-		gl3DfxSetPaletteEXT_fp = (gl3DfxSetPaletteEXT_f) AROSMesaGetProcAddress("gl3DfxSetPaletteEXT");
+		gl3DfxSetPaletteEXT_fp = (gl3DfxSetPaletteEXT_f) AMIGAGL_GetProcAddress("gl3DfxSetPaletteEXT");
 		if (!gl3DfxSetPaletteEXT_fp)
-			gl3DfxSetPaletteEXT_fp = (gl3DfxSetPaletteEXT_f) AROSMesaGetProcAddress("3DFX_set_global_palette");
+			gl3DfxSetPaletteEXT_fp = (gl3DfxSetPaletteEXT_f) AMIGAGL_GetProcAddress("3DFX_set_global_palette");
 		if (!gl3DfxSetPaletteEXT_fp)
 			return;
 		Con_SafePrintf("Found 3DFX_set_global_palette\n");
 	}
 	else if (GL_ParseExtensionList(gl_extensions, "POWERVR_set_global_palette"))
 	{
-		gl3DfxSetPaletteEXT_fp = (gl3DfxSetPaletteEXT_f) AROSMesaGetProcAddress("glSetGlobalPalettePOWERVR");
+		gl3DfxSetPaletteEXT_fp = (gl3DfxSetPaletteEXT_f) AMIGAGL_GetProcAddress("glSetGlobalPalettePOWERVR");
 		if (!gl3DfxSetPaletteEXT_fp)
-			gl3DfxSetPaletteEXT_fp = (gl3DfxSetPaletteEXT_f) AROSMesaGetProcAddress("POWERVR_set_global_palette");
+			gl3DfxSetPaletteEXT_fp = (gl3DfxSetPaletteEXT_f) AMIGAGL_GetProcAddress("POWERVR_set_global_palette");
 		if (!gl3DfxSetPaletteEXT_fp)
 			return;
 		Con_SafePrintf("Found POWERVR_set_global_palette\n");
@@ -562,7 +650,7 @@ static void CheckSharedTexturePalette (void)
 	if (!GL_ParseExtensionList(gl_extensions, "GL_EXT_shared_texture_palette"))
 		return;
 
-	glColorTableEXT_fp = (glColorTableEXT_f) AROSMesaGetProcAddress("glColorTableEXT");
+	glColorTableEXT_fp = (glColorTableEXT_f) AMIGAGL_GetProcAddress("glColorTableEXT");
 	if (glColorTableEXT_fp == NULL)
 		return;
 
@@ -644,19 +732,27 @@ static void CheckMultiTextureExtensions (void)
 	{
 		Con_SafePrintf("Multitexture extensions disabled\n");
 	}
+	#if defined (REFGL_AMESA) /* StormMesa 3.0 has EXT_multitexture .. */
+	else if (GL_ParseExtensionList(gl_extensions, "GL_EXT_multitexture"))
+	#else
 	else if (GL_ParseExtensionList(gl_extensions, "GL_ARB_multitexture"))
+	#endif
 	{
 		Con_SafePrintf("ARB Multitexture extensions found\n");
 
+		#if defined (REFGL_AMESA)
+		glGetIntegerv_fp(GL_MAX_TEXTURES_EXT, &num_tmus);
+		#else
 		glGetIntegerv_fp(GL_MAX_TEXTURE_UNITS_ARB, &num_tmus);
+		#endif
 		if (num_tmus < 2)
 		{
 			Con_SafePrintf("ignoring multitexture (%i TMUs)\n", (int) num_tmus);
 			return;
 		}
 
-		glMultiTexCoord2fARB_fp = (glMultiTexCoord2fARB_f) AROSMesaGetProcAddress("glMultiTexCoord2fARB");
-		glActiveTextureARB_fp = (glActiveTextureARB_f) AROSMesaGetProcAddress("glActiveTextureARB");
+		glMultiTexCoord2fARB_fp = (glMultiTexCoord2fARB_f) AMIGAGL_GetProcAddress("glMultiTexCoord2fARB");
+		glActiveTextureARB_fp = (glActiveTextureARB_f) AMIGAGL_GetProcAddress("glActiveTextureARB");
 		if (glMultiTexCoord2fARB_fp == NULL || glActiveTextureARB_fp == NULL)
 		{
 			Con_SafePrintf ("Couldn't link to multitexture functions\n");
@@ -692,7 +788,7 @@ static void CheckAnisotropyExtensions (void)
 		GLuint tex;
 		glGetTexParameterfv_f glGetTexParameterfv_fp;
 
-		glGetTexParameterfv_fp = (glGetTexParameterfv_f) AROSMesaGetProcAddress("glGetTexParameterfv");
+		glGetTexParameterfv_fp = (glGetTexParameterfv_f) AMIGAGL_GetProcAddress("glGetTexParameterfv");
 		if (glGetTexParameterfv_fp == NULL)
 		{
 			Con_SafePrintf("... can't check driver-lock status\n... ");
@@ -827,7 +923,11 @@ static void GL_Init (void)
 	 * drawing of entity models compared to normal polygons.
 	 * (See: R_DrawBrushModel.)
 	 * (Only works if gl_ztrick is turned off) */
+	#if defined(__AMIGA__) && defined(REFGL_MINIGL)
+	#error port to use mglSetZOffset() instead of glPolygonOffset()
+	#else
 	glPolygonOffset_fp(0.05f, 25.0f);
+	#endif
 #endif /* #if 0 */
 	glPolygonMode_fp (GL_FRONT_AND_BACK, GL_FILL);
 	glShadeModel_fp (GL_FLAT);
@@ -843,6 +943,9 @@ static void GL_Init (void)
 //	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
+#if defined(__AMIGA__) && defined(REFGL_MINIGL)
+	glHint_fp (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+#endif
 }
 
 /*
@@ -857,6 +960,9 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height)
 	*height = WRHeight;
 
 //	glViewport_fp (*x, *y, *width, *height);
+#if defined(__AMIGA__) && defined(REFGL_MINIGL)
+	mglLockDisplay();
+#endif
 }
 
 
@@ -868,8 +974,10 @@ void GL_EndRendering (void)
 #elif defined __MORPHOS__
 		glASwapBuffers();
 		//GLASwapBuffers(__tglContext);
-#else
-#error OS-specific code missing for buffer swap
+#elif defined(__AMIGA__) && defined(REFGL_MINIGL)
+		mglSwitchDisplay(); //performs unlock
+#elif defined(__AMIGA__) && defined(REFGL_AMESA)
+		AmigaMesaSwapBuffers(context);
 #endif
 
 // handle the mouse state when windowed if that's changed
@@ -1367,6 +1475,13 @@ void	VID_Init (unsigned char *palette)
 
 	vid.numpages = 2;
 
+#if defined(REFGL_MINIGL)
+	mini_CurrentContext = NULL;/* should I do this? */
+	if (MGLInit() == GL_FALSE) {
+		Sys_Error ("Couldn't initialize MiniGL");
+	}
+#endif
+
 	// prepare the modelists, find the actual modenum for vid_default
 	VID_PrepareModes();
 
@@ -1504,6 +1619,15 @@ void	VID_Init (unsigned char *palette)
 
 void	VID_Shutdown (void)
 {
+	VID_KillContext();
+#ifdef REFGL_MINIGL
+	MGLTerm();
+#endif
+}
+
+
+static void VID_KillContext (void)
+{
 #ifdef __AROS__
 	if (context)
 	{
@@ -1525,10 +1649,23 @@ void	VID_Shutdown (void)
 		GLClose(__tglContext);
 		__tglContext = NULL;
 	}
-#else
-#error OS-specific code missing for context destroy
+#elif defined(__AMIGA__) && defined(REFGL_MINIGL)
+	if (mini_CurrentContext)
+	{
+		mglDeleteContext();
+		window = NULL;
+		screen = NULL;
+		mini_CurrentContext = NULL;
+	}
+#elif defined(__AMIGA__) && defined(REFGL_AMESA)
+	if (context)
+	{
+		AmigaMesaDestroyContext(context);
+		context = NULL;
+	}
 #endif
 
+#ifndef REFGL_MINIGL
 	if (window)
 	{
 		CloseWindow(window);
@@ -1540,6 +1677,7 @@ void	VID_Shutdown (void)
 		CloseScreen(screen);
 		screen = NULL;
 	}
+#endif
 }
 
 
