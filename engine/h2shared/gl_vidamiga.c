@@ -372,7 +372,7 @@ static qboolean VID_SetMode (int modenum)
 
 	in_mode_set = true;
 
-	VID_Shutdown();
+	VID_KillContext();
 
 	flags = WFLG_ACTIVATE | WFLG_RMBTRAP;
 
