@@ -1,12 +1,12 @@
 /*
- * vid_cgx.c -- CyberGraphX video driver for Amiga
+ * vid_cgx.c -- CyberGraphX video driver for AmigaOS & variants.
  * Select window size and mode and init CGX in SOFTWARE mode.
  * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2004-2005  Steven Atkinson <stevenaaus@yahoo.com>
- * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>
- * Copyright (C) 2012 Szilárd Biró <col.lawrence@gmail.com>
+ * Copyright (C) 2005-2016  O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2012-2016  Szilárd Biró <col.lawrence@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@
 
 /* - CGX ----------------------------------- */
 
-struct Window *window = NULL; // used by in_amiga.c
+struct Window *window = NULL; /* used by in_amiga.c */
 static struct Screen *screen = NULL;
 static char pal[256 * 4];
 static pixel_t *buffer = NULL;
@@ -300,11 +300,10 @@ static void VID_PrepareModes (void)
 				continue;
 
 #ifdef __AROS__
-			if (diminfo.MaxDepth != 24)
+			if (diminfo.MaxDepth != 24)	continue;
 #else
-			if (diminfo.MaxDepth != 8)
+			if (diminfo.MaxDepth != 8)	continue;
 #endif
-				continue;
 
 			fmodelist[num_fmodes].width = diminfo.Nominal.MaxX + 1;
 			fmodelist[num_fmodes].height = diminfo.Nominal.MaxY + 1;

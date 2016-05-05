@@ -1,12 +1,12 @@
 /*
- * gl_vidamiga.c -- GL vid component for AROS and MorphOS
+ * gl_vidamiga.c -- GL vid component for AmigaOS & variants.
  * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  * Copyright (C) 2004-2005  Steven Atkinson <stevenaaus@yahoo.com>
- * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>
- * Copyright (C) 2012 Szilárd Biró <col.lawrence@gmail.com>
+ * Copyright (C) 2005-2016  O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2012-2016  Szilárd Biró <col.lawrence@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@
 #elif defined(__AMIGA__) && defined(REFGL_AMESA)
 #include <GL/Amigamesa.h>
 #else
-#error Unknown/unsupported AmigaOS variant
+#error Unknown / Unsupported AmigaOS variant.
 #endif
 
 #ifdef __AROS__
@@ -143,7 +143,7 @@ typedef struct {
 static attributes_t	vid_attribs;
 
 static void VID_KillContext (void);
-struct Window *window = NULL; // used by in_amiga.c
+struct Window *window = NULL; /* used by in_amiga.c */
 static struct Screen *screen = NULL;
 #ifdef __AROS__
 static AROSMesaContext context = NULL;
@@ -530,12 +530,12 @@ static AMIGAGL_Proc AMIGAGL_GetProcAddress (const char *s)
 }
 
 #elif defined(__MORPHOS__)
-static void myglMultiTexCoord2fARB (GLenum unit, GLfloat s, GLfloat t)
+static void MY_glMultiTexCoord2fARB (GLenum unit, GLfloat s, GLfloat t)
 {
 	GLMultiTexCoord2fARB(__tglContext, unit, s, t);
 }
 
-static void myglActiveTextureARB (GLenum unit)
+static void MY_glActiveTextureARB (GLenum unit)
 {
 	GLActiveTextureARB(__tglContext, unit);
 }
@@ -543,20 +543,20 @@ static void myglActiveTextureARB (GLenum unit)
 static AMIGAGL_Proc AMIGAGL_GetProcAddress (const char *s)
 {
 	if (strcmp(s, "glMultiTexCoord2fARB") == 0)
-		return (AMIGAGL_Proc)myglMultiTexCoord2fARB;
+		return (AMIGAGL_Proc)MY_glMultiTexCoord2fARB;
 	if (strcmp(s, "glActiveTextureARB") == 0)
-		return (AMIGAGL_Proc)myglActiveTextureARB;
+		return (AMIGAGL_Proc)MY_glActiveTextureARB;
 
 	return NULL;
 }
 
 #elif defined(__AMIGA__) && defined(REFGL_MINIGL)
-static void myglMultiTexCoord2fARB (GLenum unit, GLfloat s, GLfloat t)
+static void MY_glMultiTexCoord2fARB (GLenum unit, GLfloat s, GLfloat t)
 {
 	GLMultiTexCoord2fARB(mini_CurrentContext, unit, s, t);
 }
 
-static void myglActiveTextureARB (GLenum unit)
+static void MY_glActiveTextureARB (GLenum unit)
 {
 	GLActiveTextureARB(mini_CurrentContext, unit);
 }
@@ -564,31 +564,46 @@ static void myglActiveTextureARB (GLenum unit)
 static AMIGAGL_Proc AMIGAGL_GetProcAddress (const char *s)
 {
 	if (strcmp(s, "glMultiTexCoord2fARB") == 0)
-		return (AMIGAGL_Proc)myglMultiTexCoord2fARB;
+		return (AMIGAGL_Proc)MY_glMultiTexCoord2fARB;
 	if (strcmp(s, "glActiveTextureARB") == 0)
-		return (AMIGAGL_Proc)myglActiveTextureARB;
+		return (AMIGAGL_Proc)MY_glActiveTextureARB;
 
 	return NULL;
 }
 
 #elif defined(__AMIGA__) && defined(REFGL_AMESA)
 /* NOTE: StormMesa 3.0 has EXT_multitexture, not ARB_multitexture.. */
-static void myglMultiTexCoord2fARB (GLenum unit, GLfloat s, GLfloat t)
+/*                     250 == ( GL_TEXTURE0_ARB - GL_TEXTURE0_EXT ) */
+static void MY_glMultiTexCoord2fARB (GLenum unit, GLfloat s, GLfloat t)
 {
-	glMultiTexCoord2fEXT (unit + GL_TEXTURE0_EXT - GL_TEXTURE0_ARB, s, t);
+	glMultiTexCoord2fEXT (unit - 250, s, t);
 }
 
-static void myglActiveTextureARB (GLenum unit)
+static void MY_glActiveTextureARB (GLenum unit)
 {
-	glSelectTextureEXT (unit + GL_TEXTURE0_EXT - GL_TEXTURE0_ARB);
+	glSelectTextureEXT (unit - 250);
+}
+
+static void MY_glColorTableEXT (GLenum target, GLenum internalfmt, GLsizei width, GLenum format, GLenum type, const GLvoid *table)
+{
+	glColorTableEXT (target, internalfmt, width, format, type, table);
+}
+
+static void MY_glGetTexParameterfv (GLenum target, GLenum pname, GLfloat *params)
+{
+	glGetTexParameterfv (target, pname, params);
 }
 
 static AMIGAGL_Proc AMIGAGL_GetProcAddress (const char *s)
 {
 	if (strcmp(s, "glMultiTexCoord2fARB") == 0)
-		return (AMIGAGL_Proc)myglMultiTexCoord2fARB;
+		return (AMIGAGL_Proc)MY_glMultiTexCoord2fARB;
 	if (strcmp(s, "glActiveTextureARB") == 0)
-		return (AMIGAGL_Proc)myglActiveTextureARB;
+		return (AMIGAGL_Proc)MY_glActiveTextureARB;
+	if (strcmp(s, "glColorTableEXT") == 0)
+		return (AMIGAGL_Proc)MY_glColorTableEXT;
+	if (strcmp(s, "glGetTexParameterfv") == 0)
+		return (AMIGAGL_Proc)MY_glGetTexParameterfv;
 
 	return NULL;
 }
