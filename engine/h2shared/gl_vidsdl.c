@@ -1546,7 +1546,7 @@ void	VID_Init (unsigned char *palette)
 	static char nvidia_env_vsync[32] = "__GL_SYNC_TO_VBLANK=1";
 	static char fxmesa_env_fullscreen[32] = "MESA_GLX_FX=f";
 	static char fxmesa_env_multitex[32] = "FX_DONT_FAKE_MULTITEX=1";
-	static char fxglide_env_nosplash[32] = "FX_GLIDE_NO_SPLASH=0";
+	static char fxglide_env_nosplash[32] = "FX_GLIDE_NO_SPLASH=1";
 #endif
 	int	i, temp, width, height;
 	SDL_Rect	**enumlist;
@@ -1601,6 +1601,8 @@ void	VID_Init (unsigned char *palette)
 	// set fxMesa mode to fullscreen, don't let it cheat multitexturing
 	putenv (fxmesa_env_fullscreen);
 	putenv (fxmesa_env_multitex);
+	// disable the 3dfx splash screen.
+	putenv (fxglide_env_nosplash);
 #endif
 
 	// init sdl
@@ -1755,11 +1757,6 @@ void	VID_Init (unsigned char *palette)
 	GL_Init ();
 	VID_InitGamma();
 	VID_Init8bitPalette();
-
-#ifndef __MORPHOS__
-	// avoid the 3dfx splash screen on resolution changes
-	putenv (fxglide_env_nosplash);
-#endif
 
 	// lock the early-read cvars until Host_Init is finished
 	for (i = 0; i < (int)num_readvars; i++)

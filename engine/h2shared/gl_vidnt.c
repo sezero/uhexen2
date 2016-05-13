@@ -2226,7 +2226,7 @@ VID_Init
 void	VID_Init (unsigned char *palette)
 {
 	static char fxmesa_env_multitex[32] = "FX_DONT_FAKE_MULTITEX=1";
-	static char fxglide_env_nosplash[32] = "FX_GLIDE_NO_SPLASH=0";
+	static char fxglide_env_nosplash[32] = "FX_GLIDE_NO_SPLASH=1";
 	int	i, j, existingmode;
 	int	width, height, bpp, zbits, findbpp, done;
 	HDC	hdc;
@@ -2273,6 +2273,8 @@ void	VID_Init (unsigned char *palette)
 
 	// don't let fxMesa cheat multitexturing
 	_putenv (fxmesa_env_multitex);
+	// disable the 3dfx splash screen.
+	_putenv (fxglide_env_nosplash);
 
 #ifdef GL_DLSYM
 	i = COM_CheckParm("--gllibrary");
@@ -2599,9 +2601,6 @@ void	VID_Init (unsigned char *palette)
 	GL_SetupLightmapFmt();
 	GL_Init ();
 	VID_Init8bitPalette();
-
-	// avoid the 3dfx splash screen on resolution changes
-	_putenv (fxglide_env_nosplash);
 
 	// lock the early-read cvars until Host_Init is finished
 	for (i = 0; i < (int)num_readvars; i++)
