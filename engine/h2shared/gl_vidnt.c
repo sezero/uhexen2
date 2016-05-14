@@ -124,8 +124,8 @@ static PIXELFORMATDESCRIPTOR pfd =
 	0,				// shift bit ignored
 	0,				// no accumulation buffer
 	0, 0, 0, 0,			// accum bits ignored
-	24,				// 24-bit z-buffer
-	8,				// 8-bit stencil buffer
+	32,				// 32-bit z-buffer
+	0,				// no stencil buffer
 	0,				// no auxiliary buffer
 	PFD_MAIN_PLANE,			// main layer
 	0,				// reserved
@@ -386,6 +386,23 @@ static qboolean VID_SetWindowedMode (int modenum)
 	int	width, height;
 	RECT	rect;
 
+	pfd.cColorBits = 24;
+	pfd.cRedBits = 0;
+	pfd.cGreenBits = 0;
+	pfd.cBlueBits = 0;
+	pfd.cAlphaBits = 0;
+	pfd.cDepthBits = 32;
+	pfd.cStencilBits = 0;
+	if (vid_deskbpp >= 32)
+	{
+		pfd.cRedBits = 8;
+		pfd.cGreenBits = 8;
+		pfd.cBlueBits = 8;
+		pfd.cAlphaBits = 8;
+		pfd.cDepthBits = 24;
+		pfd.cStencilBits = 8;
+	}
+
 	// Pa3PyX: set the original fullscreen mode if
 	// we are switching to window from fullscreen.
 	if (modestate == MS_FULLDIB)
@@ -430,6 +447,24 @@ static qboolean VID_SetFullDIBMode (int modenum)
 	RECT	rect;
 
 	pfd.cColorBits = modelist[modenum].bpp;
+	if (modelist[modenum].bpp >= 32)
+	{
+		pfd.cRedBits = 8;
+		pfd.cGreenBits = 8;
+		pfd.cBlueBits = 8;
+		pfd.cAlphaBits = 8;
+		pfd.cDepthBits = 24;
+		pfd.cStencilBits = 8;
+	}
+	else
+	{
+		pfd.cRedBits = 5;
+		pfd.cGreenBits = 5;
+		pfd.cBlueBits = 5;
+		pfd.cAlphaBits = 0;
+		pfd.cDepthBits = 16;
+		pfd.cStencilBits = 0;
+	}
 
 	gdevmode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
 	if (!Win95old)
@@ -2537,16 +2572,6 @@ void	VID_Init (unsigned char *palette)
 					   "try changing their values. If your config.cfg has bad or stale\n"
 					   "video options, try changing them, or delete your config.cfg\n"
 					   "altogether and try again.");
-			}
-
-			//pfd.cColorBits = modelist[vid_default].bpp;
-
-			i = COM_CheckParm("-zbits");
-			if (i && i < com_argc-1)
-			{
-				zbits = atoi(com_argv[i+1]);
-				if (zbits)
-					pfd.cDepthBits = zbits;
 			}
 		}
 	}	// end of fullscreen parsing
