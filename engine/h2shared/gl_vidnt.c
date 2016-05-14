@@ -4,7 +4,7 @@
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
- * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2005-2016  O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,6 @@
 #include "cdaudio.h"
 #include "resource.h"
 #include "wgl_func.h"
-
-#define GL_FUNCTION_OPT2(ret, func, params) /* don't need repeated typedefs */
 
 #define WARP_WIDTH		320
 #define WARP_HEIGHT		200
@@ -206,7 +204,7 @@ qboolean	is8bit = false;
 static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit", "0", CVAR_ARCHIVE};
 
 // Gamma stuff
-typedef BOOL	(APIENTRY *GAMMA_RAMP_FN)(HDC, LPVOID);
+typedef BOOL	(WINAPI *GAMMA_RAMP_FN)(HDC, LPVOID);
 static GAMMA_RAMP_FN	GetDeviceGammaRamp_f;
 static GAMMA_RAMP_FN	SetDeviceGammaRamp_f;
 extern unsigned short	ramps[3][256];	// for hw- or 3dfx-gamma
@@ -863,6 +861,8 @@ static void CheckStencilBuffer (const PIXELFORMATDESCRIPTOR *pf)
 #ifdef GL_DLSYM
 static qboolean GL_OpenLibrary (const char *name)
 {
+	int drv_standalone = q_strcasecmp(name, "opengl32.dll");
+
 	Con_SafePrintf("Loading OpenGL library %s\n", name);
 
 	// open the library
@@ -879,10 +879,14 @@ static qboolean GL_OpenLibrary (const char *name)
 	if (func##_fp == NULL)					\
 		Sys_Error("Couldn't link to %s", #func);	\
     } while (0);
-#define GL_FUNCTION_OPT(ret, func, params)
+#define GL_FUNCTION_OPT(ret,func,def,params)			\
+    do {							\
+	func##_fp = (drv_standalone)?				\
+	   (func##_f) GetProcAddress(hInstGL, #func) : def;	\
+	if (func##_fp == NULL)					\
+		Sys_Error("Couldn't link to %s", #func);	\
+    } while (0);
 #include "wgl_func.h"
-#undef	GL_FUNCTION_OPT
-#undef	GL_FUNCTION
 
 	return true;
 }
@@ -892,11 +896,9 @@ static void GL_CloseLibrary (void)
 	// clear the wgl function pointers
 #define GL_FUNCTION(ret, func, params)	\
 	func##_fp = NULL;
-#define GL_FUNCTION_OPT(ret, func, params) \
+#define GL_FUNCTION_OPT(ret,func,def,params) \
 	func##_fp = NULL;
 #include "wgl_func.h"
-#undef	GL_FUNCTION_OPT
-#undef	GL_FUNCTION
 
 	// free the library
 	if (hInstGL != NULL)
@@ -914,8 +916,6 @@ static void GL_Init_Functions (void)
     } while (0);
 #define GL_FUNCTION_OPT(ret, func, params)
 #include "gl_func.h"
-#undef	GL_FUNCTION_OPT
-#undef	GL_FUNCTION
 }
 #endif	/* GL_DLSYM */
 
@@ -928,8 +928,6 @@ static void GL_ResetFunctions (void)
 #define GL_FUNCTION_OPT(ret, func, params) \
 	func##_fp = NULL;
 #include "gl_func.h"
-#undef	GL_FUNCTION_OPT
-#undef	GL_FUNCTION
 
 	GetDeviceGammaRamp_f = NULL;
 	SetDeviceGammaRamp_f = NULL;
@@ -955,11 +953,12 @@ static void GL_Init (void)
 
 	Con_SafePrintf ("Video mode %s initialized\n", VID_GetModeDescription (vid_modenum));
 	memset(&new_pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
-	/* FIXME: DescribePixelFormat() fails with old 3dfx minigl drivers: don't Sys_Error() for now. */
-	if (DescribePixelFormat(maindc, GetPixelFormat(maindc), sizeof(PIXELFORMATDESCRIPTOR), &new_pfd))
+	/* FIXME: DescribePixelFormat() used to fail with old 3dfx minigl drivers (???) */
+	if (wglDescribePixelFormat_fp(maindc, wglGetPixelFormat_fp(maindc), sizeof(PIXELFORMATDESCRIPTOR), &new_pfd))
 	{
-		Con_SafePrintf("Pixel format: c: %d, z: %d, s: %d\n",
-			new_pfd.cColorBits, new_pfd.cDepthBits, new_pfd.cStencilBits);
+		Con_SafePrintf("C:%d, R:%d G:%d B:%d A:%d, Depth:%d, Stencil:%d\n",
+			new_pfd.cColorBits, new_pfd.cRedBits, new_pfd.cGreenBits, new_pfd.cBlueBits,
+			new_pfd.cAlphaBits, new_pfd.cDepthBits, new_pfd.cStencilBits);
 		if ((new_pfd.dwFlags & PFD_GENERIC_FORMAT) && !(new_pfd.dwFlags & PFD_GENERIC_ACCELERATED))
 			Con_SafePrintf ("WARNING: Hardware acceleration not present\n");
 		else if (new_pfd.dwFlags & PFD_GENERIC_ACCELERATED)
@@ -1056,7 +1055,7 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height)
 void GL_EndRendering (void)
 {
 	if (!scr_skipupdate)
-		SwapBuffers(maindc);
+		wglSwapBuffers_fp(maindc);
 
 // handle the mouse state when windowed if that's changed
 	if (modestate == MS_WINDOWED)
@@ -1259,13 +1258,13 @@ static BOOL bSetupPixelFormat (HDC hDC)
 {
 	int	pixelformat;
 
-	if ( (pixelformat = ChoosePixelFormat(hDC, &pfd)) == 0 )
+	if ( (pixelformat = wglChoosePixelFormat_fp(hDC, &pfd)) == 0 )
 	{
 		MessageBox(NULL, "ChoosePixelFormat failed", "Error", MB_OK);
 		return FALSE;
 	}
 
-	if (SetPixelFormat(hDC, pixelformat, &pfd) == FALSE)
+	if (wglSetPixelFormat_fp(hDC, pixelformat, &pfd) == FALSE)
 	{
 		MessageBox(NULL, "SetPixelFormat failed", "Error", MB_OK);
 		return FALSE;
@@ -2228,7 +2227,7 @@ void	VID_Init (unsigned char *palette)
 	static char fxmesa_env_multitex[32] = "FX_DONT_FAKE_MULTITEX=1";
 	static char fxglide_env_nosplash[32] = "FX_GLIDE_NO_SPLASH=1";
 	int	i, j, existingmode;
-	int	width, height, bpp, zbits, findbpp, done;
+	int	width, height, bpp, findbpp, done;
 	HDC	hdc;
 	const char	*read_vars[] = {
 				"vid_config_fscr",
@@ -2277,9 +2276,7 @@ void	VID_Init (unsigned char *palette)
 	_putenv (fxglide_env_nosplash);
 
 #ifdef GL_DLSYM
-	i = COM_CheckParm("--gllibrary");
-	if (i == 0)
-		i = COM_CheckParm ("-gllibrary");
+	i = COM_CheckParm ("-gllibrary");
 	if (i == 0)
 		i = COM_CheckParm ("-g");
 	if (i && i < com_argc - 1)

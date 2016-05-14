@@ -62,8 +62,6 @@ typedef void (*AMIGAGL_Proc)();
 #include <unistd.h>
 #include "filenames.h"
 
-#define GL_FUNCTION_OPT2(ret, func, params) /* don't need repeated typedefs */
-
 #if !(defined(__AROS__) || defined(__MORPHOS__))
 #if !defined(IPTR) /* SDI headers may define it */
 typedef ULONG IPTR;
@@ -877,7 +875,6 @@ static void GL_ResetFunctions (void)
 #define GL_FUNCTION_OPT(ret, func, params) \
 	func##_fp = NULL;
 #include "gl_func.h"
-#undef	GL_FUNCTION_OPT
 
 	have_stencil = false;
 	gl_mtexable = false;

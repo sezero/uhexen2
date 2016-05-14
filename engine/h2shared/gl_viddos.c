@@ -3,7 +3,7 @@
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
- * Copyright (C) 2015 O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2015-2016  O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,6 @@
 
 #include "gl_dos.h"
 #include "sys_dxe.h"
-
-#define GL_FUNCTION_OPT2(ret, func, params) /* don't need repeated typedefs */
 
 /* DOSGL interface */
 int  (*DOSGL_InitCtx ) (int *width, int *height, int *bpp);
@@ -704,8 +702,6 @@ static void GL_Init_Functions (void)
     } while (0);
 #define GL_FUNCTION_OPT(ret, func, params)
 #include "gl_func.h"
-#undef	GL_FUNCTION_OPT
-#undef	GL_FUNCTION
 }
 #endif	/* GL_DLSYM */
 
@@ -718,8 +714,6 @@ static void GL_ResetFunctions (void)
 #define GL_FUNCTION_OPT(ret, func, params) \
 	func##_fp = NULL;
 #include "gl_func.h"
-#undef	GL_FUNCTION_OPT
-#undef	GL_FUNCTION
 
 	have_stencil = false;
 	gl_mtexable = false;

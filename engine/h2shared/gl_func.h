@@ -30,12 +30,11 @@
 #define __GL_FUNC_EXTERN extern
 #endif
 
-/* core gl functions */
-
+/* core gl functions
+ */
 #if defined(GL_DLSYM)
 
 #ifndef GL_FUNCTION
-#define UNDEF_GL_FUNCTION
 #define GL_FUNCTION(ret, func, params) \
 typedef ret (APIENTRY *func##_f) params; \
 __GL_FUNC_EXTERN func##_f func##_fp;
@@ -81,7 +80,7 @@ GL_FUNCTION(void, glDepthMask, (GLboolean))
 GL_FUNCTION(void, glDepthRange, (GLclampd,GLclampd))
 GL_FUNCTION(void, glDepthFunc, (GLenum))
 
-#if defined(DRAW_PROGRESSBARS) /* in D_ShowLoadingSize () */
+#if defined(DRAW_PROGRESSBARS) /* D_ShowLoadingSize() */
 GL_FUNCTION(void, glDrawBuffer, (GLenum))
 #endif
 GL_FUNCTION(void, glReadPixels, (GLint,GLint,GLsizei,GLsizei,GLenum,GLenum, GLvoid *))
@@ -111,11 +110,6 @@ GL_FUNCTION(void, glGetIntegerv, (GLenum,GLint *))
 GL_FUNCTION(void, glStencilFunc, (GLenum,GLint,GLuint))
 GL_FUNCTION(void, glStencilOp, (GLenum,GLenum,GLenum))
 GL_FUNCTION(void, glClearStencil, (GLint))
-
-#ifdef UNDEF_GL_FUNCTION
-#undef GL_FUNCTION
-#undef UNDEF_GL_FUNCTION
-#endif
 
 #else
 
@@ -161,9 +155,7 @@ GL_FUNCTION(void, glClearStencil, (GLint))
 #define glDepthRange_fp		glDepthRange
 #define glDepthFunc_fp		glDepthFunc
 
-#if defined(DRAW_PROGRESSBARS) /* in D_ShowLoadingSize () */
 #define glDrawBuffer_fp		glDrawBuffer
-#endif
 #define glReadPixels_fp		glReadPixels
 #define glPixelStorei_fp	glPixelStorei
 #define glHint_fp		glHint
@@ -180,9 +172,7 @@ GL_FUNCTION(void, glClearStencil, (GLint))
 #define glLoadIdentity_fp	glLoadIdentity
 #define glMatrixMode_fp		glMatrixMode
 #define glLoadMatrixf_fp	glLoadMatrixf
-/*
 #define glPolygonOffset_fp	glPolygonOffset
-*/
 
 #define glGetString_fp		glGetString
 #define glGetFloatv_fp		glGetFloatv
@@ -196,11 +186,12 @@ GL_FUNCTION(void, glClearStencil, (GLint))
 
 #endif	/* !defined(GL_DLSYM) */
 
+#undef GL_FUNCTION
 
-/* always link to these at runtime */
 
+/* global gl functions link to at runtime
+ */
 #ifndef GL_FUNCTION_OPT
-#define UNDEF_GL_FUNCTION_OPT
 #define GL_FUNCTION_OPT(ret, func, params) \
 typedef ret (APIENTRY *func##_f) params; \
 __GL_FUNC_EXTERN func##_f func##_fp;
@@ -210,30 +201,22 @@ __GL_FUNC_EXTERN func##_f func##_fp;
 GL_FUNCTION_OPT(void, glActiveTextureARB, (GLenum))
 GL_FUNCTION_OPT(void, glMultiTexCoord2fARB, (GLenum,GLfloat,GLfloat))
 
+#undef GL_FUNCTION_OPT
 
-/* like above, but just typedef only */
-#ifndef GL_FUNCTION_OPT2
-#define UNDEF_GL_FUNCTION_OPT2
-#define GL_FUNCTION_OPT2(ret, func, params) \
-typedef ret (APIENTRY *func##_f) params;
-#endif
+
+/* typedefs for functions linked to locally at runtime
+ */
+#ifndef GL_FUNC_TYPEDEFS
+#define GL_FUNC_TYPEDEFS
 
 /* this one doesn't seem to in amiga opengl libs :( */
-GL_FUNCTION_OPT2(void, glGetTexParameterfv, (GLenum,GLenum,GLfloat *))
+typedef void (APIENTRY *glGetTexParameterfv_f) (GLenum,GLenum,GLfloat *);
 
 /* GL_EXT_shared_texture_palette */
-GL_FUNCTION_OPT2(void, glColorTableEXT, (GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid *))
+typedef void (APIENTRY *glColorTableEXT_f) (GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid *);
 
 /* 3DFX_set_global_palette (NOTE: the PowerVR equivalent is
    POWERVR_set_global_palette / glSetGlobalPalettePOWERVR) */
-GL_FUNCTION_OPT2(void, gl3DfxSetPaletteEXT, (GLuint *))
+typedef void (APIENTRY *gl3DfxSetPaletteEXT_f) (GLuint *);
 
-#ifdef UNDEF_GL_FUNCTION_OPT
-#undef GL_FUNCTION_OPT
-#undef UNDEF_GL_FUNCTION_OPT
-#endif
-
-#ifdef UNDEF_GL_FUNCTION_OPT2
-#undef GL_FUNCTION_OPT2
-#undef UNDEF_GL_FUNCTION_OPT2
-#endif
+#endif /* GL_FUNC_TYPEDEFS */

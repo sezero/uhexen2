@@ -1,7 +1,5 @@
-/*
- * wgl_func.h -- WGL functions we may need to link to
+/* wgl_func.h -- WGL functions we may need to link to
  * make sure NOT to protect this file against multiple inclusions!
- * $Id: wgl_func.h,v 1.4 2007-03-14 21:03:28 sezero Exp $
  *
  * Copyright (C) 2005-2016  O.Sezer <sezero@users.sourceforge.net>
  *
@@ -21,14 +19,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* core wgl functions */
-
+/* core wgl functions
+ */
 #ifdef GL_DLSYM
+
 #ifndef GL_FUNCTION
-#define UNDEF_GL_FUNCTION
 #define GL_FUNCTION(ret, func, params) \
 typedef ret (WINAPI *func##_f) params; \
-func##_f func##_fp;
+static func##_f func##_fp;
 #endif
 
 GL_FUNCTION(PROC, wglGetProcAddress, (LPCSTR))
@@ -37,11 +35,6 @@ GL_FUNCTION(BOOL, wglDeleteContext, (HGLRC))
 GL_FUNCTION(BOOL, wglMakeCurrent, (HDC, HGLRC))
 GL_FUNCTION(HGLRC, wglGetCurrentContext, (VOID))
 GL_FUNCTION(HDC, wglGetCurrentDC, (VOID))
-
-#ifdef UNDEF_GL_FUNCTION
-#undef GL_FUNCTION
-#undef UNDEF_GL_FUNCTION
-#endif
 
 #else
 
@@ -54,43 +47,53 @@ GL_FUNCTION(HDC, wglGetCurrentDC, (VOID))
 #define wglMakeCurrent_fp	wglMakeCurrent
 #define wglGetCurrentContext_fp	wglGetCurrentContext
 #define wglGetCurrentDC_fp	wglGetCurrentDC
-/*
-#define wglGetExtensionsStringARB_fp	wglGetExtensionsStringARB
-#define wglSwapBuffers_fp		wglSwapBuffers
-#define wglSwapIntervalEXT_fp		wglSwapIntervalEXT
-*/
 
 #endif	/* WGL_FUNC_H */
 
 #endif	/* !defined(GL_DLSYM) */
 
+#undef GL_FUNCTION
 
-/* optional wgl funcs */
+
+/* wgl funcs needed when using a standalone (minigl) driver
+ */
+#ifdef GL_DLSYM
 
 #ifndef GL_FUNCTION_OPT
-#define UNDEF_GL_FUNCTION_OPT
-#define GL_FUNCTION_OPT(ret, func, params) \
+#define GL_FUNCTION_OPT(ret, func, def, params) \
 typedef ret (WINAPI *func##_f) params; \
-func##_f func##_fp;
+static func##_f func##_fp;
 #endif
 
-/* like above, but just typedef only */
-#ifndef GL_FUNCTION_OPT2
-#define UNDEF_GL_FUNCTION_OPT2
-#define GL_FUNCTION_OPT2(ret, func, params) \
-typedef ret (APIENTRY *func##_f) params;
-#endif
+GL_FUNCTION_OPT(int, wglChoosePixelFormat, ChoosePixelFormat, (HDC, CONST PIXELFORMATDESCRIPTOR *))
+GL_FUNCTION_OPT(int, wglDescribePixelFormat, DescribePixelFormat, (HDC, int, UINT, LPPIXELFORMATDESCRIPTOR))
+GL_FUNCTION_OPT(int, wglGetPixelFormat, GetPixelFormat, (HDC))
+GL_FUNCTION_OPT(BOOL, wglSetPixelFormat, SetPixelFormat, (HDC, int, CONST PIXELFORMATDESCRIPTOR *))
+GL_FUNCTION_OPT(BOOL, wglSwapBuffers, SwapBuffers, (HDC))
 
-GL_FUNCTION_OPT2(const char *, wglGetExtensionsStringARB, (HDC hdc))
-GL_FUNCTION_OPT2(BOOL, wglSwapBuffers, (HDC))
-GL_FUNCTION_OPT2(BOOL, wglSwapIntervalEXT, (int))
+#else
 
-#ifdef UNDEF_GL_FUNCTION_OPT
+#ifndef WGL_OPTFUNC_H
+#define WGL_OPTFUNC_H
+
+#define wglChoosePixelFormat_fp		ChoosePixelFormat
+#define wglDescribePixelFormat_fp	DescribePixelFormat
+#define wglGetPixelFormat_fp		GetPixelFormat
+#define wglSetPixelFormat_fp		SetPixelFormat
+#define wglSwapBuffers_fp		SwapBuffers
+
+#endif	/* WGL_OPTFUNC_H */
+
+#endif	/* !defined(GL_DLSYM) */
+
 #undef GL_FUNCTION_OPT
-#undef UNDEF_GL_FUNCTION_OPT
-#endif
 
-#ifdef UNDEF_GL_FUNCTION_OPT2
-#undef GL_FUNCTION_OPT2
-#undef UNDEF_GL_FUNCTION_OPT2
-#endif
+
+/* typedefs for wgl functions linked to at runtime
+ */
+#ifndef WGL_FUNC_TYPEDEFS
+#define WGL_FUNC_TYPEDEFS
+
+typedef BOOL (WINAPI *wglSwapIntervalEXT_f) (int);
+
+#endif /* WGL_FUNC_TYPEDEFS */
