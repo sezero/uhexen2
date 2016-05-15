@@ -30,7 +30,7 @@ typedef unsigned char   FxU8;
 typedef signed   char   FxI8;
 typedef unsigned short  FxU16;
 typedef signed   short  FxI16;
-#ifdef __DJGPP__
+#if defined(__DJGPP__)||defined(_WIN32)
 typedef signed   long   FxI32;
 typedef unsigned long   FxU32;
 #else
