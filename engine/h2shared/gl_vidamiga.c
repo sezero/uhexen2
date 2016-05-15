@@ -35,7 +35,7 @@
 #include <proto/graphics.h>
 #include <proto/cybergraphics.h>
 
-#ifdef __AROS__ /* ABIv0, AROSMesa. -- TODO: ABIv1 glA interface support. */
+#ifdef __AROS__  /* TODO: glA support. */
 #include <GL/arosmesa.h>
 #elif defined __MORPHOS__
 #include <intuition/intuitionbase.h>
@@ -900,7 +900,7 @@ static void GL_Init (void)
 	glGetIntegerv_fp(GL_ALPHA_BITS, &vid_attribs.alpha);
 	glGetIntegerv_fp(GL_DEPTH_BITS, &vid_attribs.depth);
 	glGetIntegerv_fp(GL_STENCIL_BITS, &vid_attribs.stencil);
-	Con_SafePrintf ("R:%d G:%d B:%d A:%d, Depth:%d, Stencil:%d\n",
+	Con_SafePrintf ("R:%d G:%d B:%d A:%d, Z:%d, S:%d\n",
 			vid_attribs.red, vid_attribs.green, vid_attribs.blue, vid_attribs.alpha,
 			vid_attribs.depth, vid_attribs.stencil);
 

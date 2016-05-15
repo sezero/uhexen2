@@ -934,7 +934,7 @@ static void GL_Init (void)
 	SDL_GL_GetAttribute(SDL_GL_ALPHA_SIZE, &vid_attribs.alpha);
 	SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &vid_attribs.depth);
 	SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE, &vid_attribs.stencil);
-	Con_SafePrintf ("R:%d G:%d B:%d A:%d, Depth:%d, Stencil:%d\n",
+	Con_SafePrintf ("R:%d G:%d B:%d A:%d, Z:%d, S:%d\n",
 			vid_attribs.red, vid_attribs.green, vid_attribs.blue, vid_attribs.alpha,
 			vid_attribs.depth, vid_attribs.stencil);
 

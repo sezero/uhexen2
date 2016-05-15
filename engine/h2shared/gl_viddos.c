@@ -610,16 +610,6 @@ static void CheckAnisotropyExtensions (void)
 
 static void CheckNonPowerOfTwoTextures (void)
 {
-/* On Mac OS X, old Radeons lie about NPOT textures capability, they
- * fallback to software with mipmap NPOT textures.  see, e.g.:
- * http://lists.apple.com/archives/mac-opengl/2006/Dec/msg00000.html
- * http://lists.apple.com/archives/mac-opengl/2009/Oct/msg00040.html
- * http://www.idevgames.com/forums/printthread.php?tid=3814&page=2
- * MH says NVIDIA once did the same with their GeForce FX on Windows:
- * http://forums.inside3d.com/viewtopic.php?f=10&t=4832
- * Therefore, advertisement of this extension is an unreliable way of
- * detecting the actual capability.
- */
 	gl_tex_NPOT = have_NPOT = false;
 	if (GL_ParseExtensionList(gl_extensions, "GL_ARB_texture_non_power_of_two"))
 	{
@@ -744,7 +734,7 @@ static void GL_Init (void)
 	glGetIntegerv_fp(GL_ALPHA_BITS, &vid_attribs.alpha);
 	glGetIntegerv_fp(GL_DEPTH_BITS, &vid_attribs.depth);
 	glGetIntegerv_fp(GL_STENCIL_BITS, &vid_attribs.stencil);
-	Con_SafePrintf ("R:%d G:%d B:%d A:%d, Depth:%d, Stencil:%d\n",
+	Con_SafePrintf ("R:%d G:%d B:%d A:%d, Z:%d, S:%d\n",
 			vid_attribs.red, vid_attribs.green, vid_attribs.blue, vid_attribs.alpha,
 			vid_attribs.depth, vid_attribs.stencil);
 

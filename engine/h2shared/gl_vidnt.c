@@ -132,6 +132,16 @@ static PIXELFORMATDESCRIPTOR pfd =
 	0, 0, 0				// layer masks ignored
 };
 
+typedef struct {
+	int	red,
+		green,
+		blue,
+		alpha,
+		depth,
+		stencil;
+} attributes_t;
+static attributes_t	vid_attribs;
+
 // main vid functions
 static LRESULT WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static void AppActivate(BOOL fActive, BOOL minimize);
@@ -881,15 +891,9 @@ static void CheckNonPowerOfTwoTextures (void)
 	}
 }
 
-static void CheckStencilBuffer (const PIXELFORMATDESCRIPTOR *pf)
+static void CheckStencilBuffer (void)
 {
-	have_stencil = false;
-
-	if (pf->cStencilBits)
-	{
-		Con_SafePrintf("Stencil buffer created with %d bits\n", pf->cStencilBits);
-		have_stencil = true;
-	}
+	have_stencil = !!vid_attribs.stencil;
 }
 
 
@@ -987,11 +991,28 @@ static void GL_Init (void)
 	PIXELFORMATDESCRIPTOR	new_pfd;
 
 	Con_SafePrintf ("Video mode %s initialized\n", VID_GetModeDescription (vid_modenum));
-	memset(&new_pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
+
+#ifdef GL_DLSYM
+	// initialize gl function pointers
+	GL_Init_Functions();
+#endif
+
+	// collect the visual attributes
+	memset (&new_pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
+	memset (&vid_attribs, 0, sizeof(attributes_t));
+	glGetIntegerv_fp(GL_RED_BITS, &vid_attribs.red);
+	glGetIntegerv_fp(GL_GREEN_BITS, &vid_attribs.green);
+	glGetIntegerv_fp(GL_BLUE_BITS, &vid_attribs.blue);
+	glGetIntegerv_fp(GL_ALPHA_BITS, &vid_attribs.alpha);
+	glGetIntegerv_fp(GL_DEPTH_BITS, &vid_attribs.depth);
+	glGetIntegerv_fp(GL_STENCIL_BITS, &vid_attribs.stencil);
+	Con_SafePrintf ("R:%d G:%d B:%d A:%d, Z:%d, S:%d\n",
+			vid_attribs.red, vid_attribs.green, vid_attribs.blue, vid_attribs.alpha,
+			vid_attribs.depth, vid_attribs.stencil);
 	/* FIXME: DescribePixelFormat() used to fail with old 3dfx minigl drivers (???) */
 	if (wglDescribePixelFormat_fp(maindc, wglGetPixelFormat_fp(maindc), sizeof(PIXELFORMATDESCRIPTOR), &new_pfd))
 	{
-		Con_SafePrintf("C:%d, R:%d G:%d B:%d A:%d, Depth:%d, Stencil:%d\n",
+		Con_SafeDPrintf ("PFD: C:%d, R:%d G:%d B:%d A:%d, Z:%d, S:%d\n",
 			new_pfd.cColorBits, new_pfd.cRedBits, new_pfd.cGreenBits, new_pfd.cBlueBits,
 			new_pfd.cAlphaBits, new_pfd.cDepthBits, new_pfd.cStencilBits);
 		if ((new_pfd.dwFlags & PFD_GENERIC_FORMAT) && !(new_pfd.dwFlags & PFD_GENERIC_ACCELERATED))
@@ -1000,10 +1021,6 @@ static void GL_Init (void)
 			Con_SafePrintf ("OpenGL: MCD acceleration found\n");
 	}
 
-#ifdef GL_DLSYM
-	// initialize gl function pointers
-	GL_Init_Functions();
-#endif
 	gl_vendor = (const char *)glGetString_fp (GL_VENDOR);
 	Con_SafePrintf ("GL_VENDOR: %s\n", gl_vendor);
 	gl_renderer = (const char *)glGetString_fp (GL_RENDERER);
@@ -1037,7 +1054,7 @@ static void GL_Init (void)
 	CheckMultiTextureExtensions();
 	CheckAnisotropyExtensions();
 	CheckNonPowerOfTwoTextures();
-	CheckStencilBuffer(&new_pfd);
+	CheckStencilBuffer();
 
 	glClearColor_fp (1,0,0,0);
 	glCullFace_fp(GL_FRONT);
