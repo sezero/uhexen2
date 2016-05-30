@@ -667,7 +667,7 @@ void rider_war(void)
 	
 	self.hull = HULL_POINT;
 
-	self.health = 6000;
+	self.health = self.max_health = 6000;
 	self.rider_gallop_mode = 2;
 	self.speed = war_speed[self.rider_gallop_mode];
 	self.rider_path_distance = 200;

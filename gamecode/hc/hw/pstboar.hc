@@ -796,7 +796,7 @@ void rider_pestilence(void)
 	self.skin = 0;
 
 	setsize (self, '-84 -84 0', '84 84 100');
-	self.health = 4400;
+	self.health = self.max_health = 4400;
 	self.experience_value = 1500;
 	self.th_pain = pest_hurt;
 	self.rider_gallop_mode = self.monster_stage = PB_STAGE_NORMAL;

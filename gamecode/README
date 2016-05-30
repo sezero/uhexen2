@@ -4,6 +4,13 @@ Hexen II: Hammer of Thyrion (uHexen2) - GAMECODE
 Changes
 -------
 
+2016-05-30 (1.29a):
+===================
+- rider_death(), rider_pestilence(), rider_war():  set max_health along
+  with health.  these bosses rely on the multiplayer_health() function
+  to set health, and without max_health set, it used to set health to 0
+- multiplayer_health():  made sure that torncount doesn't go negative.
+
 2015-10-31 (1.29):
 ===================
 - change lots of statements like x=x|y; into x(+)y; so that it's simply

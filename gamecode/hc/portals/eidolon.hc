@@ -1260,9 +1260,12 @@ float num_players;
 		}
 		if(num_players>4)
 			num_players=4;
-		self.max_health+=1000*num_players;
+		if(num_players>0)
+		{
+			self.max_health+=1000*num_players;
+			self.torncount=num_players - 1;
+		}
 		self.health=self.max_health;
-		self.torncount=num_players - 1;
 	}
 	if(self.th_save!=SUB_Null)
 		self.th_save();

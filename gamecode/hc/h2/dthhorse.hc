@@ -948,7 +948,7 @@ void rider_death(void)
 	self.monsterclass = CLASS_BOSS;
 
 	setsize (self, '-55 -55 -24', '55 55 100');
-	self.health = 3500;
+	self.health = self.max_health = 3500;
 	self.experience_value = 1000;
 
 	self.dflags = 0;

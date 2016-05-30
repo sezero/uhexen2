@@ -50,12 +50,12 @@
 # all build options passed to makefile
 %define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{mp3_libraryopt} %{ogg_buildopt} %{opus_buildopt} %{flac_buildopt} %{mikmod_buildopt} %{umx_buildopt}
 
-%define gamecode_ver	1.29
+%define gamecode_ver	1.29a
 
 Name:		hexen2
 License:	GPLv2
 Group:		Amusements/Games
-Version:	1.5.7
+Version:	1.5.8
 Release:	1
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
@@ -320,6 +320,10 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Mon May 30 2016 O.Sezer <sezero@users.sourceforge.net> 1.5.8-1
+- Bump version to 1.5.8.
+- Bump gamecode version to 1.29a
+
 * Thu Jan 21 2016 O.Sezer <sezero@users.sourceforge.net> 1.5.7-1
 - Removed gtk launcher, added a shell script to run different
   versions of the game, instead.
