@@ -1,6 +1,5 @@
-this patch adds hexenworld master server support to xqf version 1.0.5.
-this functionality is already added in the xqf CVS repository and it
-should be available in their next release (1.0.6 or something like it).
+This patch adds hexenworld master server support to xqf version 1.0.5.
+This functionality is already added in xqf-1.06 and later versions.
 
 this requires a patched, hwmaster-enabled version of qstat: for qstat
 version 2.11, use the patch provided here. otherwise use a newer, such
@@ -8,7 +7,7 @@ as 2.12, or a development version of qstat.
 
 diff -urNp xqf-1.0.5/src/games.c xqf-1.0.5x/src/games.c
 --- xqf-1.0.5/src/games.c	2006-06-18 16:15:18.000000000 +0300
-+++ xqf-1.0.5x/src/games.c	2007-10-02 11:01:45.000000000 +0300
++++ xqf-1.0.5x/src/games.c	2007-10-02 11:01:50.000000000 +0300
 @@ -334,9 +334,11 @@ struct game games[] = {
      flags               : GAME_CONNECT | GAME_QUAKE1_PLAYER_COLORS | GAME_RCON,
      name                : "HexenWorld",
@@ -23,7 +22,7 @@ diff -urNp xqf-1.0.5/src/games.c xqf-1.0.5x/src/games.c
      parse_server        : quake_parse_server,
 diff -urNp xqf-1.0.5/src/games.xml xqf-1.0.5x/src/games.xml
 --- xqf-1.0.5/src/games.xml	2006-06-18 16:15:18.000000000 +0300
-+++ xqf-1.0.5x/src/games.xml	2007-10-02 10:56:48.000000000 +0300
++++ xqf-1.0.5x/src/games.xml	2007-10-02 10:56:50.000000000 +0300
 @@ -278,9 +278,11 @@
  	<flags>GAME_CONNECT | GAME_QUAKE1_PLAYER_COLORS | GAME_RCON</flags>
  	<name>HexenWorld</name>

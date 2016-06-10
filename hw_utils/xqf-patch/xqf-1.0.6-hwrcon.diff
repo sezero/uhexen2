@@ -1,16 +1,14 @@
 This patch adds (actually fixes) hexenworld rcon support for xqf.
-It applies to both xqf-1.0.5 and to the sf.net cvs/git snapshots.
+It applies to xqf-1.0.6.x versions from https://github.com/XQF/xqf/
 The rcon support is fixed by adding the latest huffman encoding
 and decoding routines from the uhexen2 project: sending the message
 doesn't actually need any encoding, but if the received msg isn't
 decoded, garbage is displayed especially for long responses.
 
-[ Remember to also apply xqf-1.0.5-hwmaster.diff ]
-
-diff -urNp xqf-1.0.5/src/Makefile.am xqf-1.0.5x/src/Makefile.am
---- xqf-1.0.5/src/Makefile.am	2006-10-28 16:12:09.000000000 +0300
-+++ xqf-1.0.5x/src/Makefile.am	2007-10-02 09:10:00.000000000 +0300
-@@ -44,6 +44,7 @@ xqf_DEPENDENCIES = \
+diff -urNp xqf-xqf-1.0.6.2/src/Makefile.am xqf-xqf-1.0.6.x/src/Makefile.am
+--- xqf-xqf-1.0.6.2/src/Makefile.am	2014-11-02 02:43:18.000000000 +0200
++++ xqf-xqf-1.0.6.x/src/Makefile.am	2016-05-28 05:02:00.000000000 +0300
+@@ -55,6 +55,7 @@ xqf_DEPENDENCIES = \
  xqf_rcon_LDADD = @INTLLIBS@ $(GLIB_LIBS) $(XQFRCON_LIBS) @PACKAGE_LIBS@
  xqf_rcon_SOURCES = \
      rcon.c rcon.h \
@@ -18,7 +16,7 @@ diff -urNp xqf-1.0.5/src/Makefile.am xqf-1.0.5x/src/Makefile.am
      debug.c debug.h \
      utils.c utils.h
  xqf_rcon_CFLAGS = -DRCON_STANDALONE $(GLIB_CFLAGS) $(OLD_GTK_SUPPORT)
-@@ -68,6 +69,7 @@ pref.c \
+@@ -79,6 +80,7 @@ pref.c \
  psearch.c \
  rc.c \
  rcon.c \
@@ -26,7 +24,7 @@ diff -urNp xqf-1.0.5/src/Makefile.am xqf-1.0.5x/src/Makefile.am
  server.c \
  skin.c \
  skin_pcx.c \
-@@ -111,6 +113,8 @@ quake2_pal.h \
+@@ -122,6 +124,8 @@ quake2_pal.h \
  quake_pal.h \
  rc.h \
  rcon.h \
@@ -35,11 +33,11 @@ diff -urNp xqf-1.0.5/src/Makefile.am xqf-1.0.5x/src/Makefile.am
  server.h \
  skin.h \
  skin_pcx.h \
-diff -urNp xqf-1.0.5/src/rcon.c xqf-1.0.5x/src/rcon.c
---- xqf-1.0.5/src/rcon.c	2006-06-18 15:53:59.000000000 +0300
-+++ xqf-1.0.5x/src/rcon.c	2016-05-28 05:02:00.000000000 +0300
+diff -urNp xqf-xqf-1.0.6.2/src/rcon.c xqf-xqf-1.0.6.x/src/rcon.c
+--- xqf-xqf-1.0.6.2/src/rcon.c	2014-11-02 02:43:18.000000000 +0200
++++ xqf-xqf-1.0.6.x/src/rcon.c	2016-05-28 05:02:00.000000000 +0300
 @@ -78,6 +78,36 @@ static int failed (char *name) {
-   return TRUE;
+ 	return TRUE;
  }
  
 +/* HexenWorld support:
@@ -56,108 +54,104 @@ diff -urNp xqf-1.0.5/src/rcon.c xqf-1.0.5x/src/rcon.c
 +static int huffman_inited = 0;
 +
 +static int huff_check (void) {
-+  if (huffman_inited)
-+    return 0;
-+  if (huff_failed) {
-+  no_huff:
-+    fprintf (stderr, "HWRCON: Couldn't initialize Huffman compression!\n");
-+    rcon_print ("HWRCON: Couldn't initialize Huffman compression!\n");
-+    return 1;
-+  }
-+  if (!huffman_inited) {
-+    HuffInit ();
-+    if (huff_failed)
-+      goto no_huff;
-+    huffman_inited = 1;
-+  }
-+  return 0;
++	if (huffman_inited)
++		return 0;
++	if (huff_failed) {
++	no_huff:
++		fprintf (stderr, "HWRCON: Couldn't initialize Huffman compression!\n");
++		rcon_print ("HWRCON: Couldn't initialize Huffman compression!\n");
++		return 1;
++	}
++	if (!huffman_inited) {
++		HuffInit ();
++		if (huff_failed)
++			goto no_huff;
++		huffman_inited = 1;
++	}
++	return 0;
 +}
  
  static void rcon_print (char *fmt, ...) {
  #ifndef RCON_STANDALONE
-@@ -160,6 +190,7 @@ static int rcon_send(const char* cmd)
- {
-   char* buf = NULL;
-   size_t bufsize = 0;
-+  ssize_t huffsize;
-   int ret = -1;
-   
-   if(rcon_servertype == HL_SERVER && rcon_challenge == NULL)
-@@ -218,6 +249,19 @@ static int rcon_send(const char* cmd)
-     strcpy(buf+sizeof(prefix), rcon_password);
-     strcpy(buf+sizeof(prefix)+strlen(rcon_password)+1, cmd);
-   }
-+  else if (rcon_servertype == HW_SERVER)
-+  {
-+    if (huff_check ()) /* do this even when not sending without encoding, */
-+	return -1;	/* because we must decode the response..	*/
+@@ -158,6 +188,7 @@ static int open_connection (struct in_ad
+ static int rcon_send(const char* cmd) {
+ 	char* buf = NULL;
+ 	size_t bufsize = 0;
++	ssize_t huffsize;
+ 	int ret = -1;
+ 
+ 	if (rcon_servertype == HL_SERVER && rcon_challenge == NULL) {
+@@ -209,6 +240,18 @@ static int rcon_send(const char* cmd) {
+ 		strcpy(buf+sizeof(prefix), rcon_password);
+ 		strcpy(buf+sizeof(prefix)+strlen(rcon_password)+1, cmd);
+ 	}
++	else if (rcon_servertype == HW_SERVER) {
++		if (huff_check ()) /* do this even when not sending without encoding, */
++			return -1;	/* because we must decode the response..	*/
 +#if USE_HUFFENCODE
-+    buf = g_strdup_printf("\377\377\377\377rcon %s %s", rcon_password, cmd);
-+    bufsize = strlen(buf)+1;
-+    HuffEncode ((unsigned char *)buf, huffbuff, bufsize, &huffsize);
++		buf = g_strdup_printf("\377\377\377\377rcon %s %s", rcon_password, cmd);
++		bufsize = strlen(buf)+1;
++		HuffEncode ((unsigned char *)buf, huffbuff, bufsize, &huffsize);
 +#else
-+    buf = g_strdup_printf("\377\377\377\377\377rcon %s %s", rcon_password, cmd);
-+    bufsize = strlen(buf)+1;
++		buf = g_strdup_printf("\377\377\377\377\377rcon %s %s", rcon_password, cmd);
++		bufsize = strlen(buf)+1;
 +#endif
-+  }
-   else
-   {
-     buf = g_strdup_printf("\377\377\377\377rcon %s %s",rcon_password, cmd);
-@@ -226,7 +270,13 @@ static int rcon_send(const char* cmd)
++	}
+ 	else {
+ 		buf = g_strdup_printf("\377\377\377\377rcon %s %s",rcon_password, cmd);
+ 		bufsize = strlen(buf)+1;
+@@ -216,7 +259,13 @@ static int rcon_send(const char* cmd) {
  
-   rcon_print ("RCON> %s\n", cmd);
+ 	rcon_print ("RCON> %s\n", cmd);
  
 +#if USE_HUFFENCODE
-+  if (rcon_servertype == HW_SERVER)
-+    ret = send (rcon_fd, huffbuff, huffsize, 0);
-+  else
++	if (rcon_servertype == HW_SERVER)
++		ret = send (rcon_fd, huffbuff, huffsize, 0);
++	else
 +#endif
-   ret = send (rcon_fd, buf, bufsize, 0);
+ 	ret = send (rcon_fd, buf, bufsize, 0);
 +
-   g_free(buf);
-   return ret;
+ 	g_free(buf);
+ 	return ret;
  }
-@@ -321,7 +371,18 @@ static char* rcon_receive()
-   if (!packet)
-     packet = g_malloc (PACKET_MAXSIZE);
+@@ -303,15 +352,32 @@ static char* rcon_receive() {
+ 	if (!packet)
+ 		packet = g_malloc (PACKET_MAXSIZE);
  
--  size = recv (rcon_fd, packet, PACKET_MAXSIZE, 0);
-+  if (rcon_servertype == HW_SERVER)
-+  {
-+    if (huff_check () != 0) /* failure (unexpected...) */
-+	return msg;
-+    /* receive encoded message into the huffman buffer */
-+    size = recv (rcon_fd, huffbuff, PACKET_MAXSIZE, 0);
-+  }
-+  else
-+  {
-+    size = recv (rcon_fd, packet, PACKET_MAXSIZE, 0);
-+  }
+-	size = recv (rcon_fd, packet, PACKET_MAXSIZE, 0);
++	if (rcon_servertype == HW_SERVER) {
++		if (huff_check () != 0) /* failure (unexpected...) */
++			return msg;
++		/* receive encoded message into the huffman buffer */
++		size = recv (rcon_fd, huffbuff, PACKET_MAXSIZE, 0);
++	}
++	else {
++		size = recv (rcon_fd, packet, PACKET_MAXSIZE, 0);
++	}
 +
-   if (size < 0)
-   {
-     if(errno != EWOULDBLOCK) failed("recv");
-@@ -330,8 +391,16 @@ static char* rcon_receive()
-   {
-     switch (rcon_servertype) {
+ 	if (size < 0) {
+ 		if (errno != EWOULDBLOCK) failed("recv");
+ 	}
+ 	else {
+ 		switch (rcon_servertype) {
  
-+    case HW_SERVER: /* decode the received message */
-+      HuffDecode (huffbuff, (unsigned char *)packet, size, &size, PACKET_MAXSIZE);
-+      if (size > PACKET_MAXSIZE) {
-+	packet[PACKET_MAXSIZE-1] = '\0';
-+	failed("HuffDecode: Oversize!");
-+	break;
-+      }
-+    /* FALLTHROUGH */
++			case HW_SERVER: /* decode the received message */
++				HuffDecode (huffbuff, (unsigned char *)packet, size, &size, PACKET_MAXSIZE);
++				if (size > PACKET_MAXSIZE) {
++					packet[PACKET_MAXSIZE-1] = '\0';
++					failed("HuffDecode: Oversize!");
++					break;
++				}
++			/* FALLTHROUGH */
 +
-     case QW_SERVER:
--    case HW_SERVER:
-     case HL_SERVER:
-       // "\377\377\377\377<some character>"
-       msg = packet + 4 + 1;
-diff -urNp xqf-1.0.5/src/rcon.h xqf-1.0.5x/src/rcon.h
---- xqf-1.0.5/src/rcon.h	2002-09-07 13:55:52.000000000 +0300
-+++ xqf-1.0.5x/src/rcon.h	2016-05-28 05:02:00.000000000 +0300
+ 			case QW_SERVER:
+-			case HW_SERVER:
+ 			case HL_SERVER:
+ 				// "\377\377\377\377<some character>"
+ 				msg = packet + 4 + 1;
+diff -urNp xqf-xqf-1.0.6.2/src/rcon.h xqf-xqf-1.0.6.x/src/rcon.h
+--- xqf-xqf-1.0.6.2/src/rcon.h	2014-11-02 02:43:18.000000000 +0200
++++ xqf-xqf-1.0.6.x/src/rcon.h	2016-05-28 05:02:00.000000000 +0300
 @@ -20,6 +20,7 @@
  #define __RCON_H__
  
@@ -165,10 +159,10 @@ diff -urNp xqf-1.0.5/src/rcon.h xqf-1.0.5x/src/rcon.h
 +#include "huffman.h"
  
  
- extern	void rcon_dialog (const struct server *s, const char *passwd);
-diff -urNp xqf-1.0.5/src/hufffreq.h xqf-1.0.5x/src/hufffreq.h
---- xqf-1.0.5/src/hufffreq.h	1970-01-01 02:00:00.000000000 +0200
-+++ xqf-1.0.5x/src/hufffreq.h	2016-05-28 05:02:00.000000000 +0300
+ extern void rcon_dialog (const struct server *s, const char *passwd);
+diff -urNp xqf-xqf-1.0.6.2/src/hufffreq.h xqf-xqf-1.0.6.x/src/hufffreq.h
+--- xqf-xqf-1.0.6.2/src/hufffreq.h	1970-01-01 02:00:00.000000000 +0200
++++ xqf-xqf-1.0.6.x/src/hufffreq.h	2016-05-28 05:02:00.000000000 +0300
 @@ -0,0 +1,536 @@
 +/*
 + * hufffreq.h
@@ -706,9 +700,9 @@ diff -urNp xqf-1.0.5/src/hufffreq.h xqf-1.0.5x/src/hufffreq.h
 +	0.00186824,
 +	0.00092908,
 +	0.00160896
-diff -urNp xqf-1.0.5/src/huffman.c xqf-1.0.5x/src/huffman.c
---- xqf-1.0.5/src/huffman.c	1970-01-01 02:00:00.000000000 +0200
-+++ xqf-1.0.5x/src/huffman.c	2016-05-28 05:02:00.000000000 +0300
+diff -urNp xqf-xqf-1.0.6.2/src/huffman.c xqf-xqf-1.0.6.x/src/huffman.c
+--- xqf-xqf-1.0.6.2/src/huffman.c	1970-01-01 02:00:00.000000000 +0200
++++ xqf-xqf-1.0.6.x/src/huffman.c	2016-05-28 05:02:00.000000000 +0300
 @@ -0,0 +1,278 @@
 +/*
 + * huffman.c
@@ -988,9 +982,9 @@ diff -urNp xqf-1.0.5/src/huffman.c xqf-1.0.5x/src/huffman.c
 +	BuildTree(HuffFreq);
 +}
 +
-diff -urNp xqf-1.0.5/src/huffman.h xqf-1.0.5x/src/huffman.h
---- xqf-1.0.5/src/huffman.h	1970-01-01 02:00:00.000000000 +0200
-+++ xqf-1.0.5x/src/huffman.h	2016-05-28 05:02:00.000000000 +0300
+diff -urNp xqf-xqf-1.0.6.2/src/huffman.h xqf-xqf-1.0.6.x/src/huffman.h
+--- xqf-xqf-1.0.6.2/src/huffman.h	1970-01-01 02:00:00.000000000 +0200
++++ xqf-xqf-1.0.6.x/src/huffman.h	2016-05-28 05:02:00.000000000 +0300
 @@ -0,0 +1,33 @@
 +/*
 + * huffman.h
@@ -1025,98 +1019,3 @@ diff -urNp xqf-1.0.5/src/huffman.h xqf-1.0.5x/src/huffman.h
 +
 +#endif	/* __H2W_HUFFMAN_H */
 +
-
-diff -urNp xqf-1.0.5/src/Makefile.in xqf-1.0.5x/src/Makefile.in
---- xqf-1.0.5/src/Makefile.in	2006-11-04 14:44:12.000000000 +0200
-+++ xqf-1.0.5x/src/Makefile.in	2007-10-02 09:10:10.000000000 +0300
-@@ -96,16 +96,17 @@ am_xqf_OBJECTS = addmaster.$(OBJEXT) add
- 	flt-player.$(OBJEXT) game.$(OBJEXT) history.$(OBJEXT) \
- 	host.$(OBJEXT) launch.$(OBJEXT) menus.$(OBJEXT) \
- 	pixmaps.$(OBJEXT) pref.$(OBJEXT) psearch.$(OBJEXT) \
--	rc.$(OBJEXT) rcon.$(OBJEXT) server.$(OBJEXT) skin.$(OBJEXT) \
--	skin_pcx.$(OBJEXT) sort.$(OBJEXT) source.$(OBJEXT) \
--	srv-info.$(OBJEXT) srv-list.$(OBJEXT) srv-prop.$(OBJEXT) \
--	stat.$(OBJEXT) statistics.$(OBJEXT) trayicon.$(OBJEXT) \
--	utils.$(OBJEXT) xqf.$(OBJEXT) xqf-ui.$(OBJEXT) \
--	xutils.$(OBJEXT) zipped.$(OBJEXT) redial.$(OBJEXT) \
--	q3maps.$(OBJEXT) utmaps.$(OBJEXT) loadpixmap.$(OBJEXT) \
--	splash.$(OBJEXT) scripts.$(OBJEXT)
-+	rc.$(OBJEXT) rcon.$(OBJEXT) huffman.$(OBJEXT) server.$(OBJEXT) \
-+	skin.$(OBJEXT) skin_pcx.$(OBJEXT) sort.$(OBJEXT) \
-+	source.$(OBJEXT) srv-info.$(OBJEXT) srv-list.$(OBJEXT) \
-+	srv-prop.$(OBJEXT) stat.$(OBJEXT) statistics.$(OBJEXT) \
-+	trayicon.$(OBJEXT) utils.$(OBJEXT) xqf.$(OBJEXT) \
-+	xqf-ui.$(OBJEXT) xutils.$(OBJEXT) zipped.$(OBJEXT) \
-+	redial.$(OBJEXT) q3maps.$(OBJEXT) utmaps.$(OBJEXT) \
-+	loadpixmap.$(OBJEXT) splash.$(OBJEXT) scripts.$(OBJEXT)
- xqf_OBJECTS = $(am_xqf_OBJECTS)
--am_xqf_rcon_OBJECTS = xqf_rcon-rcon.$(OBJEXT) xqf_rcon-debug.$(OBJEXT) \
-+am_xqf_rcon_OBJECTS = xqf_rcon-rcon.$(OBJEXT) \
-+	xqf_rcon-huffman.$(OBJEXT) xqf_rcon-debug.$(OBJEXT) \
- 	xqf_rcon-utils.$(OBJEXT)
- xqf_rcon_OBJECTS = $(am_xqf_rcon_OBJECTS)
- xqf_rcon_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-@@ -322,6 +323,7 @@ xqf_DEPENDENCIES = $(top_builddir)/src/z
- xqf_rcon_LDADD = @INTLLIBS@ $(GLIB_LIBS) $(XQFRCON_LIBS) @PACKAGE_LIBS@
- xqf_rcon_SOURCES = \
-     rcon.c rcon.h \
-+    huffman.c huffman.h hufffreq.h \
-     debug.c debug.h \
-     utils.c utils.h
- 
-@@ -346,6 +348,7 @@ pref.c \
- psearch.c \
- rc.c \
- rcon.c \
-+huffman.c \
- server.c \
- skin.c \
- skin_pcx.c \
-@@ -389,6 +392,8 @@ quake2_pal.h \
- quake_pal.h \
- rc.h \
- rcon.h \
-+huffman.h \
-+hufffreq.h \
- server.h \
- skin.h \
- skin_pcx.h \
-@@ -575,6 +580,7 @@ distclean-compile:
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gamesxml2c-gamesxml2c.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/history.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/host.Po@am__quote@
-+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/huffman.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/launch.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libxqf_dummy_GeoIP_so_0-libxqf_dummy_GeoIP.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libxqf_dummy_GeoIP_so_0-libxqf_dummy_GeoIP_stubs.Po@am__quote@
-@@ -608,6 +614,7 @@ distclean-compile:
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xqf-ui.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xqf.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xqf_rcon-debug.Po@am__quote@
-+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xqf_rcon-huffman.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xqf_rcon-rcon.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xqf_rcon-utils.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xutils.Po@am__quote@
-@@ -711,6 +718,22 @@ xqf_rcon-rcon.obj: rcon.c
- @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
- @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xqf_rcon_CFLAGS) $(CFLAGS) -c -o xqf_rcon-rcon.obj `if test -f 'rcon.c'; then $(CYGPATH_W) 'rcon.c'; else $(CYGPATH_W) '$(srcdir)/rcon.c'; fi`
- 
-+xqf_rcon-huffman.o: huffman.c
-+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xqf_rcon_CFLAGS) $(CFLAGS) -MT xqf_rcon-huffman.o -MD -MP -MF "$(DEPDIR)/xqf_rcon-huffman.Tpo" -c -o xqf_rcon-huffman.o `test -f 'huffman.c' || echo '$(srcdir)/'`huffman.c; \
-+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/xqf_rcon-huffman.Tpo" "$(DEPDIR)/xqf_rcon-huffman.Po"; else rm -f "$(DEPDIR)/xqf_rcon-huffman.Tpo"; exit 1; fi
-+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='huffman.c' object='xqf_rcon-huffman.o' libtool=no @AMDEPBACKSLASH@
-+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/xqf_rcon-huffman.Po' tmpdepfile='$(DEPDIR)/xqf_rcon-huffman.TPo' @AMDEPBACKSLASH@
-+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xqf_rcon_CFLAGS) $(CFLAGS) -c -o xqf_rcon-huffman.o `test -f 'huffman.c' || echo '$(srcdir)/'`huffman.c
-+
-+xqf_rcon-huffman.obj: huffman.c
-+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xqf_rcon_CFLAGS) $(CFLAGS) -MT xqf_rcon-huffman.obj -MD -MP -MF "$(DEPDIR)/xqf_rcon-huffman.Tpo" -c -o xqf_rcon-huffman.obj `if test -f 'huffman.c'; then $(CYGPATH_W) 'huffman.c'; else $(CYGPATH_W) '$(srcdir)/huffman.c'; fi`; \
-+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/xqf_rcon-huffman.Tpo" "$(DEPDIR)/xqf_rcon-huffman.Po"; else rm -f "$(DEPDIR)/xqf_rcon-huffman.Tpo"; exit 1; fi
-+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='huffman.c' object='xqf_rcon-huffman.obj' libtool=no @AMDEPBACKSLASH@
-+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/xqf_rcon-huffman.Po' tmpdepfile='$(DEPDIR)/xqf_rcon-huffman.TPo' @AMDEPBACKSLASH@
-+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xqf_rcon_CFLAGS) $(CFLAGS) -c -o xqf_rcon-huffman.obj `if test -f 'huffman.c'; then $(CYGPATH_W) 'huffman.c'; else $(CYGPATH_W) '$(srcdir)/huffman.c'; fi`
-+
- xqf_rcon-debug.o: debug.c
- @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xqf_rcon_CFLAGS) $(CFLAGS) -MT xqf_rcon-debug.o -MD -MP -MF "$(DEPDIR)/xqf_rcon-debug.Tpo" -c -o xqf_rcon-debug.o `test -f 'debug.c' || echo '$(srcdir)/'`debug.c; \
- @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/xqf_rcon-debug.Tpo" "$(DEPDIR)/xqf_rcon-debug.Po"; else rm -f "$(DEPDIR)/xqf_rcon-debug.Tpo"; exit 1; fi
