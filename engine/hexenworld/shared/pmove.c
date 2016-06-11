@@ -75,7 +75,7 @@ returns the blocked flags (1 = floor, 2 = step / wall)
 */
 #define	STOP_EPSILON	0.1
 
-static int PM_ClipVelocity (vec3_t in, vec3_t normal, vec3_t out, float overbounce)
+static int PM_ClipVelocity (const vec3_t in, const vec3_t normal, vec3_t out, float overbounce)
 {
 	float	backoff;
 	float	change;
@@ -382,7 +382,7 @@ static void PM_Friction (void)
 PM_Accelerate
 ==============
 */
-static void PM_Accelerate (vec3_t wishdir, float wishspeed, float accel)
+static void PM_Accelerate (const vec3_t wishdir, float wishspeed, float accel)
 {
 	int		i;
 	float		addspeed, accelspeed, currentspeed;
@@ -404,7 +404,7 @@ static void PM_Accelerate (vec3_t wishdir, float wishspeed, float accel)
 		pmove.velocity[i] += accelspeed*wishdir[i];
 }
 
-static void PM_AirAccelerate (vec3_t wishdir, float wishspeed, float accel)
+static void PM_AirAccelerate (const vec3_t wishdir, float wishspeed, float accel)
 {
 	int			i;
 	float		addspeed, accelspeed, currentspeed, wishspd = wishspeed;
