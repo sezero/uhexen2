@@ -67,7 +67,7 @@
 #define GLNDEBUG 1
 
 // Define if you don't want glGetError functionality
-#define GL_NOERRORCHECK 1
+/*#define GL_NOERRORCHECK 1*/
 
 
 // Define if you don't want to check if the bitmaps allocated for

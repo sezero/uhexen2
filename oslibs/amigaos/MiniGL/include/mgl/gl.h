@@ -366,11 +366,14 @@ extern GLcontext mini_CurrentContext;
 	extern int kprintf(char *, ...);
 	#define GLFlagError(context,c,err) while ((c)) {\
 		context->CurrentError = err;\
-		kprintf("GLError: %ld at %s:%ld\n", (int)err, __FILE__,(int)__LINE__);\
+	/*	kprintf("GLError: %ld at %s:%ld\n", (int)err, __FILE__,(int)__LINE__);*/\
 		return;\
 	}
 #else
-	#define GLFlagError(context,c,err)
+	#define GLFlagError(context,c,err) if ((c)) {\
+	/*	context->CurrentError = err;*/\
+		return;\
+	}
 #endif
 
 

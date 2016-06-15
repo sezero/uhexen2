@@ -1,6 +1,8 @@
+Only in MiniGL: lib
+
 diff -urp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
 --- MiniGL~/Build_gcc/makefile	2002-11-30 08:14:20.000000000 +0200
-+++ MiniGL/Build_gcc/makefile	2016-04-15 17:55:10.000000000 +0300
++++ MiniGL/Build_gcc/makefile	2016-04-15 17:55:20.000000000 +0300
 @@ -13,16 +13,26 @@
  #
  
@@ -13,7 +15,7 @@ diff -urp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
 +
 +CFLAGS = -m68060 -D__M68K__ $(DEBUG) $(ADDFLAG) -ffast-math -fomit-frame-pointer
 +CFLAGS+= -O3 -DINLINE=__inline
-+CFLAGS+= -g
++#CFLAGS+= -g
 +CFLAGS+= -noixemul
 +CFLAGS+= -Wall -Wno-unused
 +CFLAGS+= $(INCLUDE)
@@ -134,9 +136,21 @@ diff -urp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
 -		makedepend $(INCLUDE) src/*.c
 +	makedepend $(INCLUDE) src/*.c
  
+diff -urp MiniGL~/include/mgl/config.h MiniGL/include/mgl/config.h
+--- MiniGL~/include/mgl/config.h	2002-11-30 08:15:16.000000000 +0200
++++ MiniGL/include/mgl/config.h	2016-04-15 17:55:20.000000000 +0300
+@@ -67,7 +67,7 @@
+ #define GLNDEBUG 1
+ 
+ // Define if you don't want glGetError functionality
+-#define GL_NOERRORCHECK 1
++/*#define GL_NOERRORCHECK 1*/
+ 
+ 
+ // Define if you don't want to check if the bitmaps allocated for
 diff -urp MiniGL~/include/mgl/gl.h MiniGL/include/mgl/gl.h
 --- MiniGL~/include/mgl/gl.h	2002-11-30 08:15:20.000000000 +0200
-+++ MiniGL/include/mgl/gl.h	2016-04-15 17:55:10.000000000 +0300
++++ MiniGL/include/mgl/gl.h	2016-04-15 17:55:20.000000000 +0300
 @@ -309,6 +309,13 @@ enum
  	MGL_UNSIGNED_SHORT_4_4_4_4,
  	MGL_FIXPOINTTRANS_HINT,
@@ -151,7 +165,27 @@ diff -urp MiniGL~/include/mgl/gl.h MiniGL/include/mgl/gl.h
  };
  
  #define GL_COLOR_BUFFER_BIT     0x00000001
-@@ -378,7 +385,7 @@ extern GLcontext mini_CurrentContext;
+@@ -357,13 +364,16 @@ extern GLcontext mini_CurrentContext;
+ 
+ #ifndef GL_NOERRORCHECK
+ 	extern int kprintf(char *, ...);
+-	#define GLFlagError(context,c,err) while ((c)) {\
++	#define GLFlagError(context,c,err) if ((c)) {\
+ 		context->CurrentError = err;\
+-		kprintf("GLError: %ld at %s:%ld\n", (int)err, __FILE__,(int)__LINE__);\
++	/*	kprintf("GLError: %ld at %s:%ld\n", (int)err, __FILE__,(int)__LINE__);*/\
+ 		return;\
+ 	}
+ #else
+-	#define GLFlagError(context,c,err)
++	#define GLFlagError(context,c,err) if ((c)) {\
++	/*	context->CurrentError = err;*/\
++		return;\
++	}
+ #endif
+ 
+ 
+@@ -378,7 +388,7 @@ extern GLcontext mini_CurrentContext;
  
  void        GLActiveTextureARB(GLcontext context, GLenum unit);
  void        GLMultiTexCoord2fARB(GLcontext context, GLenum unit, GLfloat s, GLfloat t);
@@ -160,7 +194,7 @@ diff -urp MiniGL~/include/mgl/gl.h MiniGL/include/mgl/gl.h
  
  void MGLDrawMultitexBuffer (GLcontext context, GLenum BSrc, GLenum BDst, GLenum TexEnv);
  
-@@ -393,14 +400,14 @@ void        GLBlendFunc(GLcontext contex
+@@ -393,14 +403,14 @@ void        GLBlendFunc(GLcontext contex
  void        GLClear(GLcontext context, GLbitfield mask);
  void        GLClearColor(GLcontext context, GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
  void        GLClearDepth(GLcontext context, GLclampd depth);
@@ -180,7 +214,7 @@ diff -urp MiniGL~/include/mgl/gl.h MiniGL/include/mgl/gl.h
  void        GLCullFace(GLcontext context, GLenum mode);
  void        GLDeleteTextures(GLcontext context, GLsizei n, const GLuint *textures);
  void        GLDepthFunc(GLcontext context, GLenum func);
-@@ -421,7 +428,7 @@ void        GLEnd(GLcontext context);
+@@ -421,7 +431,7 @@ void        GLEnd(GLcontext context);
  void        GLFinish(GLcontext context);
  void        GLFlush(GLcontext context);
  void        GLFogf(GLcontext context, GLenum pname, GLfloat param);
@@ -189,7 +223,7 @@ diff -urp MiniGL~/include/mgl/gl.h MiniGL/include/mgl/gl.h
  void        GLFrontFace(GLcontext context, GLenum mode);
  void        GLFrustum(GLcontext context, GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar);
  void        GLGenTextures(GLcontext context, GLsizei n, GLuint *textures);
-@@ -482,9 +489,9 @@ void        GLScalef(GLcontext context, 
+@@ -482,9 +492,9 @@ void        GLScalef(GLcontext context, 
  void        GLScissor(GLcontext context, GLint x, GLint y, GLsizei width, GLsizei height);
  void        GLShadeModel(GLcontext context, GLenum mode);
  void        GLTexCoord2f(GLcontext context, GLfloat s, GLfloat t);
@@ -201,7 +235,7 @@ diff -urp MiniGL~/include/mgl/gl.h MiniGL/include/mgl/gl.h
  //void        GLTexCoordPointer(GLcontext context, GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
  void        GLTexEnvi(GLcontext context, GLenum target, GLenum pname, GLint param);
  void        GLTexGeni(GLcontext context, GLenum coord, GLenum mode, GLenum map);
-@@ -496,9 +503,9 @@ void        GLTranslatef(GLcontext conte
+@@ -496,9 +506,9 @@ void        GLTranslatef(GLcontext conte
  void        GLVertex4f(GLcontext context, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
  void        GLVertex2f(GLcontext context, GLfloat x, GLfloat y);
  
@@ -214,7 +248,7 @@ diff -urp MiniGL~/include/mgl/gl.h MiniGL/include/mgl/gl.h
  
  //void        GLVertexPointer(GLcontext context, GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
  void        GLViewport(GLcontext context, GLint x, GLint y, GLsizei width, GLsizei height);
-@@ -534,7 +541,7 @@ void        MGLSwitchBuffer(GLcontext co
+@@ -534,7 +544,7 @@ void        MGLSwitchBuffer(GLcontext co
  void        MGLSwitchDisplay(GLcontext context);
  void        MGLTexMemStat(GLcontext context, GLint *Current, GLint *Peak);
  void        MGLUnlockDisplay(GLcontext context);
@@ -223,7 +257,7 @@ diff -urp MiniGL~/include/mgl/gl.h MiniGL/include/mgl/gl.h
  GLboolean        MGLInit(void);
  void        MGLTerm(void);
  
-@@ -887,6 +894,9 @@ void        GLDrawArrays(GLcontext conte
+@@ -887,6 +897,9 @@ void        GLDrawArrays(GLcontext conte
  #define gluLookAt(ex, ey, ez, cx, cy, cz, ux, uy, uz) GLULookAt(ex, ey, ez, cx, cy, cz, ux, uy, uz);
  #define gluPerspective(fovy, aspect, znear, zfar) GLUPerspective(fovy, aspect, znear, zfar);
  
@@ -393,6 +427,7 @@ diff -urp MiniGL~/include/mgl/minigl.h MiniGL/include/mgl/minigl.h
 +MGLAPI void glClearStencil(GLint s) { }
 +
  #endif
+
 diff -urp MiniGL~/src/context.c MiniGL/src/context.c
 --- MiniGL~/src/context.c	2002-11-30 08:15:36.000000000 +0200
 +++ MiniGL/src/context.c	2016-04-15 17:55:10.000000000 +0300
@@ -448,25 +483,8 @@ diff -urp MiniGL~/src/fog.c MiniGL/src/fog.c
  
 diff -urp MiniGL~/src/others.c MiniGL/src/others.c
 --- MiniGL~/src/others.c	2002-11-30 08:15:44.000000000 +0200
-+++ MiniGL/src/others.c	2016-04-15 17:55:10.000000000 +0300
-@@ -60,7 +60,7 @@ void GLAlphaFunc(GLcontext context, GLen
- 			break;
- 		default:
- 			GLFlagError(context, 1, GL_INVALID_ENUM);
--			break;
-+			return;
- 	}
- 
- 	W3D_SetAlphaMode(context->w3dContext, w3dmode, &refvalue);
-@@ -129,6 +129,7 @@ void GLBlendFunc(GLcontext context, GLen
- 		BLS(SRC_ALPHA_SATURATE);
- 	default:
- 		GLFlagError(context, 1, GL_INVALID_ENUM);
-+		return;
- 	}
- 
- 	switch(dfactor)
-@@ -141,6 +142,8 @@ void GLBlendFunc(GLcontext context, GLen
++++ MiniGL/src/others.c	2016-04-15 17:55:20.000000000 +0300
+@@ -141,6 +141,8 @@ void GLBlendFunc(GLcontext context, GLen
  		BLD(ONE_MINUS_SRC_ALPHA);
  		BLD(DST_ALPHA);
  		BLD(ONE_MINUS_DST_ALPHA);
@@ -475,24 +493,7 @@ diff -urp MiniGL~/src/others.c MiniGL/src/others.c
  	}
  
  	// Try to set the mode, if unavailable, switch to
-@@ -179,7 +182,7 @@ void GLHint(GLcontext context, GLenum ta
- 		case GL_DONT_CARE:  hint = W3D_H_AVERAGE; break;
- 		default:
- 			GLFlagError(context, 1, GL_INVALID_ENUM);
--			break;
-+			return;
- 	}
- 
- 	switch(target)
-@@ -200,6 +203,7 @@ void GLHint(GLcontext context, GLenum ta
- 			break;
- 		default:
- 			GLFlagError(context, 1, GL_INVALID_ENUM);
-+			return;
- 	}
- }
- 
-@@ -264,6 +268,9 @@ void  GLGetIntegerv(GLcontext context, G
+@@ -264,6 +266,9 @@ void  GLGetIntegerv(GLcontext context, G
  	case GL_MAX_TEXTURE_UNITS_ARB:
  		*params = MAX_TEXUNIT;
  	   return ;
@@ -502,7 +503,7 @@ diff -urp MiniGL~/src/others.c MiniGL/src/others.c
        default:
        	*params = 0 ;
           GLFlagError(context, 1, GL_INVALID_ENUM);
-@@ -360,6 +367,9 @@ GLboolean GLIsEnabled(GLcontext context,
+@@ -360,6 +365,9 @@ GLboolean GLIsEnabled(GLcontext context,
     	case GL_BLEND:
           return( context->Blend_State ) ;
  
@@ -512,18 +513,22 @@ diff -urp MiniGL~/src/others.c MiniGL/src/others.c
        case GL_DEPTH_TEST:
           return( context->DepthTest_State ) ;
  
-@@ -369,9 +379,8 @@ GLboolean GLIsEnabled(GLcontext context,
+@@ -367,11 +375,10 @@ GLboolean GLIsEnabled(GLcontext context,
+ 	   	return (context->Texture2D_State[context->ActiveTexture]) ;
+ 
  	default:
- 	#ifndef __VBCC__
- 		GLFlagError(context, 1, GL_INVALID_ENUM);
+-	#ifndef __VBCC__
+-		GLFlagError(context, 1, GL_INVALID_ENUM);
 -	#else
 -		return GL_FALSE;
++	#ifndef GL_NOERRORCHECK
++		context->CurrentError = GL_INVALID_ENUM;
  	#endif
 +		return GL_FALSE;
  	}
  }
  
-@@ -381,7 +390,7 @@ void MGLSetZOffset(GLcontext context, GL
+@@ -381,7 +388,7 @@ void MGLSetZOffset(GLcontext context, GL
  	context->ZOffset = offset;
  }
  
@@ -532,12 +537,12 @@ diff -urp MiniGL~/src/others.c MiniGL/src/others.c
  {
  	GLubyte *pixelline;
  	FILE *f;
-@@ -481,7 +490,7 @@ void MGLMainLoop(GLcontext context)
+@@ -481,7 +488,7 @@ void MGLMainLoop(GLcontext context)
  
  	while (context->Running == GL_TRUE)
  	{
 -		while (imsg = (struct IntuiMessage *)GetMsg(window->UserPort))
-+		while ((imsg = (struct IntuiMessage *)GetMsg(window->UserPort)))
++		while ((imsg = (struct IntuiMessage *)GetMsg(window->UserPort)) != NULL)
  		{
  			Class  = imsg->Class;
  			Code   = imsg->Code;
@@ -589,6 +594,18 @@ diff -urp MiniGL~/src/texture.c MiniGL/src/texture.c
  	where   = (GLubyte *)context->PaletteData;
  
  	GLFlagError(context, where == NULL, GL_INVALID_OPERATION);
+diff -urp MiniGL~/src/vertexarray.c MiniGL/src/vertexarray.c
+--- MiniGL~/src/vertexarray.c	2002-11-30 08:15:46.000000000 +0200
++++ MiniGL/src/vertexarray.c	2016-04-15 17:55:20.000000000 +0300
+@@ -2067,7 +2067,7 @@ void GLInterleavedArrays(GLcontext conte
+                 }
+         break;
+         default:
+-                GLFlagError(context, 1, GL_INVALIE_ENUM);
++                GLFlagError(context, 1, GL_INVALID_ENUM);
+                 context->ClientState = 0;
+         break;
+    }
 diff -urp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
 --- MiniGL~/src/vertexbuffer.c	2002-11-30 08:15:46.000000000 +0200
 +++ MiniGL/src/vertexbuffer.c	2016-04-15 17:55:10.000000000 +0300
@@ -684,8 +701,105 @@ diff -urp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
  
 diff -urp MiniGL~/src/vertexelements.c MiniGL/src/vertexelements.c
 --- MiniGL~/src/vertexelements.c	2002-11-30 08:15:48.000000000 +0200
-+++ MiniGL/src/vertexelements.c	2016-04-15 17:55:10.000000000 +0300
-@@ -2787,12 +2787,9 @@ void GLDrawElements(GLcontext context, G
++++ MiniGL/src/vertexelements.c	2016-04-15 17:55:20.000000000 +0300
+@@ -31,23 +31,19 @@ extern int AE_ClipTriangle(GLcontext con
+ extern Convfn Convert;
+ 
+ //NYI:
+-static void E_DrawQuads         (GLcontext context, const int count, const UWORD *idx);
++static void E_DrawQuads         (GLcontext context, const int count, /*const*/ UWORD *idx);
+ 
+-static void E_DrawQuadStrip     (GLcontext context, const int count, const UWORD *idx);
++static void E_DrawQuadStrip     (GLcontext context, const int count, /*const*/ UWORD *idx);
+ 
+ //implemented:
+ 
+-#ifndef __VBCC__
+-static void E_DrawTriFan           (GLcontext context, const int count, const UWORD *idx);
+-#else
+-static void E_DrawTriFan           (GLcontext context, const int count, UWORD *idx);
+-#endif
++static void E_DrawTriFan           (GLcontext context, const int count, /*const*/ UWORD *idx);
+ 
+-static void E_DrawTriStrip         (GLcontext context, const int count, const UWORD *idx);
++static void E_DrawTriStrip         (GLcontext context, const int count, /*const*/ UWORD *idx);
+ 
+-static void E_DrawTriangles     (GLcontext context, const int count, const UWORD *idx);
++static void E_DrawTriangles     (GLcontext context, const int count, /*const*/ UWORD *idx);
+ 
+-static void E_DrawFlatFan       (GLcontext context, const int count, const UWORD *idx);
++static void E_DrawFlatFan       (GLcontext context, const int count, /*const*/ UWORD *idx);
+ 
+ static PolyBuffer clipbuffer[MGL_MAXVERTS>>2];
+ 
+@@ -864,7 +860,7 @@ static INLINE void V_ToScreen(GLcontext 
+ 
+ 
+ 
+-static void E_DrawQuads(GLcontext context, const int count, const UWORD *idx)
++static void E_DrawQuads(GLcontext context, const int count, /*const*/ UWORD *idx)
+ {
+    int i;
+    //quick hack
+@@ -875,7 +871,7 @@ static void E_DrawQuads(GLcontext contex
+    }
+ }
+ 
+-static void E_DrawQuadStrip(GLcontext context, const int count, const UWORD*idx)
++static void E_DrawQuadStrip(GLcontext context, const int count, /*const*/ UWORD*idx)
+ {
+    int i;
+    int end;
+@@ -890,11 +886,7 @@ static void E_DrawQuadStrip(GLcontext co
+    }
+ }
+ 
+-#ifndef __VBCC__
+-static void E_DrawTriFan(GLcontext context, const int count, const UWORD *idx)
+-#else
+-static void E_DrawTriFan(GLcontext context, const int count, UWORD *idx)
+-#endif
++static void E_DrawTriFan(GLcontext context, const int count, /*const*/ UWORD *idx)
+ {
+       int i;
+       int size;
+@@ -1469,7 +1461,7 @@ static void E_DrawTriFan(GLcontext conte
+ }
+ 
+ 
+-static void E_DrawTriStrip(GLcontext context, const int count, const UWORD*idx)
++static void E_DrawTriStrip(GLcontext context, const int count, /*const*/ UWORD*idx)
+ {
+       int i;
+       int size;
+@@ -2234,7 +2226,7 @@ static void E_DrawTriangles_Locked(GLcon
+ }
+ 
+ 
+-static void E_DrawTriangles(GLcontext context, const int count, const UWORD*idx)
++static void E_DrawTriangles(GLcontext context, const int count, /*const*/ UWORD*idx)
+ {
+       int i;
+       ULONG local_and, local_or;
+@@ -2364,7 +2356,7 @@ static void E_DrawTriangles(GLcontext co
+       }
+ }
+ 
+-static void E_DrawFlatFan(GLcontext context, const int count, const UWORD*idx)
++static void E_DrawFlatFan(GLcontext context, const int count, /*const*/ UWORD*idx)
+ {
+       int i;
+       int vnum;
+@@ -2770,7 +2762,7 @@ void GLDrawElements(GLcontext context, G
+    if(count < 3)
+         return; //invalid vertexcount or primitive
+ 
+-   if(context->VertexArrayPipeline == GL_TRUE)
++   if(context->VertexArrayPipeline != GL_FALSE)
+    switch(type)
+    {
+       case GL_UNSIGNED_SHORT:
+@@ -2787,12 +2779,9 @@ void GLDrawElements(GLcontext context, G
                  idx[1] = ub[1];
                  idx[2] = ub[2];
  
@@ -699,7 +813,7 @@ diff -urp MiniGL~/src/vertexelements.c MiniGL/src/vertexelements.c
                  }
        break;
  
-@@ -2808,12 +2805,9 @@ void GLDrawElements(GLcontext context, G
+@@ -2808,12 +2797,9 @@ void GLDrawElements(GLcontext context, G
                  idx[1] = ul[1];
                  idx[2] = ul[2];
  
@@ -713,7 +827,8 @@ diff -urp MiniGL~/src/vertexelements.c MiniGL/src/vertexelements.c
                  }
  
        break;
-diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
+
+diff -urp MiniGL~/demos/addtest.c MiniGL/demos/addtest.c
 --- MiniGL~/demos/addtest.c	2002-11-30 08:14:54.000000000 +0200
 +++ MiniGL/demos/addtest.c	2016-04-15 17:55:10.000000000 +0300
 @@ -6,6 +6,7 @@
@@ -724,7 +839,7 @@ diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
  
  GLint width=640; GLint height=480;
  GLfloat startilt = 0.0;
-diff -urNp MiniGL~/demos/driverinfo.c MiniGL/demos/driverinfo.c
+diff -urp MiniGL~/demos/driverinfo.c MiniGL/demos/driverinfo.c
 --- MiniGL~/demos/driverinfo.c	2002-11-30 08:14:56.000000000 +0200
 +++ MiniGL/demos/driverinfo.c	2016-04-15 17:55:10.000000000 +0300
 @@ -23,6 +23,11 @@
@@ -739,7 +854,7 @@ diff -urNp MiniGL~/demos/driverinfo.c MiniGL/demos/driverinfo.c
  #endif
  #include <stdio.h>
  #include <stdlib.h>
-diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
+diff -urp MiniGL~/demos/gears.c MiniGL/demos/gears.c
 --- MiniGL~/demos/gears.c	2002-11-30 08:14:58.000000000 +0200
 +++ MiniGL/demos/gears.c	2016-04-15 17:55:10.000000000 +0300
 @@ -24,6 +24,7 @@
@@ -769,7 +884,7 @@ diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
  };
  
  float a1 = 27.0;
-diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
+diff -urp MiniGL~/demos/gears_stats.c MiniGL/demos/gears_stats.c
 --- MiniGL~/demos/gears_stats.c	2002-11-30 08:14:58.000000000 +0200
 +++ MiniGL/demos/gears_stats.c	2016-04-15 17:55:10.000000000 +0300
 @@ -570,12 +570,12 @@ draw_outside(float w1, float w2, float r
@@ -791,7 +906,7 @@ diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
  };
  
  float a1 = 27.0;
-diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
+diff -urp MiniGL~/demos/gravity.c MiniGL/demos/gravity.c
 --- MiniGL~/demos/gravity.c	2002-11-30 08:14:58.000000000 +0200
 +++ MiniGL/demos/gravity.c	2016-04-15 17:55:10.000000000 +0300
 @@ -1,6 +1,7 @@
@@ -843,7 +958,7 @@ diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
  	return 0;
 -#endif
  }
-diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
+diff -urp MiniGL~/demos/smtest.c MiniGL/demos/smtest.c
 --- MiniGL~/demos/smtest.c	2002-11-30 08:15:00.000000000 +0200
 +++ MiniGL/demos/smtest.c	2016-04-15 17:55:10.000000000 +0300
 @@ -3,6 +3,7 @@
@@ -869,7 +984,7 @@ diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
  	}
  	else
  	{
-diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
+diff -urp MiniGL~/demos/texsub.c MiniGL/demos/texsub.c
 --- MiniGL~/demos/texsub.c	2002-11-30 08:15:00.000000000 +0200
 +++ MiniGL/demos/texsub.c	2016-04-15 17:55:10.000000000 +0300
 @@ -53,6 +53,7 @@
