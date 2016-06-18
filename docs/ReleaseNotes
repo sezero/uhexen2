@@ -19,6 +19,9 @@ This is a minor bug fix and maintenance release:
   Updates to DXE exports so that more opengl driver builds would work
   without requiring an engine recompile.
 
+- Windows: Visual Studio builds no longer require yasm or nasm. Tested
+  compilation using VS2015-update/2.
+
 - All platforms, gameplay: Fixed an issue with the rider bosses Death,
   Pestilence and War in coop mode. (as reported by Spike and Korax.)
 
