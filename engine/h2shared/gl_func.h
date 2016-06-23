@@ -42,8 +42,6 @@ __GL_FUNC_EXTERN func##_f func##_fp;
 
 GL_FUNCTION(void, glBindTexture, (GLenum,GLuint))
 GL_FUNCTION(void, glDeleteTextures, (GLsizei,const GLuint *))
-/* glGenTextures() is broken in 3dfx mini-drivers.  (I can
- * easily check and add a replacement. should I bother?^?) */
 GL_FUNCTION(void, glGenTextures, (GLsizei,GLuint *))
 GL_FUNCTION(void, glTexParameterf, (GLenum,GLenum,GLfloat))
 GL_FUNCTION(void, glTexEnvf, (GLenum,GLenum,GLfloat))
@@ -120,8 +118,6 @@ GL_FUNCTION(void, glClearStencil, (GLint))
 
 #define glBindTexture_fp	glBindTexture
 #define glDeleteTextures_fp	glDeleteTextures
-/* glGenTextures() is broken in 3dfx mini-drivers.  (I can
- * easily check and add a replacement. should I bother?^?) */
 #define glGenTextures_fp	glGenTextures
 #define glTexParameterf_fp	glTexParameterf
 #define glTexEnvf_fp		glTexEnvf
