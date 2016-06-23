@@ -21,14 +21,17 @@ Known issues:
     lowers it.
   - Loading saves may often result in bugs.
   Issues don't seem to happen with "h2 -dedicated".  To be analyzed.
-  [bug #52: http://sourceforge.net/p/uhexen2/bugs/52/ ]
+  [bug #52: http://sf.net/p/uhexen2/bugs/52/ ]
 
 - HexenWorld: Coop mode is broken. Known problem since Raven's latest
   beta versions.
 
 - 3dfx Voodoo:  Palettized textures are broken with the old unmodified
-  Mesa 3.x drivers. The new Mesa-6.x drivers work fine. Windows people
+  Mesa 3.x drivers. The new Mesa-6.2 drivers work fine. Windows people
   should use the latest "MesaFX" driver.
 - 3dfx Voodoo: May not work correctly with multitexturing when running
   with gl_luminance lightmaps. This is a 3dfx limitation.
+- 3dfx Voodoo, Windows:  3dfx minigl drivers shall not work properly,
+  because their glGenTextures() implementation is broken and we rely
+  on that function. Use 3dfx OpenGL ICD or "MesaFX" drivers, instead.
 

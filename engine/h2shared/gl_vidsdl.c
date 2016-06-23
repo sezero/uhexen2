@@ -499,6 +499,7 @@ static qboolean VID_SetMode (int modenum)
 
 //====================================
 
+#if 0 /* No.. */
 static void CheckSetGlobalPalette (void)
 {
 	gl3DfxSetPaletteEXT_f gl3DfxSetPaletteEXT_fp;
@@ -547,6 +548,7 @@ static void CheckSetGlobalPalette (void)
 		gl3DfxSetPaletteEXT_fp ((GLuint *)table);
 	}
 }
+#endif /* #if 0 */
 
 static void CheckSharedTexturePalette (void)
 {
@@ -592,8 +594,10 @@ static void VID_Init8bitPalette (void)
 
 	/* Check for 8bit Extensions and initialize them */
 	CheckSharedTexturePalette();
+#if 0	/* No.. */
 	if (!have8bit)
 		CheckSetGlobalPalette();
+#endif
 
 	if (is8bit)
 		Con_SafePrintf("8-bit palettized textures enabled\n");
