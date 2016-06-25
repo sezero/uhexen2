@@ -196,9 +196,6 @@
 #define DRF_TRANSLUCENT			128
 #define DRF_ANIMATEONCE			256
 
-
-//===========================================
-
 //
 // Player Classes
 //
@@ -208,13 +205,14 @@
 
 #define CLASS_PALADIN		1
 #define CLASS_CLERIC		2
-#define CLASS_CRUSADER	CLASS_CLERIC	/* alias, the progs actually use this one */
+#define CLASS_CRUSADER		CLASS_CLERIC	/* alias, the progs actually use this one */
 #define CLASS_NECROMANCER	3
 #define CLASS_THEIF		4
-#define CLASS_THIEF	CLASS_THEIF	/* for those who type correctly ;) */
-#define CLASS_ASSASSIN	CLASS_THEIF	/* another alias, progs actually use this one */
+#define CLASS_THIEF		CLASS_THEIF	/* for those who type correctly ;) */
+#define CLASS_ASSASSIN		CLASS_THEIF	/* another alias, progs actually use this one */
 #define CLASS_DEMON		5
-#define CLASS_SUCCUBUS	CLASS_DEMON	/* alias, the h2w progs actually use this one */
+#define CLASS_SUCCUBUS		CLASS_DEMON	/* alias, the h2w progs actually use this one */
+
 
 //#define BASE_ENT_ON		1
 //#define BASE_ENT_SENT	2

@@ -190,23 +190,23 @@
 
 #define CLASS_PALADIN		1
 #define CLASS_CLERIC		2
-#define CLASS_CRUSADER	CLASS_CLERIC	/* alias, the progs actually use this one */
+#define CLASS_CRUSADER		CLASS_CLERIC	/* alias, the progs actually use this one */
 #define CLASS_NECROMANCER	3
 #define CLASS_THEIF		4
-#define CLASS_THIEF	CLASS_THEIF	/* for those who type correctly ;) */
-#define CLASS_ASSASSIN	CLASS_THEIF	/* another alias, progs actually use this one */
+#define CLASS_THIEF		CLASS_THEIF	/* for those who type correctly ;) */
+#define CLASS_ASSASSIN		CLASS_THEIF	/* another alias, progs actually use this one */
 #define CLASS_DEMON		5
-#define CLASS_SUCCUBUS	CLASS_DEMON	/* alias, the h2w progs actually use this one */
+#define CLASS_SUCCUBUS		CLASS_DEMON	/* alias, the h2w progs actually use this one */
 #define CLASS_DWARF		6
 
 //
-//Siege teams
+// Siege teams
 //
 #define ST_DEFENDER		1
 #define ST_ATTACKER		2
 
 //
-//Dm Modes
+// Dm Modes
 //
 #define DM_CAPTURE_THE_TOKEN	1
 #define DM_HUNTER		2
