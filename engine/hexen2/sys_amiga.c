@@ -53,6 +53,13 @@ cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 cvar_t		sys_throttle = {"sys_throttle", "0.02", CVAR_ARCHIVE};
 
 qboolean		isDedicated;
+#if defined(__AMIGA__) && !defined(__MORPHOS__) /* AMIGAOS3 -- FIXME: STILL NEEDED?? */
+#define USE_ECLOCK_TIMER
+#define MY_TIMERUNIT	UNIT_ECLOCK
+#else
+#define MY_TIMERUNIT	UNIT_MICROHZ
+static double		starttime;
+#endif
 static qboolean		first = true;
 
 static BPTR		amiga_stdin, amiga_stdout;
@@ -366,7 +373,7 @@ static void Sys_Init (void)
 	{
 		if ((timerio = (struct timerequest *)CreateIORequest(timerport, sizeof(struct timerequest))))
 		{
-			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
+			if (OpenDevice((STRPTR) TIMERNAME, MY_TIMERUNIT,
 					(struct IORequest *) timerio, 0) == 0)
 			{
 #ifdef __MORPHOS__
@@ -506,23 +513,21 @@ Sys_DoubleTime
 */
 double Sys_DoubleTime (void)
 {
-#if defined(__AMIGA__) && !defined(__MORPHOS__) /* AMIGAOS3 -- FIXME: STILL NEEDED?? */
-	static ULONG old_lo = 0;
+#if defined(USE_ECLOCK_TIMER)
+	static ULONG old_lo;
 	ULONG E_Freq;
 	struct EClockVal eclock;
 
-	old_lo = eclock.ev_lo;
 	E_Freq = ReadEClock(&eclock);
 
 	if (first)
 	{
 		first = false;
 		old_lo = eclock.ev_lo;
-		return (double)eclock.ev_lo / (double)E_Freq;
+		return 0.0;
 	}
 	return (double)(eclock.ev_lo - old_lo) / (double)E_Freq;
 #else
-	static double	starttime;
 	struct timeval	tp;
 	double		now;
 
