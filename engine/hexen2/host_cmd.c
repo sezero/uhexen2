@@ -1143,10 +1143,6 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 				 * the map.)  -- O.S. */
 					Con_DPrintf("%s: entnum %d >= sv.num_edicts (%d)\n",
 							__thisfunc__, entnum, sv.num_edicts);
-					#if 0 /* EDICT_NUM() checks this already */
-					if (entnum >= MAX_EDICTS)
-						Host_Error ("%s: no free edicts", __thisfunc__);
-					#endif
 					sv.num_edicts = entnum + 1;
 				}
 
