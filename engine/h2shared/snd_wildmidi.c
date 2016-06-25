@@ -2,7 +2,7 @@
  * MIDI streaming music support using WildMIDI library.
  *
  * wildmidi at least v0.2.3.x is required at both compile and runtime:
- * Latest stable v0.3.8 (as of this writing) is highly recommended:
+ * Latest stable v0.3.9 (as of this writing) is highly recommended :
  * - wildmidi-0.2.2 has a horrific mistake of freeing the buffer that
  *   you pass with WildMidi_OpenBuffer() when you do WildMidi_Close().
  * - wildmidi-0.2.3.x-0.3.x had a regression, resulting in perversely
@@ -10,8 +10,7 @@
  *   repetitive malloc/free calls; fixed as of 0.3.5.
  * - wildmidi-0.2.x-0.3.x had a seek-to-0 bug, which might result in
  *   truncated start issues with some midis; fixed as of 0.3.8.
- * - wildmidi-0.4.x (not yet released as of this writing) has some api
- *   changes against 0.2.3/0.3.x.
+ * - the new wildmidi-0.4.x has some api changes against 0.2.3/0.3.x.
  *
  * Copyright (C) 2010-2015 O.Sezer <sezero@users.sourceforge.net>
  *
