@@ -63,6 +63,12 @@ struct Library		*TimerBase;
 #else
 struct Device		*TimerBase;
 #endif
+#if defined(__AMIGA__) && !defined(__MORPHOS__)  /* for AMIGAOS3 */
+#define USE_ECLOCK_TIMER
+#define MY_TIMERUNIT	UNIT_ECLOCK
+#else
+#define MY_TIMERUNIT	UNIT_MICROHZ
+#endif
 #endif /*  _AMIGA */
 
 // REPLACEMENTS FOR LIBRARY FUNCTIONS --------------------------------------
@@ -230,7 +236,7 @@ static void AMIGA_TimerInit (void)
 	{
 		if ((timerio = (struct timerequest *)CreateIORequest(timerport, sizeof(struct timerequest))))
 		{
-			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
+			if (OpenDevice((STRPTR) TIMERNAME, MY_TIMERUNIT,
 					(struct IORequest *) timerio, 0) == 0)
 			{
 #ifdef __MORPHOS__
@@ -265,11 +271,19 @@ static void AMIGA_TimerInit (void)
 
 double COM_GetTime (void)
 {
+#if defined(USE_ECLOCK_TIMER)
+	struct EClockVal eclock;
+	ULONG E_Freq;
+	if (!TimerBase) AMIGA_TimerInit();
+	E_Freq = ReadEClock(&eclock);
+	return (double)eclock.ev_lo / (double)E_Freq;
+#else
 	struct timeval tv;
 	if (!TimerBase)
 		AMIGA_TimerInit();
 	GetSysTime(&tv);
 	return tv.tv_secs + tv.tv_micro / 1000000.0;
+#endif
 }
 
 #else /* GENERIC CASE: */

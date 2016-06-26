@@ -34,7 +34,13 @@
 #include <time.h>
 
 
+#if defined(__AMIGA__) && !defined(__MORPHOS__)  /* for AMIGAOS3 */
+#define USE_ECLOCK_TIMER
+#define MY_TIMERUNIT	UNIT_ECLOCK
+#else
+#define MY_TIMERUNIT	UNIT_MICROHZ
 static double		starttime;
+#endif
 static qboolean		first = true;
 
 static BPTR		amiga_stdin, amiga_stdout;
@@ -122,6 +128,21 @@ char *Sys_ConsoleInput (void)
 
 double Sys_DoubleTime (void)
 {
+#if defined(USE_ECLOCK_TIMER)
+	static ULONG old_lo;
+	ULONG E_Freq;
+	struct EClockVal eclock;
+
+	E_Freq = ReadEClock(&eclock);
+
+	if (first)
+	{
+		first = false;
+		old_lo = eclock.ev_lo;
+		return 0.0;
+	}
+	return (double)(eclock.ev_lo - old_lo) / (double)E_Freq;
+#else
 	struct timeval	tp;
 	double		now;
 
@@ -137,6 +158,7 @@ double Sys_DoubleTime (void)
 	}
 
 	return now - starttime;
+#endif
 }
 
 //=============================================================================
@@ -147,7 +169,7 @@ static void Sys_Init (void)
 	{
 		if ((timerio = (struct timerequest *)CreateIORequest(timerport, sizeof(struct timerequest))))
 		{
-			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
+			if (OpenDevice((STRPTR) TIMERNAME, MY_TIMERUNIT,
 					(struct IORequest *) timerio, 0) == 0)
 			{
 #ifdef __MORPHOS__
