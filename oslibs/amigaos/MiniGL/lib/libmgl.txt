@@ -1,5 +1,5 @@
 this was cross-compiled on a linux machine for m68k-amigaos using a
-binutils-2.9.1/gcc-2.95.4 toolchaih, after applying the minigl.diff
+binutils-2.9.1/gcc-2.95.4 toolchain, after applying the minigl.diff
 included here. for the cross-compiler toolchain, see:
 https://github.com/sezero/amigaos-cross-toolchain
 https://github.com/cahirwpz/amigaos-cross-toolchain
