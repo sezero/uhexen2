@@ -101,14 +101,14 @@
  */
 #if !defined(OPT_DEFINED)
 /*#define USE_DEBUG */
-  #define USE_BOOTP
+/*#define USE_BOOTP */
   #define USE_DHCP
 /*#define USE_LANGUAGE */
   #define USE_FRAGMENTS
 /*#define USE_STATISTICS*/
 /*#define USE_BIND */
   #define USE_BSD_API
-  #define USE_BSD_FATAL
+/*#define USE_BSD_FATAL */
   #define USE_LOOPBACK
   #define USE_BUFFERED_IO
 /*#define USE_TFTP */
@@ -123,7 +123,7 @@
 #if defined(__DJGPP__) || defined(__HIGHC__) || defined(WATCOM386) || \
     defined(DMC386) || defined(WIN32)
 /*#define USE_ECHO_DISC */
-  #define USE_RARP
+/*#define USE_RARP */
 /*#define USE_IPV6 */
 /*#define USE_IDNA */
 /*#define USE_TCP_MD5*/
@@ -132,7 +132,7 @@
 #endif
 
 #if defined(__DJGPP__)
-  #define USE_FSEXT
+/*#define USE_FSEXT */
 /*#define USE_RS232_DBG*/
 /*#define USE_FORTIFY */
 /*#define USE_SECURE_ARP */
