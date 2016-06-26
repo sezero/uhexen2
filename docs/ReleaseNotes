@@ -12,7 +12,7 @@ This is a minor bug fix and maintenance release:
 - Hexenworld server: Added "-protocol x" command line option to force
   the server to use a specific protocol (25 or 26), if so required.
 
-- Amiga: Video fixes.
+- Amiga: Video fixes.  Initial m68k-amigaos support (unstable - test.)
 
 - DOS, 3dfx opengl: Macronix (MX86251) variants of Voodoo Rush boards
   are now functional. Further updates/fixes to opengl and glide drivers.
