@@ -35,7 +35,7 @@
 #include <proto/graphics.h>
 #include <proto/cybergraphics.h>
 
-#ifdef __AROS__  /* TODO: glA support. */
+#ifdef __AROS__ /* TODO: glA support. */
 #include <GL/arosmesa.h>
 #elif defined __MORPHOS__
 #include <intuition/intuitionbase.h>
