@@ -296,6 +296,7 @@ const char *Sys_FindFirstFile (const char *path, const char *pattern)
 	else
 	{
 		FreeVec(apath);
+		apath = NULL;
 		return NULL;
 	}
 
