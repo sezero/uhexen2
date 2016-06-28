@@ -62,7 +62,7 @@ void LOG_Print (const char *logdata)
 	if (!log_fd)
 		return;
 
-	Write (log_fd, logdata, strlen(logdata));
+	Write (log_fd, (CONST APTR) logdata, strlen(logdata));
 }
 #else
 void LOG_Print (const char *logdata)
