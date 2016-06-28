@@ -19,6 +19,7 @@
 
 #include "q_stdinc.h"
 #include "q_stdint.h"
+#include "arch_def.h"
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -32,6 +33,11 @@
 #include <unistd.h>
 #include <dir.h>
 #include <fcntl.h>
+#elif defined(PLATFORM_AMIGA)
+#include <proto/exec.h>
+#include <proto/dos.h>
+#include <proto/timer.h>
+#include <time.h>
 #else /* POSIX */
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -309,6 +315,81 @@ static long get_millisecs (void)
 	ul1.LowPart = ft.dwLowDateTime;
 
 	return (long)(ul1.QuadPart / 10000);
+}
+
+#elif defined(PLATFORM_AMIGA)
+static int Sys_unlink (const char *path)
+{
+	if (DeleteFile((const STRPTR) path) != 0)
+		return 0;
+	return -1;
+}
+
+static int Sys_rename (const char *oldp, const char *newp)
+{
+	if (Rename((const STRPTR) oldp, (const STRPTR) newp) != 0)
+		return 0;
+	return -1;
+}
+
+static long Sys_filesize (const char *path)
+{
+	long size = -1;
+	BPTR fh = Open((const STRPTR) path, MODE_OLDFILE);
+	if (fh)
+	{
+		struct FileInfoBlock *fib = (struct FileInfoBlock*)
+					AllocDosObject(DOS_FIB, NULL);
+		if (fib != NULL)
+		{
+			if (ExamineFH(fh, fib))
+				size = fib->fib_Size;
+			FreeDosObject(DOS_FIB, fib);
+		}
+		Close(fh);
+	}
+	return size;
+}
+
+static int Sys_FileType (const char *path)
+{
+	int type = FS_ENT_NONE;
+	BPTR fh = Open((const STRPTR) path, MODE_OLDFILE);
+	if (fh)
+	{
+		struct FileInfoBlock *fib = (struct FileInfoBlock*)
+					AllocDosObject(DOS_FIB, NULL);
+		if (fib != NULL)
+		{
+			if (ExamineFH(fh, fib))
+			{
+				if (fib->fib_DirEntryType >= 0)
+					type = FS_ENT_DIRECTORY;
+				else	type = FS_ENT_FILE;
+			}
+			FreeDosObject(DOS_FIB, fib);
+		}
+		Close(fh);
+	}
+	return type;
+}
+
+static int check_access (const char *name)
+{
+	if (Sys_FileType(name) != FS_ENT_FILE)
+		return ACCESS_NOFILE;
+
+	return ACCESS_FILEOK;
+}
+
+static long get_millisecs (void)
+{
+	long secs, usecs;
+	struct DateStamp ds;
+	DateStamp(&ds);
+	secs = (long) (ds.ds_Days*86400 + ds.ds_Minute*60 + ds.ds_Tick/TICKS_PER_SECOND);
+	usecs= (long) (ds.ds_Tick % TICKS_PER_SECOND) * (1000000L/TICKS_PER_SECOND);
+	return secs*1000L + usecs/1000L;
 }
 
 #else /* POSIX */

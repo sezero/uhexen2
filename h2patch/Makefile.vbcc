@@ -1,7 +1,4 @@
-# GNU Makefile for the H2PATCH tool - AmigaOS and MorphOS.
-# $Id$
-#
-# To build a debug version:		make DEBUG=yes
+# GNU Makefile for the H2PATCH tool - m68k-amigaos using VBCC
 #
 
 UHEXEN2_TOP:=..
@@ -9,24 +6,15 @@ UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
 OSLIBS:=$(UHEXEN2_TOP)/oslibs
 
-CC ?= gcc
-ifeq ($(origin CC),default)
-# refuse the stupid 'cc' default of make
-# which not necessarily exist everywhere
-CC  = gcc
-endif
-LINKER = $(CC)
+CC      = vc
+LINKER  = $(CC)
 
-CPUFLAGS=
-CFLAGS  = -g -Wall -noixemul
-CFLAGS += $(CPUFLAGS)
-ifndef DEBUG
-CFLAGS += -O2 -DNDEBUG=1
-endif
-ifeq ($(AOS3),1)
-CFLAGS  += -I$(OSLIBS)/amigaos/include
-endif
-LDFLAGS = -noixemul
+CFLAGS  = -O1 -speed -c99 -cpu=68060 -fpu=68060
+CFLAGS += -D__AMIGA__
+CFLAGS += -DNDEBUG=1
+CFLAGS += -I$(OSLIBS)/amigaos/vbcc/include -I$(OSLIBS)/amigaos/include
+LDFLAGS =
+LDLIBS  =
 
 XDELTA_DIR:= $(LIBS_DIR)/xdelta3
 XDFLAGS:= -DXD3_DEBUG=0
@@ -64,7 +52,7 @@ xdelta3.o: $(XD3DEPS)
 	$(CC) $(XDFLAGS) -c $(XDELTA_DIR)/xdelta3.c -o xdelta3.o
 
 h2patch: $(OBJECTS)
-	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@
+	$(LINKER) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $@
 
 clean:
 	rm -f *.o *.res

@@ -53,12 +53,15 @@
 #ifndef XD3_WIN32
 #define XD3_WIN32 0
 #endif
+#ifndef XD3_AMIGA
+#define XD3_AMIGA 0
+#endif
 
 /* Combines xd3_strerror() and strerror() */
 const char* xd3_mainerror(int err_num);
 
 /* If none are set, default to posix. */
-#if (XD3_POSIX + XD3_STDIO + XD3_WIN32) == 0
+#if (XD3_POSIX + XD3_STDIO + XD3_WIN32 + XD3_AMIGA) == 0
 #undef XD3_POSIX
 #define XD3_POSIX 1
 #endif
@@ -84,6 +87,9 @@ const char* xd3_mainerror(int err_num);
 #include <dos.h>
 #include <io.h>
 #include <unistd.h>
+#elif (XD3_AMIGA)
+#include <proto/exec.h>
+#include <proto/dos.h>
 #else /* POSIX */
 #include <unistd.h> /* lots */
 #include <sys/stat.h> /* stat() and fstat() */
@@ -116,6 +122,8 @@ struct _main_file
   int                 file;
 #elif XD3_WIN32
   HANDLE              file;
+#elif XD3_AMIGA
+  BPTR                file;
 #endif
 
   int                 mode;          /* XO_READ and XO_WRITE */
@@ -227,7 +235,23 @@ main_free (void *ptr)
 static int
 get_errno (void)
 {
-#if !(defined(_WIN32) || defined(_WIN64))
+#if defined(_WIN32)
+  DWORD err_num = GetLastError();
+  if (err_num == NO_ERROR)
+    {
+      err_num = XD3_INTERNAL;
+    }
+  return err_num;
+#elif (XD3_AMIGA)
+  switch (IoErr()) {
+  case ERROR_OBJECT_NOT_FOUND:
+    return ENOENT;
+  case ERROR_DISK_FULL:
+   return ENOSPC;
+  default:
+   return EIO; /* better ?? */
+  }
+#else
   if (errno == 0)
     {
       if (use_options->debug_print)
@@ -235,13 +259,6 @@ get_errno (void)
       errno = XD3_INTERNAL;
     }
   return errno;
-#else
-  DWORD err_num = GetLastError();
-  if (err_num == NO_ERROR)
-    {
-      err_num = XD3_INTERNAL;
-    }
-  return err_num;
 #endif
 }
 
@@ -298,6 +315,7 @@ xd3_mainerror(int err_num) {
 #define XOPEN_POSIX  (xfile->mode == XO_READ ? (O_RDONLY | O_BINARY)  :  \
 				(O_WRONLY | O_CREAT | O_TRUNC | O_BINARY))
 #define XOPEN_MODE   (xfile->mode == XO_READ ? 0 : 0666)
+#define XOPEN_AMIGA  (xfile->mode == XO_READ ? MODE_OLDFILE : MODE_NEWFILE)
 
 #define XF_ERROR(op, name, ret) \
   do {									\
@@ -312,6 +330,8 @@ xd3_mainerror(int err_num) {
 #elif XD3_POSIX
 #define XFNO(f) f->file
 #elif XD3_WIN32
+#define XFNO(f) -1
+#elif XD3_AMIGA
 #define XFNO(f) -1
 #endif
 
@@ -339,6 +359,9 @@ main_file_isopen (main_file *xfile)
 
 #elif XD3_WIN32
   return xfile->file != INVALID_HANDLE_VALUE;
+
+#elif XD3_AMIGA
+  return xfile->file != 0;
 #endif
 }
 
@@ -365,6 +388,11 @@ main_file_close (main_file *xfile)
     ret = get_errno ();
   }
   xfile->file = INVALID_HANDLE_VALUE;
+
+#elif XD3_AMIGA
+  ret = !Close (xfile->file);
+  xfile->file = 0;
+  if (ret) ret = get_errno ();
 #endif
 
   if (ret != 0) { XF_ERROR ("close", xfile->filename, ret = get_errno ()); }
@@ -428,6 +456,10 @@ main_file_open (main_file *xfile, const char* name, int mode)
     {
       ret = get_errno ();
     }
+
+#elif XD3_AMIGA
+  xfile->file = Open((const STRPTR) name, XOPEN_AMIGA);
+  ret = (xfile->file == 0) ? get_errno () : 0;
 #endif
   if (ret) { XF_ERROR ("open", name, ret); }
   else     { xfile->nread = 0; }
@@ -472,6 +504,19 @@ main_file_stat (main_file *xfile, xoff_t *size)
     {
       return get_errno ();
     }
+  *size = filesize;
+#elif (XD3_AMIGA)
+  struct FileInfoBlock *fib = (struct FileInfoBlock*)
+				  AllocDosObject(DOS_FIB, NULL);
+  long filesize = -1;
+  if (fib != NULL)
+    {
+      if (ExamineFH(xfile->file, fib))
+        filesize = fib->fib_Size;
+      FreeDosObject(DOS_FIB, fib);
+    }
+  if (filesize < 0)
+    return get_errno ();
   *size = filesize;
 #else
   struct stat sbuf;
@@ -518,6 +563,34 @@ xd3_posix_io (int fd, uint8_t *buf, usize_t size,
 	}
 
       if (nread != NULL && result == 0) { break; }
+
+      nproc += result;
+    }
+  if (nread != NULL) { (*nread) = nproc; }
+  return 0;
+}
+#endif
+
+#if (XD3_AMIGA)
+/* Read() and Write() are unbuffered.  This calls Read() or Write()
+ * repeatedly until the buffer is full or EOF.
+ * The NREAD parameter is not set for write, NULL is passed.  Return
+ * is signed, < 0 indicate errors, otherwise byte count. */
+static int
+xd3_amiga_io (BPTR fd, uint8_t *buf, usize_t size,
+	      int is_read, usize_t *nread)
+{
+  usize_t nproc = 0;
+
+  while (nproc < size)
+    {
+      LONG result = (is_read)?
+		    Read(fd, buf + nproc, size - nproc) :
+		    Write(fd, buf + nproc, size - nproc);
+
+      if (result < 0) return get_errno ();
+
+      if (nread != NULL && result == 0) break;
 
       nproc += result;
     }
@@ -588,6 +661,8 @@ main_file_read (main_file  *ifile,
   ret = xd3_posix_io (ifile->file, buf, size, (xd3_posix_func*) &read, nread);
 #elif XD3_WIN32
   ret = xd3_win32_io (ifile->file, buf, size, 1 /* is_read */, nread);
+#elif XD3_AMIGA
+  ret = xd3_amiga_io (ifile->file, buf, size, 1 /* is_read */, nread);
 #endif
 
   if (ret)
@@ -620,6 +695,9 @@ main_file_write (main_file *ofile, uint8_t *buf, usize_t size, const char *msg)
 
 #elif XD3_WIN32
   ret = xd3_win32_io (ofile->file, buf, size, 0, NULL);
+
+#elif XD3_AMIGA
+  ret = xd3_amiga_io (ofile->file, buf, size, 0, NULL);
 
 #endif
 
@@ -670,6 +748,10 @@ main_file_seek (main_file *xfile, xoff_t pos)
       ret = get_errno ();
     }
 # endif
+
+#elif XD3_AMIGA
+  if (Seek(xfile->file, pos, OFFSET_BEGINNING) < 0)
+    ret = get_errno ();
 #endif
 
   return ret;
