@@ -33,6 +33,12 @@
 #include <proto/graphics.h>
 #include <proto/cybergraphics.h>
 
+/* why is WriteLUTPixelArray not included in vbcc_target_m68k-amigaos.lha ?? */
+#if defined(__VBCC__) && defined(__M68K__) && !defined(WriteLUTPixelArray)
+ULONG __WriteLUTPixelArray(__reg("a6") void *, __reg("a0") APTR srcRect, __reg("d0") UWORD SrcX, __reg("d1") UWORD SrcY, __reg("d2") UWORD SrcMod, __reg("a1") struct RastPort * a1arg, __reg("a2") APTR a2arg, __reg("d3") UWORD DestX, __reg("d4") UWORD DestY, __reg("d5") UWORD SizeX, __reg("d6") UWORD SizeY, __reg("d7") UBYTE CTFormat)="\tjsr\t-198(a6)";
+#define WriteLUTPixelArray(srcRect, SrcX, SrcY, SrcMod, a1arg, a2arg, DestX, DestY, SizeX, SizeY, CTFormat) __WriteLUTPixelArray(CyberGfxBase, (srcRect), (SrcX), (SrcY), (SrcMod), (a1arg), (a2arg), (DestX), (DestY), (SizeX), (SizeY), (CTFormat))
+#endif
+
 #include "quakedef.h"
 #include "d_local.h"
 #include "cfgfile.h"
