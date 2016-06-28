@@ -1,0 +1,5 @@
+this was cross-compiled on a linux machine for m68k-amigaos using
+vbcc-0.9e after applying the minigl-vbcc.diff patch included here.
+for the cross-compiler toolchain, see:
+https://github.com/sezero/amigaos-cross-toolchain
+https://github.com/cahirwpz/amigaos-cross-toolchain
