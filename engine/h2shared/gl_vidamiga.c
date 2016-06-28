@@ -59,7 +59,6 @@ typedef void (*AMIGAGL_Proc)();
 #include "cfgfile.h"
 #include "bgmusic.h"
 #include "cdaudio.h"
-#include <unistd.h>
 #include "filenames.h"
 
 #if !(defined(__AROS__) || defined(__MORPHOS__))
