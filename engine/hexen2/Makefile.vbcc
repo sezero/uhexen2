@@ -1,0 +1,493 @@
+# GNU Makefile for hexen2 client/server binaries for m68k-amigaos using VBCC.
+# Remember to "make clean" between different types of builds or targets.
+#
+# To see valid targets:			make help
+# To use a compiler other than vbcc:	make CC=compiler_name [other stuff]
+# To build for the demo version:	make DEMO=1 [other stuff]
+#
+
+# PATH SETTINGS:
+UHEXEN2_TOP:=../..
+ENGINE_TOP:=..
+COMMONDIR:=$(ENGINE_TOP)/h2shared
+UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
+LIBS_DIR:=$(UHEXEN2_TOP)/libs
+OSLIBS:=$(UHEXEN2_TOP)/oslibs
+
+# GENERAL OPTIONS (customize as required)
+
+# Don't use SDL on AmigaOS
+USE_SDL=no
+# the sdl-config command
+SDL_CONFIG =sdl-config
+SDL_CFLAGS = $(shell $(SDL_CONFIG) --cflags 2> /dev/null)
+SDL_LIBS   = $(shell $(SDL_CONFIG) --libs 2> /dev/null)
+
+# dynamic loading of ogl functions doesn't work
+LINK_GL_LIBS=yes
+
+# enable sound support?
+USE_SOUND=yes
+# SDL audio support?
+USE_SDLAUDIO=no
+
+# no native midi driver code yet
+USE_MIDI=no
+
+# no native cdaudio code yet
+USE_CDAUDIO=no
+# use SDL cdaudio? (otherwise platform specific cdrom code will
+# be used.  The only problem with SDL_cdrom is that it lacks
+# proper volume controls.  See cd_unix.h for the availability of
+# platform specific cdaudio drivers.
+# NOTE: SDL dropped cdaudio support in version 1.3.0 and later!)
+USE_SDLCD=no
+
+# Enable/disable codecs for streaming music support:
+USE_CODEC_WAVE=yes
+USE_CODEC_FLAC=no
+USE_CODEC_MP3=no
+USE_CODEC_VORBIS=no
+USE_CODEC_OPUS=no
+# either mikmod (preferred) or modplug (both possible
+# but not needed nor meaningful.)
+USE_CODEC_MIKMOD=no
+USE_CODEC_MODPLUG=no
+USE_CODEC_UMX=no
+# either timidity (preferred) or wildmidi (both possible
+# but not needed nor meaningful)
+USE_CODEC_TIMIDITY=yes
+USE_CODEC_WILDMIDI=no
+# compile timidity with DLS instruments support? (no:
+# the dls code isn't good enough and isn't used in unix
+# where timidity is normally needed, either.)
+TIMIDITY_USE_DLS=no
+# which library to use for mp3 decoding: mad or mpg123
+MP3LIB=mad
+# which library to use for ogg decoding: vorbis or tremor
+VORBISLIB=vorbis
+# whether the codecs allocate on the zone instead of
+# system memory (set to yes for DOS builds, for example)
+CODECS_USE_ZONE=no
+
+# Names of the binaries
+SW_BINARY:=hexen2
+GL_BINARY:=glhexen2
+
+
+#############################################################
+# Compiler flags
+#############################################################
+
+CC       = vc
+LINKER   = $(CC)
+
+CFLAGS  = -O1 -speed -c99 -cpu=68060 -fpu=68060
+CPPFLAGS= -D__AMIGA__
+LDFLAGS = -L$(OSLIBS)/amigaos/vbcc/lib
+# linkage may be sensitive to order: add SYSLIBS after all others.
+SYSLIBS = -lm040 -lamiga -lauto
+# compiler includes
+INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
+# for extra missing headers
+INCLUDES += -I$(OSLIBS)/amigaos/vbcc/include -I$(OSLIBS)/amigaos/include
+# AmiTCP SDK
+NET_INC   = -I$(OSLIBS)/amigaos/netinclude
+
+# end of compiler flags
+#############################################################
+
+
+#############################################################
+# Other build flags
+#############################################################
+
+ifdef DEMO
+CPPFLAGS+= -DDEMOBUILD
+endif
+
+ifdef DEBUG
+# This activates some extra code in hexen2/hexenworld C source
+CPPFLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
+endif
+
+#############################################################
+# OpenGL settings
+#############################################################
+GL_DEFS = -DGLQUAKE
+GL_LIBS =
+
+
+#############################################################
+# streaming music initial setup
+#############################################################
+ifneq ($(USE_SOUND),yes)
+USE_CODEC_WAVE=no
+USE_CODEC_FLAC=no
+USE_CODEC_TIMIDITY=no
+USE_CODEC_WILDMIDI=no
+USE_CODEC_MIKMOD=no
+USE_CODEC_MODPLUG=no
+USE_CODEC_UMX=no
+USE_CODEC_MP3=no
+USE_CODEC_VORBIS=no
+USE_CODEC_OPUS=no
+endif
+# sanity checking for decoder library options
+ifneq ($(VORBISLIB),vorbis)
+ifneq ($(VORBISLIB),tremor)
+$(error Invalid VORBISLIB setting)
+endif
+endif
+ifneq ($(MP3LIB),mpg123)
+ifneq ($(MP3LIB),mad)
+$(error Invalid MP3LIB setting)
+endif
+endif
+
+# Build for which Amiga GL implementation:
+# Either amesa (StormMesa), or minigl (Hyperion's MiniGL 1.2)
+AMIGA_GLIMP=minigl
+ifeq ($(AMIGA_GLIMP),minigl)
+GL_DEFS+= -DREFGL_MINIGL
+#GL_DEFS+= -DUSE_MGLAPI=1
+GL_DEFS+= -I$(OSLIBS)/amigaos/MiniGL/include
+GL_LINK = -L$(OSLIBS)/amigaos/MiniGL/lib/vbcc -lmgl
+endif
+ifeq ($(AMIGA_GLIMP),amesa)
+GL_DEFS+= -DREFGL_AMESA
+GL_DEFS+= -I$(OSLIBS)/amigaos/StormMesa/include
+GL_LINK = -L$(OSLIBS)/amigaos/StormMesa/lib/vbcc -lgl
+endif
+# dynamic loading of ogl functions doesn't work
+LINK_GL_LIBS=yes
+
+#CODEC_INC = -I$(OSLIBS)/amigaos/codecs/include
+#CODEC_LINK= -L$(OSLIBS)/amigaos/codecs/lib
+#INCLUDES += $(CODEC_INC)
+#LDFLAGS += $(CODEC_LINK)
+
+ifeq ($(USE_SOUND),yes)
+ifneq ($(USE_SDLAUDIO),yes)
+CPPFLAGS+= -DNO_SDL_AUDIO
+endif
+endif
+
+ifeq ($(USE_CDAUDIO),yes)
+ifeq ($(USE_SDLCD),yes)
+CPPFLAGS+= -DWITH_SDLCD
+endif
+endif
+
+ifeq ($(USE_SDL),yes)
+# SDLQUAKE must be defined for all SDL using platforms/targets
+CPPFLAGS+= -DSDLQUAKE
+CFLAGS  += $(SDL_CFLAGS)
+LDFLAGS += $(SDL_LIBS)
+endif
+
+
+#############################################################
+# Streaming music settings
+#############################################################
+ifeq ($(MP3LIB),mad)
+mp3_obj=snd_mp3.o
+lib_mp3dec=-lmad
+endif
+ifeq ($(MP3LIB),mpg123)
+mp3_obj=snd_mpg123.o
+lib_mp3dec=-lmpg123
+endif
+ifeq ($(VORBISLIB),vorbis)
+cpp_vorbisdec=
+lib_vorbisdec=-lvorbisfile -lvorbis -logg
+endif
+ifeq ($(VORBISLIB),tremor)
+cpp_vorbisdec=-DVORBIS_USE_TREMOR
+lib_vorbisdec=-lvorbisidec -logg
+endif
+
+ifeq ($(USE_CODEC_FLAC),yes)
+CPPFLAGS+= -DUSE_CODEC_FLAC
+LDFLAGS+=  -lFLAC
+endif
+ifeq ($(USE_CODEC_WAVE),yes)
+CPPFLAGS+= -DUSE_CODEC_WAVE
+endif
+ifeq ($(USE_CODEC_OPUS),yes)
+CPPFLAGS+= -DUSE_CODEC_OPUS
+LDFLAGS+= -lopusfile -lopus -logg
+endif
+ifeq ($(USE_CODEC_VORBIS),yes)
+CPPFLAGS+= -DUSE_CODEC_VORBIS $(cpp_vorbisdec)
+LDFLAGS+= $(lib_vorbisdec)
+endif
+ifeq ($(USE_CODEC_MP3),yes)
+CPPFLAGS+= -DUSE_CODEC_MP3
+LDFLAGS+= $(lib_mp3dec)
+endif
+ifeq ($(USE_CODEC_MIKMOD),yes)
+CPPFLAGS+= -DUSE_CODEC_MIKMOD
+LDFLAGS+=  -lmikmod
+endif
+ifeq ($(USE_CODEC_MODPLUG),yes)
+CPPFLAGS+= -DUSE_CODEC_MODPLUG
+LDFLAGS+=  -lmodplug
+endif
+ifeq ($(USE_CODEC_UMX),yes)
+CPPFLAGS+= -DUSE_CODEC_UMX
+endif
+ifeq ($(USE_CODEC_TIMIDITY),yes)
+CPPFLAGS+= -DUSE_CODEC_TIMIDITY
+ifeq ($(TIMIDITY_USE_DLS),yes)
+CPPFLAGS+= -DTIMIDITY_USE_DLS
+endif
+LDFLAGS+= -L$(LIBS_DIR)/timidity -ltimidity
+TIMIDEPS=$(LIBS_DIR)/timidity/timidity.lib
+else
+TIMIDEPS=
+endif
+ifeq ($(USE_CODEC_WILDMIDI),yes)
+CPPFLAGS+= -DUSE_CODEC_WILDMIDI
+LDFLAGS+= -lWildMidi
+endif
+
+ifeq ($(CODECS_USE_ZONE),yes)
+CPPFLAGS+=-DCODECS_USE_ZONE
+endif
+
+# End of streaming music settings
+#############################################################
+
+#############################################################
+# Finalize things after the system specific overrides:
+#############################################################
+
+ifneq ($(LINK_GL_LIBS),yes)
+GL_DEFS+= -DGL_DLSYM
+else
+GL_LIBS+= $(GL_LINK)
+endif
+#
+#############################################################
+
+
+# Rules for turning source files into .o files
+%.o: %.c
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
+%.o: $(COMMONDIR)/%.c
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
+%.o: $(UHEXEN2_SHARED)/%.c
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
+
+# Objects
+
+# Sound objects
+ifneq ($(USE_SOUND),yes)
+MUSIC_OBJS:= bgmnull.o
+SOUND_ASM :=
+CPPFLAGS += -D_NO_SOUND
+SYSOBJ_SND :=
+COMOBJ_SND := snd_null.o $(MUSIC_OBJS)
+else
+MUSIC_OBJS:= bgmusic.o \
+	snd_codec.o \
+	snd_flac.o \
+	snd_wave.o \
+	snd_vorbis.o \
+	snd_opus.o \
+	$(mp3_obj) \
+	snd_mikmod.o \
+	snd_modplug.o \
+	snd_umx.o \
+	snd_timidity.o \
+	snd_wildmidi.o
+COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o $(SOUND_ASM) snd_mem.o $(MUSIC_OBJS)
+SYSOBJ_SND := snd_ahi.o snd_sdl.o
+# end of Sound objects
+endif
+
+# MIDI objects
+ifneq ($(USE_MIDI),yes)
+SYSOBJ_MIDI:= midi_nul.o
+CPPFLAGS += -D_NO_MIDIDRV
+else
+# no native midi driver yet
+SYSOBJ_MIDI:= midi_nul.o
+CPPFLAGS += -D_NO_MIDIDRV
+# end of MIDI objects
+endif
+
+# CDAudio objects
+ifneq ($(USE_CDAUDIO),yes)
+SYSOBJ_CDA:= cd_null.o
+CPPFLAGS += -D_NO_CDAUDIO
+else
+SYSOBJ_CDA := cd_sdl.o
+# end of CDAudio objects
+endif
+
+# Other platform specific object settings
+ifeq ($(USE_SDL),yes)
+SYSOBJ_INPUT := in_sdl.o
+SYSOBJ_GL_VID:= gl_vidsdl.o
+SYSOBJ_SOFT_VID:= vid_sdl.o
+else
+SYSOBJ_INPUT := in_amiga.o
+SYSOBJ_GL_VID:= gl_vidamiga.o
+SYSOBJ_SOFT_VID:= vid_cgx.o
+endif
+SYSOBJ_NET := net_bsd.o net_udp.o
+SYSOBJ_SYS := sys_amiga.o
+
+# Final list of objects
+SOFTOBJS = \
+	d_edge.o \
+	d_fill.o \
+	d_init.o \
+	d_modech.o \
+	d_part.o \
+	d_polyse.o \
+	d_scan.o \
+	d_sky.o \
+	d_sprite.o \
+	d_surf.o \
+	d_vars.o \
+	d_zpoint.o \
+	r_aclip.o \
+	r_alias.o \
+	r_bsp.o \
+	r_draw.o \
+	r_edge.o \
+	r_efrag.o \
+	r_light.o \
+	r_main.o \
+	r_misc.o \
+	r_part.o \
+	r_sky.o \
+	r_sprite.o \
+	r_surf.o \
+	r_vars.o \
+	screen.o \
+	$(SYSOBJ_SOFT_VID) \
+	draw.o \
+	model.o
+
+GLOBJS = \
+	gl_refrag.o \
+	gl_rlight.o \
+	gl_rmain.o \
+	gl_rmisc.o \
+	r_part.o \
+	gl_rsurf.o \
+	gl_screen.o \
+	gl_warp.o \
+	$(SYSOBJ_GL_VID) \
+	gl_draw.o \
+	gl_mesh.o \
+	gl_model.o
+
+COMMONOBJS = \
+	$(SYSOBJ_INPUT) \
+	$(COMOBJ_SND) \
+	$(SYSOBJ_SND) \
+	$(SYSOBJ_CDA) \
+	$(SYSOBJ_MIDI) \
+	$(SYSOBJ_NET) \
+	net_dgrm.o \
+	net_loop.o \
+	net_main.o \
+	chase.o \
+	cl_demo.o \
+	cl_effect.o \
+	cl_inlude.o \
+	cl_input.o \
+	cl_main.o \
+	cl_parse.o \
+	cl_string.o \
+	cl_tent.o \
+	cl_cmd.o \
+	console.o \
+	keys.o \
+	menu.o \
+	sbar.o \
+	view.o \
+	wad.o \
+	cmd.o \
+	q_endian.o \
+	link_ops.o \
+	sizebuf.o \
+	strlcat.o \
+	strlcpy.o \
+	qsnprint.o \
+	msg_io.o \
+	common.o \
+	debuglog.o \
+	quakefs.o \
+	crc.o \
+	cvar.o \
+	cfgfile.o \
+	host.o \
+	host_cmd.o \
+	host_string.o \
+	mathlib.o \
+	pr_cmds.o \
+	pr_edict.o \
+	pr_exec.o \
+	sv_effect.o \
+	sv_main.o \
+	sv_move.o \
+	sv_phys.o \
+	sv_user.o \
+	$(WORLD_ASM) \
+	world.o \
+	zone.o \
+	$(SYSOBJ_SYS)
+
+
+# Targets
+.PHONY: help clean distclean localclean $(TIMIDEPS)
+
+#default: glh2
+#all: default
+
+help:
+	@echo
+	@echo "Valid targets: (read/edit the makefile for several options)"
+	@echo
+	@echo "* $(MAKE) help   : this help"
+	@echo "* $(MAKE) clean  : delete all files produced by the build"
+	@echo "* $(MAKE) h2     : hexen2 binary, software renderer"
+	@echo "* $(MAKE) glh2   : hexen2 binary, opengl renderer"
+	@echo
+
+h2: $(SW_BINARY)
+glh2: $(GL_BINARY)
+
+$(GL_BINARY): CPPFLAGS+= $(GL_DEFS)
+
+# workaround stupid AmiTCP SDK mess for old aos3
+net_bsd.o: INCLUDES+= $(NET_INC)
+net_udp.o: INCLUDES+= $(NET_INC)
+net_dgrm.o: INCLUDES+= $(NET_INC)
+net_loop.o: INCLUDES+= $(NET_INC)
+net_main.o: INCLUDES+= $(NET_INC)
+
+# extra rule for snd_timidity.c because of timidity.h and libtimidity.a
+snd_timidity.o: $(COMMONDIR)/snd_timidity.c
+	$(CC) -c $(INCLUDES) -I$(LIBS_DIR)/timidity $(CPPFLAGS) $(CFLAGS) -DTIMIDITY_STATIC=1 -o $@ $(COMMONDIR)/snd_timidity.c
+
+include $(LIBS_DIR)/timidity/_timi.vbcc
+
+$(SW_BINARY): $(SOFTOBJS) $(COMMONOBJS) $(TIMIDEPS)
+	$(LINKER) $(SOFTOBJS) $(COMMONOBJS) $(LDFLAGS) $(SYSLIBS) -o $@
+
+$(GL_BINARY): $(GLOBJS) $(COMMONOBJS) $(TIMIDEPS)
+	$(LINKER) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GL_LIBS) $(SYSLIBS) -o $@
+
+localclean:
+	rm -f *.o *.res dos/*.o core
+clean: localclean timi_clean
+distclean: clean
+	rm -f $(SW_BINARY) $(GL_BINARY)
+

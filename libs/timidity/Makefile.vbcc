@@ -1,0 +1,77 @@
+# Quick GNU Makefile for building a static timidity library qor m68k-amigaos using VBCC.
+#
+# To build a debug version:	make DEBUG=yes
+
+UHEXEN2_TOP:=../..
+UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
+LIBS_DIR:=$(UHEXEN2_TOP)/libs
+OSLIBS:=$(UHEXEN2_TOP)/oslibs
+
+CC       = vc
+
+CFLAGS += -D__AMIGA__
+CFLAGS += -DTIMIDITY_BUILD=1 -DTIMIDITY_STATIC=1
+CFLAGS += -O1 -speed -c99 -cpu=68060 -fpu=68060 -DNDEBUG=1
+#CFLAGS += -DTIMIDITY_DEBUG
+INCLUDES = -I. -I$(UHEXEN2_SHARED)
+# for extra missing headers
+INCLUDES += -I$(OSLIBS)/amigaos/vbcc/include -I$(OSLIBS)/amigaos/include
+
+# include DLS instruments support? (no: the DLS code we inherited from
+# SDL_sound isn't good enough, nor is it used on unices where timidity
+# is normally needed, either.)
+USE_DLS = no
+
+ifeq ($(USE_DLS),yes)
+CFLAGS += -DTIMIDITY_USE_DLS
+endif
+
+
+TARGETS:= timidity.lib
+
+OBJECTS = common.o \
+	instrum.o \
+	instrum_dls.o \
+	mix.o \
+	output.o \
+	playmidi.o \
+	readmidi.o \
+	resample.o \
+	stream.o \
+	tables.o \
+	timidity.o
+
+# Targets
+.PHONY: clean distclean
+
+all: $(TARGETS)
+
+# Rules for turning source files into .o files
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
+#%.o: $(UHEXEN2_SHARED)/%.c
+#	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
+
+# object dependencies:
+common.o: common.c common.h timidity_internal.h
+instrum.o: instrum.c common.h instrum.h instrum_dls.h resample.h tables.h timidity_internal.h
+instrum_dls.o: instrum_dls.c common.h dls_compat.h dls1.h dls2.h instrum.h instrum_dls.h tables.h timidity_internal.h
+mix.o: mix.c instrum.h mix.h output.h playmidi.h resample.h tables.h timidity_internal.h
+output.o: output.c output.h timidity_internal.h
+playmidi.o: playmidi.c instrum.h mix.h output.h playmidi.h tables.h timidity_internal.h
+readmidi.o: readmidi.c common.h instrum.h playmidi.h timidity_internal.h
+resample.o: resample.c common.h instrum.h playmidi.h resample.h tables.h timidity_internal.h
+stream.o: stream.c common.h timidity_internal.h
+tables.o: tables.c tables.h timidity_internal.h
+timidity.o: timidity.c common.h instrum.h output.h playmidi.h readmidi.h tables.h timidity_internal.h
+timidity_internal.h: options.h timi_endian.h timidity.h
+
+# rule for target:
+timidity.lib: $(OBJECTS)
+	cat $(OBJECTS) > timidity.lib
+
+clean:
+	rm -f *.o libtimidity.a timidity.lib
+
+distclean: clean
+
