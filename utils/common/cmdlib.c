@@ -58,18 +58,18 @@ char		com_token[1024];
 #ifdef PLATFORM_AMIGA
 struct timerequest	*timerio;
 struct MsgPort		*timerport;
-#ifdef __MORPHOS__
+#if defined(__MORPHOS__) || defined(__VBCC__)
 struct Library		*TimerBase;
 #else
 struct Device		*TimerBase;
 #endif
-#if defined(__AMIGA__) && !defined(__MORPHOS__)  /* for AMIGAOS3 */
+#if defined(__AMIGA__) && !defined(__MORPHOS__)  /* m68k-amigaos */
 #define USE_ECLOCK_TIMER
 #define MY_TIMERUNIT	UNIT_ECLOCK
 #else
 #define MY_TIMERUNIT	UNIT_MICROHZ
 #endif
-#endif /*  _AMIGA */
+#endif /* _AMIGA */
 
 // REPLACEMENTS FOR LIBRARY FUNCTIONS --------------------------------------
 
@@ -239,7 +239,7 @@ static void AMIGA_TimerInit (void)
 			if (OpenDevice((STRPTR) TIMERNAME, MY_TIMERUNIT,
 					(struct IORequest *) timerio, 0) == 0)
 			{
-#ifdef __MORPHOS__
+#if defined(__MORPHOS__) || defined(__VBCC__)
 				TimerBase = (struct Library *)timerio->tr_node.io_Device;
 #else
 				TimerBase = timerio->tr_node.io_Device;
