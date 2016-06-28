@@ -134,7 +134,7 @@ libtimidity.a: $(OBJECTS)
 	$(RANLIB) libtimidity.a
 
 clean:
-	rm -f *.o libtimidity.a
+	rm -f *.o libtimidity.a timidity.lib
 
 distclean: clean
 

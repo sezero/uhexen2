@@ -1,0 +1,14 @@
+# makefile fragment to be included by timidity.lib users
+
+ifdef DEBUG
+TIMIDITY_BUILD = DEBUG=yes
+endif
+ifeq ($(TIMIDITY_USE_DLS),)
+TIMIDITY_USE_DLS=no
+endif
+$(LIBS_DIR)/timidity/timidity.lib:
+	$(MAKE) -C $(LIBS_DIR)/timidity -f Makefile.vbcc $(TIMIDITY_BUILD) USE_DLS="$(TIMIDITY_USE_DLS)" CC="$(CC)"
+
+timi_clean:
+	$(MAKE) -C $(LIBS_DIR)/timidity -f Makefile.vbcc clean
+
