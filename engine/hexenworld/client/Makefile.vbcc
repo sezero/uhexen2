@@ -1,4 +1,4 @@
-# GNU Makefile for hexen2 client/server binaries for m68k-amigaos using VBCC.
+# GNU Makefile for hexenworld clients for m68k-amigaos using VBCC.
 # Remember to "make clean" between different types of builds or targets.
 #
 # To see valid targets:			make help
@@ -7,9 +7,11 @@
 #
 
 # PATH SETTINGS:
-UHEXEN2_TOP:=../..
-ENGINE_TOP:=..
+UHEXEN2_TOP:=../../..
+ENGINE_TOP:=../..
+HW_TOP:=..
 COMMONDIR:=$(ENGINE_TOP)/h2shared
+COMMON_HW:=$(HW_TOP)/shared
 UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
 OSLIBS:=$(UHEXEN2_TOP)/oslibs
@@ -71,8 +73,8 @@ VORBISLIB=vorbis
 CODECS_USE_ZONE=no
 
 # Names of the binaries
-SW_BINARY:=hexen2
-GL_BINARY:=glhexen2
+SW_BINARY:=hwcl
+GL_BINARY:=glhwcl
 
 #############################################################
 # Compiler flags
@@ -87,7 +89,7 @@ LDFLAGS = -L$(OSLIBS)/amigaos/vbcc/lib
 # linkage may be sensitive to order: add SYSLIBS after all others.
 SYSLIBS = -lm040 -lamiga -lauto
 # compiler includes
-INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
+INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 # for extra missing headers
 INCLUDES += -I$(OSLIBS)/amigaos/vbcc/include -I$(OSLIBS)/amigaos/include
 # AmiTCP SDK
@@ -100,6 +102,8 @@ NET_INC   = -I$(OSLIBS)/amigaos/netinclude
 #############################################################
 # Other build flags
 #############################################################
+
+CPPFLAGS+= -DH2W
 
 ifdef DEMO
 CPPFLAGS+= -DDEMOBUILD
@@ -275,6 +279,8 @@ endif
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
+%.o: $(COMMON_HW)/%.c
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(COMMONDIR)/%.c
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(UHEXEN2_SHARED)/%.c
@@ -337,7 +343,6 @@ SYSOBJ_INPUT := in_amiga.o
 SYSOBJ_GL_VID:= gl_vidamiga.o
 SYSOBJ_SOFT_VID:= vid_cgx.o
 endif
-SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_amiga.o
 
 # Final list of objects
@@ -378,6 +383,7 @@ GLOBJS = \
 	gl_rlight.o \
 	gl_rmain.o \
 	gl_rmisc.o \
+	gl_ngraph.o \
 	r_part.o \
 	gl_rsurf.o \
 	gl_screen.o \
@@ -393,24 +399,25 @@ COMMONOBJS = \
 	$(SYSOBJ_SND) \
 	$(SYSOBJ_CDA) \
 	$(SYSOBJ_MIDI) \
-	$(SYSOBJ_NET) \
-	net_dgrm.o \
-	net_loop.o \
-	net_main.o \
-	chase.o \
+	huffman.o \
+	net_udp.o \
+	net_chan.o \
+	cl_cam.o \
 	cl_demo.o \
 	cl_effect.o \
+	cl_ents.o \
 	cl_inlude.o \
 	cl_input.o \
 	cl_main.o \
 	cl_parse.o \
-	cl_string.o \
+	cl_pred.o \
 	cl_tent.o \
 	cl_cmd.o \
 	console.o \
 	keys.o \
 	menu.o \
 	sbar.o \
+	skin.o \
 	view.o \
 	wad.o \
 	cmd.o \
@@ -424,23 +431,14 @@ COMMONOBJS = \
 	common.o \
 	debuglog.o \
 	quakefs.o \
+	info_str.o \
 	crc.o \
 	cvar.o \
 	cfgfile.o \
-	host.o \
-	host_cmd.o \
 	host_string.o \
 	mathlib.o \
-	pr_cmds.o \
-	pr_edict.o \
-	pr_exec.o \
-	sv_effect.o \
-	sv_main.o \
-	sv_move.o \
-	sv_phys.o \
-	sv_user.o \
-	$(WORLD_ASM) \
-	world.o \
+	pmove.o \
+	pmovetst.o \
 	zone.o \
 	$(SYSOBJ_SYS)
 
@@ -448,7 +446,7 @@ COMMONOBJS = \
 # Targets
 .PHONY: help clean distclean localclean $(TIMIDEPS)
 
-#default: glh2
+#default: glhw
 #all: default
 
 help:
@@ -457,21 +455,17 @@ help:
 	@echo
 	@echo "* $(MAKE) help   : this help"
 	@echo "* $(MAKE) clean  : delete all files produced by the build"
-	@echo "* $(MAKE) h2     : hexen2 binary, software renderer"
-	@echo "* $(MAKE) glh2   : hexen2 binary, opengl renderer"
+	@echo "* $(MAKE) hw     : hexenworld client, software renderer"
+	@echo "* $(MAKE) glhw   : hexenworld client, opengl renderer"
 	@echo
 
-h2: $(SW_BINARY)
-glh2: $(GL_BINARY)
+hw: $(SW_BINARY)
+glhw: $(GL_BINARY)
 
 $(GL_BINARY): CPPFLAGS+= $(GL_DEFS)
 
 # workaround stupid AmiTCP SDK mess for old aos3
-net_bsd.o: INCLUDES+= $(NET_INC)
 net_udp.o: INCLUDES+= $(NET_INC)
-net_dgrm.o: INCLUDES+= $(NET_INC)
-net_loop.o: INCLUDES+= $(NET_INC)
-net_main.o: INCLUDES+= $(NET_INC)
 
 # extra rule for snd_timidity.c because of timidity.h and libtimidity.a
 snd_timidity.o: $(COMMONDIR)/snd_timidity.c
@@ -486,7 +480,7 @@ $(GL_BINARY): $(GLOBJS) $(COMMONOBJS) $(TIMIDEPS)
 	$(LINKER) $(GLOBJS) $(COMMONOBJS) $(LDFLAGS) $(GL_LIBS) $(SYSLIBS) -o $@
 
 localclean:
-	rm -f *.o *.res dos/*.o core
+	rm -f *.o *.res core
 clean: localclean timi_clean
 distclean: clean
 	rm -f $(SW_BINARY) $(GL_BINARY)
