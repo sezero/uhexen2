@@ -430,6 +430,21 @@ map change from within CL_ParseServerData(), and the Server calls
 this upon a gamedir command from within SV_Gamedir_f().
 ================
 */
+#ifdef H2W
+static inline void set_hw_dir (void) { /* helper for FS_Gamedir () */
+	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir_nopath, "hw",
+					sizeof(fs_gamedir_nopath));
+	FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_BASEDIR,
+				fs_gamedir, sizeof(fs_gamedir), "hw");
+	FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_USERBASE,
+				fs_userdir, sizeof(fs_userdir), "hw");
+	#ifdef SERVERONLY
+	/* change the *gamedir serverinfo properly */
+	Info_SetValueForStarKey (svs.info, "*gamedir", "hw", MAX_SERVERINFO_STRING);
+	#endif
+}
+#endif
+
 void FS_Gamedir (const char *dir)
 {
 	searchpath_t	*next;
@@ -477,17 +492,7 @@ void FS_Gamedir (const char *dir)
 	/* that we reached here means the hw server decided to abandon
 	 * whatever the previous mod it was running and went back to
 	 * pure hw. weird.. do as he wishes anyway and adjust our variables. */
-	_do_hw:
-		qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir_nopath, "hw",
-						sizeof(fs_gamedir_nopath));
-		FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_BASEDIR,
-					fs_gamedir, sizeof(fs_gamedir), "hw");
-		FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_USERBASE,
-					fs_userdir, sizeof(fs_userdir), "hw");
-# ifdef SERVERONLY
-	/* change the *gamedir serverinfo properly */
-		Info_SetValueForStarKey (svs.info, "*gamedir", "hw", MAX_SERVERINFO_STRING);
-# endif /* HWSV */
+		set_hw_dir ();
 #else	/* hexen2 case: */
 	/* hw is reserved for hexenworld only. hexen2 shouldn't use it */
 		Con_Printf ("WARNING: Gamedir not set to hw :\n"
@@ -503,7 +508,7 @@ void FS_Gamedir (const char *dir)
 	 * actually a hypothetical case.
 	 * as for hexen2, it cannot reach here.  */
 #ifdef H2W
-		goto _do_hw;
+		set_hw_dir ();
 #endif
 		return;
 	}
@@ -515,7 +520,7 @@ void FS_Gamedir (const char *dir)
 	 * as for hexen2, it can only reach here by a silly
 	 * command line argument like -game data1, ignore it. */
 #ifdef H2W
-		goto _do_hw;
+		set_hw_dir ();
 #endif
 		return;
 	}
