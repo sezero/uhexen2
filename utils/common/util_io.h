@@ -27,7 +27,7 @@
 #if defined(PLATFORM_WINDOWS)
 #include <io.h>
 #include "io_msvc.h"
-#else
+#elif !defined(PLATFORM_AMIGA)
 #include <unistd.h>
 #endif
 
