@@ -804,7 +804,7 @@ xd3_rfc3284_code_table (void)
 /* This function generates the 1536-byte string specified in sections 5.4 and
  * 7 of rfc3284, which is used to represent a code table within a VCDIFF
  * file. */
-void xd3_compute_code_table_string (const xd3_dinst *code_table, uint8_t *str)
+static void xd3_compute_code_table_string (const xd3_dinst *code_table, uint8_t *str)
 {
   int i, s;
 
