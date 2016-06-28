@@ -897,9 +897,10 @@ void        GLDrawArrays(GLcontext context, GLenum mode, GLint first, GLsizei co
 #define gluLookAt(ex, ey, ez, cx, cy, cz, ux, uy, uz) GLULookAt(ex, ey, ez, cx, cy, cz, ux, uy, uz);
 #define gluPerspective(fovy, aspect, znear, zfar) GLUPerspective(fovy, aspect, znear, zfar);
 
-#define glStencilFunc(f,r,m) do{(void)f;(void)r; (void)m; }while(0)
-#define glStencilOp(f,zf,zp) do{(void)f;(void)zf;(void)zp;}while(0)
-#define glClearStencil(s)    do{(void)s;                  }while(0)
+/* dummies (so that uhexen2 code builds..) */
+#define glStencilFunc(f,r,m) do{}while(0)
+#define glStencilOp(f,zf,zp) do{}while(0)
+#define glClearStencil(s)    do{}while(0)
 
 #endif // USE_MGLAPI not defined
 

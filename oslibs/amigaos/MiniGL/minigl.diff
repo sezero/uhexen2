@@ -150,7 +150,7 @@ diff -urp MiniGL~/include/mgl/config.h MiniGL/include/mgl/config.h
  // Define if you don't want to check if the bitmaps allocated for
 diff -urp MiniGL~/include/mgl/gl.h MiniGL/include/mgl/gl.h
 --- MiniGL~/include/mgl/gl.h	2002-11-30 08:15:20.000000000 +0200
-+++ MiniGL/include/mgl/gl.h	2016-04-15 17:55:20.000000000 +0300
++++ MiniGL/include/mgl/gl.h	2016-04-15 17:56:10.000000000 +0300
 @@ -309,6 +309,13 @@ enum
  	MGL_UNSIGNED_SHORT_4_4_4_4,
  	MGL_FIXPOINTTRANS_HINT,
@@ -257,13 +257,14 @@ diff -urp MiniGL~/include/mgl/gl.h MiniGL/include/mgl/gl.h
  GLboolean        MGLInit(void);
  void        MGLTerm(void);
  
-@@ -887,6 +897,9 @@ void        GLDrawArrays(GLcontext conte
+@@ -887,6 +897,10 @@ void        GLDrawArrays(GLcontext conte
  #define gluLookAt(ex, ey, ez, cx, cy, cz, ux, uy, uz) GLULookAt(ex, ey, ez, cx, cy, cz, ux, uy, uz);
  #define gluPerspective(fovy, aspect, znear, zfar) GLUPerspective(fovy, aspect, znear, zfar);
  
-+#define glStencilFunc(f,r,m) do{(void)f;(void)r; (void)m; }while(0)
-+#define glStencilOp(f,zf,zp) do{(void)f;(void)zf;(void)zp;}while(0)
-+#define glClearStencil(s)    do{(void)s;                  }while(0)
++/* dummies (so that uhexen2 code builds..) */
++#define glStencilFunc(f,r,m) do{}while(0)
++#define glStencilOp(f,zf,zp) do{}while(0)
++#define glClearStencil(s)    do{}while(0)
  
  #endif // USE_MGLAPI not defined
  
@@ -279,7 +280,7 @@ diff -urp MiniGL~/include/mgl/mglmacros.h MiniGL/include/mgl/mglmacros.h
 +#endif
 diff -urp MiniGL~/include/mgl/minigl.h MiniGL/include/mgl/minigl.h
 --- MiniGL~/include/mgl/minigl.h	2002-11-30 08:15:22.000000000 +0200
-+++ MiniGL/include/mgl/minigl.h	2016-04-15 17:55:10.000000000 +0300
++++ MiniGL/include/mgl/minigl.h	2016-04-15 17:56:10.000000000 +0300
 @@ -32,12 +32,12 @@ MGLAPI void   glPointSize(GLfloat s)
  	 CC->CurrentPointSize = s;
  }
@@ -418,10 +419,11 @@ diff -urp MiniGL~/include/mgl/minigl.h MiniGL/include/mgl/minigl.h
  {
  	int u = unit - GL_TEXTURE0_ARB;
  
-@@ -979,4 +979,8 @@ MGLAPI void mglDrawMultitexBuffer(GLenum
+@@ -979,4 +979,9 @@ MGLAPI void mglDrawMultitexBuffer(GLenum
  	MGLDrawMultitexBuffer (CC, s, d, env);
  }
  
++/* dummies (so that uhexen2 code builds..) */
 +MGLAPI void glStencilFunc(GLenum func, GLint ref, GLuint mask) { }
 +MGLAPI void glStencilOp(GLenum fail, GLenum zfail, GLenum zpass) { }
 +MGLAPI void glClearStencil(GLint s) { }

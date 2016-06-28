@@ -979,6 +979,7 @@ MGLAPI void mglDrawMultitexBuffer(GLenum s, GLenum d, GLenum env)
 	MGLDrawMultitexBuffer (CC, s, d, env);
 }
 
+/* dummies (so that uhexen2 code builds..) */
 MGLAPI void glStencilFunc(GLenum func, GLint ref, GLuint mask) { }
 MGLAPI void glStencilOp(GLenum fail, GLenum zfail, GLenum zpass) { }
 MGLAPI void glClearStencil(GLint s) { }
