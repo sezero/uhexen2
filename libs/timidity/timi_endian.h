@@ -143,6 +143,9 @@
 # elif defined(__hppa) || defined(__hppa__) || defined(__sparc) || defined(__sparc__) /* others: check! */
 #  define BYTE_ORDER BIG_ENDIAN
 
+# elif defined(__m68k__) || defined(__M68K__)
+#  define BYTE_ORDER BIG_ENDIAN    /* Motorola 68k: big endian */
+
 # endif
 
 #endif /* supposedly safe assumptions */
@@ -159,4 +162,3 @@
 #endif
 
 #endif /* TIMI_ENDIAN_H */
-
