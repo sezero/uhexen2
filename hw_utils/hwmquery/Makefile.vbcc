@@ -1,0 +1,56 @@
+# GNU Makefile for hwmquery for m68k-amigaos using VBCC.
+#
+
+# PATH SETTINGS:
+UHEXEN2_TOP:=../..
+UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
+LIBS_DIR:=$(UHEXEN2_TOP)/libs
+OSLIBS:=$(UHEXEN2_TOP)/oslibs
+
+# Names of the binaries
+HWMQUERY:=hwmquery
+
+# Compiler flags
+
+CC       = vc
+LINKER   = $(CC)
+
+CFLAGS  = -O1 -speed -c99 -cpu=68060 -fpu=68060
+CPPFLAGS= -D__AMIGA__
+CPPFLAGS+=-DNDEBUG=1
+LDFLAGS =
+# compiler includes
+INCLUDES= -I. -I$(UHEXEN2_SHARED)
+# for extra missing headers
+INCLUDES += -I$(OSLIBS)/amigaos/vbcc/include -I$(OSLIBS)/amigaos/include
+# AmiTCP SDK
+NET_INC   = -I$(OSLIBS)/amigaos/netinclude
+
+# Other build flags
+
+# Rules for turning source files into .o files
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
+%.o: $(UHEXEN2_SHARED)/%.c
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
+
+# Objects
+OBJECTS = qsnprint.o hwmquery.o
+
+# Targets
+.PHONY: clean distclean
+
+all: $(HWMQUERY)
+default: all
+
+$(HWMQUERY) : $(OBJECTS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@
+
+# workaround stupid AmiTCP SDK mess for old aos3
+hwmquery.o: INCLUDES+= $(NET_INC)
+
+clean:
+	rm -f *.o core
+distclean: clean
+	rm -f $(HWMQUERY)
+

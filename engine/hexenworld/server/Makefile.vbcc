@@ -1,0 +1,133 @@
+# GNU Makefile for hexenworld server for m68k-amigaos using VBCC.
+# Remember to "make clean" between different types of builds or targets.
+#
+# To use a compiler other than vbcc:	make CC=compiler_name [other stuff]
+# To build for the demo version:	make DEMO=1 [other stuff]
+#
+
+# PATH SETTINGS:
+UHEXEN2_TOP:=../../..
+ENGINE_TOP:=../..
+HW_TOP:=..
+COMMONDIR:=$(ENGINE_TOP)/h2shared
+COMMON_HW:=$(HW_TOP)/shared
+UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
+LIBS_DIR:=$(UHEXEN2_TOP)/libs
+OSLIBS:=$(UHEXEN2_TOP)/oslibs
+
+# GENERAL OPTIONS (customize as required)
+
+# Names of the binaries
+BINARY:=hwsv
+
+#############################################################
+# Compiler flags
+#############################################################
+
+CC       = vc
+LINKER   = $(CC)
+
+CFLAGS  = -O1 -speed -c99 -cpu=68060 -fpu=68060
+CPPFLAGS= -D__AMIGA__
+CPPFLAGS+=-DNDEBUG=1
+LDFLAGS = -L$(OSLIBS)/amigaos/vbcc/lib
+# linkage may be sensitive to order: add SYSLIBS after all others.
+SYSLIBS = -lm040
+# compiler includes
+INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
+# for extra missing headers
+INCLUDES += -I$(OSLIBS)/amigaos/vbcc/include -I$(OSLIBS)/amigaos/include
+# AmiTCP SDK
+NET_INC   = -I$(OSLIBS)/amigaos/netinclude
+
+# end of compiler flags
+#############################################################
+
+
+#############################################################
+# Other build flags
+#############################################################
+
+CPPFLAGS+= -DH2W -DSERVERONLY
+
+ifdef DEMO
+CPPFLAGS+= -DDEMOBUILD
+endif
+
+ifdef DEBUG
+# This activates some extra code in hexen2/hexenworld C source
+CPPFLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
+endif
+
+
+# Rules for turning source files into .o files
+%.o: %.c
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
+%.o: $(COMMON_HW)/%.c
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
+%.o: $(COMMONDIR)/%.c
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
+%.o: $(UHEXEN2_SHARED)/%.c
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
+
+# Objects
+
+SYSOBJ_SYS = sys_amiga.o
+
+# Final list of objects
+OBJECTS = \
+	q_endian.o \
+	link_ops.o \
+	sizebuf.o \
+	strlcat.o \
+	strlcpy.o \
+	qsnprint.o \
+	msg_io.o \
+	common.o \
+	quakefs.o \
+	info_str.o \
+	cmd.o \
+	crc.o \
+	cvar.o \
+	host_string.o \
+	mathlib.o \
+	zone.o \
+	huffman.o \
+	net_udp.o \
+	net_chan.o \
+	pmove.o \
+	pmovetst.o \
+	sv_model.o \
+	pr_cmds.o \
+	pr_edict.o \
+	pr_exec.o \
+	sv_effect.o \
+	sv_ccmds.o \
+	sv_ents.o \
+	sv_init.o \
+	sv_main.o \
+	sv_move.o \
+	sv_phys.o \
+	sv_send.o \
+	sv_user.o \
+	world.o \
+	$(SYSOBJ_SYS)
+
+
+# Targets
+.PHONY: clean distclean
+
+default: $(BINARY)
+all: default
+
+$(BINARY): $(OBJECTS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) $(SYSLIBS) -o $@
+
+# workaround stupid AmiTCP SDK mess for old aos3
+net_udp.o: INCLUDES+= $(NET_INC)
+
+clean:
+	rm -f *.o core
+distclean: clean
+	rm -f $(BINARY)
+

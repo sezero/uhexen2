@@ -1,0 +1,61 @@
+# GNU Makefile for hexen2 mapping tools for m68k-amigaos using VBCC.
+#
+
+# Path settings:
+UHEXEN2_TOP:=../..
+UTILS_TOP:=..
+COMMONDIR:=$(UTILS_TOP)/common
+UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
+LIBS_DIR:=$(UHEXEN2_TOP)/libs
+OSLIBS:=$(UHEXEN2_TOP)/oslibs
+
+# Names of the binaries
+BSPINFO:=bspinfo
+
+# Compiler flags
+CC       = vc
+LINKER   = $(CC)
+
+CFLAGS  = -O1 -speed -c99 -cpu=68060 -fpu=68060
+CFLAGS += -D__AMIGA__
+CFLAGS += -DNDEBUG=1
+CFLAGS += -DDOUBLEVEC_T
+INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
+# for extra missing headers
+INCLUDES+= -I$(OSLIBS)/amigaos/vbcc/include -I$(OSLIBS)/amigaos/include
+LDFLAGS =
+LDLIBS  =
+
+# Other build flags
+
+# Targets
+all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
+
+# Rules for turning source files into .o files
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
+%.o: $(COMMONDIR)/%.c
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
+%.o: $(UHEXEN2_SHARED)/%.c
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
+
+# Objects
+OBJ_BSPINFO= qsnprint.o \
+	strlcat.o \
+	strlcpy.o \
+	cmdlib.o \
+	q_endian.o \
+	byteordr.o \
+	util_io.o \
+	pathutil.o \
+	bspfile.o \
+	bspinfo.o
+
+$(BSPINFO) : $(OBJ_BSPINFO)
+	$(LINKER) $(OBJ_BSPINFO) $(LDFLAGS) $(LDLIBS) -o $@
+
+clean:
+	rm -f *.o core
+distclean: clean
+	rm -f $(BSPINFO)
+

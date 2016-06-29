@@ -85,6 +85,7 @@ LINKER   = $(CC)
 
 CFLAGS  = -O1 -speed -c99 -cpu=68060 -fpu=68060
 CPPFLAGS= -D__AMIGA__
+CPPFLAGS+=-DNDEBUG=1
 LDFLAGS = -L$(OSLIBS)/amigaos/vbcc/lib
 # linkage may be sensitive to order: add SYSLIBS after all others.
 SYSLIBS = -lm040 -lamiga -lauto
