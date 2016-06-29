@@ -33,11 +33,11 @@
 
 //======================================================================
 
-static void Usage (void)
-{
+__attribute__((__noreturn__)) static void usage (int ret) {
 	printf ("Usage:  paklist <pakfile>\n");
 	printf ("        paklist  -h  to display this help message.\n");
 	printf ("\n");
+	exit (ret);
 }
 
 int main (int argc, char **argv)
@@ -46,17 +46,11 @@ int main (int argc, char **argv)
 	int	i;
 
 	if (argc < 2)
-	{
-		Usage ();
-		exit (1);
-	}
+		usage (1);
 	for (i = 1; i < argc; i++)
 	{
 		if (!strcmp(argv[i], "-h"))
-		{
-			Usage ();
-			exit (0);
-		}
+			usage (0);
 	}
 
 	ValidateByteorder ();

@@ -240,20 +240,22 @@ void ReadFiles (void)
 main
 =============
 */
+__attribute__((__noreturn__)) static void usage (void) {
+	printf ("qfiles -pak <0 / 1 / 2 / 3> : build a .pak file\n");
+	printf ("qfiles -bspmodels : regenerates all brush models\n");
+	exit (1);
+}
+
 int main (int argc, char **argv)
 {
-	if (argc == 1) {
-	_usage:
-		printf ("qfiles -pak <0 / 1 / 2 / 3> : build a .pak file\n");
-		printf ("qfiles -bspmodels : regenerates all brush models\n");
-		exit (1);
-	}
+	if (argc == 1)
+		usage ();
 
 	ValidateByteorder ();
 
 	if (!strcmp (argv[1], "-pak"))
 	{
-		if (argc != 3) goto _usage;
+		if (argc != 3) usage ();
 		SetQdirFromPath ("");
 		ReadFiles ();
 		CopyQFiles (atoi(argv[2]));

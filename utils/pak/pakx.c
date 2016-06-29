@@ -82,13 +82,13 @@ static void ExtractFile (pack_t *pak, const char *filename, const char *destdir)
 		fprintf (stderr, "** %s not in %s\n", filename, pak->filename);
 }
 
-static void Usage (void)
-{
+__attribute__((__noreturn__)) static void usage (int ret) {
 	printf ("Usage:  pakx [-outdir <destdir>] <pakfile> [file [file ....]]\n");
 	printf ("        pakx  -h  to display this help message.\n");
 	printf ("<destdir> :  Optional. Output directory to extract the files into.\n");
 	printf ("Without the [file] arguments, all pak file contents get extracted.\n");
 	printf ("\n");
+	exit (ret);
 }
 
 int main (int argc, char **argv)
@@ -98,25 +98,18 @@ int main (int argc, char **argv)
 	int	i;
 
 	if (argc < 2)
-	{
-  usage:
-		Usage ();
-		exit (1);
-	}
+		usage (1);
 
 	for (i = 1; i < argc; i++)
 	{
 		if (!strcmp(argv[i], "-h"))
-		{
-			Usage ();
-			exit (0);
-		}
+			usage (0);
 	}
 
 	if (!strcmp(argv[1], "-outdir"))
 	{
 		if (argc < 4)
-			goto usage;
+			usage (1);
 		i = 3;
 		destdir = argv[2];
 	}

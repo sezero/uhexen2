@@ -206,6 +206,11 @@ static const char *DigitDefs[] =
 //
 //==========================================================================
 
+__attribute__((__noreturn__)) static void usage (void) {
+	printf("usage: genmodel [-opt] [-archive path] model.hc\n");
+	exit(1);
+}
+
 int main(int argc, char **argv)
 {
 	int		i, j;
@@ -213,11 +218,8 @@ int main(int argc, char **argv)
 
 	printf("GENMODEL Version " VERSION_TEXT " (" __DATE__ ")\n\n");
 
-	if (argc == 1) {
-	_usage:
-		printf("usage: genmodel [-opt] [-archive path] model.hc\n");
-		exit (1);
-	}
+	if (argc == 1)
+		usage ();
 
 	ValidateByteorder ();
 
@@ -229,7 +231,7 @@ int main(int argc, char **argv)
 	i = CheckParm("-archive");
 	if (i != 0)
 	{
-		if (i >= argc - 1) goto _usage;
+		if (i >= argc - 1) usage ();
 		archive = true;
 		q_strlcpy(archivedir, argv[++i], sizeof(archivedir));
 		printf("Archiving source to: %s\n", archivedir);
@@ -239,7 +241,7 @@ int main(int argc, char **argv)
 		DoOpts = true;
 	if (i < j) i = j;
 	if (i + 1 > argc - 1)
-		goto _usage;
+		usage ();
 
 	q_strlcpy(path, argv[i + 1], sizeof(path));
 	SetQdirFromPath("");		/* (path); */
