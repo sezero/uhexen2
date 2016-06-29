@@ -14,6 +14,7 @@ typedef	unsigned int	uint;		/* Sys V compatibility */
 
 typedef	char *		caddr_t;	/* core address */
 typedef	int32_t		off_t;		/* file offset */
+typedef	int		ssize_t;
 
 #define	NBBY	8		/* number of bits in a byte */
 
