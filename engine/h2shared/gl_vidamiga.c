@@ -1495,6 +1495,7 @@ void	VID_Init (unsigned char *palette)
 	if (MGLInit() == GL_FALSE) {
 		Sys_Error ("Couldn't initialize MiniGL");
 	}
+	mglChoosePixelDepth (16);/* set pixel depth to 16 */
 #endif
 
 	// prepare the modelists, find the actual modenum for vid_default
@@ -1658,7 +1659,6 @@ static void VID_KillContext (void)
 			glADestroyContextWindowed();
 		contextinit = false;
 	}
-
 	if (__tglContext)
 	{
 		GLClose(__tglContext);
