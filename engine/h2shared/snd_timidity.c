@@ -79,6 +79,8 @@ static const char *cfgfile[] = {
 	"LIBS:GerontoPlayer",
 #elif defined(__AROS__)
 	"Timidity:",
+#elif defined(PLATFORM_AMIGA)
+	/**/
 #else /* unix, osx, riscos, ... */
 	"/etc",
 	"/etc/timidity",
