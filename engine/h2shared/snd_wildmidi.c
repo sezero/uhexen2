@@ -73,7 +73,7 @@ static const char *cfgfile[] = {
 #elif defined(__MORPHOS__)
 	"LIBS:GerontoPlayer",
 #elif defined(__AROS__)
-	"Timidity:",
+	"Timidity:",/* disable the system requester for this (see below) */
 #elif defined(PLATFORM_AMIGA)
 	/**/
 #else /* unix, osx, riscos, ... */
@@ -102,12 +102,18 @@ static int WILDMIDI_InitHelper (const char *cfgdir)
 	path[len] = '\0';
 	q_strlcat(path, "wildmidi.cfg", sizeof(path));
 	Con_DPrintf("WildMIDI: trying %s\n", path);
+#if defined(__AROS__)
+	if(Sys_PathExistsQuiet(path))
+#endif
 	if (WildMidi_Init(path, wildmidi_rate, wildmidi_opts) == 0)
 		return 0;
 
 	path[len] = '\0';
 	q_strlcat(path, "timidity.cfg", sizeof(path));
 	Con_DPrintf("WildMIDI: trying %s\n", path);
+#if defined(__AROS__)
+	if (!Sys_PathExistsQuiet(path)) return -1;
+#endif
 	return WildMidi_Init(path, wildmidi_rate, wildmidi_opts);
 }
 

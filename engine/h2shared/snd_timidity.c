@@ -78,7 +78,7 @@ static const char *cfgfile[] = {
 #elif defined(__MORPHOS__)
 	"LIBS:GerontoPlayer",
 #elif defined(__AROS__)
-	"Timidity:",
+	"Timidity:",/* disable the system requester for this (see below) */
 #elif defined(PLATFORM_AMIGA)
 	/**/
 #else /* unix, osx, riscos, ... */
@@ -128,6 +128,9 @@ static int TIMIDITY_InitHelper (const char *cfgdir)
 	path[len] = '\0';
 	q_strlcat(path, "timidity.cfg", sizeof(path));
 	Con_DPrintf("Timidity: trying %s\n", path);
+#if defined(__AROS__)
+	if (!Sys_PathExistsQuiet(path)) return -1;
+#endif
 	return mid_init(path);
 }
 
