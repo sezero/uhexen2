@@ -342,6 +342,24 @@ void Sys_FindClose (void)
 	pattern_str = NULL;
 }
 
+/* File existence check with the "Please insert volume XXX"
+ * system requester disabled.  */
+qboolean Sys_PathExistsQuiet(const char *name)
+{
+	struct Process *self = (struct Process *) FindTask(NULL);
+	APTR oldwinptr; BPTR lock;
+
+	oldwinptr = self->pr_WindowPtr;
+	self->pr_WindowPtr = (APTR) -1;
+	lock = Lock((const STRPTR) name, ACCESS_READ);
+	self->pr_WindowPtr = oldwinptr;
+	if (lock) {
+		UnLock(lock);
+		return true;
+	}
+	return false;
+}
+
 /*
 ===============================================================================
 

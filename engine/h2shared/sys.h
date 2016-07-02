@@ -44,6 +44,12 @@ const char *Sys_FindFirstFile (const char *path, const char *pattern);
 const char *Sys_FindNextFile (void);
 void Sys_FindClose (void);
 
+#if defined(PLATFORM_AMIGA) && !defined(SERVERONLY)
+qboolean Sys_PathExistsQuiet (const char *p);
+/* File existence check with the "Please insert volume XXX"
+ * system requester disabled.  */
+#endif
+
 
 /* memory protection */
 
