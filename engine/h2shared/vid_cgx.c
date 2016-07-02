@@ -56,7 +56,7 @@ static struct Screen *screen = NULL;
 static char pal[256 * 4];
 static pixel_t *buffer = NULL;
 static byte *directbitmap = NULL;
-#if defined(__AMIGA__) && !defined(__MORPHOS__)
+#if defined(__AMIGA__) && !defined(__MORPHOS__) /* amigaos3 */
 struct Library *CyberGfxBase = NULL;
 #endif
 
@@ -88,7 +88,11 @@ static cvar_t	vid_config_glx = {"vid_config_glx", "640", CVAR_ARCHIVE};
 static cvar_t	vid_config_gly = {"vid_config_gly", "480", CVAR_ARCHIVE};
 static cvar_t	vid_config_swx = {"vid_config_swx", "320", CVAR_ARCHIVE};
 static cvar_t	vid_config_swy = {"vid_config_swy", "240", CVAR_ARCHIVE};
+#if defined(__AMIGA__) && !defined(__MORPHOS__) /* KLUDGE -- for amigaos3 */
+static cvar_t	vid_config_fscr= {"vid_config_fscr", "1", CVAR_ARCHIVE};
+#else
 static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", CVAR_ARCHIVE};
+#endif
 
 static cvar_t	vid_showload = {"vid_showload", "1", CVAR_NONE};
 
@@ -645,12 +649,10 @@ void VID_Init (unsigned char *palette)
 				"vid_config_swy" };
 #define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
 
-#if defined(__AMIGA__) && !defined(__MORPHOS__)
+#if defined(__AMIGA__) && !defined(__MORPHOS__) /* amigaos3 */
 	CyberGfxBase = OpenLibrary("cybergraphics.library", 0);
 	if (!CyberGfxBase)
-	{
 		Sys_Error ("Cannot open cybergraphics.library!");
-	}
 #endif
 
 	temp = scr_disabled_for_loading;
@@ -778,7 +780,7 @@ void VID_Shutdown (void)
 {
 	VID_DestroyWindow ();
 
-#if defined(__AMIGA__) && !defined(__MORPHOS__)
+#if defined(__AMIGA__) && !defined(__MORPHOS__) /* amigaos3 */
 	if (CyberGfxBase)
 	{
 		CloseLibrary(CyberGfxBase);
