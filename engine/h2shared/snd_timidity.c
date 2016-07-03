@@ -128,7 +128,7 @@ static int TIMIDITY_InitHelper (const char *cfgdir)
 	path[len] = '\0';
 	q_strlcat(path, "timidity.cfg", sizeof(path));
 	Con_DPrintf("Timidity: trying %s\n", path);
-#if defined(__AROS__)
+#ifdef PLATFORM_AMIGA
 	if (!Sys_PathExistsQuiet(path)) return -1;
 #endif
 	return mid_init(path);

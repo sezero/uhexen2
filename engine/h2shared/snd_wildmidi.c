@@ -102,7 +102,7 @@ static int WILDMIDI_InitHelper (const char *cfgdir)
 	path[len] = '\0';
 	q_strlcat(path, "wildmidi.cfg", sizeof(path));
 	Con_DPrintf("WildMIDI: trying %s\n", path);
-#if defined(__AROS__)
+#ifdef PLATFORM_AMIGA
 	if(Sys_PathExistsQuiet(path))
 #endif
 	if (WildMidi_Init(path, wildmidi_rate, wildmidi_opts) == 0)
@@ -111,7 +111,7 @@ static int WILDMIDI_InitHelper (const char *cfgdir)
 	path[len] = '\0';
 	q_strlcat(path, "timidity.cfg", sizeof(path));
 	Con_DPrintf("WildMIDI: trying %s\n", path);
-#if defined(__AROS__)
+#ifdef PLATFORM_AMIGA
 	if (!Sys_PathExistsQuiet(path)) return -1;
 #endif
 	return WildMidi_Init(path, wildmidi_rate, wildmidi_opts);
