@@ -85,7 +85,7 @@ static const char *cfgfile[] = {
 	"/usr/local/share/timidity",
 	"/usr/local/lib/timidity",
 #endif
-	NULL
+	NULL /* last entry must be NULL */
 };
 
 static int WILDMIDI_InitHelper (const char *cfgdir)

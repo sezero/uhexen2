@@ -88,7 +88,7 @@ static const char *cfgfile[] = {
 	"/usr/local/share/timidity",
 	"/usr/local/lib/timidity",
 #endif
-	NULL
+	NULL /* last entry must be NULL */
 };
 
 #if defined(TIMIDITY_USE_DLS)
