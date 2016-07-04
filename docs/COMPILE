@@ -232,6 +232,16 @@ I've been successfully using the R5 "2008 refresh" (21 Aug.2008) as well
 as the R7 (07 Jan. 2010) versions for quite some time.
 
 
+Compiling for Amiga variants:
+========================================
+
+For AROS and MorphOS, gcc is used.  For AROS, only ABIv0 is tested: we
+build against AROS snapshot from 2014-07-26 (i.e. the ABI_V0 branch at
+https://gitorious.org/aros/aros.git).  For MorphOS, any SDK should work.
+For AmigaOS 3.x (m68k-amigaos), gcc presented code generation issues in
+our experience: we tested builds with VBCC version 0.9e instead.
+
+
 Links:
 ------
 SDL homepage		: http://www.libsdl.org/
@@ -246,6 +256,8 @@ ALSA homepage		: http://www.alsa-project.org/
 GCC homepage		: http://gcc.gnu.org/
 Binutils homepage	: http://sourceware.org/binutils/
 clang homepage		: http://clang.llvm.org/
+VBCC homepage		: http://sun.hasenbraten.de/vbcc/
+			  http://www.compilers.de/vbcc.html
 NASM homepage		: http://www.nasm.us/
 YASM homepage		: http://yasm.tortall.net/
 DJGPP homepage		: http://www.delorie.com/djgpp/
