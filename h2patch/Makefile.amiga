@@ -18,7 +18,7 @@ endif
 LINKER = $(CC)
 
 CPUFLAGS=
-CFLAGS  = -g -Wall -noixemul
+CFLAGS  = -g -Wall
 CFLAGS += $(CPUFLAGS)
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
@@ -26,7 +26,13 @@ endif
 ifeq ($(AOS3),1)
 CFLAGS  += -I$(OSLIBS)/amigaos/include
 endif
-LDFLAGS = -noixemul
+LDFLAGS =
+
+NOIXEMUL= 1
+ifeq ($(NOIXEMUL),1)
+CFLAGS += -noixemul
+LDFLAGS+= -noixemul
+endif
 
 XDELTA_DIR:= $(LIBS_DIR)/xdelta3
 XDFLAGS:= -DXD3_DEBUG=0

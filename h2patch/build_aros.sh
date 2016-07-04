@@ -18,5 +18,5 @@ linux)	MAKE_CMD=make ;;
 *)	MAKE_CMD=make ;;
 esac
 
-exec $MAKE_CMD -f Makefile.amiga $*
+exec $MAKE_CMD -f Makefile.amiga NOIXEMUL=0 $*
 

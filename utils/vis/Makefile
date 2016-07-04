@@ -119,7 +119,7 @@ endif
 endif
 
 # Targets
-all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
+all : $(VIS)
 
 # Rules for turning source files into .o files
 %.o: %.c

@@ -101,7 +101,7 @@ LDLIBS  += -lm
 endif
 
 # Targets
-all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
+all : $(QBSP)
 
 # Rules for turning source files into .o files
 %.o: %.c

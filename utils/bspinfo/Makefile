@@ -98,7 +98,7 @@ ifeq ($(TARGET_OS),unix)
 endif
 
 # Targets
-all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
+all : $(BSPINFO)
 
 # Rules for turning source files into .o files
 %.o: %.c
