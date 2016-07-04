@@ -1,9 +1,7 @@
-Only in MiniGL: lib
-
 diff -urp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
 --- MiniGL~/Build_gcc/makefile	2002-11-30 08:14:20.000000000 +0200
-+++ MiniGL/Build_gcc/makefile	2016-04-15 17:55:20.000000000 +0300
-@@ -13,16 +13,26 @@
++++ MiniGL/Build_gcc/makefile	2016-07-01 07:10:00.000000000 +0300
+@@ -13,16 +13,27 @@
  #
  
  VPATH = ../src/ ../demos
@@ -12,29 +10,31 @@ diff -urp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
 -CFLAGS = $(INCLUDE) -m68060 -D__M68K__ $(DEBUG) $(ADDFLAG) -ffast-math -fomit-frame-pointer
 +
  DEBUG = -DNDEBUG
-+
+-LIBNAME = ../lib/libmgl.a
+ 
+-DEMOS = GLTest varray warp mtex gears driverinfo
 +CFLAGS = -m68060 -D__M68K__ $(DEBUG) $(ADDFLAG) -ffast-math -fomit-frame-pointer
 +CFLAGS+= -O3 -DINLINE=__inline
 +#CFLAGS+= -g
 +CFLAGS+= -noixemul
 +CFLAGS+= -Wall -Wno-unused
 +CFLAGS+= $(INCLUDE)
- LIBNAME = ../lib/libmgl.a
- 
- DEMOS = GLTest varray warp mtex gears driverinfo
-+DEBUGLIB= -ldebug
-+LDFLAGS = -noixemul
-+LDLIBS  = -L../lib -lmgl $(DEBUGLIB) -lm
++LIBDIR = ../lib
++LIBNAME = $(LIBDIR)/libmgl.a
  
 -CC = m68k-amigaos-gcc -O3 -g -DINLINE=__inline
--
++DEMOS = GLTest varray warp mtex gears driverinfo
++DEBUGLIB= -ldebug
++LDFLAGS = -noixemul
++LDLIBS  = -L$(LIBDIR) -lmgl $(DEBUGLIB) -lm
+ 
 -AR = ar
 +CC = m68k-amigaos-gcc
 +AR = m68k-amigaos-ar
  RANLIB = m68k-amigaos-ranlib
  
  LIBOBJ = context.o vertexbuffer.o draw.o texture.o fog.o \
-@@ -31,79 +41,62 @@ LIBOBJ = context.o vertexbuffer.o draw.o
+@@ -31,79 +42,63 @@
  	others.o matrix.o
  
  
@@ -42,7 +42,8 @@ diff -urp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
 -
 -EXEOBJ = GLTest.o
 -
- all: $(LIBNAME) $(DEMOS)
+-all: $(LIBNAME) $(DEMOS)
++all: $(LIBDIR) $(LIBNAME) $(DEMOS)
  
  install:
 -		cp ../include/mgl/*.h /usr/os-include/mgl
@@ -54,16 +55,18 @@ diff -urp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
 -		-rm *.o ../lib/libmgl.a
 +	rm -f *.o
 +distclean: clean
-+	rm -f ../lib/libmgl.a $(DEMOS)
++	rm -f $(LIBNAME) $(DEMOS)
  
  lib: $(LIBNAME)
- 		@echo "Done"
+-		@echo "Done"
++	@echo "Done"
  
- 
-+$(LIBNAME): $(LIBOBJ)
++$(LIBDIR):
++	mkdir -p $(LIBDIR)
++$(LIBNAME): $(LIBDIR) $(LIBOBJ)
 +	$(AR) rcs $(LIBNAME) $(LIBOBJ)
 +	$(RANLIB) $(LIBNAME)
-+
+ 
  GLTest: GLTest.o $(LIBNAME)
 -		$(CC) -o GLTest $(INCLUDE) GLTest.o -L../lib -lmgl $(DEBUGLIB)
 +	$(CC) $(LDFLAGS) -o GLTest GLTest.o $(LDLIBS)

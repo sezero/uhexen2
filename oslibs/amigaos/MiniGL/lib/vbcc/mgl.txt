@@ -1,0 +1,2 @@
+this is compiled against Warp3DDev-4.2a using vbcc-0.9e after applying
+the minigl patches included here.

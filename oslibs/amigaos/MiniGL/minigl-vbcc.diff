@@ -7,13 +7,15 @@ patch MiniGL so it compiles using my cross-toolchain with vbcc:
   name case for clib/Warp3D_protos.h
 - add extra.h and extra.lib so the test/demo programs build/link
 - remove -lcgfx from demo/test programs linkage
+- moved kprintf.o to EXE (GLTest) objects. (it is not used in the
+  library code in release builds..)
 
 Only in MiniGL-vbcc: lib/extra.lib
 
 diff -uNrp MiniGL/makefile.vbcc68k MiniGL-vbcc/makefile.vbcc68k
 --- MiniGL/makefile.vbcc68k	2002-11-30 08:15:32.000000000 +0200
-+++ MiniGL-vbcc/makefile.vbcc68k	2016-06-27 11:01:10.000000000 +0300
-@@ -16,7 +16,7 @@
++++ MiniGL-vbcc/makefile.vbcc68k	2016-07-01 07:10:00.000000000 +0300
+@@ -16,38 +16,44 @@
  #
  #
  
@@ -22,18 +24,20 @@ diff -uNrp MiniGL/makefile.vbcc68k MiniGL-vbcc/makefile.vbcc68k
  DEBUG =
  
  CFLAGS = -O1 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(DEBUG)
-@@ -24,15 +24,17 @@ CFLAGS = -O1 -speed -c99 $(INCLUDE) -cpu
+ 
  OP_CFLAGS = -O2 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(DEBUG)
  
- 
+-
 -LIBS = -lm040 -lmgl -lextra -lcgfx
 -LIBNAME = vlibm68k:mgl.lib
-+LIBS = -Llib -lm040 -lmgl -lextra
++LIBDIR = vlibm68k
++LIBS = -L$(LIBDIR) -lm040 -lmgl -lextra
 +# -lcgfx
-+LIBNAME = lib/mgl.lib
++LIBNAME = $(LIBDIR)/mgl.lib
  DIR = Build
  EXENAME = GLTest
- EXESRC = src/GLTest.c
+-EXESRC = src/GLTest.c
++EXESRC = src/GLTest.c src/kprintf.c
  
  DEMOS = GLTest warp varray gears mtex driverinfo
  
@@ -42,22 +46,41 @@ diff -uNrp MiniGL/makefile.vbcc68k MiniGL-vbcc/makefile.vbcc68k
 +# +m68kdb
  AR=join as
  
- LIBOBJ = $(DIR)/kprintf.o $(DIR)/init.o $(DIR)/glu.o \
-@@ -47,7 +49,7 @@ install:
+-LIBOBJ = $(DIR)/kprintf.o $(DIR)/init.o $(DIR)/glu.o \
++LIBOBJ = $(DIR)/init.o $(DIR)/glu.o \
+ $(DIR)/fog.o $(DIR)/others.o $(DIR)/texture.o \
+ $(DIR)/context.o $(DIR)/matrix.o $(DIR)/vertexbuffer.o \
+ $(DIR)/hclip.o $(DIR)/draw.o \
+ $(DIR)/aclip.o $(DIR)/vertexarray.o $(DIR)/vertexelements.o
++#moved kprintf.o to EXE objects
++#$(DIR)/kprintf.o
+ 
+-all: $(LIBNAME) $(DEMOS)
++all: $(LIBDIR) $(LIBNAME) $(DEMOS)
+ 
+ install:
  	copy include/mgl/#?.h vinclude68k:mgl
  
  clean:
 -	delete force quiet $(DIR)/#?.o GLtest
-+	rm -f $(DIR)/*.o GLtest $(DEMOS)
++	rm -f $(DIR)/*.o
++distclean: clean
++	rm -f $(LIBNAME) $(EXENAME) $(DEMOS)
  
  lib: $(LIBNAME)
  	@echo "Done"
-@@ -81,7 +83,7 @@ rasonly: demos/rasonly.c $(LIBNAME)
+@@ -78,10 +84,10 @@
+ rasonly: demos/rasonly.c $(LIBNAME)
+ 	$(CC) $(CFLAGS) -o rasonly demos/rasonly.c $(LIBS)
  
- 
- $(LIBNAME): $(LIBOBJ)
+-
+-
+-$(LIBNAME): $(LIBOBJ)
 -	$(AR) $(LIBNAME) $(LIBOBJ)
++$(LIBNAME): $(LIBDIR) $(LIBOBJ)
 +	cat $(LIBOBJ) > $(LIBNAME)
++$(LIBDIR):
++	mkdir -p $(LIBDIR)
  
  $(EXENAME): $(EXESRC) $(LIBNAME)
  	$(CC) $(CFLAGS) -o $@ $(EXESRC) $(LIBS)

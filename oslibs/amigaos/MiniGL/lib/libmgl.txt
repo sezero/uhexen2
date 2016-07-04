@@ -1,5 +1,3 @@
-this was cross-compiled on a linux machine for m68k-amigaos using a
-binutils-2.9.1/gcc-2.95.4 toolchain, after applying the minigl.diff
-included here. for the cross-compiler toolchain, see:
-https://github.com/sezero/amigaos-cross-toolchain
-https://github.com/cahirwpz/amigaos-cross-toolchain
+this was compiled against Warp3DDev-4.2a using the GG-Lite-bin-m68k.lha
+package from aminet (binutils-2.7/gcc-2.95.3) after applying the minigl
+patches included here.
