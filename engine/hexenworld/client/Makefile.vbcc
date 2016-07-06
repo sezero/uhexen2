@@ -168,7 +168,7 @@ endif
 LINK_GL_LIBS=yes
 
 #CODEC_INC = -I$(OSLIBS)/amigaos/codecs/include
-#CODEC_LINK= -L$(OSLIBS)/amigaos/codecs/lib
+#CODEC_LINK= -L$(OSLIBS)/amigaos/codecs/lib/vbcc
 #INCLUDES += $(CODEC_INC)
 #LDFLAGS += $(CODEC_LINK)
 

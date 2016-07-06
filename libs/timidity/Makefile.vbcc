@@ -1,4 +1,4 @@
-# Quick GNU Makefile for building a static timidity library qor m68k-amigaos using VBCC.
+# Quick GNU Makefile for building a static timidity library using VBCC for m68k-amigaos.
 #
 # To build a debug version:	make DEBUG=yes
 
@@ -8,6 +8,9 @@ LIBS_DIR:=$(UHEXEN2_TOP)/libs
 OSLIBS:=$(UHEXEN2_TOP)/oslibs
 
 CC       = vc
+
+#MKLIB=join $(OBJECTS) as timidity.lib
+MKLIB=cat $(OBJECTS) > timidity.lib
 
 CFLAGS += -D__AMIGA__
 CFLAGS += -DTIMIDITY_BUILD=1 -DTIMIDITY_STATIC=1
@@ -68,7 +71,7 @@ timidity_internal.h: options.h timi_endian.h timidity.h
 
 # rule for target:
 timidity.lib: $(OBJECTS)
-	cat $(OBJECTS) > timidity.lib
+	$(MKLIB)
 
 clean:
 	rm -f *.o libtimidity.a timidity.lib
