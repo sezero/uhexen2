@@ -150,6 +150,7 @@ static qboolean contextinit = false;
 #elif defined(__AMIGA__) && defined(REFGL_MINIGL)
 static int lockmode = MGL_LOCK_MANUAL;
 #elif defined(__AMIGA__) && defined(REFGL_AMESA)
+struct Library *CyberGfxBase = NULL;
 static AmigaMesaContext context = NULL;
 #endif
 static qboolean	vid_menu_fs;
@@ -1501,6 +1502,11 @@ void	VID_Init (unsigned char *palette)
 	}
 	mglChoosePixelDepth (16);/* set pixel depth to 16 */
 #endif
+#if defined(REFGL_AMESA)
+	CyberGfxBase = OpenLibrary("cybergraphics.library", 0);
+	if (!CyberGfxBase)
+		Sys_Error ("Cannot open cybergraphics.library!");
+#endif
 
 	// prepare the modelists, find the actual modenum for vid_default
 	VID_PrepareModes();
@@ -1642,6 +1648,12 @@ void	VID_Shutdown (void)
 	VID_KillContext();
 #ifdef REFGL_MINIGL
 	MGLTerm();
+#endif
+#ifdef REFGL_AMESA
+	if (CyberGfxBase) {
+		CloseLibrary(CyberGfxBase);
+		CyberGfxBase = NULL;
+	}
 #endif
 }
 
