@@ -16,14 +16,14 @@ BINARY:=dhcc
 CC       = vc
 LINKER   = $(CC)
 
-CFLAGS  = -O1 -speed -c99 -cpu=68060 -fpu=68060
+CFLAGS  = -O1 -speed -c99 -cpu=68020 -fpu=68881
 CFLAGS += -D__AMIGA__
 CFLAGS += -DNDEBUG=1
 INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 # for extra missing headers
 INCLUDES+=-I$(OSLIBS)/amigaos/vbcc/include -I$(OSLIBS)/amigaos/include
 LDFLAGS = -L$(OSLIBS)/amigaos/vbcc/lib
-LDLIBS  = -lm040
+LDLIBS  = -lm881
 
 # Other build flags
 
