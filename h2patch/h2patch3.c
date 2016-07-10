@@ -318,6 +318,67 @@ static long get_millisecs (void)
 }
 
 #elif defined(PLATFORM_AMIGA)
+static struct timerequest *timerio;
+static struct MsgPort   *timerport;
+#if defined(__MORPHOS__) || defined(__VBCC__)
+struct Library *TimerBase = NULL;
+#else
+struct Device  *TimerBase = NULL;
+#endif
+static void Sys_TimerCleanup (void)
+{
+	if (TimerBase)
+	{
+		WaitIO((struct IORequest *) timerio);
+		CloseDevice((struct IORequest *) timerio);
+		DeleteIORequest((struct IORequest *) timerio);
+		DeleteMsgPort(timerport);
+		TimerBase = NULL;
+	}
+}
+
+static void Sys_TimerInit (void)
+{
+	if ((timerport = CreateMsgPort()) != NULL)
+	{
+		if ((timerio = (struct timerequest *)CreateIORequest(timerport, sizeof(struct timerequest))) != NULL)
+		{
+			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
+					(struct IORequest *) timerio, 0) == 0)
+			{
+#if defined(__MORPHOS__) || defined(__VBCC__)
+				TimerBase = (struct Library *)timerio->tr_node.io_Device;
+#else
+				TimerBase = timerio->tr_node.io_Device;
+#endif
+			}
+			else
+			{
+				DeleteIORequest((struct IORequest *)timerio);
+				DeleteMsgPort(timerport);
+			}
+		}
+		else
+		{
+			DeleteMsgPort(timerport);
+		}
+	}
+
+	if (!TimerBase)
+	{
+		fprintf(stderr, "Can't open timer.device\n");
+		exit(-1);
+	}
+
+	atexit (Sys_TimerCleanup);
+	/* 1us wait, for timer cleanup success */
+	timerio->tr_node.io_Command = TR_ADDREQUEST;
+	timerio->tr_time.tv_secs = 0;
+	timerio->tr_time.tv_micro = 1;
+	SendIO((struct IORequest *) timerio);
+	WaitIO((struct IORequest *) timerio);
+}
+
 static int Sys_unlink (const char *path)
 {
 	if (DeleteFile((const STRPTR) path) != 0)
@@ -384,12 +445,9 @@ static int check_access (const char *name)
 
 static long get_millisecs (void)
 {
-	long secs, usecs;
-	struct DateStamp ds;
-	DateStamp(&ds);
-	secs = (long) (ds.ds_Days*86400 + ds.ds_Minute*60 + ds.ds_Tick/TICKS_PER_SECOND);
-	usecs= (long) (ds.ds_Tick % TICKS_PER_SECOND) * (1000000L/TICKS_PER_SECOND);
-	return secs*1000L + usecs/1000L;
+	struct timeval t;
+	GetSysTime(&t);
+	return (t.tv_secs * 1000 + t.tv_micro / 1000);
 }
 
 #else /* POSIX */
@@ -473,7 +531,7 @@ static void print_help (void)
 
 /*  LOG PRINTING:  */
 
-static char eol_char[4] = {0, 0, 0, 0};
+static int eol_char = '\n';
 static long starttime;
 
 static void progress_print (void)
@@ -482,14 +540,15 @@ static void progress_print (void)
 
 	if (elapsed < 10000)
 	{
-		fprintf(stderr, "%10lu bytes, %.2fs%s",
+		elapsed /= 10;
+		fprintf(stderr, "%10lu bytes, %4ld.%02lds%c",
 			h2patch_progress.current_file_written,
-			elapsed / 1000.0, eol_char);
+			elapsed / 100, elapsed % 100, eol_char);
 	}
 	else
 	{
 		elapsed /= 1000;
-		fprintf(stderr, "%10lu bytes, %3ldm:%02lds%s",
+		fprintf(stderr, "%10lu bytes, %3ldm:%02lds%c",
 			h2patch_progress.current_file_written,
 			elapsed / 60, elapsed % 60, eol_char);
 	}
@@ -499,13 +558,13 @@ static void start_file_progress (long bytes)
 {
 	h2patch_progress.current_file_written = 0;
 	h2patch_progress.current_file_total = bytes;
-	eol_char[0] = '\r';
+	eol_char = '\r';
 	starttime = get_millisecs ();
 }
 
 static void finish_file_progress (void)
 {
-	eol_char[0] = '\n';
+	eol_char = '\n';
 	if (h2patch_progress.current_file_written != 0)
 		progress_print ();
 }
@@ -574,6 +633,10 @@ int main (int argc, char **argv)
 			return 1;
 		}
 	}
+
+#if defined(PLATFORM_AMIGA)
+	Sys_TimerInit ();
+#endif
 
 	memset (&h2patch_progress, 0, sizeof(xd3_progress_t));
 	num_patched = 0;
