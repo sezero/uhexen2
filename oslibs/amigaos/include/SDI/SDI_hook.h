@@ -58,6 +58,7 @@
  1.26  17.10.12 : added crosscall macros for functions with 1 and 2 parameters but
                   no return value.
  1.27  04.04.15 : fixed HOOKPROTO for vbcc (Fredrik Wikstrom)
+ 1.28  12.07.16 : fixed HOOKPROTO for vbcc (O. Sezer)
 
 */
 
@@ -121,7 +122,7 @@
 ** The ENTRY macro, which also gets the function name as argument.
 */
 
-#if !defined(__AROS__) && (defined(_M68000) || defined(__M68000) || defined(__mc68000) || defined(_M68K__))
+#if !defined(__AROS__) && (defined(_M68000) || defined(__M68000) || defined(__mc68000) || defined(__M68K__))
   #define HOOKPROTO(name, ret, obj, param) static SAVEDS ASM ret             \
     name(REG(a0, struct Hook *hook), REG(a2, obj), REG(a1, param))
   #define HOOKPROTONO(name, ret, param) static SAVEDS ASM ret                \
