@@ -1,0 +1,30 @@
+if you _really_ do want to build against AROS ABIv0-compatible SDKs
+newer than 2014-07-26, i.e. the "ABI_V0-on-trunk" branch, then you
+will need to patch the SDI/SDI_interrupt.h header from those SDKs so
+that the HANDLERPROTO macro is available:
+
+diff --git AROS/compiler/include/SDI/SDI_interrupt.h AROS/compiler/include/SDI/SDI_interrupt.h
+index 12a1c3f..d8c5f71 100644
+--- AROS/compiler/include/SDI/SDI_interrupt.h
++++ AROS/compiler/include/SDI/SDI_interrupt.h
+@@ -113,10 +113,8 @@
+ 
+   #define ENTRY(func) (APTR)&Gate_##func
+ 
+-#elif defined(__AROS__)
++#elif defined(__AROS__)&& 0/* ABI_V0 compatibility */
+ 
+-/* ABI_V0 compatibility */
+-#if 0
+   /* This is the same prototype for both Cause() and
+    * AddIntServer() functions
+    */
+@@ -132,7 +130,6 @@
+         name(custom, is_Data, sysBase ); return 0; \
+         AROS_USERFUNC_EXIT }  \
+       ret name(obj, data, struct ExecBase *SysBase)
+-#endif
+ 
+ #else
+ 
+
