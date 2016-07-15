@@ -35,7 +35,9 @@
 #include <proto/graphics.h>
 #include <proto/cybergraphics.h>
 
-#ifdef __AROS__ /* TODO: glA support. */
+#if defined(__AROS__) && defined(AROS_USE_GLA)
+#include <GL/gla.h>
+#elif defined(__AROS__)
 #include <GL/arosmesa.h>
 #elif defined __MORPHOS__
 #include <intuition/intuitionbase.h>
@@ -49,7 +51,9 @@
 #error Unknown / Unsupported AmigaOS variant.
 #endif
 
-#ifdef __AROS__
+#if defined(__AROS__) && defined(AROS_USE_GLA)
+typedef GLAProc AMIGAGL_Proc;
+#elif defined(__AROS__)
 typedef AROSMesaProc AMIGAGL_Proc;
 #else
 typedef void (*AMIGAGL_Proc)();
@@ -142,7 +146,9 @@ static attributes_t	vid_attribs;
 static void VID_KillContext (void);
 struct Window *window = NULL; /* used by in_amiga.c */
 static struct Screen *screen = NULL;
-#ifdef __AROS__
+#if defined(__AROS__) && defined(AROS_USE_GLA)
+static GLAContext context = NULL;
+#elif defined(__AROS__)
 static AROSMesaContext context = NULL;
 #elif defined __MORPHOS__
 GLContext *__tglContext = NULL;
@@ -443,7 +449,23 @@ static qboolean VID_SetMode (int modenum)
 	WRWidth = vid.width = vid.conwidth = modelist[modenum].width;
 	WRHeight = vid.height = vid.conheight = modelist[modenum].height;
 
-#ifdef __AROS__
+#if defined(__AROS__) && defined(AROS_USE_GLA)
+	context = glACreateContextTags(
+			GLA_Window, window,
+			GLA_Left, screen ? 0 : window->BorderLeft,
+			GLA_Top, screen ? 0 : window->BorderTop,
+			GLA_Width, vid.width,
+			GLA_Height, vid.height,
+			screen ? GLA_Screen : TAG_IGNORE, screen,
+			GLA_DoubleBuf, GL_TRUE,
+			GLA_RGBMode, GL_TRUE,
+			GLA_NoAccum, GL_TRUE,
+			TAG_DONE);
+
+	if (!context) goto fail;
+	glAMakeCurrent(context);
+
+#elif defined(__AROS__)
 	context = AROSMesaCreateContextTags(
 			AMA_Window, window,
 			AMA_Left, screen ? 0 : window->BorderLeft,
@@ -525,7 +547,13 @@ fail:
 
 //====================================
 
-#if defined(__AROS__)
+#if defined(__AROS__) && defined(AROS_USE_GLA)
+static AMIGAGL_Proc AMIGAGL_GetProcAddress (const char *s)
+{
+	return glAGetProcAddress((const GLubyte *) s);
+}
+
+#elif defined(__AROS__)
 static AMIGAGL_Proc AMIGAGL_GetProcAddress (const char *s)
 {
 	return AROSMesaGetProcAddress((const GLubyte *) s);
@@ -989,7 +1017,9 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height)
 void GL_EndRendering (void)
 {
 	if (!scr_skipupdate)
-#ifdef __AROS__
+#if defined(__AROS__) && defined(AROS_USE_GLA)
+		glASwapBuffers(context);
+#elif defined(__AROS__)
 		AROSMesaSwapBuffers(context);
 #elif defined __MORPHOS__
 		glASwapBuffers();
@@ -1660,7 +1690,13 @@ void	VID_Shutdown (void)
 
 static void VID_KillContext (void)
 {
-#ifdef __AROS__
+#if defined(__AROS__) && defined(AROS_USE_GLA)
+	if (context)
+	{
+		glADestroyContext(context);
+		context = NULL;
+	}
+#elif defined(__AROS__)
 	if (context)
 	{
 		AROSMesaDestroyContext(context);

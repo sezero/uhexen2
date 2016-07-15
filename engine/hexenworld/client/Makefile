@@ -766,6 +766,12 @@ endif
 # Don't use x86 assembly for AROS
 USE_X86_ASM=no
 
+# use the old AROSMesa api (default), or the new glA api
+USE_GLA=no
+ifeq ($(USE_GLA),yes)
+GL_DEFS += -DAROS_USE_GLA
+endif
+
 GL_LINK=-lGL
 
 # both WildMidi and the local timidity work nice on AROS
