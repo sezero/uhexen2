@@ -237,6 +237,7 @@ Compiling for Amiga variants:
 
 For AROS and MorphOS, gcc is used.  For AROS, only ABIv0 is tested: we
 build against AROS snapshot from 2014-07-26 (i.e. the ABI_V0 branch at
+aros svn: https://trac.aros.org/trac/browser/AROS/branches/ABI_V0 , or
 https://gitorious.org/aros/aros.git).  For MorphOS, any SDK should work.
 For AmigaOS 3.x (m68k-amigaos), gcc presented code generation issues in
 our experience: we tested builds with VBCC version 0.9e instead.
