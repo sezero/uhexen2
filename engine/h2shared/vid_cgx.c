@@ -524,8 +524,8 @@ static qboolean VID_SetMode (int modenum, unsigned char *palette)
 
 			if (buffer || vid.numpages > 1)
 			{
+				/* if(vid.numpages > 1) VID_LockBuffer sets vid.buffer */
 				vid.buffer = vid.direct = vid.conbuffer = buffer;
-				//vid.numpages = 1;
 				vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
 
 				if (VID_AllocBuffers (vid.width, vid.height))
@@ -629,7 +629,7 @@ void VID_LockBuffer(void)
 
 	if (!handle)
 	{
-		return;
+		Sys_Error("%s: failed LockBitMapTags()", __thisfunc__);
 	}
 
 	// Update surface pointer for linear access modes
@@ -694,7 +694,7 @@ void VID_SetPalette(unsigned char *palette)
 
 	for (i = 0; i < 256; i++)
 	{
-		if (host_byteorder == BIG_ENDIAN)
+		if (host_bigendian)
 		{
 #if defined(__VBCC__)
 			// nasty compiler bug workaround
@@ -875,8 +875,7 @@ static void FlipScreen (vrect_t *rects)
 {
 	if (vid.numpages > 1)
 	{
-		if (screenbuffers[1])
-			currentbuffer ^= 1;
+		currentbuffer ^= 1;
 		ChangeScreenBuffer(screen, screenbuffers[currentbuffer]);
 		return;
 	}
@@ -975,10 +974,11 @@ void D_EndDirectRect (int x, int y, int width, int height)
 		}
 		else
 		{
+			struct RastPort rastport;
+
 			if (lockcount > 0)
 				return;
 
-			struct RastPort rastport;
 			InitRastPort(&rastport);
 			rastport.BitMap = screenbuffers[currentbuffer]->sb_BitMap;
 
@@ -998,55 +998,7 @@ void D_EndDirectRect (int x, int y, int width, int height)
 void D_ShowLoadingSize (void)
 {
 #if defined(DRAW_PROGRESSBARS)
-	static int prev_perc;
-	int		cur_perc;
-	vrect_t		rect;
-	viddef_t	save_vid;	// global video state
-
-	if (!vid_showload.integer)
-		return;
-
-	if (!window)
-		return;
-
-	cur_perc = loading_stage * 100;
-	if (total_loading_size)
-		cur_perc += current_loading_size * 100 / total_loading_size;
-	if (cur_perc == prev_perc)
-		return;
-	prev_perc = cur_perc;
-
-	save_vid = vid;
-	if (vid.numpages == 1)
-	{
-		VID_LockBuffer ();
-
-		if (!vid.direct)
-			Sys_Error ("NULL vid.direct pointer");
-
-		vid.buffer = vid.direct;
-
-		SCR_DrawLoading();
-
-		VID_UnlockBuffer ();
-
-		rect.x = 0;
-		rect.y = 0;
-		rect.width = vid.width;
-		rect.height = 112;
-		rect.pnext = NULL;
-
-		FlipScreen (&rect);
-	}
-	else
-	{
-		vid.buffer = (byte *)screen->pixels;
-		vid.rowbytes = screen->pitch;
-
-		SCR_DrawLoading();
-	}
-
-	vid = save_vid;
+#error NOT IMPLEMENTED
 #endif	/* DRAW_PROGRESSBARS */
 }
 #endif
