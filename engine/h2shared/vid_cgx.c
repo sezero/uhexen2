@@ -53,12 +53,16 @@ ULONG __WriteLUTPixelArray(__reg("a6") void *, __reg("a0") APTR srcRect, __reg("
 
 struct Window *window = NULL; /* used by in_amiga.c */
 static struct Screen *screen = NULL;
-static char pal[256 * 4];
+static unsigned char pal[256 * 4];
 static pixel_t *buffer = NULL;
 static byte *directbitmap = NULL;
 #if defined(__AMIGA__) && !defined(__MORPHOS__) /* amigaos3 */
 struct Library *CyberGfxBase = NULL;
 #endif
+static struct ScreenBuffer *screenbuffers[2] = {NULL, NULL};
+static int currentbuffer = 0;
+static APTR handle = NULL;
+static int lockcount;
 
 /* ----------------------------------------- */
 
@@ -427,6 +431,18 @@ static void VID_DestroyWindow (void)
 		pointermem = NULL;
 	}*/
 
+	if (screenbuffers[0])
+	{
+		FreeScreenBuffer(screen, screenbuffers[0]);
+		screenbuffers[0] = NULL;
+	}
+
+	if (screenbuffers[1])
+	{
+		FreeScreenBuffer(screen, screenbuffers[1]);
+		screenbuffers[1] = NULL;
+	}
+
 	if (screen)
 	{
 		CloseScreen(screen);
@@ -443,6 +459,8 @@ static qboolean VID_SetMode (int modenum, unsigned char *palette)
 	VID_DestroyWindow ();
 
 	flags = WFLG_ACTIVATE | WFLG_RMBTRAP;
+
+	vid.numpages = 1;
 
 	if (vid_config_fscr.integer)
 	{
@@ -461,6 +479,19 @@ static qboolean VID_SetMode (int modenum, unsigned char *palette)
 			SA_Depth, 8,
 			SA_Quiet, TRUE,
 			TAG_DONE);
+
+		if (GetCyberMapAttr(screen->RastPort.BitMap, CYBRMATTR_DEPTH) == 8 &&
+			GetCyberMapAttr(screen->RastPort.BitMap, CYBRMATTR_ISLINEARMEM))
+		{
+			screenbuffers[0] = AllocScreenBuffer(screen, NULL, SB_SCREEN_BITMAP);
+			screenbuffers[1] = AllocScreenBuffer(screen, NULL, 0);
+			if (screenbuffers[0] && screenbuffers[1])
+			{
+				// double buffering possible
+				currentbuffer = 0;
+				vid.numpages = 2;
+			}
+		}
 	}
 
 	if (screen)
@@ -488,12 +519,13 @@ static qboolean VID_SetMode (int modenum, unsigned char *palette)
 		if (pointermem) {*/
 			vid.height = vid.conheight = modelist[modenum].height;
 			vid.rowbytes = vid.conrowbytes = vid.width = vid.conwidth = modelist[modenum].width;
-			buffer = (pixel_t *) AllocVec(vid.width * vid.height, MEMF_ANY);
+			if (vid.numpages == 1)
+				buffer = (pixel_t *) AllocVec(vid.width * vid.height, MEMF_ANY);
 
-			if (buffer)
+			if (buffer || vid.numpages > 1)
 			{
 				vid.buffer = vid.direct = vid.conbuffer = buffer;
-				vid.numpages = 1;
+				//vid.numpages = 1;
 				vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
 
 				if (VID_AllocBuffers (vid.width, vid.height))
@@ -582,10 +614,54 @@ static void VID_Restart_f (void)
 
 void VID_LockBuffer(void)
 {
+	if (vid.numpages == 1)
+		return;
+
+	lockcount++;
+
+	if (lockcount > 1)
+		return;
+
+	handle = LockBitMapTags(screenbuffers[currentbuffer^1]->sb_BitMap,
+		LBMI_BYTESPERROW, (IPTR)&vid.rowbytes,
+		LBMI_BASEADDRESS, (IPTR)&vid.buffer,
+		TAG_DONE);
+
+	if (!handle)
+	{
+		return;
+	}
+
+	// Update surface pointer for linear access modes
+	vid.conbuffer = vid.direct = vid.buffer;
+	vid.conrowbytes = vid.rowbytes;
+
+	if (r_dowarp)
+		d_viewbuffer = r_warpbuffer;
+	else
+		d_viewbuffer = vid.buffer;
+
+	if (r_dowarp)
+		screenwidth = WARP_WIDTH;
+	else
+		screenwidth = vid.rowbytes;
 }
 
 void VID_UnlockBuffer(void)
 {
+	if (vid.numpages == 1)
+		return;
+
+	lockcount--;
+
+	if (lockcount > 0)
+		return;
+
+	if (lockcount < 0)
+		Sys_Error ("Unbalanced unlock");
+
+	UnLockBitMap(handle);
+	handle = NULL;
 }
 
 
@@ -606,12 +682,12 @@ void VID_SetPalette(unsigned char *palette)
 
 		for (i = 0; i < 256; i++)
 		{
-			spal[1 + (i * 3)] = ((unsigned int)palette[i * 3]) << 24;
-			spal[2 + (i * 3)] = ((unsigned int)palette[i * 3 + 1]) << 24;
-			spal[3 + (i * 3)] = ((unsigned int)palette[i * 3 + 2]) << 24;
+			spal[i * 3 + 1] = ((ULONG)palette[i * 3 + 0]) << 24;
+			spal[i * 3 + 2] = ((ULONG)palette[i * 3 + 1]) << 24;
+			spal[i * 3 + 3] = ((ULONG)palette[i * 3 + 2]) << 24;
 		}
 
-		spal[1 + (3 * 256)] = 0;
+		spal[i * 3 + 1] = 0;
 
 		LoadRGB32(&screen->ViewPort, spal);
 	}
@@ -620,14 +696,19 @@ void VID_SetPalette(unsigned char *palette)
 	{
 		if (host_byteorder == BIG_ENDIAN)
 		{
-			pal[i * 4] = 0;
+#if defined(__VBCC__)
+			// nasty compiler bug workaround
+			memcpy(&pal[i * 4 + 1], &palette[i * 3 + 0], 3);
+#else
+			pal[i * 4 + 0] = 0;
 			pal[i * 4 + 1] = palette[i * 3 + 0];
 			pal[i * 4 + 2] = palette[i * 3 + 1];
 			pal[i * 4 + 3] = palette[i * 3 + 2];
+#endif
 		}
 		else
 		{
-			pal[i * 4] = palette[i * 3 + 2];
+			pal[i * 4 + 0] = palette[i * 3 + 2];
 			pal[i * 4 + 1] = palette[i * 3 + 1];
 			pal[i * 4 + 2] = palette[i * 3 + 0];
 			pal[i * 4 + 3] = 0;
@@ -792,6 +873,14 @@ void VID_Shutdown (void)
 
 static void FlipScreen (vrect_t *rects)
 {
+	if (vid.numpages > 1)
+	{
+		if (screenbuffers[1])
+			currentbuffer ^= 1;
+		ChangeScreenBuffer(screen, screenbuffers[currentbuffer]);
+		return;
+	}
+
 	while (rects)
 	{
 		if (screen)
@@ -880,7 +969,21 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 	if (screen)
 	{
-		WritePixelArray(directbitmap, 0, 0, width, window->RPort, x, y, width, height, RECTFMT_LUT8);
+		if (vid.numpages == 1)
+		{
+			WritePixelArray(directbitmap, 0, 0, width, window->RPort, x, y, width, height, RECTFMT_LUT8);
+		}
+		else
+		{
+			if (lockcount > 0)
+				return;
+
+			struct RastPort rastport;
+			InitRastPort(&rastport);
+			rastport.BitMap = screenbuffers[currentbuffer]->sb_BitMap;
+
+			WritePixelArray(directbitmap, 0, 0, width, &rastport, x, y, width, height, RECTFMT_LUT8);
+		}
 	}
 	else
 	{
