@@ -1,0 +1,114 @@
+libmad-0.15.1b compiled for m68k-amigaos port of Hammer of Thyrion (uhexen2):
+commented out unneeded code (see diffs below), built with the options seen
+in the makefiles below.
+
+--- /dev/null
++++ Makefile.vbcc
+@@ -0,0 +1,26 @@
++CFLAGS  = -O1 -speed -c99 -cpu=68060 -fpu=68060 -D__AMIGA__ -DWORDS_BIGENDIAN=1
++CFLAGS += -DNDEBUG
++CFLAGS += -DFPM_DEFAULT
++CFLAGS += -DOPT_SPEED=1
++CFLAGS += -DOPT_SSO=1
++LIBNAME =  mad.lib
++
++CC      = vc
++# +m68kdb
++#MKLIB   = join $(LIBOBJ) as $(LIBNAME)
++MKLIB   = cat $(LIBOBJ) > $(LIBNAME)
++
++LIBOBJ = version.o fixed.o bit.o timer.o stream.o frame.o synth.o layer12.o layer3.o huffman.o
++
++all: $(LIBNAME)
++
++$(LIBNAME): $(LIBOBJ)
++	$(MKLIB)
++
++%.o: %.c
++	$(CC) $(CFLAGS) -c -o $@ $<
++
++clean:
++	$(RM) *.o
++distclean: clean
++	$(RM) $(LIBNAME)
+--- /dev/null
++++ Makefile.aos3
+@@ -0,0 +1,27 @@
++CFLAGS  = -m68020-60 -Wall -DWORDS_BIGENDIAN=1
++CFLAGS += -O1 -fforce-mem -fforce-addr -fthread-jumps -fcse-follow-jumps -fcse-skip-blocks -fexpensive-optimizations -fregmove
++CFLAGS += -DNDEBUG
++CFLAGS += -DFPM_DEFAULT
++CFLAGS += -DOPT_SPEED=1
++CFLAGS += -DOPT_SSO=1
++LIBNAME =  libmad.a
++
++CC      = m68k-amigaos-gcc
++AR      = m68k-amigaos-ar
++RANLIB  = m68k-amigaos-ranlib
++
++LIBOBJ = version.o fixed.o bit.o timer.o stream.o frame.o synth.o layer12.o layer3.o huffman.o
++
++all: $(LIBNAME)
++
++$(LIBNAME): $(LIBOBJ)
++	$(AR) cru $(LIBNAME) $(LIBOBJ)
++	$(RANLIB) $(LIBNAME)
++
++%.o: %.c
++	$(CC) $(CFLAGS) -c -o $@ $<
++
++clean:
++	$(RM) *.o
++distclean: clean
++	$(RM) $(LIBNAME)
+--- timer.c.orig
++++ timer.c
+@@ -342,6 +342,7 @@ unsigned long mad_timer_fraction(mad_tim
+  * NAME:	timer->string()
+  * DESCRIPTION:	write a string representation of a timer using a template
+  */
++#if 0 /* NOT NEEDED in uHexen2 */
+ void mad_timer_string(mad_timer_t timer,
+ 		      char *dest, char const *format, enum mad_units units,
+ 		      enum mad_units fracunits, unsigned long subparts)
+@@ -483,3 +484,5 @@ void mad_timer_string(mad_timer_t timer,
+     break;
+   }
+ }
++#endif /* NOT NEEDED in uHexen2 */
++
+--- decoder.c.orig
++++ decoder.c
+@@ -23,6 +23,7 @@
+ #  include "config.h"
+ # endif
+ 
++#if 0 /* NOT NEEDED in uHexen2 */
+ # include "global.h"
+ 
+ # ifdef HAVE_SYS_TYPES_H
+@@ -580,3 +581,5 @@ int mad_decoder_message(struct mad_decod
+   return -1;
+ # endif
+ }
++#endif /* NOT NEEDED in uHexen2 */
++
+--- minimad.c.orig
++++ minimad.c
+@@ -19,6 +19,9 @@
+  * $Id: minimad.c,v 1.4 2004/01/23 09:41:32 rob Exp $
+  */
+ 
++#if 1 /* NOT NEEDED in uHexen2 */
++int main() { return 0; }
++#else
+ # include <stdio.h>
+ # include <unistd.h>
+ # include <sys/stat.h>
+@@ -220,3 +223,5 @@ int decode(unsigned char const *start, u
+ 
+   return result;
+ }
++#endif /* NOT NEEDED in uHexen2 */
++
+

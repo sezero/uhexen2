@@ -774,6 +774,11 @@ endif
 
 GL_LINK=-lGL
 
+USE_CODEC_FLAC=no
+USE_CODEC_OPUS=no
+USE_CODEC_MIKMOD=no
+USE_CODEC_MODPLUG=no
+USE_CODEC_UMX=no
 # both WildMidi and the local timidity work nice on AROS
 USE_CODEC_WILDMIDI=no
 USE_CODEC_TIMIDITY=yes
@@ -854,17 +859,23 @@ endif
 LINK_GL_LIBS=yes
 
 USE_CODEC_FLAC=no
-USE_CODEC_VORBIS=no
-USE_CODEC_MP3=no
 USE_CODEC_OPUS=no
 USE_CODEC_MIKMOD=no
 USE_CODEC_MODPLUG=no
 USE_CODEC_UMX=no
+#use integer-only Tremor as Vorbis decoder for m68k-amigaos
+VORBISLIB=tremor
 
-#CODEC_INC = -I$(OSLIBS)/amigaos/codecs/include
-#CODEC_LINK= -L$(OSLIBS)/amigaos/codecs/lib
-#INCLUDES += $(CODEC_INC)
-#LDFLAGS += $(CODEC_LINK)
+ifeq ($(USE_CODEC_MP3),yes)
+CODEC_INC = -I$(OSLIBS)/amigaos/codecs/include
+CODEC_LINK= -L$(OSLIBS)/amigaos/codecs/lib
+endif
+ifeq ($(USE_CODEC_VORBIS),yes)
+CODEC_INC = -I$(OSLIBS)/amigaos/codecs/include
+CODEC_LINK= -L$(OSLIBS)/amigaos/codecs/lib
+endif
+INCLUDES += $(CODEC_INC)
+LDFLAGS += $(CODEC_LINK)
 
 ifeq ($(USE_SOUND),yes)
 ifneq ($(USE_SDLAUDIO),yes)

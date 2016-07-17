@@ -46,8 +46,8 @@ USE_SDLCD=no
 # Enable/disable codecs for streaming music support:
 USE_CODEC_WAVE=yes
 USE_CODEC_FLAC=no
-USE_CODEC_MP3=no
-USE_CODEC_VORBIS=no
+USE_CODEC_MP3=yes
+USE_CODEC_VORBIS=yes
 USE_CODEC_OPUS=no
 # either mikmod (preferred) or modplug (both possible
 # but not needed nor meaningful.)
@@ -65,7 +65,8 @@ TIMIDITY_USE_DLS=no
 # which library to use for mp3 decoding: mad or mpg123
 MP3LIB=mad
 # which library to use for ogg decoding: vorbis or tremor
-VORBISLIB=vorbis
+# use integer-only Tremor for m68k-amigaos
+VORBISLIB=tremor
 # whether the codecs allocate on the zone instead of
 # system memory (set to yes for DOS builds, for example)
 CODECS_USE_ZONE=no
@@ -163,10 +164,16 @@ endif
 # dynamic loading of ogl functions doesn't work
 LINK_GL_LIBS=yes
 
-#CODEC_INC = -I$(OSLIBS)/amigaos/codecs/include
-#CODEC_LINK= -L$(OSLIBS)/amigaos/codecs/lib/vbcc
-#INCLUDES += $(CODEC_INC)
-#LDFLAGS += $(CODEC_LINK)
+ifeq ($(USE_CODEC_MP3),yes)
+CODEC_INC = -I$(OSLIBS)/amigaos/codecs/include
+CODEC_LINK= -L$(OSLIBS)/amigaos/codecs/lib/vbcc
+endif
+ifeq ($(USE_CODEC_VORBIS),yes)
+CODEC_INC = -I$(OSLIBS)/amigaos/codecs/include
+CODEC_LINK= -L$(OSLIBS)/amigaos/codecs/lib/vbcc
+endif
+INCLUDES += $(CODEC_INC)
+LDFLAGS += $(CODEC_LINK)
 
 ifeq ($(USE_SOUND),yes)
 ifneq ($(USE_SDLAUDIO),yes)
