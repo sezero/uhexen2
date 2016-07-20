@@ -667,9 +667,9 @@ void VID_UnlockBuffer(void)
 
 void VID_SetPalette(const unsigned char *palette)
 {
+	const unsigned char *p;
+	unsigned char *pp;
 	int i;
-
-	ULONG spal[1 + (256 * 3) + 1];
 
 	palette_changed = true;
 
@@ -678,40 +678,39 @@ void VID_SetPalette(const unsigned char *palette)
 
 	if (screen)
 	{
-		spal[0] = 256 << 16;
+		ULONG spal[1 + (256 * 3) + 1];
+		ULONG *sp = spal;
 
-		for (i = 0; i < 256; i++)
+		*sp++ = 256 << 16;
+
+		for (i = 0, p = palette; i < 256; i++)
 		{
-			spal[i * 3 + 1] = ((ULONG)palette[i * 3 + 0]) << 24;
-			spal[i * 3 + 2] = ((ULONG)palette[i * 3 + 1]) << 24;
-			spal[i * 3 + 3] = ((ULONG)palette[i * 3 + 2]) << 24;
+			*sp++ = ((ULONG) *p++) << 24;
+			*sp++ = ((ULONG) *p++) << 24;
+			*sp++ = ((ULONG) *p++) << 24;
 		}
 
-		spal[i * 3 + 1] = 0;
+		*sp = 0;
 
 		LoadRGB32(&screen->ViewPort, spal);
 	}
 
-	for (i = 0; i < 256; i++)
+	for (i = 0, p = palette, pp = ppal; i < 256; i++)
 	{
 		if (host_bigendian)
 		{
-#if defined(__VBCC__)
-			// nasty compiler bug workaround
-			memcpy(&ppal[i * 4 + 1], &palette[i * 3 + 0], 3);
-#else
-			ppal[i * 4 + 0] = 0;
-			ppal[i * 4 + 1] = palette[i * 3 + 0];
-			ppal[i * 4 + 2] = palette[i * 3 + 1];
-			ppal[i * 4 + 3] = palette[i * 3 + 2];
-#endif
+			*pp++ = 0;
+			*pp++ = *p++;
+			*pp++ = *p++;
+			*pp++ = *p++;
 		}
 		else
 		{
-			ppal[i * 4 + 0] = palette[i * 3 + 2];
-			ppal[i * 4 + 1] = palette[i * 3 + 1];
-			ppal[i * 4 + 2] = palette[i * 3 + 0];
-			ppal[i * 4 + 3] = 0;
+			*pp++ = p[2];
+			*pp++ = p[1];
+			*pp++ = p[0];
+			*pp++ = 0;
+			p += 3;
 		}
 	}
 }
