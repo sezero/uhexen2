@@ -306,7 +306,7 @@ static void VID_ShutdownDIB (void)
 }
 
 
-static void VID_CreateDIB (int width, int height, unsigned char *palette)
+static void VID_CreateDIB (int width, int height, const unsigned char *palette)
 {
 	dibinfo_t   dibheader;
 	BITMAPINFO *pbmiDIB = &dibheader.bi;
@@ -1042,7 +1042,9 @@ void	VID_SetPalette (const unsigned char *palette)
 {
 	int		i;
 	RGBQUAD		colors[256];
-	unsigned char *pal = palette;
+	const unsigned char *pal;
+
+	pal = palette;
 
 	if (!Minimized)
 	{
