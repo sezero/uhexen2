@@ -225,6 +225,24 @@ extern short   ShortSwap (short);
 extern int     LongSwap (int);
 extern float   FloatSwap (float);
 
+#if defined(__VBCC__) && defined(__M68K__)
+int m68k_swap32(__reg("d0") int) =
+    "\trol.w\t#8,d0\n"
+    "\tswap\td0\n"
+    "\trol.w\t#8,d0";
+short m68k_swap16(__reg("d0") short) =
+    "\trol.w\t#8,d0";
+#define LongSwap(s) m68k_swap32((s))
+#define ShortSwap(s) m68k_swap16((s))
+float m68k_swap32f(__reg("fp0") float) =
+    "\tfmove.s\tfp0,d0\n"
+    "\trol.w\t#8,d0\n"
+    "\tswap\td0\n"
+    "\trol.w\t#8,d0\n"
+    "\tfmove.s\td0,fp0";
+#define FloatSwap(s) m68k_swap32f((s))
+#endif
+
 #if (BYTE_ORDER == BIG_ENDIAN)
 
 #define BigShort(s)    (s)

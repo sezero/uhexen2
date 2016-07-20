@@ -120,8 +120,8 @@ extern vec3_t vec3_origin;
 		(c)[2] = (a)[2] + (s) * (b)[2];				\
 	} while (0)
 
-static inline float VectorNormalize (vec3_t v);	/* returns vector length */
-static inline float VectorNormalize (vec3_t v)
+static inline float _inl_VectorNormalize (vec3_t v);	/* returns vector length */
+static inline float _inl_VectorNormalize (vec3_t v)
 {
 	float	length = VectorLength(v);
 	if (length)
@@ -133,6 +133,7 @@ static inline float VectorNormalize (vec3_t v)
 	}
 	return length;
 }
+#define VectorNormalize(a)	_inl_VectorNormalize((a))
 
 int Q_log2(int val);
 

@@ -75,6 +75,7 @@ int DetectByteorder (void)
 	return -1;
 }
 
+#if ENDIAN_RUNTIME_DETECT || !(defined(__VBCC__) && defined(__M68K__))
 __byteswap_func
 short ShortSwap (short l)
 {
@@ -115,6 +116,7 @@ float FloatSwap (float f)
 	dat2.b[3] = dat1.b[0];
 	return dat2.f;
 }
+#endif
 
 #if ENDIAN_RUNTIME_DETECT
 

@@ -34,6 +34,14 @@
 
 /* Instrument files are little-endian, MIDI files big-endian, so we
    need to do some conversions. */
+#if defined(__VBCC__) && defined(__M68K__)
+uint16 XCHG_SHORT(__reg("d0") uint16) =
+    "\trol.w\t#8,d0";
+sint32 XCHG_LONG (__reg("d0") sint32) =
+    "\trol.w\t#8,d0\n"
+    "\tswap\td0\n"
+    "\trol.w\t#8,d0";
+#else
 #define XCHG_SHORT(x) ((((x)&0xFF)<<8) | (((x)>>8)&0xFF))
 #ifdef __i486__
 # define XCHG_LONG(x) \
@@ -45,6 +53,7 @@
 		      (((x)&0xFF00)<<8) | \
 		      (((x)&0xFF0000)>>8) | \
 		      (((x)>>24)&0xFF))
+#endif
 #endif
 
 #if !defined(WORDS_BIGENDIAN)
