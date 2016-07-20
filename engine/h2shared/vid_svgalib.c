@@ -267,7 +267,7 @@ void VID_Shutdown (void)
 	svgalib_inited = 0;
 }
 
-void VID_SetPalette (byte *palette)
+void VID_SetPalette (const unsigned char *palette)
 {
 	static int	tmppal[256*3];
 	int		*tp;
@@ -292,12 +292,12 @@ void VID_SetPalette (byte *palette)
 	}
 }
 
-void VID_ShiftPalette (unsigned char *p)
+void VID_ShiftPalette (const unsigned char *palette)
 {
-	VID_SetPalette(p);
+	VID_SetPalette (palette);
 }
 
-static qboolean VID_SetMode (int modenum, unsigned char *palette)
+static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 {
 	int	bsize, zsize, tsize;
 
@@ -390,7 +390,7 @@ static void comefrom_background (void)
 	VID_SetPalette(vid_current_palette);
 }
 
-void VID_Init (unsigned char *palette)
+void VID_Init (const unsigned char *palette)
 {
 	int	i, w, h, d;
 	char	*modename;

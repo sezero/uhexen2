@@ -86,14 +86,14 @@ extern	unsigned int	d_8to24TranslucentTable[256];
 
 extern	cvar_t		_enable_mouse;
 
-void VID_SetPalette (unsigned char *palette);
+void VID_SetPalette (const unsigned char *palette);
 // called at startup and after any gamma correction
 
-void VID_ShiftPalette (unsigned char *palette);
+void VID_ShiftPalette (const unsigned char *palette);
 // called for bonus and pain flashes, and for underwater color changes
 // in gl mode, used to update hardware gamma.
 
-void VID_Init (unsigned char *palette);
+void VID_Init (const unsigned char *palette);
 // Called at startup to set up translation tables, takes 256 8 bit RGB values
 // the palette data will go away after the call, so it must be copied off if
 // the video driver will need it again

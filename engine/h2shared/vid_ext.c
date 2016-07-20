@@ -173,7 +173,7 @@ static void VGA_BankedEndDirectRect (viddef_t *lvid, struct vmode_s *pcurrentmod
 VID_SetVESAPalette
 ================
 */
-static void VID_SetVESAPalette (viddef_t *lvid, vmode_t *pcurrentmode, unsigned char *pal)
+static void VID_SetVESAPalette (viddef_t *lvid, vmode_t *pcurrentmode, const unsigned char *pal)
 {
 	int		i;
 	byte	*pp;
@@ -775,8 +775,7 @@ static void VID_ExtraSwapBuffers (viddef_t *lvid, vmode_t *pcurrentmode,
 		}
 		else
 		{
-			lvid->direct = lvid->buffer;	// direct drawing goes to the
-											//  currently displayed page
+			lvid->direct = lvid->buffer;	// direct drawing goes to the currently displayed page
 			lvid->buffer = VID_membase + VID_pagelist[VID_currentpage];
 			lvid->conbuffer = lvid->buffer;
 		}

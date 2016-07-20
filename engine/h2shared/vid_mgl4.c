@@ -204,7 +204,7 @@ static byte	backingbuf[48*48];
 static void VID_MenuDraw (void);
 static void VID_MenuKey (int key);
 
-static qboolean VID_SetMode (int modenum, unsigned char *palette);
+static qboolean VID_SetMode (int modenum, const unsigned char *palette);
 static void AppActivate(BOOL fActive, BOOL minimize);
 static LRESULT WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -1601,7 +1601,7 @@ static void VID_RestoreOldMode (int original_mode)
 	inerror = false;
 }
 
-static qboolean VID_SetMode (int modenum, unsigned char *palette)
+static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 {
 	int		original_mode, temp;
 	qboolean	status;
@@ -1828,7 +1828,7 @@ void VID_UnlockBuffer (void)
 }
 
 
-void	VID_SetPalette (unsigned char *palette)
+void	VID_SetPalette (const unsigned char *palette)
 {
 	int		i;
 	palette_t	pal[256];
@@ -1899,7 +1899,7 @@ void	VID_SetPalette (unsigned char *palette)
 }
 
 
-void	VID_ShiftPalette (unsigned char *palette)
+void	VID_ShiftPalette (const unsigned char *palette)
 {
 	VID_SetPalette (palette);
 }
@@ -2047,7 +2047,7 @@ static void VID_ForceMode_f (void)
 }
 
 
-void	VID_Init (unsigned char *palette)
+void	VID_Init (const unsigned char *palette)
 {
 	int		i, bestmatch, bestmatchmetric, t, dr, dg, db;
 	int		basenummodes;

@@ -53,7 +53,7 @@ ULONG __WriteLUTPixelArray(__reg("a6") void *, __reg("a0") APTR srcRect, __reg("
 
 struct Window *window = NULL; /* used by in_amiga.c */
 static struct Screen *screen = NULL;
-static unsigned char pal[256 * 4];
+static unsigned char ppal[256 * 4];
 static pixel_t *buffer = NULL;
 static byte *directbitmap = NULL;
 #if defined(__AMIGA__) && !defined(__MORPHOS__) /* amigaos3 */
@@ -148,7 +148,7 @@ static vmode_t	fmodelist[MAX_MODE_LIST+1];	// list of enumerated fullscreen mode
 static vmode_t	wmodelist[MAX_STDMODES +1];	// list of standart 4:3 windowed modes
 static vmode_t	*modelist;	// modelist in use, points to one of the above lists
 
-static qboolean VID_SetMode (int modenum, unsigned char *palette);
+static qboolean VID_SetMode (int modenum, const unsigned char *palette);
 
 static void VID_MenuDraw (void);
 static void VID_MenuKey (int key);
@@ -450,7 +450,7 @@ static void VID_DestroyWindow (void)
 	}
 }
 
-static qboolean VID_SetMode (int modenum, unsigned char *palette)
+static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 {
 	ULONG flags;
 
@@ -665,7 +665,7 @@ void VID_UnlockBuffer(void)
 }
 
 
-void VID_SetPalette(unsigned char *palette)
+void VID_SetPalette(const unsigned char *palette)
 {
 	int i;
 
@@ -698,30 +698,30 @@ void VID_SetPalette(unsigned char *palette)
 		{
 #if defined(__VBCC__)
 			// nasty compiler bug workaround
-			memcpy(&pal[i * 4 + 1], &palette[i * 3 + 0], 3);
+			memcpy(&ppal[i * 4 + 1], &palette[i * 3 + 0], 3);
 #else
-			pal[i * 4 + 0] = 0;
-			pal[i * 4 + 1] = palette[i * 3 + 0];
-			pal[i * 4 + 2] = palette[i * 3 + 1];
-			pal[i * 4 + 3] = palette[i * 3 + 2];
+			ppal[i * 4 + 0] = 0;
+			ppal[i * 4 + 1] = palette[i * 3 + 0];
+			ppal[i * 4 + 2] = palette[i * 3 + 1];
+			ppal[i * 4 + 3] = palette[i * 3 + 2];
 #endif
 		}
 		else
 		{
-			pal[i * 4 + 0] = palette[i * 3 + 2];
-			pal[i * 4 + 1] = palette[i * 3 + 1];
-			pal[i * 4 + 2] = palette[i * 3 + 0];
-			pal[i * 4 + 3] = 0;
+			ppal[i * 4 + 0] = palette[i * 3 + 2];
+			ppal[i * 4 + 1] = palette[i * 3 + 1];
+			ppal[i * 4 + 2] = palette[i * 3 + 0];
+			ppal[i * 4 + 3] = 0;
 		}
 	}
 }
 
-void VID_ShiftPalette(unsigned char *palette)
+void VID_ShiftPalette(const unsigned char *palette)
 {
 	VID_SetPalette(palette);
 }
 
-void VID_Init (unsigned char *palette)
+void VID_Init (const unsigned char *palette)
 {
 	int		width, height, i, temp;
 	const char	*read_vars[] = {
@@ -901,7 +901,7 @@ static void FlipScreen (vrect_t *rects)
 							rects->x,
 							rects->y,
 							vid.rowbytes,
-							window->RPort, pal,
+							window->RPort, ppal,
 							window->BorderLeft + rects->x,
 							window->BorderTop + rects->y,
 							rects->width,
@@ -987,7 +987,7 @@ void D_EndDirectRect (int x, int y, int width, int height)
 	}
 	else
 	{
-		WriteLUTPixelArray(directbitmap, 0, 0, width, window->RPort, pal, window->BorderLeft + x, window->BorderTop + y, width, height, CTABFMT_XRGB8);
+		WriteLUTPixelArray(directbitmap, 0, 0, width, window->RPort, ppal, window->BorderLeft + x, window->BorderTop + y, width, height, CTABFMT_XRGB8);
 	}
 
 	directbitmap = NULL;

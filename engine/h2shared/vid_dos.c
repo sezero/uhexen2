@@ -67,7 +67,7 @@ static void VID_DescribeCurrentMode_f (void);
 static void VID_DescribeMode_f (void);
 static void VID_DescribeModes_f (void);
 
-static qboolean VID_SetMode (int modenum, unsigned char *palette);
+static qboolean VID_SetMode (int modenum, const unsigned char *palette);
 
 static byte	vid_current_palette[768];	/* save for mode changes */
 
@@ -88,7 +88,7 @@ static void VID_MenuKey (int key);
 VID_Init
 ================
 */
-void    VID_Init (unsigned char *palette)
+void    VID_Init (const unsigned char *palette)
 {
 	const char	*read_vars[] = {
 				"_vid_default_mode" };
@@ -206,7 +206,7 @@ static const char *VID_ModeInfo (int modenum, const char **ppheader)
 VID_SetMode
 ================
 */
-static qboolean VID_SetMode (int modenum, unsigned char *palette)
+static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 {
 	int		status;
 	vmode_t	*pnewmode, *poldmode;
@@ -293,7 +293,7 @@ static qboolean VID_SetMode (int modenum, unsigned char *palette)
 VID_SetPalette
 ================
 */
-void VID_SetPalette (unsigned char *palette)
+void VID_SetPalette (const unsigned char *palette)
 {
 	if (palette != vid_current_palette)
 		memcpy(vid_current_palette, palette, 768);
@@ -306,7 +306,7 @@ void VID_SetPalette (unsigned char *palette)
 VID_ShiftPalette
 ================
 */
-void VID_ShiftPalette (unsigned char *palette)
+void VID_ShiftPalette (const unsigned char *palette)
 {
 	VID_SetPalette (palette);
 }

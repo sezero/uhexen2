@@ -39,14 +39,14 @@ static int	VGA_numpages;
 static int	VGA_buffersize;
 
 static int	VGA_highhunkmark;
-// these two are shared with vid_ext.c:
+/* these two are shared with vid_ext.c: */
 void		*vid_surfcache;
 int		vid_surfcachesize;
 
 static byte	backingbuf[48*24];
 
 static int VGA_InitMode (viddef_t *lvid, vmode_t *pcurrentmode);
-static void VGA_SetPalette (viddef_t *lvid, vmode_t *pcurrentmode, unsigned char *pal);
+static void VGA_SetPalette (viddef_t *lvid, vmode_t *pcurrentmode, const unsigned char *pal);
 static void VGA_SwapBuffers (viddef_t *lvid, vmode_t *pcurrentmode, vrect_t *rects);
 static void VGA_SwapBuffersCopy (viddef_t *lvid, vmode_t *pcurrentmode, vrect_t *rects);
 
@@ -413,7 +413,7 @@ static int VGA_InitMode (viddef_t *lvid, vmode_t *pcurrentmode)
 VGA_SetPalette
 ================
 */
-static void VGA_SetPalette (viddef_t *lvid, vmode_t *pcurrentmode, unsigned char *pal)
+static void VGA_SetPalette (viddef_t *lvid, vmode_t *pcurrentmode, const unsigned char *pal)
 {
 	int	shiftcomponents = 2;
 	int	i;

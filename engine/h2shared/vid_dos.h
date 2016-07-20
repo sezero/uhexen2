@@ -38,7 +38,7 @@ typedef struct vmode_s
 	void		*pextradata;
 	int		(*setmode)(viddef_t *lvid, struct vmode_s *pcurrentmode);
 	void		(*swapbuffers)(viddef_t *lvid, struct vmode_s *pcurrentmode, vrect_t *rects);
-	void		(*setpalette)(viddef_t *lvid, struct vmode_s *pcurrentmode, unsigned char *palette);
+	void		(*setpalette)(viddef_t *lvid, struct vmode_s *pcurrentmode, const unsigned char *palette);
 	void		(*begindirectrect)(viddef_t *lvid, struct vmode_s *pcurrentmode,
 								   int x, int y, byte *pbitmap, int width,
 								   int height);

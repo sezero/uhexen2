@@ -758,7 +758,7 @@ static void VID_InitGamma (void)
 		Con_SafePrintf("gamma adjustment not available\n");
 }
 
-void VID_ShiftPalette (unsigned char *palette)
+void VID_ShiftPalette (const unsigned char *palette)
 {
 #ifdef __MORPHOS__
 	if (screen)
@@ -1056,7 +1056,7 @@ unsigned int ColorPercent[16] =
 };
 
 #define	INVERSE_PALNAME	"gfx/invpal.lmp"
-static int ConvertTrueColorToPal (unsigned char *true_color, unsigned char *palette)
+static int ConvertTrueColorToPal (const unsigned char *true_color, const unsigned char *palette)
 {
 	int	i;
 	long	min_dist;
@@ -1090,7 +1090,7 @@ static int ConvertTrueColorToPal (unsigned char *true_color, unsigned char *pale
 	return min_index;
 }
 
-static void VID_CreateInversePalette (unsigned char *palette)
+static void VID_CreateInversePalette (const unsigned char *palette)
 {
 	long	r, g, b;
 	long	idx = 0;
@@ -1117,9 +1117,9 @@ static void VID_CreateInversePalette (unsigned char *palette)
 	FS_WriteFile (INVERSE_PALNAME, inverse_pal, INVERSE_PAL_SIZE);
 }
 
-static void VID_InitPalette (unsigned char *palette)
+static void VID_InitPalette (const unsigned char *palette)
 {
-	byte	*pal;
+	const unsigned char	*pal;
 	unsigned short	r, g, b;
 	unsigned short	i, p, c;
 	unsigned int	v, *table;
@@ -1209,7 +1209,7 @@ static void VID_InitPalette (unsigned char *palette)
 	}
 }
 
-void VID_SetPalette (unsigned char *palette)
+void VID_SetPalette (const unsigned char *palette)
 {
 // nothing to do
 }
@@ -1490,7 +1490,7 @@ static void VID_NumModes_f (void)
 VID_Init
 ===================
 */
-void	VID_Init (unsigned char *palette)
+void	VID_Init (const unsigned char *palette)
 {
 	int	i, temp, width, height;
 	const char	*read_vars[] = {

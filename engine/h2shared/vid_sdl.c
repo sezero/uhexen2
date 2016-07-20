@@ -124,7 +124,7 @@ static vmode_t	fmodelist[MAX_MODE_LIST+1];	// list of enumerated fullscreen mode
 static vmode_t	wmodelist[MAX_STDMODES +1];	// list of standart 4:3 windowed modes
 static vmode_t	*modelist;	// modelist in use, points to one of the above lists
 
-static qboolean VID_SetMode (int modenum, unsigned char *palette);
+static qboolean VID_SetMode (int modenum, const unsigned char *palette);
 
 static void VID_MenuDraw (void);
 static void VID_MenuKey (int key);
@@ -491,7 +491,7 @@ static void VID_NumModes_f (void)
 	Con_Printf ("%d video modes in current list\n", *nummodes);
 }
 
-static qboolean VID_SetMode (int modenum, unsigned char *palette)
+static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 {
 	Uint32 flags;
 	int	is_fullscreen;
@@ -637,7 +637,7 @@ void VID_UnlockBuffer (void)
 }
 
 
-void VID_SetPalette (unsigned char *palette)
+void VID_SetPalette (const unsigned char *palette)
 {
 	int		i;
 	SDL_Color colors[256];
@@ -658,7 +658,7 @@ void VID_SetPalette (unsigned char *palette)
 }
 
 
-void VID_ShiftPalette (unsigned char *palette)
+void VID_ShiftPalette (const unsigned char *palette)
 {
 	VID_SetPalette (palette);
 }
@@ -669,7 +669,7 @@ void VID_ShiftPalette (unsigned char *palette)
 VID_Init
 ===================
 */
-void VID_Init (unsigned char *palette)
+void VID_Init (const unsigned char *palette)
 {
 	int		width, height, i, temp;
 	SDL_Rect	**enumlist;
@@ -974,12 +974,8 @@ Gamma functions for UNIX/SDL
 #if 0
 static void VID_SetGamma (void)
 {
-	float	value;
-
-	if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
-		value = 1.0/v_gamma.value;
-	else
-		value = GAMMA_MAX;
+	float	value = (v_gamma.value > (1.0 / GAMMA_MAX))?
+			(1.0 / v_gamma.value) : GAMMA_MAX;
 
 	SDL_SetGamma(value,value,value);
 }

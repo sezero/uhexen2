@@ -506,7 +506,7 @@ static void VID_ShutdownGamma (void)
 static void VID_SetGamma (void)
 {
 #if (!USE_GAMMA_RAMPS) || (!USE_3DFX_RAMPS)
-	float	value = (v_gamma.value > (1.0 / GAMMA_MAX)) ?
+	float	value = (v_gamma.value > (1.0 / GAMMA_MAX))?
 			(1.0 / v_gamma.value) : GAMMA_MAX;
 #endif
 #if USE_3DFX_RAMPS
@@ -516,7 +516,7 @@ static void VID_SetGamma (void)
 #endif
 }
 
-void VID_ShiftPalette (unsigned char *palette)
+void VID_ShiftPalette (const unsigned char *palette)
 {
 	VID_SetGamma();
 }
@@ -833,7 +833,7 @@ unsigned int ColorPercent[16] =
 };
 
 #define	INVERSE_PALNAME	"gfx/invpal.lmp"
-static int ConvertTrueColorToPal (unsigned char *true_color, unsigned char *palette)
+static int ConvertTrueColorToPal (const unsigned char *true_color, const unsigned char *palette)
 {
 	int	i;
 	long	min_dist;
@@ -867,7 +867,7 @@ static int ConvertTrueColorToPal (unsigned char *true_color, unsigned char *pale
 	return min_index;
 }
 
-static void VID_CreateInversePalette (unsigned char *palette)
+static void VID_CreateInversePalette (const unsigned char *palette)
 {
 	long	r, g, b;
 	long	idx = 0;
@@ -894,9 +894,9 @@ static void VID_CreateInversePalette (unsigned char *palette)
 	FS_WriteFile (INVERSE_PALNAME, inverse_pal, INVERSE_PAL_SIZE);
 }
 
-static void VID_InitPalette (unsigned char *palette)
+static void VID_InitPalette (const unsigned char *palette)
 {
-	byte	*pal;
+	const unsigned char	*pal;
 	unsigned short	r, g, b;
 	unsigned short	i, p, c;
 	unsigned int	v, *table;
@@ -986,7 +986,7 @@ static void VID_InitPalette (unsigned char *palette)
 	}
 }
 
-void VID_SetPalette (unsigned char *palette)
+void VID_SetPalette (const unsigned char *palette)
 {
 // nothing to do
 }
@@ -1147,7 +1147,7 @@ static void VID_NumModes_f (void)
 VID_Init
 ===================
 */
-void	VID_Init (unsigned char *palette)
+void	VID_Init (const unsigned char *palette)
 {
 	static char fxmesa_env_multitex[32] = "FX_DONT_FAKE_MULTITEX=1";
 	static char fxglide_env_nosplash[32] = "FX_GLIDE_NO_SPLASH=1";
