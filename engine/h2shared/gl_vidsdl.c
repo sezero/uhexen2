@@ -1048,13 +1048,11 @@ void GL_EndRendering (void)
 }
 
 
-int ColorIndex[16] =
-{
+const int ColorIndex[16] = {
 	0, 31, 47, 63, 79, 95, 111, 127, 143, 159, 175, 191, 199, 207, 223, 231
 };
 
-unsigned int ColorPercent[16] =
-{
+const unsigned int ColorPercent[16] = {
 	25, 51, 76, 102, 114, 127, 140, 153, 165, 178, 191, 204, 216, 229, 237, 247
 };
 

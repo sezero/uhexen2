@@ -1010,7 +1010,7 @@ static void GL_Init (void)
 	Con_SafePrintf ("R:%d G:%d B:%d A:%d, Z:%d, S:%d\n",
 			vid_attribs.red, vid_attribs.green, vid_attribs.blue, vid_attribs.alpha,
 			vid_attribs.depth, vid_attribs.stencil);
-	/* FIXME: DescribePixelFormat() used to fail with old 3dfx minigl drivers (???) */
+	/* FIXME: DescribePixelFormat() used to fail with old 3dfx minigl drivers ??? */
 	if (wglDescribePixelFormat_fp(maindc, wglGetPixelFormat_fp(maindc), sizeof(PIXELFORMATDESCRIPTOR), &new_pfd))
 	{
 		Con_SafeDPrintf ("PFD: C:%d, R:%d G:%d B:%d A:%d, Z:%d, S:%d\n",
@@ -1135,13 +1135,11 @@ void GL_EndRendering (void)
 }
 
 
-int ColorIndex[16] =
-{
+const int ColorIndex[16] = {
 	0, 31, 47, 63, 79, 95, 111, 127, 143, 159, 175, 191, 199, 207, 223, 231
 };
 
-unsigned int ColorPercent[16] =
-{
+const unsigned int ColorPercent[16] = {
 	25, 51, 76, 102, 114, 127, 140, 153, 165, 178, 191, 204, 216, 229, 237, 247
 };
 

@@ -21,8 +21,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __GLQUAKE_H
-#define __GLQUAKE_H
+#ifndef GLQUAKE_H
+#define GLQUAKE_H
 
 /* ====================================================================
    COMMON DEFINITIONS
@@ -206,8 +206,8 @@ extern	mplane_t	frustum[4];
 extern	int		c_brush_polys, c_alias_polys;
 
 /* palette stuff */
-extern	int		ColorIndex[16];
-extern	unsigned int	ColorPercent[16];
+extern	const int		ColorIndex[16];
+extern	const unsigned int	ColorPercent[16];
 extern	float		RTint[256], GTint[256], BTint[256];
 extern	unsigned char	*inverse_pal;
 
@@ -338,10 +338,10 @@ void R_InitExtraTextures (void);
 #if defined(H2W)
 void R_NetGraph (void);
 void R_InitNetgraphTexture (void);
-#endif	/* H2W */
+#endif
 
 void R_ReadPointFile_f (void);
 void R_TranslatePlayerSkin (int playernum);
 
-#endif	/* __GLQUAKE_H */
+#endif	/* GLQUAKE_H */
 
