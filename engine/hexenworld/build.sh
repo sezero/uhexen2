@@ -34,6 +34,6 @@ $MAKE_CMD -C client hw $* || exit 1
 $MAKE_CMD -s -C client localclean
 
 echo "" && echo "Building hexenworld client (opengl renderer)"
-$MAKE_CMD -C client glhw $* || exit 1
+$MAKE_CMD -C client glhw USE_X86_ASM=no $* || exit 1
 $MAKE_CMD -s -C client clean
 

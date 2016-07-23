@@ -29,7 +29,7 @@ if test "$1" = "all"; then
 	$MAKE_CMD h2 $*  || exit 1
 
 	$MAKE_CMD clean
-	$MAKE_CMD glh2 $* || exit 1
+	$MAKE_CMD glh2 USE_X86_ASM=no $* || exit 1
 
 	$MAKE_CMD -C server clean
 	$MAKE_CMD -C server $* || exit 1

@@ -93,19 +93,19 @@ USE_CDAUDIO=yes
 # NOTE: SDL dropped cdaudio support in version 1.3.0 and later!)
 USE_SDLCD=no
 
-# link to the directx libraries at compile time? (otherwise, link
-# to the dynamically load the necessary dll files and functions at
-# runtime which ensures our exe to run on ancient windows versions
-# without a directx installation.)
+# link to the directx libraries at compile time? (otherwise, load
+# the necessary DLLs and functions dynamically at runtime, which
+# ensures our exe to function on ancient windows versions without
+# a directx installation.)
 LINK_DIRECTX=no
 
 # enable startup splash screens? (windows)
 WITH_SPLASHES=yes
 
-# use SciTech MGL for Win32 software video driver? (Default to yes
-# for x86, auto-disabled for Win64.  if disabled, the DIB/GDI-only
-# compatibility software video driver will be used.)
-USE_MGL=yes
+# use SciTech MGL for Win32 software video driver? (auto-disabled
+# for Win64. if disabled, the DIB-only software video driver will
+# be used)
+USE_MGL=no
 
 # use WinSock2 instead of WinSock-1.1? (disabled for w32 for compat.
 # with old Win95 machines.) (enabled for Win64 in the win64 section.)

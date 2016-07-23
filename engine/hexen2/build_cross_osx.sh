@@ -37,7 +37,7 @@ AR=i686-apple-darwin9-ar
 RANLIB=i686-apple-darwin9-ranlib
 LIPO=i686-apple-darwin9-lipo
 export PATH CC AS AR RANLIB LIPO
-$MAKE_CMD MACH_TYPE=x86 glh2 $* || exit 1
+$MAKE_CMD MACH_TYPE=x86 USE_X86_ASM=no glh2 $* || exit 1
 i686-apple-darwin9-strip -S glhexen2 || exit 1
 mv glhexen2 glhexen2.x86 || exit 1
 $MAKE_CMD distclean

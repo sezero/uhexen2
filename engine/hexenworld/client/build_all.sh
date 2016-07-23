@@ -11,6 +11,6 @@ esac
 $MAKE_CMD clean
 $MAKE_CMD hw $* || exit 1
 $MAKE_CMD localclean
-$MAKE_CMD glhw $* || exit 1
+$MAKE_CMD glhw USE_X86_ASM=no $* || exit 1
 $MAKE_CMD clean
 
