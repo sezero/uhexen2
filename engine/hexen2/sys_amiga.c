@@ -388,6 +388,9 @@ Sys_Init
 */
 static void Sys_Init (void)
 {
+	/*MaskExceptions ();*/
+	Sys_SetFPCW ();
+
 	if ((timerport = CreateMsgPort()))
 	{
 		if ((timerio = (struct timerequest *)CreateIORequest(timerport, sizeof(struct timerequest))))

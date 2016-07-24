@@ -808,7 +808,7 @@ USE_CDAUDIO=no
 LINK_GL_LIBS=yes
 endif
 
-# Don't use x86 assembly for AROS
+NASMFLAGS=-f elf -d_NO_PREFIX
 USE_X86_ASM=no
 
 # use the old AROSMesa api (default), or the new glA api
