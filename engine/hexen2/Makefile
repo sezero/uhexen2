@@ -811,6 +811,8 @@ endif
 NASMFLAGS=-f elf -d_NO_PREFIX
 USE_X86_ASM=no
 
+INCLUDES+= -I$(OSLIBS)/aros-$(MACH_TYPE)/misc/include
+
 # use the old AROSMesa api (default), or the new glA api
 USE_GLA=no
 ifeq ($(USE_GLA),yes)

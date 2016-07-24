@@ -24,6 +24,10 @@
 #include "quakedef.h"
 #include "debuglog.h"
 
+#ifdef __AROS__
+#include <setjmp.h>
+#endif
+
 #include <proto/exec.h>
 #include <proto/dos.h>
 
@@ -38,8 +42,11 @@
 #include "sdl_inc.h"
 #endif	/* SDLQUAKE */
 
-#ifdef __AMIGA__
 int __stack = 0x100000; /* 1 MB stack */
+#ifdef __AROS__
+#include "incstack.h"
+static jmp_buf exit_buf;
+static int my_rc = 0;
 #endif
 
 // heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
@@ -506,7 +513,13 @@ void Sys_Error (const char *error, ...)
 	if (!isDedicated)
 		Sys_ErrorMessage (text);
 
+#ifdef __AROS__
+	Sys_AtExit();
+	my_rc = 1;
+	longjmp(exit_buf, 1);
+#else
 	exit (1);
+#endif
 }
 
 void Sys_PrintTerm (const char *msgtxt)
@@ -524,7 +537,12 @@ void Sys_Quit (void)
 {
 	Host_Shutdown();
 
+#ifdef __AROS__
+	Sys_AtExit();
+	longjmp(exit_buf, 1);
+#else
 	exit (0);
+#endif
 }
 
 
@@ -838,6 +856,11 @@ int main (int argc, char **argv)
 	int			i;
 	double		time, oldtime, newtime;
 
+#ifdef __AROS__
+	if (setjmp(exit_buf))
+		return my_rc;
+#endif
+
 	PrintVersion();
 
 	if (argc > 1)
@@ -847,13 +870,13 @@ int main (int argc, char **argv)
 			if ( !(strcmp(argv[i], "-v")) || !(strcmp(argv[i], "-version" )) ||
 				!(strcmp(argv[i], "--version")) )
 			{
-				exit(0);
+				return 0;
 			}
 			else if ( !(strcmp(argv[i], "-h")) || !(strcmp(argv[i], "-help" )) ||
 				  !(strcmp(argv[i], "-?")) || !(strcmp(argv[i], "--help")) )
 			{
 				PrintHelp(argv[0]);
-				exit (0);
+				return 0;
 			}
 		}
 	}
@@ -910,7 +933,9 @@ int main (int argc, char **argv)
 	if (!parms.membase)
 		Sys_Error ("Insufficient memory.\n");
 
+#ifndef __AROS__
 	atexit (Sys_AtExit);
+#endif
 	Sys_Init ();
 
 	Host_Init();

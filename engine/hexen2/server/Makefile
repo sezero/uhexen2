@@ -241,6 +241,7 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),aros)
 
+INCLUDES+= -I$(OSLIBS)/aros-$(MACH_TYPE)/misc/include
 
 endif
 # End of AROS settings
