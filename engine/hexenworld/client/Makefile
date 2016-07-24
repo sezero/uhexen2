@@ -764,7 +764,7 @@ LINK_GL_LIBS=yes
 endif
 
 NASMFLAGS=-f elf -d_NO_PREFIX
-USE_X86_ASM=no
+#USE_X86_ASM=no
 
 INCLUDES+= -I$(OSLIBS)/aros-$(MACH_TYPE)/misc/include
 
