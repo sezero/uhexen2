@@ -23,10 +23,6 @@
 
 #include "quakedef.h"
 
-#ifdef __AROS__
-#include <setjmp.h>
-#endif
-
 #include <proto/exec.h>
 #include <proto/dos.h>
 
@@ -36,8 +32,15 @@
 int __stack = 0x100000; /* 1 MB stack */
 #ifdef __AROS__
 #include "incstack.h"
+/* The problem here is that our real main never returns: the exit
+ * point of program is either Sys_Quit() or Sys_Error(). One way
+ * of making the real main return to the incstack.h main wrapper
+ * is setjmp()'ing in real main and longjmp()'ing from the actual
+ * exit points, avoiding exit(). */
+#include <setjmp.h>
 static jmp_buf exit_buf;
 static int my_rc = 0;
+#define HAVE_AROS_MAIN_WRAPPER
 #endif
 
 // heapsize: minimum 8 mb, standart 16 mb, max is 32 mb.
@@ -440,7 +443,7 @@ void Sys_Error (const char *error, ...)
 	putc ('\n', stderr);
 	putc ('\n', stderr);
 
-#ifdef __AROS__
+#ifdef HAVE_AROS_MAIN_WRAPPER
 	Sys_AtExit();
 	my_rc = 1;
 	longjmp(exit_buf, 1);
@@ -462,7 +465,7 @@ void Sys_PrintTerm (const char *msgtxt)
 
 void Sys_Quit (void)
 {
-#ifdef __AROS__
+#ifdef HAVE_AROS_MAIN_WRAPPER
 	Sys_AtExit();
 	longjmp(exit_buf, 1);
 #else
@@ -644,7 +647,7 @@ int main (int argc, char **argv)
 	int			i;
 	double		newtime, time, oldtime;
 
-#ifdef __AROS__
+#ifdef HAVE_AROS_MAIN_WRAPPER
 	if (setjmp(exit_buf))
 		return my_rc;
 #endif
@@ -714,7 +717,7 @@ int main (int argc, char **argv)
 	if (!parms.membase)
 		Sys_Error ("Insufficient memory.\n");
 
-#ifndef __AROS__
+#ifndef HAVE_AROS_MAIN_WRAPPER
 	atexit (Sys_AtExit);
 #endif
 	Sys_Init ();

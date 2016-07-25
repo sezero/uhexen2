@@ -1,11 +1,12 @@
 Initial implementation for Amiga CyberGraphx double buffered video
 (software renderer) by Szilard Biro.  Known issues need addressing:
+
 - screenshot freezes the game.
 - enabling r_speeds or r_dspeeds freezes the game.
 
 Index: engine/h2shared/vid_cgx.c
 ===================================================================
---- engine/h2shared/vid_cgx.c	(revision 5686)
+--- engine/h2shared/vid_cgx.c	(revision 5690)
 +++ engine/h2shared/vid_cgx.c	(working copy)
 @@ -59,6 +59,14 @@
  #if defined(__AMIGA__) && !defined(__MORPHOS__) /* amigaos3 */
@@ -58,7 +59,7 @@ Index: engine/h2shared/vid_cgx.c
  	if (screen)
  	{
  		CloseScreen(screen);
-@@ -444,6 +481,8 @@ static qboolean VID_SetMode (int modenum
+@@ -467,6 +504,8 @@ static qboolean VID_SetMode (int modenum
  
  	flags = WFLG_ACTIVATE | WFLG_RMBTRAP;
  
@@ -67,7 +68,7 @@ Index: engine/h2shared/vid_cgx.c
  	if (vid_config_fscr.integer)
  	{
  		ULONG ModeID;
-@@ -461,6 +500,46 @@ static qboolean VID_SetMode (int modenum
+@@ -484,6 +523,46 @@ static qboolean VID_SetMode (int modenum
  			SA_Depth, 8,
  			SA_Quiet, TRUE,
  			TAG_DONE);
@@ -114,7 +115,7 @@ Index: engine/h2shared/vid_cgx.c
  	}
  
  	if (screen)
-@@ -488,12 +567,13 @@ static qboolean VID_SetMode (int modenum
+@@ -513,12 +592,13 @@ static qboolean VID_SetMode (int modenum
  		if (pointermem) {*/
  			vid.height = vid.conheight = modelist[modenum].height;
  			vid.rowbytes = vid.conrowbytes = vid.width = vid.conwidth = modelist[modenum].width;
@@ -131,7 +132,7 @@ Index: engine/h2shared/vid_cgx.c
  				vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
  
  				if (VID_AllocBuffers (vid.width, vid.height))
-@@ -582,10 +662,58 @@ static void VID_Restart_f (void)
+@@ -607,10 +687,58 @@
  
  void VID_LockBuffer(void)
  {
@@ -190,7 +191,7 @@ Index: engine/h2shared/vid_cgx.c
  }
  
  
-@@ -796,6 +924,20 @@ void VID_Shutdown (void)
+@@ -821,6 +949,20 @@
  
  static void FlipScreen (vrect_t *rects)
  {
@@ -211,7 +212,7 @@ Index: engine/h2shared/vid_cgx.c
  	while (rects)
  	{
  		if (screen)
-@@ -884,7 +1026,22 @@ void D_EndDirectRect (int x, int y, int 
+@@ -909,7 +1051,22 @@ void D_EndDirectRect (int x, int y, int 
  
  	if (screen)
  	{
@@ -235,3 +236,4 @@ Index: engine/h2shared/vid_cgx.c
  	}
  	else
  	{
+

@@ -437,6 +437,7 @@ static void VID_DestroyWindow (void)
 static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 {
 	ULONG flags;
+	qboolean eightbit = false;
 
 	in_mode_set = true;
 
@@ -444,13 +445,11 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 
 	if (!vid_config_fscr.integer && (screen = LockPubScreen(NULL)))
 	{
-		ULONG depth;
-
-		depth = GetBitMapAttr(screen->RastPort.BitMap, BMA_DEPTH);
+		eightbit = (GetBitMapAttr(screen->RastPort.BitMap, BMA_DEPTH) <= 8);
 		UnlockPubScreen(NULL, screen);
 		screen = NULL;
 
-		if (depth <= 8)
+		if (eightbit)
 		{
 			struct EasyStruct es;
 
@@ -462,7 +461,7 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 
 			EasyRequest(0, &es, 0, 0);
 
-			Cvar_SetValueQuick (&vid_config_fscr, 1);
+			Cvar_SetQuick (&vid_config_fscr, "1");
 		}
 	}
 
@@ -493,7 +492,9 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 	}
 	else
 	{
-		Cvar_SetValueQuick (&vid_config_fscr, 0);
+		if (eightbit) /* shouldn't happen, but.. */
+			Sys_Error("failed OpenScreen ()");
+		Cvar_SetQuick (&vid_config_fscr, "0");
 		flags |=  WFLG_DRAGBAR | WFLG_DEPTHGADGET | WFLG_CLOSEGADGET;
 	}
 
@@ -924,7 +925,7 @@ void D_ShowLoadingSize (void)
 {
 #if defined(DRAW_PROGRESSBARS)
 #error NOT IMPLEMENTED
-#endif	/* DRAW_PROGRESSBARS */
+#endif
 }
 #endif
 

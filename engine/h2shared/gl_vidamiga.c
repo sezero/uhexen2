@@ -160,7 +160,7 @@ struct Library *CyberGfxBase = NULL;
 static AmigaMesaContext context = NULL;
 #endif
 static qboolean	vid_menu_fs;
-static qboolean	fs_toggle_works = true;
+static qboolean	fs_toggle_works = false;
 
 // vars for vid state
 viddef_t	vid;			// global video state
