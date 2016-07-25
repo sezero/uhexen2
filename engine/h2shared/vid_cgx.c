@@ -47,7 +47,7 @@ ULONG __WriteLUTPixelArray(__reg("a6") void *, __reg("a0") APTR srcRect, __reg("
 
 #define MIN_WIDTH		320
 #define MIN_HEIGHT		240
-#define MAX_DESC		13
+#define MAX_DESC		33
 
 /* - CGX ----------------------------------- */
 
@@ -115,6 +115,7 @@ typedef struct {
 	int			fullscreen;
 	int			bpp;
 /*	int			halfscreen;*/
+	ULONG		modeid;
 	char		modedesc[MAX_DESC];
 } vmode_t;
 
@@ -289,6 +290,7 @@ static void VID_PrepareModes (void)
 		wmodelist[num_wmodes].height = std_modes[i].height;
 		wmodelist[num_wmodes].fullscreen = 0;
 		wmodelist[num_wmodes].bpp = 8;
+		wmodelist[num_wmodes].modeid = INVALID_ID;
 		q_snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC,
 				"%d x %d", std_modes[i].width, std_modes[i].height);
 		num_wmodes++;
@@ -299,7 +301,8 @@ static void VID_PrepareModes (void)
 	while((id = NextDisplayInfo(id)) != INVALID_ID)
 	{
 #if defined(__AMIGA__) && !defined(__MORPHOS__)
-		if (!IsCyberModeID(id))
+		//if (!IsCyberModeID(id))
+		if ((id & MONITOR_ID_MASK) == DEFAULT_MONITOR_ID || (id & HAM_KEY) || (id & EXTRAHALFBRITE_KEY) || (id & LORESDPF_KEY) || (id & LORESSDBL_KEY))
 			continue;
 #endif
 		handle = FindDisplayInfo(id);
@@ -319,8 +322,13 @@ static void VID_PrepareModes (void)
 			fmodelist[num_fmodes].height = diminfo.Nominal.MaxY + 1;
 			fmodelist[num_fmodes].fullscreen = 1;
 			fmodelist[num_fmodes].bpp = 8; // diminfo.MaxDepth
+			fmodelist[num_fmodes].modeid = id;
 			q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", (fmodelist[num_fmodes].width), (fmodelist[num_fmodes].height));
-			//Con_SafePrintf ("fmodelist[%d].modedesc = %s maxdepth %d\n", num_fmodes, fmodelist[num_fmodes].modedesc, diminfo.MaxDepth);
+			if ((id & MONITOR_ID_MASK) == PAL_MONITOR_ID)
+				q_strlcat(fmodelist[num_fmodes].modedesc, " PAL", MAX_DESC);
+			else if ((id & MONITOR_ID_MASK) == NTSC_MONITOR_ID)
+				q_strlcat(fmodelist[num_fmodes].modedesc, " NTSC", MAX_DESC);
+			//Con_SafePrintf ("fmodelist[%d].modedesc = %s maxdepth %d id %08x\n", num_fmodes, fmodelist[num_fmodes].modedesc, diminfo.MaxDepth, id);
 
 			if (++num_fmodes == MAX_MODE_LIST)
 				break;
@@ -471,11 +479,12 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 	{
 		ULONG ModeID;
 
-		ModeID = BestCModeIDTags(
+		/*ModeID = BestCModeIDTags(
 			CYBRBIDTG_Depth, 8,
 			CYBRBIDTG_NominalWidth, modelist[modenum].width,
 			CYBRBIDTG_NominalHeight, modelist[modenum].height,
-			TAG_DONE);
+			TAG_DONE);*/
+		ModeID = modelist[modenum].modeid;
 
 		screen = OpenScreenTags(0,
 			ModeID != INVALID_ID ? SA_DisplayID : TAG_IGNORE, ModeID,
@@ -680,8 +689,8 @@ void VID_Init (const unsigned char *palette)
 
 #if defined(__AMIGA__) && !defined(__MORPHOS__) /* amigaos3 */
 	CyberGfxBase = OpenLibrary("cybergraphics.library", 0);
-	if (!CyberGfxBase)
-		Sys_Error ("Cannot open cybergraphics.library!");
+	/*if (!CyberGfxBase)
+		Sys_Error ("Cannot open cybergraphics.library!");*/
 #endif
 
 	temp = scr_disabled_for_loading;
@@ -823,7 +832,17 @@ static void FlipScreen (vrect_t *rects)
 {
 	while (rects)
 	{
-		if (screen)
+		if (!CyberGfxBase)
+		{
+			WriteChunkyPixels(window->RPort,
+							rects->x,
+							rects->y,
+							rects->width,
+							rects->height,
+							vid.buffer,
+							vid.rowbytes);
+		}
+		else if (screen)
 		{
 			WritePixelArray(vid.buffer,
 							rects->x,
