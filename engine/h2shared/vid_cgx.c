@@ -442,6 +442,30 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 
 	VID_DestroyWindow ();
 
+	if (!vid_config_fscr.integer && (screen = LockPubScreen(NULL)))
+	{
+		ULONG depth;
+
+		depth = GetBitMapAttr(screen->RastPort.BitMap, BMA_DEPTH);
+		UnlockPubScreen(NULL, screen);
+		screen = NULL;
+
+		if (depth <= 8)
+		{
+			struct EasyStruct es;
+
+			es.es_StructSize = sizeof(es);
+			es.es_Flags = 0;
+			es.es_Title = (STRPTR) ENGINE_NAME;
+			es.es_TextFormat = (STRPTR) "Windowed mode requires 15 bit or higher color depth screen\nFalling back to fullscreen.";
+			es.es_GadgetFormat = (STRPTR) "OK";
+
+			EasyRequest(0, &es, 0, 0);
+
+			Cvar_SetValueQuick (&vid_config_fscr, 1);
+		}
+	}
+
 	flags = WFLG_ACTIVATE | WFLG_RMBTRAP;
 
 	if (vid_config_fscr.integer)
