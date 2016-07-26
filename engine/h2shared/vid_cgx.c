@@ -272,12 +272,15 @@ static int sort_modes (const void *arg1, const void *arg2)
 static void VID_PrepareModes (void)
 {
 	qboolean	have_mem;
-	ULONG id, monitorid;
+	ULONG id;
 	unsigned int i;
 	APTR handle;
 	struct DimensionInfo diminfo;
+#if defined(__AMIGA__) && !defined(__MORPHOS__)
+	ULONG monitorid;
 	struct DisplayInfo dispinfo;
 	struct NameInfo nameinfo;
+#endif
 
 	num_fmodes = 0;
 	num_wmodes = 0;
@@ -302,69 +305,67 @@ static void VID_PrepareModes (void)
 	id = INVALID_ID;
 	while((id = NextDisplayInfo(id)) != INVALID_ID)
 	{
-		monitorid = id & MONITOR_ID_MASK;
-
-		handle = FindDisplayInfo(id);
-
 #if defined(__AMIGA__) && !defined(__MORPHOS__)
-		//if (!IsCyberModeID(id))
+		//if (!IsCyberModeID(id))	continue;
+		monitorid = id & MONITOR_ID_MASK;
 		if (monitorid == DEFAULT_MONITOR_ID || monitorid == A2024_MONITOR_ID)
 			continue;
-		
-		if (!GetDisplayInfoData(handle, (UBYTE *)&dispinfo, sizeof(dispinfo), DTAG_DISP, 0))
+#endif
+
+		handle = FindDisplayInfo(id);
+		if (!handle)
 			continue;
 
+#if defined(__AMIGA__) && !defined(__MORPHOS__)
+		if (!GetDisplayInfoData(handle, (UBYTE *)&dispinfo, sizeof(dispinfo), DTAG_DISP, 0))
+			continue;
 		// this is a good way to filter out HAM, EHB, DPF modes
 		if (!GetDisplayInfoData(handle, (UBYTE *)&nameinfo, sizeof(nameinfo), DTAG_NAME, 0))
 			continue;
-
 		//Con_SafePrintf ("modeid %08x name %s\n", id, nameinfo.Name);
 #endif
 
-		if (handle)
-		{
-			if (!GetDisplayInfoData(handle, (UBYTE *)&diminfo, sizeof(diminfo), DTAG_DIMS, 0))
-				continue;
+		if (!GetDisplayInfoData(handle, (UBYTE *)&diminfo, sizeof(diminfo), DTAG_DIMS, 0))
+			continue;
 
 #ifdef __AROS__
-			if (diminfo.MaxDepth != 24 || diminfo.Nominal.MaxX + 1 < MIN_WIDTH)	continue;
+		if (diminfo.MaxDepth != 24 || diminfo.Nominal.MaxX + 1 < MIN_WIDTH)	continue;
 #else
-			if (diminfo.MaxDepth != 8 || diminfo.Nominal.MaxX + 1 < MIN_WIDTH)	continue;
+		if (diminfo.MaxDepth != 8 || diminfo.Nominal.MaxX + 1 < MIN_WIDTH)	continue;
 #endif
 
-			fmodelist[num_fmodes].width = diminfo.Nominal.MaxX + 1;
-			fmodelist[num_fmodes].height = diminfo.Nominal.MaxY + 1;
-			fmodelist[num_fmodes].fullscreen = 1;
-			fmodelist[num_fmodes].bpp = 8; // diminfo.MaxDepth
-			fmodelist[num_fmodes].modeid = id;
-			q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", (fmodelist[num_fmodes].width), (fmodelist[num_fmodes].height));
+		fmodelist[num_fmodes].width = diminfo.Nominal.MaxX + 1;
+		fmodelist[num_fmodes].height = diminfo.Nominal.MaxY + 1;
+		fmodelist[num_fmodes].fullscreen = 1;
+		fmodelist[num_fmodes].bpp = 8; // diminfo.MaxDepth
+		fmodelist[num_fmodes].modeid = id;
+		q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", (fmodelist[num_fmodes].width), (fmodelist[num_fmodes].height));
 #if defined(__AMIGA__) && !defined(__MORPHOS__)
-			if (dispinfo.PropertyFlags & DIPF_IS_LACE)
-				q_strlcat(fmodelist[num_fmodes].modedesc, "i", MAX_DESC);
-			if (monitorid == PAL_MONITOR_ID)
-				q_strlcat(fmodelist[num_fmodes].modedesc, " PAL", MAX_DESC);
-			else if (monitorid == NTSC_MONITOR_ID)
-				q_strlcat(fmodelist[num_fmodes].modedesc, " NTSC", MAX_DESC);
-			else if (monitorid == DBLPAL_MONITOR_ID)
-				q_strlcat(fmodelist[num_fmodes].modedesc, " DblPAL", MAX_DESC);
-			else if (monitorid == DBLNTSC_MONITOR_ID)
-				q_strlcat(fmodelist[num_fmodes].modedesc, " DblNTSC", MAX_DESC);
-			else if (monitorid == EURO36_MONITOR_ID)
-				q_strlcat(fmodelist[num_fmodes].modedesc, " Euro36", MAX_DESC);
-			else if (monitorid == EURO72_MONITOR_ID)
-				q_strlcat(fmodelist[num_fmodes].modedesc, " Euro72", MAX_DESC);
-			else if (monitorid == SUPER72_MONITOR_ID)
-				q_strlcat(fmodelist[num_fmodes].modedesc, " Super72", MAX_DESC);
-			else if (monitorid == VGA_MONITOR_ID)
-				q_strlcat(fmodelist[num_fmodes].modedesc, " VGA", MAX_DESC);
-			else
-				q_strlcat(fmodelist[num_fmodes].modedesc, " RTG", MAX_DESC);
+		if (dispinfo.PropertyFlags & DIPF_IS_LACE)
+			q_strlcat(fmodelist[num_fmodes].modedesc, "i", MAX_DESC);
+		if (monitorid == PAL_MONITOR_ID)
+			q_strlcat(fmodelist[num_fmodes].modedesc, " PAL", MAX_DESC);
+		else if (monitorid == NTSC_MONITOR_ID)
+			q_strlcat(fmodelist[num_fmodes].modedesc, " NTSC", MAX_DESC);
+		else if (monitorid == DBLPAL_MONITOR_ID)
+			q_strlcat(fmodelist[num_fmodes].modedesc, " DblPAL", MAX_DESC);
+		else if (monitorid == DBLNTSC_MONITOR_ID)
+			q_strlcat(fmodelist[num_fmodes].modedesc, " DblNTSC", MAX_DESC);
+		else if (monitorid == EURO36_MONITOR_ID)
+			q_strlcat(fmodelist[num_fmodes].modedesc, " Euro36", MAX_DESC);
+		else if (monitorid == EURO72_MONITOR_ID)
+			q_strlcat(fmodelist[num_fmodes].modedesc, " Euro72", MAX_DESC);
+		else if (monitorid == SUPER72_MONITOR_ID)
+			q_strlcat(fmodelist[num_fmodes].modedesc, " Super72", MAX_DESC);
+		else if (monitorid == VGA_MONITOR_ID)
+			q_strlcat(fmodelist[num_fmodes].modedesc, " VGA", MAX_DESC);
+		else
+			q_strlcat(fmodelist[num_fmodes].modedesc, " RTG", MAX_DESC);
 #endif
-			//Con_SafePrintf ("fmodelist[%d].modedesc = %s maxdepth %d id %08x\n", num_fmodes, fmodelist[num_fmodes].modedesc, diminfo.MaxDepth, id);
+		//Con_SafePrintf ("fmodelist[%d].modedesc = %s maxdepth %d id %08x\n", num_fmodes, fmodelist[num_fmodes].modedesc, diminfo.MaxDepth, id);
 
-			if (++num_fmodes == MAX_MODE_LIST)
-				break;
-		}
+		if (++num_fmodes == MAX_MODE_LIST)
+			break;
 	}
 
 	if (num_fmodes == 0)
@@ -864,6 +865,7 @@ static void FlipScreen (vrect_t *rects)
 {
 	while (rects)
 	{
+#if defined(__AMIGA__) && !defined(__MORPHOS__)
 		if (!CyberGfxBase)
 		{
 			WriteChunkyPixels(window->RPort,
@@ -874,7 +876,9 @@ static void FlipScreen (vrect_t *rects)
 							vid.buffer,
 							vid.rowbytes);
 		}
-		else if (screen)
+		else
+#endif
+		if (screen)
 		{
 			WritePixelArray(vid.buffer,
 							rects->x,
