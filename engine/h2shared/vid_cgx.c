@@ -116,6 +116,9 @@ typedef struct {
 	int			bpp;
 /*	int			halfscreen;*/
 	ULONG		modeid;
+#if defined(__AMIGA__) && !defined(__MORPHOS__)
+	qboolean	noadapt;
+#endif
 	char		modedesc[MAX_DESC];
 } vmode_t;
 
@@ -296,6 +299,9 @@ static void VID_PrepareModes (void)
 		wmodelist[num_wmodes].fullscreen = 0;
 		wmodelist[num_wmodes].bpp = 8;
 		wmodelist[num_wmodes].modeid = INVALID_ID;
+#if defined(__AMIGA__) && !defined(__MORPHOS__)
+		wmodelist[num_wmodes].noadapt = false;
+#endif
 		q_snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC,
 				"%d x %d", std_modes[i].width, std_modes[i].height);
 		num_wmodes++;
@@ -361,6 +367,8 @@ static void VID_PrepareModes (void)
 			q_strlcat(fmodelist[num_fmodes].modedesc, " VGA", MAX_DESC);
 		else
 			q_strlcat(fmodelist[num_fmodes].modedesc, " RTG", MAX_DESC);
+
+		fmodelist[num_fmodes].noadapt = (!CyberGfxBase || !IsCyberModeID(id));
 #endif
 		//Con_SafePrintf ("fmodelist[%d].modedesc = %s maxdepth %d id %08x\n", num_fmodes, fmodelist[num_fmodes].modedesc, diminfo.MaxDepth, id);
 
@@ -581,6 +589,9 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 
 					Con_SafePrintf ("Video Mode: %ux%ux%d\n", vid.width, vid.height, modelist[modenum].bpp);
 
+					#if defined(__AMIGA__) && !defined(__MORPHOS__)
+					vid.noadapt = modelist[modenum].noadapt;
+					#endif
 					in_mode_set = false;
 					vid.recalc_refdef = 1;
 

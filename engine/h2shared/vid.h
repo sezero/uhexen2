@@ -71,6 +71,10 @@ typedef struct
 	int		maxwarpheight;
 	pixel_t		*direct;	// direct drawing to framebuffer,
 					// if not NULL
+#if defined(__AMIGA__) && !defined(__MORPHOS__) && !defined(GLQUAKE)
+	qboolean	noadapt;	// disable fov_adapt for AmigaOS
+					// native chipset modes
+#endif
 } viddef_t;
 
 extern	byte		globalcolormap[VID_GRADES*256];
