@@ -394,8 +394,15 @@ static void VID_PrepareModes (void)
 	nummodes = &num_fmodes;
 	modelist = fmodelist;
 
-	vid_maxwidth = fmodelist[num_fmodes-1].width;
-	vid_maxheight = fmodelist[num_fmodes-1].height;
+	/*vid_maxwidth = fmodelist[num_fmodes-1].width;
+	vid_maxheight = fmodelist[num_fmodes-1].height;*/
+	if ((screen = LockPubScreen(NULL)))
+	{
+		vid_maxwidth = screen->Width;
+		vid_maxheight = screen->Height;
+		UnlockPubScreen(NULL, screen);
+		screen = NULL;
+	}
 
 	// see if we have 320x240 among the available modes
 	for (i = 0; i < num_fmodes; i++)
