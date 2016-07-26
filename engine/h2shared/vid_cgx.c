@@ -272,10 +272,12 @@ static int sort_modes (const void *arg1, const void *arg2)
 static void VID_PrepareModes (void)
 {
 	qboolean	have_mem;
-	ULONG id;
+	ULONG id, monitorid;
 	unsigned int i;
 	APTR handle;
 	struct DimensionInfo diminfo;
+	struct DisplayInfo dispinfo;
+	struct NameInfo nameinfo;
 
 	num_fmodes = 0;
 	num_wmodes = 0;
@@ -300,12 +302,24 @@ static void VID_PrepareModes (void)
 	id = INVALID_ID;
 	while((id = NextDisplayInfo(id)) != INVALID_ID)
 	{
+		monitorid = id & MONITOR_ID_MASK;
+
+		handle = FindDisplayInfo(id);
+
 #if defined(__AMIGA__) && !defined(__MORPHOS__)
 		//if (!IsCyberModeID(id))
-		if ((id & MONITOR_ID_MASK) == DEFAULT_MONITOR_ID || (id & HAM_KEY) || (id & EXTRAHALFBRITE_KEY) || (id & LORESDPF_KEY) || (id & LORESSDBL_KEY))
+		if (monitorid == DEFAULT_MONITOR_ID || monitorid == A2024_MONITOR_ID)
 			continue;
+		
+		if (!GetDisplayInfoData(handle, (UBYTE *)&dispinfo, sizeof(dispinfo), DTAG_DISP, 0))
+			continue;
+
+		// this is a good way to filter out HAM, EHB, DPF modes
+		if (!GetDisplayInfoData(handle, (UBYTE *)&nameinfo, sizeof(nameinfo), DTAG_NAME, 0))
+			continue;
+
+		//Con_SafePrintf ("modeid %08x name %s\n", id, nameinfo.Name);
 #endif
-		handle = FindDisplayInfo(id);
 
 		if (handle)
 		{
@@ -313,9 +327,9 @@ static void VID_PrepareModes (void)
 				continue;
 
 #ifdef __AROS__
-			if (diminfo.MaxDepth != 24)	continue;
+			if (diminfo.MaxDepth != 24 || diminfo.Nominal.MaxX + 1 < MIN_WIDTH)	continue;
 #else
-			if (diminfo.MaxDepth != 8)	continue;
+			if (diminfo.MaxDepth != 8 || diminfo.Nominal.MaxX + 1 < MIN_WIDTH)	continue;
 #endif
 
 			fmodelist[num_fmodes].width = diminfo.Nominal.MaxX + 1;
@@ -324,10 +338,28 @@ static void VID_PrepareModes (void)
 			fmodelist[num_fmodes].bpp = 8; // diminfo.MaxDepth
 			fmodelist[num_fmodes].modeid = id;
 			q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", (fmodelist[num_fmodes].width), (fmodelist[num_fmodes].height));
-			if ((id & MONITOR_ID_MASK) == PAL_MONITOR_ID)
+#if defined(__AMIGA__) && !defined(__MORPHOS__)
+			if (dispinfo.PropertyFlags & DIPF_IS_LACE)
+				q_strlcat(fmodelist[num_fmodes].modedesc, "i", MAX_DESC);
+			if (monitorid == PAL_MONITOR_ID)
 				q_strlcat(fmodelist[num_fmodes].modedesc, " PAL", MAX_DESC);
-			else if ((id & MONITOR_ID_MASK) == NTSC_MONITOR_ID)
+			else if (monitorid == NTSC_MONITOR_ID)
 				q_strlcat(fmodelist[num_fmodes].modedesc, " NTSC", MAX_DESC);
+			else if (monitorid == DBLPAL_MONITOR_ID)
+				q_strlcat(fmodelist[num_fmodes].modedesc, " DblPAL", MAX_DESC);
+			else if (monitorid == DBLNTSC_MONITOR_ID)
+				q_strlcat(fmodelist[num_fmodes].modedesc, " DblNTSC", MAX_DESC);
+			else if (monitorid == EURO36_MONITOR_ID)
+				q_strlcat(fmodelist[num_fmodes].modedesc, " Euro36", MAX_DESC);
+			else if (monitorid == EURO72_MONITOR_ID)
+				q_strlcat(fmodelist[num_fmodes].modedesc, " Euro72", MAX_DESC);
+			else if (monitorid == SUPER72_MONITOR_ID)
+				q_strlcat(fmodelist[num_fmodes].modedesc, " Super72", MAX_DESC);
+			else if (monitorid == VGA_MONITOR_ID)
+				q_strlcat(fmodelist[num_fmodes].modedesc, " VGA", MAX_DESC);
+			else
+				q_strlcat(fmodelist[num_fmodes].modedesc, " RTG", MAX_DESC);
+#endif
 			//Con_SafePrintf ("fmodelist[%d].modedesc = %s maxdepth %d id %08x\n", num_fmodes, fmodelist[num_fmodes].modedesc, diminfo.MaxDepth, id);
 
 			if (++num_fmodes == MAX_MODE_LIST)
