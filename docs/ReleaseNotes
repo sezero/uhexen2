@@ -9,14 +9,17 @@ This is a minor bug fix and maintenance release:
 - Software renderer: Fixed a reported crash if the engine is compiled
   with certain Visual Studio versions (bug #62.)
 
+- Software renderer: Fixed sky scaling issues. (fix found in 'ToChriS'
+  quake source port.)
+
 - Hexenworld server: Added "-protocol x" command line option to force
   the server to use a specific protocol (25 or 26), if so required.
 
 - Amiga: Video fixes. On AROS, the game does not 'freeze' in fullscreen
   mode anymore if the 'Timidity:' assign is not present.
 
-- Amiga: Initial m68k-amigaos support. (Use VBCC as the compiler, gcc
-  has code generation issues.)
+- Amiga: m68k-amigaos support. (Use VBCC as the compiler, gcc has code
+  generation issues.)
 
 - DOS, 3dfx opengl: Macronix (MX86251) variants of Voodoo Rush boards
   are now functional. Further updates/fixes to opengl and glide drivers.
