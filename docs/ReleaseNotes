@@ -21,13 +21,15 @@ This is a minor bug fix and maintenance release:
 - Amiga: m68k-amigaos support. (Use VBCC as the compiler, gcc has code
   generation issues.)
 
+- Windows: Visual Studio builds no longer require yasm or nasm. Tested
+  compilation using VS2015-update/2.
+
 - DOS, 3dfx opengl: Macronix (MX86251) variants of Voodoo Rush boards
   are now functional. Further updates/fixes to opengl and glide drivers.
   Updates to DXE exports so that more opengl driver builds would work
   without requiring an engine recompile.
 
-- Windows: Visual Studio builds no longer require yasm or nasm. Tested
-  compilation using VS2015-update/2.
+- DOS, PCI sound driver: Updates, more Intel HDA chipsets recognized.
 
 - All platforms, gameplay: Fixed an issue with the rider bosses Death,
   Pestilence and War in coop mode. (as reported by Spike and Korax.)

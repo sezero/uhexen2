@@ -21,8 +21,6 @@ extern unsigned short au_map_selector; /* dpmi.c */
 #endif
 #endif
 
-extern char libau_istr[100]; /* au.c */
-
 struct dosmem_t{
  unsigned short selector;
  char *linearptr;

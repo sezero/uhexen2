@@ -347,7 +347,7 @@ static void INTELICH_close(struct mpxplay_audioout_info_s *aui);
 static void INTELICH_card_info(struct mpxplay_audioout_info_s *aui)
 {
  struct intel_card_s *card=(struct intel_card_s *)aui->card_private_data;
- sprintf(aui->infostr,"ICH: Intel %s found on port:%4.4lX irq:%u (type:%s, bits:16%s)",
+ sprintf(aui->infostr,"ICH: %s on port:%4.4lX irq:%u (type:%s, bits:16%s)",
          card->pci_dev->device_name,card->baseport_bm,card->irq,
          ich_devnames[card->device_type],((card->device_type==DEVICE_INTEL_ICH4)? ",20":""));
 }

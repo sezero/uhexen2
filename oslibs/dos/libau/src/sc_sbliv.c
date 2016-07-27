@@ -1198,10 +1198,9 @@ static void sblive_select_mixer(struct emu10k1_card *card);
 static void SBLIVE_card_info(struct mpxplay_audioout_info_s *aui)
 {
  struct emu10k1_card *card=(struct emu10k1_card *)aui->card_private_data;
- sprintf(aui->infostr,"SB %s (%8.8lX)(bits:16%s) on port:%4.4lX irq:%u",
+ sprintf(aui->infostr,"SB %s on port:%4.4lX irq:%u (bits:16%s)",
          ((card->card_capabilities->longname)? card->card_capabilities->longname:card->pci_dev->device_name),
-         card->serial,((card->chips&EMU_CHIPS_24BIT)? ",24":""),
-         card->iobase,card->irq);
+         card->iobase, card->irq, ((card->chips&EMU_CHIPS_24BIT)? ",24":"") );
 }
 
 static int SBLIVE_adetect(struct mpxplay_audioout_info_s *aui)
