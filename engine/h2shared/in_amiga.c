@@ -24,6 +24,9 @@
 #include <devices/input.h>
 #if defined __AROS__
 #include <devices/rawkeycodes.h>
+#define NM_WHEEL_UP RAWKEY_NM_WHEEL_UP
+#define NM_WHEEL_DOWN RAWKEY_NM_WHEEL_DOWN
+#define NM_BUTTON_FOURTH RAWKEY_NM_BUTTON_FOURTH
 #elif !defined __MORPHOS__
 #include <newmouse.h>
 #endif
@@ -57,7 +60,6 @@ static struct MsgPort *inputport;
 static struct IOStdReq *inputreq;
 static UWORD *pointermem;
 
-static int in_dograb;
 static int mx;
 static int my;
 #define MAXIMSGS 32
@@ -88,10 +90,26 @@ static void IN_StartupJoystick (void);
 static void IN_Callback_JoyEnable (cvar_t *var);
 static void IN_Callback_JoyIndex (cvar_t *var);
 
+#if defined(__AMIGA__) && !defined(__MORPHOS__)
 static unsigned char keyconv[] =
 {
 	'`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',							/*  10 */
-	'-', '=', 0, 0,	K_KP_INS, 'q', 'w', 'e', 'r', 't',							/*  20 */
+	'-', '=', '\\', 0, K_KP_INS, 'q', 'w', 'e', 'r', 't',							/*  20 */
+	'y', 'u', 'i', 'o', 'p', '[', ']', 0, K_KP_END, K_KP_DOWNARROW,						/*  30 */
+	K_KP_PGDN, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l',							/*  40 */
+	';', '\'', 0, 0, K_KP_LEFTARROW, K_KP_5, K_KP_RIGHTARROW, '<', 'z', 'x',				/*  50 */
+	'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0, K_KP_DEL,							/*  60 */
+	K_KP_HOME, K_KP_UPARROW, K_KP_PGUP, ' ', K_BACKSPACE, K_TAB, K_KP_ENTER, K_ENTER, K_ESCAPE, K_DEL,	/*  70 */
+	0, 0, 0, K_KP_MINUS, 0, K_UPARROW, K_DOWNARROW, K_RIGHTARROW, K_LEFTARROW, K_F1,	/*  80 */
+	K_F2, K_F3, K_F4, K_F5, K_F6, K_F7, K_F8, K_F9, K_F10, K_KP_NUMLOCK,						/*  90 */
+	0, K_KP_SLASH, K_KP_STAR, K_KP_PLUS, K_PAUSE, K_SHIFT, K_SHIFT, 0, K_CTRL, K_ALT,					/* 100 */
+	K_ALT, 0, 0, 0, 0, 0, 0, 0, 0, 0,									/* 110 */
+};
+#else
+static unsigned char keyconv[] =
+{
+	'`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',							/*  10 */
+	'-', '=', 0, 0, K_KP_INS, 'q', 'w', 'e', 'r', 't',							/*  20 */
 	'y', 'u', 'i', 'o', 'p', '[', ']', 0, K_KP_END, K_KP_DOWNARROW,						/*  30 */
 	K_KP_PGDN, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l',							/*  40 */
 	';', '\'', '\\', 0, K_KP_LEFTARROW, K_KP_5, K_KP_RIGHTARROW, '<', 'z', 'x',				/*  50 */
@@ -99,11 +117,11 @@ static unsigned char keyconv[] =
 	K_KP_HOME, K_KP_UPARROW, K_KP_PGUP, ' ', K_BACKSPACE, K_TAB, K_KP_ENTER, K_ENTER, K_ESCAPE, K_DEL,	/*  70 */
 	K_INS, K_PGUP, K_PGDN, K_KP_MINUS, K_F11, K_UPARROW, K_DOWNARROW, K_RIGHTARROW, K_LEFTARROW, K_F1,	/*  80 */
 	K_F2, K_F3, K_F4, K_F5, K_F6, K_F7, K_F8, K_F9, K_F10, 0,						/*  90 */
-	0, K_KP_SLASH, 0, K_KP_PLUS, 0, K_SHIFT, K_SHIFT, 0, K_CTRL, K_ALT,					/* 100 */
-	K_ALT, 0, 0, 0, 0, 0, 0, 0, 0, K_PAUSE,									/* 110 */
+	0, K_KP_SLASH, K_KP_STAR, K_KP_PLUS, 0, K_SHIFT, K_SHIFT, 0, K_CTRL, K_ALT,					/* 100 */
+	K_ALT, 0, 0, 0, 0, 0, 0, 0, K_KP_NUMLOCK, K_PAUSE,									/* 110 */
 	K_F12, K_HOME, K_END, 0, 0, 0, 0, 0, 0, 0,								/* 120 */
-	0, K_MWHEELUP, K_MWHEELDOWN, 0, 0, 0, 0, 0, 0, 0							/* 130 */
 };
+#endif
 #define MAX_KEYCONV (sizeof keyconv / sizeof keyconv[0])
 
 
@@ -137,9 +155,11 @@ IN_HideMouse
 */
 void IN_HideMouse (void)
 {
-	if (pointermem)
+	if (pointermem && window->Pointer != pointermem)
+	{
 		SetPointer(window, pointermem, 16, 16, 0, 0);
-	//Con_Printf("IN_HideMouseOK\n");
+		//Con_Printf("IN_HideMouseOK\n");
+	}
 }
 
 /* ============================================================
@@ -166,16 +186,12 @@ IN_ActivateMouse
 */
 void IN_ActivateMouse (void)
 {
-	if (mouseinitialized) {
-	    if (!mouseactivatetoggle) {
-			if (_enable_mouse.integer /*|| (modestate != MS_WINDOWED)*/)
-			{
-				IN_HideMouse();
-				mouseactivatetoggle = true;
-				mouseactive = true;
-				in_dograb = 1;
-			}
-	    }
+	mouseactivatetoggle = true;
+
+	if (mouseinitialized && _enable_mouse.integer)
+	{
+		IN_HideMouse();
+		mouseactive = true;
 	}
 }
 
@@ -186,13 +202,12 @@ IN_DeactivateMouse
 */
 void IN_DeactivateMouse (void)
 {
-	if (mouseinitialized) {
-	    if (mouseactivatetoggle) {
-			IN_ShowMouse();
-			mouseactivatetoggle = false;
-			mouseactive = false;
-			in_dograb = 0;
-	    }
+	mouseactivatetoggle = false;
+
+	if (mouseinitialized)
+	{
+		IN_ShowMouse();
+		mouseactive = false;
 	}
 }
 
@@ -208,19 +223,18 @@ static void IN_StartupMouse (void)
 /*	IN_HideMouse ();*/
 	if (safemode || COM_CheckParm ("-nomouse"))
 	{
-		/*in_dograb = 0;*/
 		IN_DeactivateMouse();
 		return;
 	}
 
 	mouseinitialized = true;
-	if (_enable_mouse.integer /*|| (modestate != MS_WINDOWED)*/)
-	{
-		/*mouseactivatetoggle = true;
-		mouseactive = true;
-		in_dograb = 1;*/
-		IN_ActivateMouse();
-	}
+
+// if a fullscreen video mode was set before the mouse was initialized,
+// set the mouse state appropriately
+	if (mouseactivatetoggle)
+		IN_ActivateMouse ();
+	else
+		IN_DeactivateMouse ();
 }
 
 
@@ -238,6 +252,36 @@ void IN_ClearStates (void)
 IN_KeyboardHandler
 ===================
 */
+static qboolean IN_AddEvent(struct InputEvent *coin)
+{
+	if ((imsghigh > imsglow && !(imsghigh == MAXIMSGS - 1 && imsglow == 0)) ||
+		(imsghigh < imsglow && imsghigh != imsglow - 1) ||
+		(imsglow == imsghigh))
+	{
+		CopyMem(coin, &imsgs[imsghigh], sizeof(struct InputEvent));
+		imsghigh++;
+		imsghigh %= MAXIMSGS;
+
+		return true;
+	}
+
+	return false;
+}
+
+static struct InputEvent *IN_GetNextEvent(void)
+{
+	struct InputEvent *ie = NULL;
+
+	if (imsglow != imsghigh)
+	{
+		ie = &imsgs[imsglow];
+		imsglow++;
+		imsglow %= MAXIMSGS;
+	}
+
+	return ie;
+}
+
 #ifdef __MORPHOS__ /* MorphOS SDI handler macros are messed up */
 static struct InputEvent *IN_KeyboardHandlerFunc(void);
 
@@ -277,33 +321,48 @@ HANDLERPROTO(IN_KeyboardHandler, struct InputEvent *, struct InputEvent *moo, AP
 
 	do
 	{
-		// mouse buttons, mouse wheel and keyboard
-		if ((coin->ie_Class == IECLASS_RAWKEY) || 
-			((coin->ie_Class == IECLASS_RAWMOUSE || coin->ie_Class == IECLASS_NEWMOUSE) && coin->ie_Code != IECODE_NOBUTTON))
+		if (coin->ie_Class == IECLASS_RAWKEY)
 		{
-			if ((imsghigh > imsglow && !(imsghigh == MAXIMSGS - 1 && imsglow == 0)) ||
-				(imsghigh < imsglow && imsghigh != imsglow - 1) ||
-				(imsglow == imsghigh))
+			int code;
+			
+			// mouse button 4, mouse wheel and keyboard
+			code = coin->ie_Code & ~IECODE_UP_PREFIX;
+			if (code >= NM_WHEEL_UP && code <= NM_BUTTON_FOURTH)
 			{
-				CopyMem(coin, &imsgs[imsghigh], sizeof(imsgs[0]));
-				imsghigh++;
-				imsghigh %= MAXIMSGS;
+				// we don't need these, they will be handled under IECLASS_NEWMOUSE
+				/*if (mouseactive && screeninfront)
+				{
+					IN_AddEvent(coin);
+					coin->ie_Code = IECODE_NOBUTTON;
+				}*/
+			}
+			else
+			{
+				IN_AddEvent(coin);
+			}
+		}
+		else if (coin->ie_Class == IECLASS_RAWMOUSE && mouseactive && screeninfront)
+		{
+			// mouse buttons 1-3
+			if (coin->ie_Code != IECODE_NOBUTTON)
+			{
+				IN_AddEvent(coin);
+				coin->ie_Code = IECODE_NOBUTTON;
 			}
 
-			if ((coin->ie_Class == IECLASS_RAWMOUSE || coin->ie_Class == IECLASS_NEWMOUSE) && in_dograb && screeninfront)
-				coin->ie_Code = IECODE_NOBUTTON;
-		}
-
-		// mouse movement
-		if ((coin->ie_Class == IECLASS_RAWMOUSE) && in_dograb && screeninfront)
-		{
+			// mouse movement
 			mx += coin->ie_position.ie_xy.ie_x;
 			my += coin->ie_position.ie_xy.ie_y;
-
 			coin->ie_position.ie_xy.ie_x = 0;
 			coin->ie_position.ie_xy.ie_y = 0;
 		}
-		
+		else if (coin->ie_Class == IECLASS_NEWMOUSE && mouseactive && screeninfront)
+		{
+			// mouse button 4, mouse wheel
+			IN_AddEvent(coin);
+			coin->ie_Code = IECODE_NOBUTTON;
+		}
+
 		coin = coin->ie_NextEvent;
 	} while (coin);
 
@@ -703,8 +762,8 @@ void IN_Commands (void)
 void IN_SendKeyEvents (void)
 {
 	struct IntuiMessage *intuimsg;
-	int sym, state;
-	int i;
+	struct InputEvent *inputev;
+	int sym, state, code;
 
 	if (!window) return;/* dedicated server? */
 
@@ -727,48 +786,33 @@ void IN_SendKeyEvents (void)
 		ReplyMsg((struct Message *)intuimsg);
 	}
 
-	while (imsglow != imsghigh)
+	while ((inputev = IN_GetNextEvent()))
 	{
-		sym = -1;
-		state = -1;
-		i = imsglow;
-		imsglow++;
-		imsglow %= MAXIMSGS;
-		
-		if (imsgs[i].ie_Class == IECLASS_RAWKEY)
+		sym = 0;
+
+		code = inputev->ie_Code & ~IECODE_UP_PREFIX;
+		state = !(inputev->ie_Code & IECODE_UP_PREFIX);
+
+		if (inputev->ie_Class == IECLASS_RAWKEY)
 		{
-			switch (imsgs[i].ie_Code & ~IECODE_UP_PREFIX)
+			if (!Key_IsGameKey())
 			{
-#ifdef __AROS__
-			case RAWKEY_NM_WHEEL_UP:
-				sym = K_MWHEELUP;
-				break;
-			case RAWKEY_NM_WHEEL_DOWN:
-				sym = K_MWHEELDOWN;
-				break;
-#endif
-			default:
-				state = !(imsgs[i].ie_Code & IECODE_UP_PREFIX);
-				if (!Key_IsGameKey())
+				UBYTE bufascii;
+				if (MapRawKey(inputev, (STRPTR) &bufascii, sizeof(bufascii), NULL) > 0)
 				{
-					UBYTE bufascii;
-					if (MapRawKey(&imsgs[i], (STRPTR) &bufascii, sizeof(bufascii), NULL) > 0)
-					{
-						//Con_Printf("%d\n", bufascii);
-						sym = (bufascii == 8) ? K_BACKSPACE	: bufascii;
-					}
+					//Con_Printf("%d\n", bufascii);
+					sym = (bufascii == 8) ? K_BACKSPACE	: bufascii;
 				}
-
-				if (sym == -1 && (imsgs[i].ie_Code & ~IECODE_UP_PREFIX) < MAX_KEYCONV)
-					sym = keyconv[imsgs[i].ie_Code & ~IECODE_UP_PREFIX];
-				//Con_Printf("ie_Code %d sym %d state %d\n", imsgs[i].ie_Code & ~IECODE_UP_PREFIX, sym, state);
 			}
-		}
-		else if (imsgs[i].ie_Class == IECLASS_RAWMOUSE && mouseactive && !in_mode_set)
-		{
-			state = !(imsgs[i].ie_Code & IECODE_UP_PREFIX);
 
-			switch (imsgs[i].ie_Code & ~IECODE_UP_PREFIX)
+			if (!sym && code < MAX_KEYCONV)
+				sym = keyconv[code];
+
+			//Con_Printf("rawkey code %d sym %d state %d\n", code, sym, state);
+		}
+		else if (inputev->ie_Class == IECLASS_RAWMOUSE)
+		{
+			switch (code)
 			{
 			case IECODE_LBUTTON:
 				sym = K_MOUSE1;
@@ -780,11 +824,11 @@ void IN_SendKeyEvents (void)
 				sym = K_MOUSE3;
 				break;
 			}
+			//Con_Printf("rawmouse code %d sym %d state %d\n", code, sym, state);
 		}
-#ifdef __AMIGA__
-		else if (imsgs[i].ie_Class == IECLASS_NEWMOUSE && mouseactive && !in_mode_set)
+		else if (inputev->ie_Class == IECLASS_NEWMOUSE)
 		{
-			switch (imsgs[i].ie_Code & ~IECODE_UP_PREFIX)
+			switch (code)
 			{
 			case NM_WHEEL_UP:
 				sym = K_MWHEELUP;
@@ -794,23 +838,22 @@ void IN_SendKeyEvents (void)
 				break;
 			case NM_BUTTON_FOURTH:
 				sym = K_MOUSE4;
-				state = !(imsgs[i].ie_Code & IECODE_UP_PREFIX);
 				break;
 			}
+			//Con_Printf("newmouse code %d sym %d state %d\n", code, sym, state);
 		}
-#endif
-		if (sym != -1)
+
+		if (sym)
 		{
-			if (state != -1)
+			if (sym == K_MWHEELUP || sym == K_MWHEELDOWN)
 			{
-				Key_Event(sym, state);
+				/* the mouse wheel doesn't generate a key up event */
+				Key_Event(sym, true);
+				Key_Event(sym, false);
 			}
 			else
 			{
-				//Con_Printf("wheel!\n");
-				/* the mouse wheel doesn't generate a key up event */
-				Key_Event(sym, 1);
-				Key_Event(sym, 0);
+				Key_Event(sym, state);
 			}
 		}
 	}
