@@ -8,7 +8,7 @@
  *
  * - TODO: Add back more low resolutions.
  * - TODO: Add DDRAW (see Quake2)
- * - TODO: Better video mode management? Early config reading?
+ * - TODO: Better video mode management?
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -184,7 +184,6 @@ VID_CheckAdequateMem
 */
 static qboolean VID_CheckAdequateMem (int width, int height)
 {
-#if 0	/* MH says there will always be enough */
 	int		tbuffersize;
 
 	tbuffersize = width * height * sizeof (*d_pzbuffer);
@@ -203,7 +202,6 @@ static qboolean VID_CheckAdequateMem (int width, int height)
 	{
 		return false;		// not enough memory for mode
 	}
-#endif
 
 	return true;
 }
@@ -224,7 +222,6 @@ static qboolean VID_AllocBuffers (int width, int height)
 
 	tbuffersize += tsize;
 
-#if 0	/* as in VID_CheckAdequateMem() above. */
 // see if there's enough memory, allowing for the normal mode 0x13 pixel,
 // z, and surface buffers
 	//if ((host_parms->memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
@@ -237,7 +234,6 @@ static qboolean VID_AllocBuffers (int width, int height)
 		Con_SafePrintf ("Not enough memory for video mode\n");
 		return false;		// not enough memory for mode
 	}
-#endif
 
 	vid_surfcachesize = tsize;
 
