@@ -90,7 +90,7 @@ static void IN_StartupJoystick (void);
 static void IN_Callback_JoyEnable (cvar_t *var);
 static void IN_Callback_JoyIndex (cvar_t *var);
 
-#if defined(__AMIGA__) && !defined(__MORPHOS__)
+#ifdef PLATFORM_AMIGAOS3
 static unsigned char keyconv[] =
 {
 	'`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',							/*  10 */

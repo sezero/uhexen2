@@ -27,7 +27,7 @@
 #elif defined(__amigaos4__)
 #include <GL/gl.h>
 
-#elif defined(__AMIGA__) /* AOS3 */
+#elif defined(PLATFORM_AMIGAOS3)
 #if defined(REFGL_MINIGL)  /* Hyperion's MiniGL 1.2 */
 #include <mgl/gl.h>
 #elif defined(REFGL_AMESA) /* StormMesa */

@@ -112,7 +112,7 @@ static inline char *FIND_LAST_DIRSEP (const char *_the_path) {
 
 /* ----------------- AmigaOS, MorphOS, AROS, etc: ----------------- */
 #elif defined(__MORPHOS__) || defined(__AROS__) || defined(AMIGAOS)	|| \
-      defined(__amigaos__) || defined(__amigados__)			|| \
+      defined(__amigaos__) || defined(__amigaos4__) ||defined(__amigados__) || \
       defined(AMIGA) || defined(_AMIGA) || defined(__AMIGA__)
 
 #define HAS_DRIVE_SPEC(f)	(0) /* */

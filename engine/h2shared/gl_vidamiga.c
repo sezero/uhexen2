@@ -180,7 +180,7 @@ static cvar_t	vid_mode = {"vid_mode", "0", CVAR_NONE};
 static cvar_t	vid_config_consize = {"vid_config_consize", "640", CVAR_ARCHIVE};
 static cvar_t	vid_config_glx = {"vid_config_glx", "640", CVAR_ARCHIVE};
 static cvar_t	vid_config_gly = {"vid_config_gly", "480", CVAR_ARCHIVE};
-#if defined(__AMIGA__) && !defined(__MORPHOS__) /* KLUDGE -- for amigaos3 */
+#ifdef PLATFORM_AMIGAOS3
 static cvar_t	vid_config_fscr= {"vid_config_fscr", "1", CVAR_ARCHIVE};
 #else
 static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", CVAR_ARCHIVE};

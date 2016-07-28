@@ -63,7 +63,7 @@ struct Library		*TimerBase;
 #else
 struct Device		*TimerBase;
 #endif
-#if defined(__AMIGA__) && !defined(__MORPHOS__)  /* m68k-amigaos */
+#ifdef PLATFORM_AMIGAOS3
 #define USE_ECLOCK_TIMER
 #define MY_TIMERUNIT	UNIT_ECLOCK
 #else

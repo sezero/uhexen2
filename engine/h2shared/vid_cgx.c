@@ -33,7 +33,7 @@
 #include <proto/graphics.h>
 #include <proto/cybergraphics.h>
 
-/* why is WriteLUTPixelArray not included in vbcc_target_m68k-amigaos.lha ?? */
+/* WriteLUTPixelArray not included in vbcc_target_m68k-amigaos.lha */
 #if defined(__VBCC__) && defined(__M68K__) && !defined(WriteLUTPixelArray)
 ULONG __WriteLUTPixelArray(__reg("a6") void *, __reg("a0") APTR srcRect, __reg("d0") UWORD SrcX, __reg("d1") UWORD SrcY, __reg("d2") UWORD SrcMod, __reg("a1") struct RastPort * a1arg, __reg("a2") APTR a2arg, __reg("d3") UWORD DestX, __reg("d4") UWORD DestY, __reg("d5") UWORD SizeX, __reg("d6") UWORD SizeY, __reg("d7") UBYTE CTFormat)="\tjsr\t-198(a6)";
 #define WriteLUTPixelArray(srcRect, SrcX, SrcY, SrcMod, a1arg, a2arg, DestX, DestY, SizeX, SizeY, CTFormat) __WriteLUTPixelArray(CyberGfxBase, (srcRect), (SrcX), (SrcY), (SrcMod), (a1arg), (a2arg), (DestX), (DestY), (SizeX), (SizeY), (CTFormat))
@@ -56,7 +56,7 @@ static struct Screen *screen = NULL;
 static unsigned char ppal[256 * 4];
 static pixel_t *buffer = NULL;
 static byte *directbitmap = NULL;
-#if defined(__AMIGA__) && !defined(__MORPHOS__) /* amigaos3 */
+#ifdef PLATFORM_AMIGAOS3
 struct Library *CyberGfxBase = NULL;
 #endif
 
@@ -88,7 +88,7 @@ static cvar_t	vid_config_glx = {"vid_config_glx", "640", CVAR_ARCHIVE};
 static cvar_t	vid_config_gly = {"vid_config_gly", "480", CVAR_ARCHIVE};
 static cvar_t	vid_config_swx = {"vid_config_swx", "320", CVAR_ARCHIVE};
 static cvar_t	vid_config_swy = {"vid_config_swy", "240", CVAR_ARCHIVE};
-#if defined(__AMIGA__) && !defined(__MORPHOS__) /* KLUDGE -- for amigaos3 */
+#ifdef PLATFORM_AMIGAOS3
 static cvar_t	vid_config_fscr= {"vid_config_fscr", "1", CVAR_ARCHIVE};
 #else
 static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", CVAR_ARCHIVE};
@@ -116,7 +116,7 @@ typedef struct {
 	int			bpp;
 /*	int			halfscreen;*/
 	ULONG		modeid;
-#if defined(__AMIGA__) && !defined(__MORPHOS__)
+#ifdef PLATFORM_AMIGAOS3
 	qboolean	noadapt;
 #endif
 	char		modedesc[MAX_DESC];
@@ -279,7 +279,7 @@ static void VID_PrepareModes (void)
 	unsigned int i;
 	APTR handle;
 	struct DimensionInfo diminfo;
-#if defined(__AMIGA__) && !defined(__MORPHOS__)
+#ifdef PLATFORM_AMIGAOS3
 	ULONG monitorid;
 	struct DisplayInfo dispinfo;
 	struct NameInfo nameinfo;
@@ -299,7 +299,7 @@ static void VID_PrepareModes (void)
 		wmodelist[num_wmodes].fullscreen = 0;
 		wmodelist[num_wmodes].bpp = 8;
 		wmodelist[num_wmodes].modeid = INVALID_ID;
-#if defined(__AMIGA__) && !defined(__MORPHOS__)
+#ifdef PLATFORM_AMIGAOS3
 		wmodelist[num_wmodes].noadapt = false;
 #endif
 		q_snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC,
@@ -311,7 +311,7 @@ static void VID_PrepareModes (void)
 	id = INVALID_ID;
 	while((id = NextDisplayInfo(id)) != INVALID_ID)
 	{
-#if defined(__AMIGA__) && !defined(__MORPHOS__)
+#ifdef PLATFORM_AMIGAOS3
 		//if (!IsCyberModeID(id))	continue;
 		monitorid = id & MONITOR_ID_MASK;
 		if (monitorid == DEFAULT_MONITOR_ID || monitorid == A2024_MONITOR_ID)
@@ -322,7 +322,7 @@ static void VID_PrepareModes (void)
 		if (!handle)
 			continue;
 
-#if defined(__AMIGA__) && !defined(__MORPHOS__)
+#ifdef PLATFORM_AMIGAOS3
 		if (!GetDisplayInfoData(handle, (UBYTE *)&dispinfo, sizeof(dispinfo), DTAG_DISP, 0))
 			continue;
 		// this is a good way to filter out HAM, EHB, DPF modes
@@ -346,7 +346,7 @@ static void VID_PrepareModes (void)
 		fmodelist[num_fmodes].bpp = 8; // diminfo.MaxDepth
 		fmodelist[num_fmodes].modeid = id;
 		q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", (fmodelist[num_fmodes].width), (fmodelist[num_fmodes].height));
-#if defined(__AMIGA__) && !defined(__MORPHOS__)
+#ifdef PLATFORM_AMIGAOS3
 		if (dispinfo.PropertyFlags & DIPF_IS_LACE)
 			q_strlcat(fmodelist[num_fmodes].modedesc, "i", MAX_DESC);
 		if (monitorid == PAL_MONITOR_ID)
@@ -596,7 +596,7 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 
 					Con_SafePrintf ("Video Mode: %ux%ux%d\n", vid.width, vid.height, modelist[modenum].bpp);
 
-					#if defined(__AMIGA__) && !defined(__MORPHOS__)
+					#ifdef PLATFORM_AMIGAOS3
 					vid.noadapt = modelist[modenum].noadapt;
 					#endif
 					in_mode_set = false;
@@ -738,7 +738,7 @@ void VID_Init (const unsigned char *palette)
 				"vid_config_swy" };
 #define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
 
-#if defined(__AMIGA__) && !defined(__MORPHOS__) /* amigaos3 */
+#ifdef PLATFORM_AMIGAOS3
 	CyberGfxBase = OpenLibrary("cybergraphics.library", 0);
 	/*if (!CyberGfxBase)
 		Sys_Error ("Cannot open cybergraphics.library!");*/
@@ -869,7 +869,7 @@ void VID_Shutdown (void)
 {
 	VID_DestroyWindow ();
 
-#if defined(__AMIGA__) && !defined(__MORPHOS__) /* amigaos3 */
+#ifdef PLATFORM_AMIGAOS3
 	if (CyberGfxBase)
 	{
 		CloseLibrary(CyberGfxBase);
@@ -883,7 +883,7 @@ static void FlipScreen (vrect_t *rects)
 {
 	while (rects)
 	{
-#if defined(__AMIGA__) && !defined(__MORPHOS__)
+#ifdef PLATFORM_AMIGAOS3
 		if (!CyberGfxBase)
 		{
 			WriteChunkyPixels(window->RPort,

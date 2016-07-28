@@ -9,7 +9,7 @@ Index: engine/h2shared/vid_cgx.c
 --- engine/h2shared/vid_cgx.c	(revision 5690)
 +++ engine/h2shared/vid_cgx.c	(working copy)
 @@ -59,6 +59,14 @@
- #if defined(__AMIGA__) && !defined(__MORPHOS__) /* amigaos3 */
+ #ifdef PLATFORM_AMIGAOS3
  struct Library *CyberGfxBase = NULL;
  #endif
 +static struct ScreenBuffer *screenbuffers[2] = {NULL, NULL};
