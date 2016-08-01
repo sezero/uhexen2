@@ -143,8 +143,11 @@ IN_ShowMouse
 */
 void IN_ShowMouse (void)
 {
-	ClearPointer(window);
-	//Con_Printf("IN_ShowMouseOK\n");
+	if (window->Pointer == pointermem)
+	{
+		ClearPointer(window);
+		//Con_Printf("IN_ShowMouseOK\n");
+	}
 }
 
 

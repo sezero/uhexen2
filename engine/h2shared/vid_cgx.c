@@ -79,7 +79,7 @@ static int	num_wmodes;
 static int	*nummodes;
 
 static qboolean	vid_menu_fs;
-static qboolean	fs_toggle_works = false;
+//static qboolean	fs_toggle_works = false;
 
 viddef_t	vid;		// global video state
 // cvar vid_mode must be set before calling VID_SetMode, VID_ChangeVideoMode or VID_Restart_f
@@ -93,6 +93,7 @@ static cvar_t	vid_config_fscr= {"vid_config_fscr", "1", CVAR_ARCHIVE};
 #else
 static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", CVAR_ARCHIVE};
 #endif
+static cvar_t	vid_config_mon = {"vid_config_mon", "0", CVAR_ARCHIVE};
 
 static cvar_t	vid_showload = {"vid_showload", "1", CVAR_NONE};
 
@@ -587,6 +588,8 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 					modestate = (screen) ? MS_FULLDIB : MS_WINDOWED;
 					Cvar_SetValueQuick (&vid_config_swx, modelist[vid_modenum].width);
 					Cvar_SetValueQuick (&vid_config_swy, modelist[vid_modenum].height);
+					if (screen)
+						Cvar_SetValueQuick (&vid_config_mon, (float)(modelist[vid_modenum].modeid & MONITOR_ID_MASK));
 
 					//IN_HideMouse ();
 
@@ -731,9 +734,10 @@ void VID_ShiftPalette(const unsigned char *palette)
 
 void VID_Init (const unsigned char *palette)
 {
-	int		width, height, i, temp;
+	int		width, height, i, temp, monitor;
 	const char	*read_vars[] = {
 				"vid_config_fscr",
+				"vid_config_mon",
 				"vid_config_swx",
 				"vid_config_swy" };
 #define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
@@ -748,6 +752,7 @@ void VID_Init (const unsigned char *palette)
 	scr_disabled_for_loading = true;
 
 	Cvar_RegisterVariable (&vid_config_fscr);
+	Cvar_RegisterVariable (&vid_config_mon);
 	Cvar_RegisterVariable (&vid_config_swy);
 	Cvar_RegisterVariable (&vid_config_swx);
 	Cvar_RegisterVariable (&vid_config_gly);
@@ -787,6 +792,7 @@ void VID_Init (const unsigned char *palette)
 
 	width = vid_config_swx.integer;
 	height = vid_config_swy.integer;
+	monitor = vid_config_mon.integer;
 
 	// user is always right ...
 	i = COM_CheckParm("-width");
@@ -802,17 +808,42 @@ void VID_Init (const unsigned char *palette)
 			height = 3 * width / 4;
 	}
 
+	// pick the appropriate list
+	if (vid_config_fscr.integer)
+	{
+		modelist = fmodelist;
+		nummodes = &num_fmodes;
+	}
+	else
+	{
+		modelist = wmodelist;
+		nummodes = &num_wmodes;
+	}
+
 	// user requested a mode either from the config or from the
 	// command line
 	// scan existing modes to see if this is already available
 	// if not, add this as the last "valid" video mode and set
 	// vid_mode to it only if it doesn't go beyond vid_maxwidth
 	i = 0;
-	while (i < *nummodes)
+	if (vid_config_fscr.integer)
 	{
-		if (modelist[i].width == width && modelist[i].height == height)
-			break;
-		i++;
+		while (i < *nummodes)
+		{
+			if (modelist[i].width == width && modelist[i].height == height && (modelist[i].modeid & MONITOR_ID_MASK) == monitor)
+				break;
+			i++;
+		}
+	}
+	if (i == 0 || i == *nummodes)
+	{
+		i = 0;
+		while (i < *nummodes)
+		{
+			if (modelist[i].width == width && modelist[i].height == height)
+				break;
+			i++;
+		}
 	}
 	if (i < *nummodes)
 	{
@@ -826,6 +857,10 @@ void VID_Init (const unsigned char *palette)
 		modelist[*nummodes].height = height;
 		modelist[*nummodes].fullscreen = 1;
 		modelist[*nummodes].bpp = 8;
+		modelist[*nummodes].modeid = INVALID_ID;
+#ifdef PLATFORM_AMIGAOS3
+		modelist[*nummodes].noadapt = false;
+#endif
 		q_snprintf (modelist[*nummodes].modedesc, MAX_DESC, "%d x %d (user mode)", width, height);
 		Cvar_SetValueQuick (&vid_mode, *nummodes);
 		(*nummodes)++;
@@ -1036,7 +1071,7 @@ Handles switching between fullscreen/windowed modes
 and brings the mouse to a proper state afterwards
 ================
 */
-extern qboolean menu_disabled_mouse;
+//extern qboolean menu_disabled_mouse;
 void VID_ToggleFullscreen(void)
 {
 	// implement this...
@@ -1049,6 +1084,7 @@ void VID_ToggleFullscreen(void)
 
 static int	vid_menunum;
 static int	vid_cursor;
+static vmode_t	*vid_menulist;	// this changes when vid_menu_fs changes
 static qboolean	want_fstoggle, need_apply;
 static qboolean	vid_menu_firsttime = true;
 
@@ -1092,6 +1128,7 @@ static void VID_MenuDraw (void)
 	{	// settings for entering the menu first time
 		vid_menunum = vid_modenum;
 		vid_menu_fs = (modestate != MS_WINDOWED);
+		vid_menulist = (modestate == MS_WINDOWED) ? wmodelist : fmodelist;
 		vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
 		vid_menu_firsttime = false;
 	}
@@ -1105,9 +1142,9 @@ static void VID_MenuDraw (void)
 
 	M_Print (76, 92 + 8*VID_RESOLUTION, "Resolution: ");
 	if (vid_menunum == vid_modenum)
-		M_PrintWhite (76+12*8, 92 + 8*VID_RESOLUTION, modelist[vid_menunum].modedesc);
+		M_PrintWhite (76+12*8, 92 + 8*VID_RESOLUTION, vid_menulist[vid_menunum].modedesc);
 	else
-		M_Print (76+12*8, 92 + 8*VID_RESOLUTION, modelist[vid_menunum].modedesc);
+		M_Print (76+12*8, 92 + 8*VID_RESOLUTION, vid_menulist[vid_menunum].modedesc);
 
 	if (need_apply)
 	{
@@ -1118,6 +1155,26 @@ static void VID_MenuDraw (void)
 	M_DrawCharacter (64, 92 + vid_cursor*8, 12+((int)(realtime*4)&1));
 }
 
+static int match_windowed_fullscr_modes (void)
+{
+	int	l;
+	vmode_t	*tmplist;
+	int	*tmpcount;
+
+	// choose the new mode
+	tmplist = (vid_menu_fs) ? fmodelist : wmodelist;
+	tmpcount = (vid_menu_fs) ? &num_fmodes : &num_wmodes;
+	for (l = 0; l < *tmpcount; l++)
+	{
+		if (tmplist[l].width == vid_menulist[vid_menunum].width &&
+		    tmplist[l].height == vid_menulist[vid_menunum].height)
+		{
+			return l;
+		}
+	}
+	return 0;
+}
+
 /*
 ================
 VID_MenuKey
@@ -1125,6 +1182,8 @@ VID_MenuKey
 */
 static void VID_MenuKey (int key)
 {
+	int	*tmpnum;
+
 	switch (key)
 	{
 	case K_ESCAPE:
@@ -1138,6 +1197,7 @@ static void VID_MenuKey (int key)
 		case VID_RESET:
 			vid_menu_fs = (modestate != MS_WINDOWED);
 			vid_menunum = vid_modenum;
+			vid_menulist = (modestate == MS_WINDOWED) ? wmodelist : fmodelist;
 			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
 			break;
 		case VID_APPLY:
@@ -1145,6 +1205,8 @@ static void VID_MenuKey (int key)
 			{
 				Cvar_SetValueQuick(&vid_mode, vid_menunum);
 				Cvar_SetValueQuick(&vid_config_fscr, vid_menu_fs);
+				modelist = (vid_menu_fs) ? fmodelist : wmodelist;
+				nummodes = (vid_menu_fs) ? &num_fmodes : &num_wmodes;
 				VID_Restart_f();
 			}
 			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
@@ -1157,8 +1219,10 @@ static void VID_MenuKey (int key)
 		{
 		case VID_FULLSCREEN:
 			vid_menu_fs = !vid_menu_fs;
-			if (fs_toggle_works)
-				VID_ToggleFullscreen();
+			vid_menunum = match_windowed_fullscr_modes();
+			vid_menulist = (vid_menu_fs) ? fmodelist : wmodelist;
+			/*if (fs_toggle_works)
+				VID_ToggleFullscreen();*/
 			break;
 		case VID_RESOLUTION:
 			S_LocalSound ("raven/menu1.wav");
@@ -1174,14 +1238,19 @@ static void VID_MenuKey (int key)
 		{
 		case VID_FULLSCREEN:
 			vid_menu_fs = !vid_menu_fs;
-			if (fs_toggle_works)
-				VID_ToggleFullscreen();
+			vid_menunum = match_windowed_fullscr_modes();
+			vid_menulist = (vid_menu_fs) ? fmodelist : wmodelist;
+			/*if (fs_toggle_works)
+				VID_ToggleFullscreen();*/
 			break;
 		case VID_RESOLUTION:
 			S_LocalSound ("raven/menu1.wav");
+			tmpnum = (vid_menu_fs) ? &num_fmodes : &num_wmodes;
 			vid_menunum++;
-			if (vid_menunum >= *nummodes)
-				vid_menunum = *nummodes - 1;
+			/*if (vid_menunum >= *nummodes)
+				vid_menunum = *nummodes - 1;*/
+			if (vid_menunum >= *tmpnum)
+				vid_menunum--;
 			break;
 		}
 		return;

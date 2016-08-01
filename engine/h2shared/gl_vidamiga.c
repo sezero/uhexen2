@@ -188,6 +188,7 @@ static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", CVAR_ARCHIVE};
 // cvars for compatibility with the software version
 static cvar_t	vid_config_swx = {"vid_config_swx", "320", CVAR_ARCHIVE};
 static cvar_t	vid_config_swy = {"vid_config_swy", "240", CVAR_ARCHIVE};
+static cvar_t	vid_config_mon = {"vid_config_mon", "0", CVAR_ARCHIVE};
 
 byte		globalcolormap[VID_GRADES*256];
 float		RTint[256], GTint[256], BTint[256];
@@ -1506,6 +1507,7 @@ void	VID_Init (const unsigned char *palette)
 	Cvar_RegisterVariable (&vid_config_fscr);
 	Cvar_RegisterVariable (&vid_config_swy);
 	Cvar_RegisterVariable (&vid_config_swx);
+	Cvar_RegisterVariable (&vid_config_mon);
 	Cvar_RegisterVariable (&vid_config_gly);
 	Cvar_RegisterVariable (&vid_config_glx);
 	Cvar_RegisterVariable (&vid_config_consize);
