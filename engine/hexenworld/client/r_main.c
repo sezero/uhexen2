@@ -484,6 +484,8 @@ Guaranteed to be called before the first refresh
 */
 #if defined(PLATFORM_DOS) || defined(SVGAQUAKE)
 #define NOT_VGA_MODE (vid.aspect <= 1.10f)	/* no Hor+ for weirdass VGA modes */
+#elif defined(PLATFORM_AMIGAOS3)
+#define NOT_VGA_MODE (!vid.noadapt)
 #else
 #define NOT_VGA_MODE true
 #endif
