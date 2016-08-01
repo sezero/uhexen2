@@ -143,7 +143,7 @@ IN_ShowMouse
 */
 void IN_ShowMouse (void)
 {
-	if (window->Pointer == pointermem)
+	if (window && window->Pointer == pointermem)
 	{
 		ClearPointer(window);
 		//Con_Printf("IN_ShowMouseOK\n");
@@ -158,7 +158,7 @@ IN_HideMouse
 */
 void IN_HideMouse (void)
 {
-	if (pointermem && window->Pointer != pointermem)
+	if (window && pointermem && window->Pointer != pointermem)
 	{
 		SetPointer(window, pointermem, 16, 16, 0, 0);
 		//Con_Printf("IN_HideMouseOK\n");
@@ -264,7 +264,6 @@ static qboolean IN_AddEvent(struct InputEvent *coin)
 		CopyMem(coin, &imsgs[imsghigh], sizeof(struct InputEvent));
 		imsghigh++;
 		imsghigh %= MAXIMSGS;
-
 		return true;
 	}
 
