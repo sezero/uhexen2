@@ -1,4 +1,4 @@
-[also remember to update the VBCC_INCLUDES/vincludem68k derictory
+[also remember to update the VBCC_INCLUDES/vincludem68k directory
 for the updated Warp3D headers.]
 
 diff -urNp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
@@ -146,7 +146,7 @@ diff -urNp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
  
 diff -urNp MiniGL~/makefile.vbcc68k MiniGL/makefile.vbcc68k
 --- MiniGL~/makefile.vbcc68k	2002-11-30 08:15:32.000000000 +0200
-+++ MiniGL/makefile.vbcc68k	2016-07-01 07:11:00.000000000 +0300
++++ MiniGL/makefile.vbcc68k	2016-08-08 05:55:00.000000000 +0300
 @@ -16,38 +16,45 @@
  #
  #
@@ -164,7 +164,7 @@ diff -urNp MiniGL~/makefile.vbcc68k MiniGL/makefile.vbcc68k
 -LIBS = -lm040 -lmgl -lextra -lcgfx
 -LIBNAME = vlibm68k:mgl.lib
 +LIBDIR = lib/vbcc
-+LIBS = -L$(LIBDIR) -lm040 -lmgl -lextra
++LIBS = -L$(LIBDIR) -lm040 -lmgl -lextra -lauto
 +# -lcgfx
 +LIBNAME = $(LIBDIR)/mgl.lib
  DIR = Build
@@ -895,8 +895,8 @@ diff -urNp MiniGL~/src/hclip.c MiniGL/src/hclip.c
  #include <math.h>
 diff -urNp MiniGL~/src/init.c MiniGL/src/init.c
 --- MiniGL~/src/init.c	2002-11-30 08:15:42.000000000 +0200
-+++ MiniGL/src/init.c	2016-07-01 07:01:10.000000000 +0300
-@@ -16,7 +16,9 @@
++++ MiniGL/src/init.c	2016-08-08 05:55:00.000000000 +0300
+@@ -16,17 +16,15 @@
  #include <stdio.h>
  
  
@@ -906,6 +906,66 @@ diff -urNp MiniGL~/src/init.c MiniGL/src/init.c
  
  //surgeon: added 11-04-02 - initializes glDrawArrays to glDrawElements wrapper for clipping with compiled arrays
  
+ extern void Init_ArrayToElements_Warpper(void);
+ 
+ 
+-struct Library *UtilityBase;
+-struct IntuitionBase *IntuitionBase;
+-struct GfxBase *GfxBase;
+-
+ #ifndef __PPC__
+ 	extern struct DosLibrary *DOSBase;
+ 	extern struct ExecBase *SysBase;
+@@ -44,9 +42,6 @@ struct Library *CyberGfxBase = NULL;
+ 
+ GLboolean MGLInit(void)
+ {
+-	IntuitionBase = (struct IntuitionBase *)OpenLibrary("intuition.library", 0L);
+-	GfxBase = (struct GfxBase *)OpenLibrary("graphics.library", 0L);
+-	UtilityBase = OpenLibrary("utility.library", 0L);
+ #ifdef __PPC__
+ 	Warp3DPPCBase = OpenLibrary("Warp3DPPC.library", 2L);
+ #else
+@@ -54,7 +49,7 @@ GLboolean MGLInit(void)
+ #endif
+ 	CyberGfxBase = OpenLibrary("cybergraphics.library", 0L);
+ 
+-	if (!IntuitionBase || !GfxBase || !UtilityBase || !CyberGfxBase ||
++	if (!CyberGfxBase ||
+ #ifdef __PPC__
+ 	    !Warp3DPPCBase)
+ #else
+@@ -62,16 +57,12 @@ GLboolean MGLInit(void)
+ #endif
+ 	{
+ 	    printf("Library initialization failed:\n");
+-
+-	    if (!IntuitionBase) printf("- intuition.library (How are you doing this ?)\n");
+-	    if (!GfxBase)       printf("- graphics.library (Strange!)\n");
+ #ifdef __PPC__
+ 	    if (!Warp3DPPCBase) printf("- Warp3DPPC.library\n");
+ #else
+ 	    if (!Warp3DBase)    printf("- Warp3D.library\n");
+ #endif
+ 	    if (!CyberGfxBase)  printf("- cybergraphics.library\n");
+-	    
+ 	    MGLTerm();
+ 	    return GL_FALSE;
+ 	}
+@@ -100,13 +91,4 @@ void MGLTerm(void)
+ 	if (Warp3DBase)         CloseLibrary(Warp3DBase);
+ 	Warp3DBase = NULL;
+ 	#endif
+-
+-	if (IntuitionBase)      CloseLibrary((struct Library *)IntuitionBase);
+-	IntuitionBase = NULL;
+-
+-	if (GfxBase)            CloseLibrary((struct Library *)GfxBase);
+-	GfxBase = NULL;
+-
+-	if (UtilityBase)        CloseLibrary(UtilityBase);
+-	UtilityBase = NULL;
+ }
 diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
 --- MiniGL~/src/matrix.c	2002-11-30 08:15:42.000000000 +0200
 +++ MiniGL/src/matrix.c	2016-07-01 07:01:10.000000000 +0300
