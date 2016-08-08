@@ -19,7 +19,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* fxMesa api had changed across Mesa versions:
+/* fxMesa api changes across Mesa versions:
  *
  * Mesa-3.1 .. 3.4: seems no change.
  * Mesa-3.4 -> 3.5: fxMesaSetNearFar() removed.
@@ -32,8 +32,8 @@
  * Mesa-5.1 -> 6.x:
  * - fxQueryHardware() became a private function.
  *
- * NOTE: Direct use of fxMesa api from Mesa >= 5.1 doesn't seem to work.
- * So, DON'T.
+ * NOTE:
+ * Direct use of fxMesa api from Mesa >= 5.1 does NOT seem to work.
  */
 
 #include "quakedef.h"
@@ -55,7 +55,6 @@ int FXMESA_LoadAPI (void *handle)
 #endif
 
 #if defined(GL_DLSYM)
-static qboolean mesa51_api;
 typedef fxMesaContext (*fxMesaCreateContext_f) (GLuint, GrScreenResolution_t, GrScreenRefresh_t, const GLint attribList[]);
 typedef fxMesaContext (*fxMesaCreateBestContext_f) (GLuint, GLint, GLint, const GLint attribList[]);
 typedef void (*fxMesaMakeCurrent_f) (fxMesaContext);
@@ -70,7 +69,6 @@ static fxMesaDestroyContext_f fxMesaDestroyContext_fp;
 static fxMesaSwapBuffers_f fxMesaSwapBuffers_fp;
 static fxMesaGetProcAddress_f fxMesaGetProcAddress_fp;
 #else
-#define mesa51_api false /* !!! */
 #define fxMesaCreateContext_fp fxMesaCreateContext
 #define fxMesaCreateBestContext_fp fxMesaCreateBestContext
 #define fxMesaMakeCurrent_fp fxMesaMakeCurrent
@@ -132,20 +130,11 @@ static int FXMESA_InitCtx (int *width, int *height, int *bpp)
 	attribs[2] = 1;
 	attribs[3] = FXMESA_DEPTH_SIZE;
 	attribs[4] = 1;
+	attribs[5] = FXMESA_NONE;
 
-	if (mesa51_api) {
-		if (*bpp != 16 && *bpp != 32)
-			goto badbpp;
-		attribs[5] = FXMESA_COLORDEPTH;
-		attribs[6] = *bpp;
-		attribs[7] = FXMESA_NONE;
-	}
-	else {
-		if (*bpp != 16) {
-  badbpp:		Con_SafePrintf("ignoring %d bpp request, using 16 bpp.\n", *bpp);
-			*bpp = 16;
-		}
-		attribs[5] = FXMESA_NONE;
+	if (*bpp != 16) {
+		Con_SafePrintf("ignoring %d bpp request, using 16 bpp.\n", *bpp);
+		*bpp = 16;
 	}
 
 //	fc = fxMesaCreateBestContext_fp(0, *width, *height, attribs);
@@ -209,7 +198,6 @@ int FXMESA_LoadAPI (void *handle)
 	    !fxMesaSwapBuffers_fp) {
 		return -1;
 	}
-	mesa51_api = (Sys_dlsym(handle,"_fxGetScreenGeometry") != NULL);
 #endif
 
 	DOSGL_InitCtx  = FXMESA_InitCtx;
