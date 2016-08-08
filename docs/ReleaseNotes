@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.8: (XXX. XX, XXXX.)
+Changes in v1.5.8: (Aug. 08, 2016.)
 ========================================================================
 
 This is a minor bug fix and maintenance release:
@@ -9,8 +9,8 @@ This is a minor bug fix and maintenance release:
 - Software renderer: Fixed a reported crash if the engine is compiled
   with certain Visual Studio versions (bug #62.)
 
-- Software renderer: Fixed sky scaling issues. (fix found in 'ToChriS'
-  quake source port.)
+- Software renderer: Fixed sky scaling issues, thanks to Szilard Biro.
+ (fix found in 'ToChriS' quake source.)
 
 - Hexenworld server: Added "-protocol x" command line option to force
   the server to use a specific protocol (25 or 26), if so required.
@@ -24,12 +24,14 @@ This is a minor bug fix and maintenance release:
 - Windows: Visual Studio builds no longer require yasm or nasm. Tested
   compilation using VS2015-update/2.
 
+- DOS, PCI sound driver: Updates, more Intel HDA chipsets recognized.
+
 - DOS, 3dfx opengl: Macronix (MX86251) variants of Voodoo Rush boards
-  are now functional. Further updates/fixes to opengl and glide drivers.
+  are now functional.
+
+- DOS, 3dfx opengl: Further updates/fixes to opengl and glide drivers.
   Updates to DXE exports so that more opengl driver builds would work
   without requiring an engine recompile.
-
-- DOS, PCI sound driver: Updates, more Intel HDA chipsets recognized.
 
 - All platforms, gameplay: Fixed an issue with the rider bosses Death,
   Pestilence and War in coop mode. (as reported by Spike and Korax.)
