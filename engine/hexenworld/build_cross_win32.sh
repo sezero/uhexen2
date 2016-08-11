@@ -8,6 +8,7 @@ if test "$1" = "strip"; then
 	$STRIPPER server/hwsv.exe	\
 		client/hwcl.exe	\
 		client/glhwcl.exe
+	$STRIPPER client/hwcl-compat.exe
 	exit 0
 fi
 
@@ -31,6 +32,8 @@ $MAKE_CMD -s -C server clean
 
 echo "" && echo "Building HexenWorld Client (Software renderer)"
 $MAKE_CMD -C client hw $* || exit 1
+mv client/hwcl.exe client/hwcl-compat.exe
+$MAKE_CMD -C client hw USE_MGL=yes $* || exit 1
 $MAKE_CMD -s -C client clean
 
 echo "" && echo "Building HexenWorld Client (OpenGL renderer)"

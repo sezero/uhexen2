@@ -5,6 +5,7 @@ UHEXEN2_TOP=../..
 
 if test "$1" = "strip"; then
 	$STRIPPER h2.exe glh2.exe server/h2ded.exe
+	$STRIPPER h2-compat.exe
 	exit 0
 fi
 
@@ -26,7 +27,9 @@ if test "$1" = "all"; then
 	shift
 
 	$MAKE_CMD clean
-	$MAKE_CMD h2 $*  || exit 1
+	$MAKE_CMD h2 $* || exit 1
+	mv h2.exe h2-compat.exe
+	$MAKE_CMD h2 USE_MGL=yes $* || exit 1
 
 	$MAKE_CMD clean
 	$MAKE_CMD glh2 USE_X86_ASM=no $* || exit 1

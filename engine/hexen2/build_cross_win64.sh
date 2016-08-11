@@ -21,6 +21,7 @@ if test "$1" = "h2ded"; then
 	$MAKE_CMD -C server $* || exit 1
 	exit 0
 fi
+
 if test "$1" = "all"; then
 	shift
 
