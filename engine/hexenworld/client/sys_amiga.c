@@ -463,6 +463,8 @@ void Sys_ErrorMessage(const char *string)
 {
 	struct EasyStruct es;
 
+	if (!IntuitionBase) return;
+
 	es.es_StructSize = sizeof(es);
 	es.es_Flags = 0;
 	es.es_Title = (STRPTR) ENGINE_NAME " error";
