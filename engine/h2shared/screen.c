@@ -337,7 +337,7 @@ static float AdaptFovx (float fov_x, float width, float height)
 #endif
 #ifdef PLATFORM_AMIGAOS3
 	if (vid.noadapt)
-		return fov_x;		/* not for AmigaOS native chipset modes. */
+		return fov_x;		/* not for Amiga native chipset modes */
 #endif
 	if (!scr_fov_adapt.integer)
 		return fov_x;
