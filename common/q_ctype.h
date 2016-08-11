@@ -71,6 +71,11 @@ static inline int q_isspace(int c)
 	return 0;
 }
 
+static inline int q_isgraph(int c)
+{
+	return (c > 0x20 && c <= 0x7e);
+}
+
 static inline int q_isprint(int c)
 {
 	return (c >= 0x20 && c <= 0x7e);
@@ -91,4 +96,4 @@ static inline int q_toupper(int c)
 	return ((q_islower(c)) ? (c & ~('a' - 'A')) : c);
 }
 
-#endif	/* Q_CTYPE_H */
+#endif /* Q_CTYPE_H */
