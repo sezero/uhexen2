@@ -1388,34 +1388,6 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p
 	}
 }
 
-#if 0
-static void Draw_CharToConback (int num, byte *dest)
-{
-	int		row, col;
-	byte	*source;
-	int		drawline;
-	int		x;
-
-	row = num>>5;
-	col = num&31;
-	source = draw_chars + (row<<11) + (col<<3);
-
-	drawline = 8;
-
-	while (drawline--)
-	{
-		for (x = 0; x < 8; x++)
-		{
-			if (source[x])
-				dest[x] = 0x60 + source[x];
-		}
-
-		source += 256;
-		dest += 320;
-	}
-}
-#endif
-
 /*
 ================
 Draw_ConsoleBackground
@@ -1454,13 +1426,13 @@ void Draw_ConsoleBackground (int lines)
 	if (r_pixbytes == 1)
 	{
 		byte *dest = vid.conbuffer;
-		fstep = 320 * 0x10000 / vid.conwidth;
+		fstep = conback->width * 0x10000 / vid.conwidth;
 
 		for (y = 0; y < lines; y++, dest += vid.conrowbytes)
 		{
-			v = (vid.conheight - lines + y)*200/vid.conheight;
-			src = conback->data + v*320;
-			if (vid.conwidth == 320 && trans_level == 0)
+			v = (vid.conheight - lines + y)* conback->height / vid.conheight;
+			src = conback->data + v * conback->width;
+			if (vid.conwidth == conback->width && trans_level == 0)
 			{
 				memcpy (dest, src, vid.conwidth);
 				continue;
@@ -1513,14 +1485,14 @@ void Draw_ConsoleBackground (int lines)
 	else /* r_pixbytes == 2 */
 	{
 		unsigned short *dest = (unsigned short *)vid.conbuffer;
-		fstep = 320 * 0x10000 / vid.conwidth;
+		fstep = conback->width * 0x10000 / vid.conwidth;
 
 		for (y = 0; y < lines; y++, dest += (vid.conrowbytes / 2))
 		{
 		// FIXME: pre-expand to native format?
 		// FIXME: does the endian switching go away in production?
-			v = (vid.conheight - lines + y)*200/vid.conheight;
-			src = conback->data + v*320;
+			v = (vid.conheight - lines + y) * conback->height / vid.conheight;
+			src = conback->data + v * conback->width;
 			f = 0;
 		// FIXME: transparency bits are missing
 			for (x = 0; x < (int)vid.conwidth; x += 4)
@@ -1542,7 +1514,7 @@ void Draw_ConsoleBackground (int lines)
 #if defined(H2W)
 	if (cls.download)
 		return;
-#endif	/* H2W */
+#endif
 
 	Draw_ConsoleVersionInfo (lines);
 }

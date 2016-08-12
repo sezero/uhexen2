@@ -12,6 +12,10 @@ This is a minor bug fix and maintenance release:
 - Software renderer: Fixed sky scaling issues, thanks to Szilard Biro.
  (fix found in 'ToChriS' quake source.)
 
+- Software renderer: Fixed scaling console backgrounds whose dimensions
+  are not the default 320x200. One such example is the "Game of Tomes"
+  mod which has a 1024x768 conback.lmp.
+
 - Hexenworld server: Added "-protocol x" command line option to force
   the server to use a specific protocol (25 or 26), if so required.
 
