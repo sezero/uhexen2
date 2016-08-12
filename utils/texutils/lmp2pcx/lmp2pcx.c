@@ -358,10 +358,10 @@ static unsigned char *LoadLMP (const char *filename, int idx)
 	LoadFile (filename, &lmpdata);
 	image_width = LittleLong(((int *)lmpdata)[0]);
 	image_height = LittleLong(((int *)lmpdata)[1]);
-	if (image_width < 0 || image_height < 0 || image_width > 512 || image_height > 512)
+	if (image_width <= 0 || image_height <= 0)
 	{
 		free (lmpdata);
-		printf ("%s: \"%s\" is not a %s file\n", __thisfunc__, filename, convertdata[idx].datatype);
+		printf ("%s: \"%s\" [%dx%d] is not a %s file\n", __thisfunc__, filename, image_width, image_height, convertdata[idx].datatype);
 		return NULL;
 	}
 	data = (unsigned char *) SafeMalloc (image_width*image_height);
@@ -444,11 +444,10 @@ static unsigned char *LoadMIP (const char *filename, int idx)
 	}
 	image_width = LittleLong(((int *)mipdata)[4+shift]);
 	image_height = LittleLong(((int *)mipdata)[5+shift]);
-	if (image_width < 0 || image_height < 0 || image_width > 512 || image_height > 512 ||
-						(image_width & 15) || (image_height & 15) )
+	if (image_width <= 0 || image_height <= 0 || (image_width & 15) || (image_height & 15))
 	{
 		free (mipdata);
-		printf ("%s: \"%s\" is not a %s file\n", __thisfunc__, filename, convertdata[idx].datatype);
+		printf ("%s: \"%s\" [%dx%d] is not a %s file\n", __thisfunc__, filename, image_width, image_height, convertdata[idx].datatype);
 		return NULL;
 	}
 	data = (unsigned char *) SafeMalloc (image_width*image_height);
@@ -600,9 +599,9 @@ static void ConvertWAD (const char *filename, int idx)
 		//	printf ("encountered lump type '%s' named \"%s\"\n", "QPIC", lump->name);
 			width = LittleLong(((int *)data)[0]);
 			height = LittleLong(((int *)data)[1]);
-			if (width < 0 || height < 0 || width > 512 || height > 512)
+			if (width <= 0 || height <= 0)
 			{
-				printf("\"%s\" is not a valid qpic\n", lump->name);
+				printf("\"%s\" [%dx%d] is not a valid qpic\n", lump->name, width, height);
 				continue;
 			}
 			wad_cleanname (lump->name, ptr);
@@ -624,9 +623,9 @@ static void ConvertWAD (const char *filename, int idx)
 		//	printf ("encountered lump type '%s' named \"%s\"\n", "MIPTEX", lump->name);
 			width = LittleLong(((int *)data)[4]);
 			height = LittleLong(((int *)data)[5]);
-			if (width < 0 || height < 0 || width > 512 || height > 512)
+			if (width <= 0 || height <= 0)
 			{
-				printf ("\"%s\" is not a valid %s\n", lump->name, "MIPTEX");
+				printf ("\"%s\" [%dx%d] is not a valid %s\n", lump->name, width, height, "MIPTEX");
 				continue;
 			}
 			wad_cleanname (lump->name, ptr);
