@@ -14,14 +14,13 @@ Known issues:
   To solve the problem: either recompile SDL to incorporate the fix, or
   unset XMODIFIERS to work around it.
 
-- h2ded (hexen2 dedicated server), coop mode issues:
+- h2ded (dedicated server) coop mode issues: sf.net/p/uhexen2/bugs/52/
   - Skull wizards may become non-solid and invincible after they blink
     away and come back.
   - Dark Pharaoh's staff would disappear after pushing the switch that
     lowers it.
   - Loading saves may often result in bugs.
   Issues don't seem to happen with "h2 -dedicated".  To be analyzed.
-  [bug #52: http://sf.net/p/uhexen2/bugs/52/ ]
 
 - HexenWorld: Coop mode is broken. Known problem since Raven's latest
   beta versions.
