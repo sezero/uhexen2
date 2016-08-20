@@ -628,8 +628,7 @@ static void IN_StartupJoystick (void)
 	{
 		joy_available = 0;
 
-		while (true) // this might be dangerous
-		//while (joy_available < 10)
+		while (joy_available < 4)
 		{
 			joyflag = ReadJoyPort(PortIndex(joy_available));
 			if ((joyflag & JP_TYPE_MASK) == JP_TYPE_NOTAVAIL)
