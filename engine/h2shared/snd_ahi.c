@@ -39,12 +39,6 @@
 #include <SDI/SDI_hook.h>
 #endif
 
-#if defined(__AROS__) || defined(__MORPHOS__)
-#define BUFFER_SIZE 16384
-#else
-#define BUFFER_SIZE 2048
-#endif
-
 static char s_ahi_driver[] = "AHI audio system";
 
 struct Library *AHIBase;
@@ -101,7 +95,7 @@ HOOKPROTO(EffectFunc, IPTR, struct AHIAudioCtrl *aac, struct AHIEffChannelInfo *
 static qboolean S_AHI_Init(dma_t *dma)
 {
 	ULONG channels, speed, bits;
-	ULONG r;
+	ULONG r, samples;
 	struct AHISampleInfo sample;
 	char modename[64];
 
@@ -148,19 +142,34 @@ static qboolean S_AHI_Init(dma_t *dma)
 
 					if (bits == 8 || bits == 16)
 					{
+						unsigned buffer_size;
 						if (channels > desired_channels)
 							channels = desired_channels;
 						if (bits > desired_bits)
 							bits = desired_bits;
 
+						/* pick a buffer size that is a power of 2 (by masking off low bits) */
+						buffer_size = r = (ULONG)(speed * 0.15f);
+						while (buffer_size & (buffer_size-1))
+							buffer_size &= (buffer_size-1);
+						/* then check if it is the nearest power of 2 and bump it up if not */
+						if (r - buffer_size >= buffer_size >> 1)
+							buffer_size *= 2;
+						buffer_size *= channels;
+						#ifndef PLATFORM_AMIGAOS3
+						buffer_size *= 4; /* for no stutters with crappy drivers -- bszili. */
+						#endif
+						samples = buffer_size;
+						buffer_size *= (bits / 8);
+
 						shm->speed = speed;
 						shm->samplebits = bits;
 						shm->signed8 = (bits == 8); /* AHI does signed 8 bit. */
 						shm->channels = channels;
-						shm->samples = BUFFER_SIZE*(speed/11025);
+						shm->samples = samples;
 						shm->submission_chunk = 1;
 
-						ad->samplebuffer = AllocVec(BUFFER_SIZE*(speed/11025)*(bits/8)*channels, MEMF_ANY|MEMF_CLEAR);
+						ad->samplebuffer = AllocVec(buffer_size, MEMF_ANY|MEMF_CLEAR);
 						if (ad->samplebuffer)
 						{
 							shm->buffer = (unsigned char *) ad->samplebuffer;
@@ -179,7 +188,7 @@ static qboolean S_AHI_Init(dma_t *dma)
 							}
 
 							sample.ahisi_Address = ad->samplebuffer;
-							sample.ahisi_Length = (BUFFER_SIZE*(speed/11025)*(bits/8))/AHI_SampleFrameSize(sample.ahisi_Type);
+							sample.ahisi_Length = samples /channels;/* buffer_size/AHI_SampleFrameSize(sample.ahisi_Type) */
 
 							r = AHI_LoadSound(0, AHIST_DYNAMICSAMPLE, &sample, ad->audioctrl);
 							if (r == 0)
@@ -207,7 +216,7 @@ static qboolean S_AHI_Init(dma_t *dma)
 									ad->EffectHook.h_Data = ad;
 									AHI_SetEffect(&ad->aci, ad->audioctrl);
 
-									Con_Printf("Using AHI mode \"%s\"\n", modename);
+									Con_Printf("AHI mode \"%s\", %u bytes buffer\n", modename, buffer_size);
 									return true;
 								}
 							}
