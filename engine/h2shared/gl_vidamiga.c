@@ -155,6 +155,7 @@ GLContext *__tglContext = NULL;
 static qboolean contextinit = false;
 #elif defined(__AMIGA__) && defined(REFGL_MINIGL)
 static int lockmode = MGL_LOCK_MANUAL;
+static cvar_t	gl_lockmode = {"gl_lockmode", "manual", CVAR_ARCHIVE};
 #elif defined(__AMIGA__) && defined(REFGL_AMESA)
 struct Library *CyberGfxBase = NULL;
 static AmigaMesaContext context = NULL;
@@ -189,9 +190,6 @@ static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", CVAR_ARCHIVE};
 static cvar_t	vid_config_swx = {"vid_config_swx", "320", CVAR_ARCHIVE};
 static cvar_t	vid_config_swy = {"vid_config_swy", "240", CVAR_ARCHIVE};
 static cvar_t	vid_config_mon = {"vid_config_mon", "0", CVAR_ARCHIVE};
-#if defined(__AMIGA__) && defined(REFGL_MINIGL)
-static cvar_t	gl_lockmode = {"gl_lockmode", "manual", CVAR_ARCHIVE};
-#endif
 
 byte		globalcolormap[VID_GRADES*256];
 float		RTint[256], GTint[256], BTint[256];
@@ -499,12 +497,6 @@ static qboolean VID_SetMode (int modenum)
 #elif defined(__AMIGA__) && defined(REFGL_MINIGL)
 	if (!mglCreateContext(0,0,vid.width,vid.height))
 		goto fail;
-	if (!q_strcasecmp(gl_lockmode.string, "smart"))
-		lockmode = MGL_LOCK_SMART;
-	else if (!q_strcasecmp(gl_lockmode.string, "auto"))
-		lockmode = MGL_LOCK_AUTOMATIC;
-	else
-		lockmode = MGL_LOCK_MANUAL;
 	mglLockMode(lockmode);
 	window = MGLGetWindowHandle(mini_CurrentContext);
 	ModifyIDCMP(window, IDCMP_CLOSEWINDOW | IDCMP_ACTIVEWINDOW | IDCMP_INACTIVEWINDOW);
@@ -1493,6 +1485,27 @@ static void VID_NumModes_f (void)
 	Con_Printf ("%d video modes in current list\n", *nummodes);
 }
 
+#if defined(__AMIGA__) && defined(REFGL_MINIGL)
+static void gl_lockmode_f (cvar_t *var)
+{
+	if (!q_strcasecmp(var->string, "smart"))
+		lockmode = MGL_LOCK_SMART;
+	else if (!q_strcasecmp(var->string, "auto"))
+		lockmode = MGL_LOCK_AUTOMATIC;
+	else if (!q_strcasecmp(var->string, "manual"))
+		lockmode = MGL_LOCK_MANUAL;
+	else {
+		Con_Printf("Bad lock mode %s, setting to manual\n", var->string);
+		lockmode = MGL_LOCK_MANUAL;
+		Cvar_SetQuick(var, "manual");
+		return;
+	}
+	if (mini_CurrentContext) {
+		mglLockMode(lockmode);
+	}
+}
+#endif
+
 /*
 ===================
 VID_Init
@@ -1528,9 +1541,6 @@ void	VID_Init (const unsigned char *palette)
 	Cvar_RegisterVariable (&gl_texture_NPOT);
 	Cvar_RegisterVariable (&gl_lightmapfmt);
 	Cvar_RegisterVariable (&gl_multitexture);
-#if defined(__AMIGA__) && defined(REFGL_MINIGL)
-	Cvar_RegisterVariable (&gl_lockmode);
-#endif
 
 	Cmd_AddCommand ("vid_listmodes", VID_ListModes_f);
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
@@ -1542,6 +1552,8 @@ void	VID_Init (const unsigned char *palette)
 
 #if defined(REFGL_MINIGL)
 	mini_CurrentContext = NULL;/* should I do this? */
+	Cvar_RegisterVariable (&gl_lockmode);
+	Cvar_SetCallback (&gl_lockmode, gl_lockmode_f);
 	if (MGLInit() == GL_FALSE) {
 		Sys_Error ("Couldn't initialize MiniGL");
 	}
