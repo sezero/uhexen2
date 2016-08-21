@@ -189,6 +189,9 @@ static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", CVAR_ARCHIVE};
 static cvar_t	vid_config_swx = {"vid_config_swx", "320", CVAR_ARCHIVE};
 static cvar_t	vid_config_swy = {"vid_config_swy", "240", CVAR_ARCHIVE};
 static cvar_t	vid_config_mon = {"vid_config_mon", "0", CVAR_ARCHIVE};
+#if defined(__AMIGA__) && defined(REFGL_MINIGL)
+static cvar_t	gl_lockmode = {"gl_lockmode", "manual", CVAR_ARCHIVE};
+#endif
 
 byte		globalcolormap[VID_GRADES*256];
 float		RTint[256], GTint[256], BTint[256];
@@ -496,6 +499,12 @@ static qboolean VID_SetMode (int modenum)
 #elif defined(__AMIGA__) && defined(REFGL_MINIGL)
 	if (!mglCreateContext(0,0,vid.width,vid.height))
 		goto fail;
+	if (!q_strcasecmp(gl_lockmode.string, "smart"))
+		lockmode = MGL_LOCK_SMART;
+	else if (!q_strcasecmp(gl_lockmode.string, "auto"))
+		lockmode = MGL_LOCK_AUTOMATIC;
+	else
+		lockmode = MGL_LOCK_MANUAL;
 	mglLockMode(lockmode);
 	window = MGLGetWindowHandle(mini_CurrentContext);
 	ModifyIDCMP(window, IDCMP_CLOSEWINDOW | IDCMP_ACTIVEWINDOW | IDCMP_INACTIVEWINDOW);
@@ -1498,6 +1507,9 @@ void	VID_Init (const unsigned char *palette)
 				"vid_config_glx",
 				"vid_config_gly",
 				"vid_config_consize",
+#if defined(__AMIGA__) && defined(REFGL_MINIGL)
+				"gl_lockmode",
+#endif
 				"gl_texture_NPOT",
 				"gl_multitexture",
 				"gl_lightmapfmt" };
@@ -1516,6 +1528,9 @@ void	VID_Init (const unsigned char *palette)
 	Cvar_RegisterVariable (&gl_texture_NPOT);
 	Cvar_RegisterVariable (&gl_lightmapfmt);
 	Cvar_RegisterVariable (&gl_multitexture);
+#if defined(__AMIGA__) && defined(REFGL_MINIGL)
+	Cvar_RegisterVariable (&gl_lockmode);
+#endif
 
 	Cmd_AddCommand ("vid_listmodes", VID_ListModes_f);
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
