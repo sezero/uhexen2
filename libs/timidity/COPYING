@@ -1,7 +1,11 @@
-Please note that the included source from TiMidity, is also licensed
- under the following terms (GNU LGPL), but can also be used separately
- under the GNU GPL, or the Perl Artistic License. Those licensing
- terms are not reprinted here, but can be found on the web easily.
+libTiMidity is licensed under the terms of the GNU Lesser General Public
+License:  it is inlined below.
+
+Note that the included TiMidity source, based on timidity-0.2i, was
+originally licensed under the GPL, but the author extended it so it
+can also be used separately under the GNU LGPL or the Perl Artistic
+License: see the notice by Tuukka Toivonen as it appears on the web
+at http://ieee.uwaterloo.ca/sca/www.cgs.fi/tt/timidity/ .
 
 
 -------------------

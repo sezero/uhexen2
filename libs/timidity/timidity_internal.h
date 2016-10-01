@@ -1,6 +1,19 @@
 /* libTiMidity -- MIDI to WAVE converter library
+ * libTiMidity is licensed under the terms of the GNU Lesser General
+ * Public License: see COPYING for details.
  * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
  * Copyright (C) 2004 Konstantin Korikov <lostclus@ua.fm>
+ *
+ * Note that the included TiMidity source, based on timidity-0.2i, was
+ * originally licensed under the GPL, but the author extended it so it
+ * can also be used separately under the GNU LGPL or the Perl Artistic
+ * License: see the notice by Tuukka Toivonen as it appears on the web
+ * at http://ieee.uwaterloo.ca/sca/www.cgs.fi/tt/timidity/ .
+ */
+
+/*
+ * TiMidity -- Experimental MIDI to WAVE converter
+ * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,9 +38,15 @@
 #undef  TIMI_NAMESPACE
 #define TIMI_NAMESPACE(x) _timi_ ## x
 
+#if defined(__OS2__) || defined(__EMX__)
+#include <os2.h>
+#endif
 #include "timidity.h"
 #include "options.h"
 
+#if defined(_MSC_VER) && !defined(__cplusplus) && !defined(HAVE_CONFIG_H)
+#define inline __inline
+#endif
 #ifndef HAVE_CONFIG_H
 #include "q_endian.h" /*"timi_endian.h"*/
 #endif

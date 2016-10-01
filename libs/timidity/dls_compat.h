@@ -1,16 +1,15 @@
+/* dls_compat.h - Windows compat defs for libtimidity DLS code, based on MinGW headers.
+ *
+ * This file has no copyright assigned and is placed in the Public Domain.
+ * It is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY. ALL WARRANTIES, EXPRESSED OR IMPLIED, ARE HEREBY DISCLAIMED.
+ * This includes, but is not limited to, warranties of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.
+ */
 #ifndef DLS_COMPAT_H
 #define DLS_COMPAT_H
-/* Some typedefs so the public dls headers don't need to be modified */
 
 #define FAR /* */
-
-typedef uint8  BYTE;
-typedef sint16 SHORT;
-typedef uint16 USHORT;
-typedef uint16 WORD;
-typedef sint32 LONG;
-typedef uint32 ULONG;
-typedef uint32 DWORD;
 
 #define mmioFOURCC(A, B, C, D) \
   ( (uint32)(A) | ((uint32)(B) << 8) | ((uint32)(C) << 16) | ((uint32)(D) << 24) )
@@ -43,5 +42,9 @@ typedef struct _PCMWAVEFORMAT {
   uint16 wBitsPerSample;
 } PCMWAVEFORMAT;
 #pragma pack(pop)
+
+/* make sure that the two structures above are packed correctly: */
+typedef int _chk_WAVEFORMAT[2*((int)sizeof(WAVEFORMAT) == 14) -1];
+typedef int _chk_PCMWAVEFORMAT[2*((int)sizeof(PCMWAVEFORMAT) == 16) -1];
 
 #endif /* DLS_COMPAT_H */

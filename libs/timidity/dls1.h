@@ -123,30 +123,30 @@
 #define CONN_TRN_CONCAVE           0x0001
 
 typedef struct _DLSID {
-  ULONG    ulData1;
-  USHORT   usData2;
-  USHORT   usData3;
-  BYTE     abData4[8];
+  uint32   ulData1;
+  uint16   usData2;
+  uint16   usData3;
+  uint8    abData4[8];
 } DLSID, FAR *LPDLSID;
 
 typedef struct _DLSVERSION {
-  DWORD    dwVersionMS;
-  DWORD    dwVersionLS;
+  uint32   dwVersionMS;
+  uint32   dwVersionLS;
 } DLSVERSION, FAR *LPDLSVERSION;
 
 typedef struct _CONNECTION {
-  USHORT   usSource;
-  USHORT   usControl;
-  USHORT   usDestination;
-  USHORT   usTransform;
-  LONG     lScale;
+  uint16   usSource;
+  uint16   usControl;
+  uint16   usDestination;
+  uint16   usTransform;
+  sint32   lScale;
 } CONNECTION, FAR *LPCONNECTION;
 
 /* Level 1 Articulation Data */
 
 typedef struct _CONNECTIONLIST {
-  ULONG    cbSize;            /* size of the connection list structure */
-  ULONG    cConnections;      /* count of connections in the list */
+  uint32   cbSize;            /* size of the connection list structure */
+  uint32   cConnections;      /* count of connections in the list */
 } CONNECTIONLIST, FAR *LPCONNECTIONLIST;
 
 
@@ -155,15 +155,15 @@ typedef struct _CONNECTIONLIST {
  */
 
 typedef struct _RGNRANGE {
-  USHORT usLow;
-  USHORT usHigh;
+  uint16 usLow;
+  uint16 usHigh;
 } RGNRANGE, FAR * LPRGNRANGE;
 
 #define F_INSTRUMENT_DRUMS      0x80000000
 
 typedef struct _MIDILOCALE {
-  ULONG ulBank;
-  ULONG ulInstrument;
+  uint32 ulBank;
+  uint32 ulInstrument;
 } MIDILOCALE, FAR *LPMIDILOCALE;
 
 /*
@@ -176,19 +176,19 @@ typedef struct _MIDILOCALE {
 typedef struct _RGNHEADER {
   RGNRANGE RangeKey;            /* Key range  */
   RGNRANGE RangeVelocity;       /* Velocity Range  */
-  USHORT   fusOptions;          /* Synthesis options for this range */
-  USHORT   usKeyGroup;          /* Key grouping for non simultaneous play */
+  uint16   fusOptions;          /* Synthesis options for this range */
+  uint16   usKeyGroup;          /* Key grouping for non simultaneous play */
                                 /* 0 = no group, 1 up is group */
                                 /* for Level 1 only groups 1-15 are allowed */
 } RGNHEADER, FAR *LPRGNHEADER;
 
 typedef struct _INSTHEADER {
-  ULONG      cRegions;          /* Count of regions in this instrument */
+  uint32     cRegions;          /* Count of regions in this instrument */
   MIDILOCALE Locale;            /* Intended MIDI locale of this instrument */
 } INSTHEADER, FAR *LPINSTHEADER;
 
 typedef struct _DLSHEADER {
-  ULONG      cInstruments;      /* Count of instruments in the collection */
+  uint32     cInstruments;      /* Count of instruments in the collection */
 } DLSHEADER, FAR *LPDLSHEADER;
 
 /*
@@ -205,21 +205,21 @@ typedef struct _DLSHEADER {
 #define F_WAVELINK_PHASE_MASTER  0x0001
 
 typedef struct _WAVELINK { /* any paths or links are stored right after struct */
-  USHORT   fusOptions;     /* options flags for this wave */
-  USHORT   usPhaseGroup;   /* Phase grouping for locking channels */
-  ULONG    ulChannel;      /* channel placement */
-  ULONG    ulTableIndex;   /* index into the wave pool table, 0 based */
+  uint16   fusOptions;     /* options flags for this wave */
+  uint16   usPhaseGroup;   /* Phase grouping for locking channels */
+  uint32   ulChannel;      /* channel placement */
+  uint32   ulTableIndex;   /* index into the wave pool table, 0 based */
 } WAVELINK, FAR *LPWAVELINK;
 
 #define POOL_CUE_NULL  0xffffffffl
 
 typedef struct _POOLCUE {
-  ULONG    ulOffset;       /* Offset to the entry in the list */
+  uint32   ulOffset;       /* Offset to the entry in the list */
 } POOLCUE, FAR *LPPOOLCUE;
 
 typedef struct _POOLTABLE {
-  ULONG    cbSize;            /* size of the pool table structure */
-  ULONG    cCues;             /* count of cues in the list */
+  uint32   cbSize;            /* size of the pool table structure */
+  uint32   cCues;             /* count of cues in the list */
 } POOLTABLE, FAR *LPPOOLTABLE;
 
 /*
@@ -230,12 +230,12 @@ typedef struct _POOLTABLE {
 #define F_WSMP_NO_COMPRESSION    0x0002l
 
 typedef struct _rwsmp {
-  ULONG   cbSize;
-  USHORT  usUnityNote;         /* MIDI Unity Playback Note */
-  SHORT   sFineTune;           /* Fine Tune in log tuning */
-  LONG    lAttenuation;        /* Overall Attenuation to be applied to data */
-  ULONG   fulOptions;          /* Flag options  */
-  ULONG   cSampleLoops;        /* Count of Sample loops, 0 loops is one shot */
+  uint32  cbSize;
+  uint16  usUnityNote;         /* MIDI Unity Playback Note */
+  sint16  sFineTune;           /* Fine Tune in log tuning */
+  sint32  lAttenuation;        /* Overall Attenuation to be applied to data */
+  uint32  fulOptions;          /* Flag options  */
+  uint32  cSampleLoops;        /* Count of Sample loops, 0 loops is one shot */
 } WSMPL, FAR *LPWSMPL;
 
 
@@ -246,10 +246,10 @@ typedef struct _rwsmp {
 #define WLOOP_TYPE_FORWARD   0
 
 typedef struct _rloop {
-  ULONG cbSize;
-  ULONG ulType;              /* Loop Type */
-  ULONG ulStart;             /* Start of loop in samples */
-  ULONG ulLength;            /* Length of loop in samples */
+  uint32 cbSize;
+  uint32 ulType;              /* Loop Type */
+  uint32 ulStart;             /* Start of loop in samples */
+  uint32 ulLength;            /* Length of loop in samples */
 } WLOOP, FAR *LPWLOOP;
 
 #endif /*_INC_DLS1 */

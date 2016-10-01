@@ -1,3 +1,13 @@
+/* libTiMidity is licensed under the terms of the GNU Lesser General
+ * Public License: see COPYING for details.
+ *
+ * Note that the included TiMidity source, based on timidity-0.2i, was
+ * originally licensed under the GPL, but the author extended it so it
+ * can also be used separately under the GNU LGPL or the Perl Artistic
+ * License: see the notice by Tuukka Toivonen as it appears on the web
+ * at http://ieee.uwaterloo.ca/sca/www.cgs.fi/tt/timidity/ .
+ */
+
 /*
  * TiMidity -- Experimental MIDI to WAVE converter
  * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
@@ -466,14 +476,12 @@ int mid_init_no_config(void)
 
 int mid_init(const char *config_file)
 {
-  int rc;
-
-  rc = mid_init_no_config();
+  int rc = mid_init_no_config();
   if (rc != 0)
       return rc;
 
   if (config_file == NULL || *config_file == '\0')
-      return init_with_config(CONFIG_FILE);
+      return init_with_config(TIMIDITY_CFG);
 
   return init_with_config(config_file);
 }

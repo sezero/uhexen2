@@ -2,7 +2,7 @@
  * MIDI streaming music support using Timidity library.
  *
  * libTiMidity v0.2.0 or newer required:
- * https://github.com/sezero/libtimidity/ (local copy included under libs/)
+ * https://sf.net/p/libtimidity/ (local copy included under libs/)
  *
  * Copyright (C) 2010-2015 O.Sezer <sezero@users.sourceforge.net>
  *

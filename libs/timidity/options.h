@@ -1,3 +1,13 @@
+/* libTiMidity is licensed under the terms of the GNU Lesser General
+ * Public License: see COPYING for details.
+ *
+ * Note that the included TiMidity source, based on timidity-0.2i, was
+ * originally licensed under the GPL, but the author extended it so it
+ * can also be used separately under the GNU LGPL or the Perl Artistic
+ * License: see the notice by Tuukka Toivonen as it appears on the web
+ * at http://ieee.uwaterloo.ca/sca/www.cgs.fi/tt/timidity/ .
+ */
+
 /*
  * TiMidity -- Experimental MIDI to WAVE converter
  * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
@@ -87,7 +97,9 @@
 #define MAX_AMPLIFICATION 800
 
 /* The TiMidity configuration file */
-#define CONFIG_FILE "timidity.cfg"
+#ifndef TIMIDITY_CFG
+#define TIMIDITY_CFG "timidity.cfg"
+#endif
 
 /* These affect general volume */
 #define GUARD_BITS 3
@@ -112,7 +124,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#if defined(MAXPATHLEN) /* <sys/param.h> */
+#if defined(MAXPATHLEN) /* from sys/param.h */
 #define TIM_MAXPATH MAXPATHLEN
 #elif defined(PATH_MAX)
 #define TIM_MAXPATH PATH_MAX

@@ -1,3 +1,13 @@
+/* libTiMidity is licensed under the terms of the GNU Lesser General
+ * Public License: see COPYING for details.
+ *
+ * Note that the included TiMidity source, based on timidity-0.2i, was
+ * originally licensed under the GPL, but the author extended it so it
+ * can also be used separately under the GNU LGPL or the Perl Artistic
+ * License: see the notice by Tuukka Toivonen as it appears on the web
+ * at http://ieee.uwaterloo.ca/sca/www.cgs.fi/tt/timidity/ .
+ */
+
 /*
  * TiMidity -- Experimental MIDI to WAVE converter
  * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
@@ -43,7 +53,11 @@ void mid_dlspatches_free (MidDLSPatches *data)
 #ifdef _WIN32
 #include <windows.h>
 #ifndef DEFINE_GUID
-#include <basetyps.h> /* guiddef.h not in all SDKs -- e.g. mingw.org */
+#ifdef __LCC__
+#include <guiddef.h>
+#else
+#include <basetyps.h> /* guiddef.h not in all SDKs, e.g. mingw.org */
+#endif
 #endif
 #include <mmsystem.h>
 #else /* not-windows */
@@ -741,9 +755,9 @@ static sint32 calc_rate(MidSong *song, int diff, int sample_rate, double msec)
     return (sint32)rate;
 }
 
-static int load_connection(ULONG cConnections, CONNECTION *artList, USHORT destination)
+static int load_connection(uint32 cConnections, CONNECTION *artList, uint16 destination)
 {
-  ULONG i;
+  uint32 i;
   int value = 0;
   for (i = 0; i < cConnections; ++i) {
     CONNECTION *conn = &artList[i];

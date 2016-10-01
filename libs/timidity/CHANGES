@@ -7,6 +7,23 @@ uHexen2-specific changes:
 
 ------------------------------------------------------------------------
 
+
+Changes by libtimidity-0.2.1:
+-----------------------------
+
+* new --with-timidty-cfg=FILE configury option to specify the full path
+  of timidity.cfg.  the default is "timidity.cfg".  if building without
+  configury and a config.h, you can always edit options.h to change the
+  value of TIMITIDY_CFG macro.
+* fixed 8 bit output in test programs (use U8 format, not S8), along
+  with some other minor issues.
+* fixed some minor portability issues.
+* added project files and standalone makefiles for windows and mac os x.
+* fixed copyright/license mistakes in some files, license clarification.
+* added standalone makefiles for less common operating systems e.g. dos,
+  os/2, morphos, aros, and amigaos.
+
+
 Changes by libtimidity-0.2.0:
 -----------------------------
 

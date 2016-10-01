@@ -1,8 +1,20 @@
-/*
- * libTiMidity -- MIDI to WAVE converter library
+/* libTiMidity -- MIDI to WAVE converter library
+ * libTiMidity is licensed under the terms of the GNU Lesser General
+ * Public License: see COPYING for details.
  * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
  * Copyright (C) 2004 Konstantin Korikov <lostclus@ua.fm>
  * Copyright (C) 2014 O.Sezer <sezero@users.sourceforge.net>
+ *
+ * Note that the included TiMidity source, based on timidity-0.2i, was
+ * originally licensed under the GPL, but the author extended it so it
+ * can also be used separately under the GNU LGPL or the Perl Artistic
+ * License: see the notice by Tuukka Toivonen as it appears on the web
+ * at http://ieee.uwaterloo.ca/sca/www.cgs.fi/tt/timidity/ .
+ */
+
+/*
+ * TiMidity -- Experimental MIDI to WAVE converter
+ * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +44,7 @@ extern "C" {
 
 #define LIBTIMIDITY_VERSION_MAJOR 0L
 #define LIBTIMIDITY_VERSION_MINOR 2L
-#define LIBTIMIDITY_PATCHLEVEL    0L
+#define LIBTIMIDITY_PATCHLEVEL    1L
 
 #define LIBTIMIDITY_VERSION               \
         ((LIBTIMIDITY_VERSION_MAJOR<<16)| \
@@ -52,12 +64,19 @@ extern "C" {
 
 /* Core Library Types
  */
+#ifndef __amigaos4__
   typedef unsigned char uint8;
   typedef signed char sint8;
   typedef unsigned short uint16;
   typedef signed short sint16;
   typedef unsigned int uint32;
   typedef signed int sint32;
+#else
+#include <exec/types.h>
+  typedef int8  sint8;
+  typedef int16 sint16;
+  typedef int32 sint32;
+#endif
 
   typedef size_t (*MidIStreamReadFunc) (void *ctx, void *ptr, size_t size, size_t nmemb);
   typedef int    (*MidIStreamSeekFunc) (void *ctx, long offset, int whence);

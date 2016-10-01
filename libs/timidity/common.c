@@ -1,3 +1,13 @@
+/* libTiMidity is licensed under the terms of the GNU Lesser General
+ * Public License: see COPYING for details.
+ *
+ * Note that the included TiMidity source, based on timidity-0.2i, was
+ * originally licensed under the GPL, but the author extended it so it
+ * can also be used separately under the GNU LGPL or the Perl Artistic
+ * License: see the notice by Tuukka Toivonen as it appears on the web
+ * at http://ieee.uwaterloo.ca/sca/www.cgs.fi/tt/timidity/ .
+ */
+
 /*
  * TiMidity -- Experimental MIDI to WAVE converter
  * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
@@ -16,8 +26,6 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * common.c
  */
 
 #ifdef HAVE_CONFIG_H
@@ -60,7 +68,7 @@ FILE *timi_openfile(const char *name)
 
   /* First try the given name */
   DEBUG_MSG("Trying to open %s\n", name);
-  if ((fp = fopen(name, OPEN_MODE)))
+  if ((fp = fopen(name, OPEN_MODE)) != NULL)
     return fp;
 
   if (!IS_ABSOLUTE_PATH(name))
@@ -83,7 +91,7 @@ FILE *timi_openfile(const char *name)
 	  }
 	strcat(current_filename, name);
 	DEBUG_MSG("Trying to open %s\n", current_filename);
-	if ((fp = fopen(current_filename, OPEN_MODE)))
+	if ((fp = fopen(current_filename, OPEN_MODE)) != NULL)
 	  return fp;
 	plp = plp->next;
     }
