@@ -1242,7 +1242,6 @@
 					../../../oslibs/macosx/codecs/include,
 				);
 				INFOPLIST_FILE = hexen2.plist;
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				"MACOSX_DEPLOYMENT_TARGET[arch=i386]" = 10.4;
@@ -1318,7 +1317,6 @@
 					../../../oslibs/macosx/codecs/include,
 				);
 				INFOPLIST_FILE = hexen2.plist;
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				"MACOSX_DEPLOYMENT_TARGET[arch=i386]" = 10.4;
@@ -1479,7 +1477,6 @@
 					../../../oslibs/macosx/codecs/include,
 				);
 				INFOPLIST_FILE = glhexen2.plist;
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				"MACOSX_DEPLOYMENT_TARGET[arch=i386]" = 10.4;
@@ -1569,7 +1566,6 @@
 					../../../oslibs/macosx/codecs/include,
 				);
 				INFOPLIST_FILE = glhexen2.plist;
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				"MACOSX_DEPLOYMENT_TARGET[arch=i386]" = 10.4;
