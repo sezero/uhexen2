@@ -35,7 +35,7 @@ in the makefiles below.
 +++ Makefile.aos3
 @@ -0,0 +1,27 @@
 +CFLAGS  = -m68020-60 -Wall -DWORDS_BIGENDIAN=1
-+CFLAGS += -O1 -fforce-mem -fforce-addr -fthread-jumps -fcse-follow-jumps -fcse-skip-blocks -fexpensive-optimizations -fregmove
++CFLAGS += -noixemul -O1 -fforce-mem -fforce-addr -fthread-jumps -fcse-follow-jumps -fcse-skip-blocks -fexpensive-optimizations -fregmove
 +CFLAGS += -DNDEBUG
 +CFLAGS += -DFPM_DEFAULT
 +CFLAGS += -DOPT_SPEED=1

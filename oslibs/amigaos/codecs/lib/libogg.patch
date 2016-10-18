@@ -28,7 +28,7 @@
 +++ libogg/src/Makefile.aos3
 @@ -0,0 +1,23 @@
 +INCLUDE = -I../include
-+CFLAGS  = -O2 -m68020-60 -Wall $(INCLUDE)
++CFLAGS  = -noixemul -O2 -m68020-60 -Wall $(INCLUDE)
 +LIBNAME =  libogg.a
 +
 +CC      = m68k-amigaos-gcc
