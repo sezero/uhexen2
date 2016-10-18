@@ -1,4 +1,4 @@
-changes to Tremor (libvorbisidec) to make it build with VBCC
+changes to Tremor (libvorbisidec) to make it build for m68k-amigaos with VBCC and GCC
 
 --- /dev/null
 +++ Tremor/Makefile.vbcc
@@ -78,74 +78,6 @@ changes to Tremor (libvorbisidec) to make it build with VBCC
  #ifdef HAVE_ALLOCA_H
  #  include <alloca.h>
  #endif
---- Tremor-svn-r19427/codebook.c
-+++ Tremor/codebook.c
-@@ -245,9 +245,9 @@ long vorbis_book_decode(codebook *book, 
- long vorbis_book_decodevs_add(codebook *book,ogg_int32_t *a,
- 			      oggpack_buffer *b,int n,int point){
-   if(book->used_entries>0){  
--    int step=n/book->dim;
--    long *entry = (long *)alloca(sizeof(*entry)*step);
--    ogg_int32_t **t = (ogg_int32_t **)alloca(sizeof(*t)*step);
-+    const int step=n/book->dim;
-+    long  entry[step];
-+    ogg_int32_t  *t[step];
-     int i,j,o;
-     int shift=point-book->binarypoint;
-     
---- Tremor-svn-r19427/floor0.c
-+++ Tremor/floor0.c
-@@ -145,7 +145,7 @@ void vorbis_lsp_to_curve(ogg_int32_t *cu
-   int i;
-   int ampoffseti=ampoffset*4096;
-   int ampi=amp;
--  ogg_int32_t *ilsp=(ogg_int32_t *)alloca(m*sizeof(*ilsp));
-+  ogg_int32_t  ilsp[m];
-   /* lsp is in 8.24, range 0 to PI; coslook wants it in .16 0 to 1*/
-   for(i=0;i<m;i++){
- #ifndef _LOW_ACCURACY_
---- Tremor-svn-r19427/info.c
-+++ Tremor/info.c
-@@ -56,8 +56,8 @@ static int tagcompare(const char *s1, co
- char *vorbis_comment_query(vorbis_comment *vc, char *tag, int count){
-   long i;
-   int found = 0;
--  int taglen = strlen(tag)+1; /* +1 for the = we append */
--  char *fulltag = (char *)alloca(taglen+ 1);
-+  const int taglen = strlen(tag)+1; /* +1 for the = we append */
-+  char  fulltag[taglen+ 1];
- 
-   strcpy(fulltag, tag);
-   strcat(fulltag, "=");
-@@ -76,8 +76,8 @@ char *vorbis_comment_query(vorbis_commen
- 
- int vorbis_comment_query_count(vorbis_comment *vc, char *tag){
-   int i,count=0;
--  int taglen = strlen(tag)+1; /* +1 for the = we append */
--  char *fulltag = (char *)alloca(taglen+1);
-+  const int taglen = strlen(tag)+1; /* +1 for the = we append */
-+  char  fulltag[taglen+1];
-   strcpy(fulltag,tag);
-   strcat(fulltag, "=");
- 
---- Tremor-svn-r19427/mapping0.c
-+++ Tremor/mapping0.c
-@@ -193,11 +193,11 @@ static int mapping0_inverse(vorbis_block
-   int                   i,j;
-   long                  n=vb->pcmend=ci->blocksizes[vb->W];
- 
--  ogg_int32_t **pcmbundle=(ogg_int32_t **)alloca(sizeof(*pcmbundle)*vi->channels);
--  int    *zerobundle=(int *)alloca(sizeof(*zerobundle)*vi->channels);
-+  ogg_int32_t  *pcmbundle[vi->channels];
-+  int     zerobundle[vi->channels];
-   
--  int   *nonzero  =(int *)alloca(sizeof(*nonzero)*vi->channels);
--  void **floormemo=(void **)alloca(sizeof(*floormemo)*vi->channels);
-+  int    nonzero[vi->channels];
-+  void  *floormemo[vi->channels];
-   
-   /* time domain information decode (note that applying the
-      information would have to happen later; we'll probably add a
 --- Tremor-svn-r19427/mdct.c
 +++ Tremor/mdct.c
 @@ -147,7 +147,7 @@ STIN void mdct_butterfly_32(DATA_TYPE *x
@@ -203,55 +135,6 @@ changes to Tremor (libvorbisidec) to make it build with VBCC
  #include <sys/types.h>
  #endif
  
---- Tremor-svn-r19427/res012.c
-+++ Tremor/res012.c
-@@ -226,7 +226,7 @@ static int _01inverse(vorbis_block *vb,v
-   if(n>0){
-     int partvals=n/samples_per_partition;
-     int partwords=(partvals+partitions_per_word-1)/partitions_per_word;
--    int ***partword=(int ***)alloca(ch*sizeof(*partword));
-+    int  **partword[ch];
-     
-     for(j=0;j<ch;j++)
-       partword[j]=(int **)_vorbis_block_alloc(vb,partwords*sizeof(*partword[j]));
---- Tremor-svn-r19427/sharedbook.c
-+++ Tremor/sharedbook.c
-@@ -330,7 +330,7 @@ static int sort32a(const void *a,const v
- /* decode codebook arrangement is more heavily optimized than encode */
- int vorbis_book_init_decode(codebook *c,const static_codebook *s){
-   int i,j,n=0,tabn;
--  int *sortindex;
-+
-   memset(c,0,sizeof(*c));
-   
-   /* count actually used entries */
-@@ -355,7 +355,7 @@ int vorbis_book_init_decode(codebook *c,
-     
-     /* perform sort */
-     ogg_uint32_t *codes=_make_words(s->lengthlist,s->entries,c->used_entries);
--    ogg_uint32_t **codep=(ogg_uint32_t **)alloca(sizeof(*codep)*n);
-+    ogg_uint32_t  *codep[n];
-     
-     if(codes==NULL)goto err_out;
- 
-@@ -366,7 +366,7 @@ int vorbis_book_init_decode(codebook *c,
- 
-     qsort(codep,n,sizeof(*codep),sort32a);
- 
--    sortindex=(int *)alloca(n*sizeof(*sortindex));
-+  { int  sortindex[n];
-     c->codelist=(ogg_uint32_t *)_ogg_malloc(n*sizeof(*c->codelist));
-     /* the index is a reverse index */
-     for(i=0;i<n;i++){
-@@ -391,7 +391,7 @@ int vorbis_book_init_decode(codebook *c,
-     for(n=0,i=0;i<s->entries;i++)
-       if(s->lengthlist[i]>0)
- 	c->dec_codelengths[sortindex[n++]]=s->lengthlist[i];
--    
-+  }
-     c->dec_firsttablen=_ilog(c->used_entries)-4; /* this is magic */
-     if(c->dec_firsttablen<5)c->dec_firsttablen=5;
-     if(c->dec_firsttablen>8)c->dec_firsttablen=8;
 --- Tremor-svn-r19427/window.c
 +++ Tremor/window.c
 @@ -56,7 +56,7 @@ void _vorbis_apply_window(ogg_int32_t *d
