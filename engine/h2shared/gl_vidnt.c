@@ -1603,6 +1603,9 @@ static LRESULT WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 
 	switch (uMsg)
 	{
+	case WM_ERASEBKGND:
+		return 1;
+
 	case WM_KILLFOCUS:
 		if (modestate == MS_FULLDIB)
 			ShowWindow(mainwindow, SW_SHOWMINNOACTIVE);
@@ -1866,15 +1869,15 @@ static void VID_RegisterWndClass (HINSTANCE hInstance)
 {
 	WNDCLASS	wc;
 
-	wc.style		= 0;
+	wc.style		= CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
 	wc.lpfnWndProc		= MainWndProc;
 	wc.cbClsExtra		= 0;
 	wc.cbWndExtra		= 0;
 	wc.hInstance		= hInstance;
-	wc.hIcon		= 0;
+	wc.hIcon		= NULL;
 	wc.hCursor		= LoadCursor (NULL, IDC_ARROW);
 	wc.hbrBackground	= NULL;
-	wc.lpszMenuName		= 0;
+	wc.lpszMenuName		= NULL;
 	wc.lpszClassName	= WM_CLASSNAME;
 
 	if (!RegisterClass(&wc))
