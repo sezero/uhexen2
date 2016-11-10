@@ -968,7 +968,7 @@ diff -urNp MiniGL~/src/init.c MiniGL/src/init.c
  }
 diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
 --- MiniGL~/src/matrix.c	2002-11-30 08:15:42.000000000 +0200
-+++ MiniGL/src/matrix.c	2016-07-01 07:01:10.000000000 +0300
++++ MiniGL/src/matrix.c	2016-11-01 11:01:00.000000000 +0300
 @@ -33,41 +33,43 @@
  #warning "Compiling without transformation pipeline. Only flat geometry supported"
  #endif
@@ -1052,16 +1052,26 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[CM_##x])
     float a0 = a(0);
-@@ -111,7 +113,7 @@ INLINE GLfloat m_Determinant(Matrix *pA)
+@@ -100,7 +102,6 @@ INLINE GLfloat m_Determinant(Matrix *pA)
+    float a7 = a(7);
+    float a8 = a(8);
+ 
+-
+     return ( a0*a4*a8  +  a1*a5*a6  + a2*a3*a7 -  a0*a5*a7  -  a1*a3*a8  - a2*a4*a6);
+ 
+    #undef a
+@@ -111,9 +112,8 @@ INLINE GLfloat m_Determinant(Matrix *pA)
  ** supplied matrix for the backtransformation of the normals
  */
  
 -void m_DoInvert(Matrix *pA, int flags, GLfloat *out)
-+static void m_DoInvert(Matrix *pA, int flags, GLfloat *out)
++static INLINE void m_DoInvert(Matrix *pA, int flags, GLfloat *out)
  {
- 
+-
     #define a(x) (pA->v[CM_##x])
-@@ -146,7 +148,7 @@ void m_DoInvert(Matrix *pA, int flags, G
+ 
+    float a0 = a(0);
+@@ -146,7 +146,7 @@ void m_DoInvert(Matrix *pA, int flags, G
     #undef a
  }
  
@@ -1070,7 +1080,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  
  void m_BuildInverted(GLcontext context)
  {
-@@ -162,7 +164,7 @@ void m_BuildInverted(GLcontext context)
+@@ -162,14 +162,13 @@ void m_BuildInverted(GLcontext context)
  ** Copy matrix B to matrix A
  ** A = B
  */
@@ -1079,7 +1089,14 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     int i;
  
-@@ -182,7 +184,7 @@ INLINE void m_MatCopy(Matrix *pA, Matrix
+ //   for (i=0; i<16; i++)
+    i = 0;
+    do{
+- 
+ 	pA->v[i] = pB->v[i];
+ 	i++;
+ 	} while (i<16);
+@@ -182,7 +181,7 @@ INLINE void m_MatCopy(Matrix *pA, Matrix
  ** General case: Matrix multiply
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1088,7 +1105,16 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -307,7 +309,7 @@ float a44 = a(44);
+@@ -299,15 +298,15 @@ float a44 = a(44);
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ 
+-
+ /*
  ** Matrix A is an identity matrix
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1097,7 +1123,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     int i;
  
-@@ -323,7 +325,7 @@ INLINE void m_MatMultAIdent(float *pB, M
+@@ -323,7 +322,7 @@ INLINE void m_MatMultAIdent(float *pB, M
  ** Matrix A and matrix B are rotation matrices
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1106,7 +1132,15 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -369,7 +371,7 @@ INLINE void m_MatMultRotRot(Matrix *pA, 
+@@ -362,6 +361,7 @@ INLINE void m_MatMultRotRot(Matrix *pA, 
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ /*
+@@ -369,7 +369,7 @@ INLINE void m_MatMultRotRot(Matrix *pA, 
  ** Matrix B has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1115,7 +1149,14 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -416,7 +418,7 @@ INLINE void m_MatMultAPerspB0001(Matrix 
+@@ -410,13 +410,14 @@ INLINE void m_MatMultAPerspB0001(Matrix 
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ /*
  ** Matrix B has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1124,6 +1165,14 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
+@@ -478,6 +479,7 @@ c(44) = a44; 
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ // --> surgeon begin
 @@ -487,7 +489,7 @@ c(44) = a44; 
  ** Matrix A has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
@@ -1133,7 +1182,15 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -548,7 +550,7 @@ c(34) = a34; 
+@@ -541,6 +543,7 @@ c(34) = a34; 
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ /*
+@@ -548,7 +551,7 @@ c(34) = a34; 
  ** Matrix A has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1142,7 +1199,15 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -596,7 +598,7 @@ INLINE void m_MatMultA0001_BRot001(Matri
+@@ -589,6 +592,7 @@ INLINE void m_MatMultA0001_BRot001(Matri
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ /*
+@@ -596,7 +600,7 @@ INLINE void m_MatMultA0001_BRot001(Matri
  ** Matrix A has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1151,7 +1216,15 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -644,7 +646,7 @@ INLINE void m_MatMultA0001_BRot010(Matri
+@@ -637,6 +641,7 @@ INLINE void m_MatMultA0001_BRot010(Matri
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ /*
+@@ -644,7 +649,7 @@ INLINE void m_MatMultA0001_BRot010(Matri
  ** Matrix A has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1160,7 +1233,14 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -692,7 +694,7 @@ INLINE void m_MatMultA0001_BRot100(Matri
+@@ -686,13 +691,14 @@ INLINE void m_MatMultA0001_BRot100(Matri
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ /*
  ** Matrix B has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1169,7 +1249,14 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -743,7 +745,7 @@ INLINE void m_MatMultBRot001(Matrix *pA,
+@@ -737,13 +743,14 @@ INLINE void m_MatMultBRot001(Matrix *pA,
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ /*
  ** Matrix B has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1178,7 +1265,14 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -794,7 +796,7 @@ INLINE void m_MatMultBRot010(Matrix *pA,
+@@ -788,13 +795,14 @@ INLINE void m_MatMultBRot010(Matrix *pA,
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ /*
  ** Matrix B has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1187,7 +1281,15 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -847,7 +849,7 @@ INLINE void m_MatMultBRot100(Matrix *pA,
+@@ -840,6 +848,7 @@ INLINE void m_MatMultBRot100(Matrix *pA,
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ // <--surgeon end
+ 
+@@ -847,7 +856,7 @@ INLINE void m_MatMultBRot100(Matrix *pA,
  ** Matrix A has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1196,7 +1298,14 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -899,7 +901,7 @@ INLINE void m_MatMultA0001(Matrix *pA, f
+@@ -893,13 +902,14 @@ INLINE void m_MatMultA0001(Matrix *pA, f
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ /*
  ** Matrix A is a translation matrix
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1205,7 +1314,18 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -968,7 +970,7 @@ b34 += b44*a34;
+@@ -958,17 +968,16 @@ b34 += b44*a34;
+    c(44) = b44;
+    c(43) = b43;
+ 
+-
+-
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ /*
  ** Matrix B is a translation matrix
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1214,7 +1334,15 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1037,7 +1039,7 @@ c(44) = a44; 
+@@ -1030,6 +1039,7 @@ c(44) = a44; 
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ //surgeon: added scaling, ortho and perspective matrices
+@@ -1037,7 +1047,7 @@ c(44) = a44; 
  ** Matrix B is a scaling matrix
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1223,7 +1351,14 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1089,7 +1091,7 @@ INLINE void m_MatMultBScale(Matrix *pA, 
+@@ -1084,12 +1094,14 @@ INLINE void m_MatMultBScale(Matrix *pA, 
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
++
+ /*
  ** Matrix B is a orthogonal matrix
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1232,8 +1367,11 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1153,7 +1155,7 @@ c(44) = a44; 
+@@ -1151,9 +1163,10 @@ c(44) = a44; 
+ 
+    #undef a
     #undef b
++   #undef c
  }
  
 -INLINE void m_MatMultBPersp(Matrix *pA, float *pB, Matrix *pC)
@@ -1241,7 +1379,18 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1223,7 +1225,7 @@ c(43) = a44; 
+@@ -1212,9 +1225,9 @@ c(23) = a24; 
+ c(33) = a34; 
+ c(43) = a44; 
+ 
+-
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ //surgeon begin -->
+@@ -1223,7 +1236,7 @@ c(43) = a44; 
  ** Matrix A has 3 rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1250,7 +1399,23 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1287,7 +1289,7 @@ c(44) = 1.f; 
+@@ -1243,7 +1256,6 @@ INLINE void m_MatMultA0001_BTrans(Matrix
+    float a34 = a(34),  b34 = b(34);
+ 
+ 
+-
+ a14 += b34*a13;
+ a24 += b34*a23;
+ a34 += b34*a33;
+@@ -1279,6 +1291,7 @@ c(44) = 1.f; 
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ //surgeon: added scaling, ortho and perspective matrices
+@@ -1287,7 +1300,7 @@ c(44) = 1.f; 
  ** Matrix A has 3 rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1259,7 +1424,15 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1336,7 +1338,7 @@ INLINE void m_MatMultA0001_BScale(Matrix
+@@ -1329,6 +1342,7 @@ INLINE void m_MatMultA0001_BScale(Matrix
+ 
+    #undef a
+    #undef b
++   #undef c
+ }
+ 
+ /*
+@@ -1336,7 +1350,7 @@ INLINE void m_MatMultA0001_BScale(Matrix
  ** Matrix A has 3 rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1268,8 +1441,11 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1392,7 +1394,7 @@ c(44) = 1.f; 
+@@ -1390,9 +1404,10 @@ c(44) = 1.f; 
+ 
+    #undef a
     #undef b
++   #undef c
  }
  
 -INLINE void m_MatMultA0001_BPersp(Matrix *pA, float *pB, Matrix *pC)
@@ -1277,7 +1453,15 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1454,7 +1456,7 @@ c(43) = -1; 
+@@ -1447,14 +1462,14 @@ c(23) = a24; 
+ c(33) = a34; 
+ c(43) = -1; 
+ 
+-
+    #undef a
+    #undef b
++   #undef c
+ }
  
  //surgeon end <--
  
@@ -1286,7 +1470,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x] = *v++)
  
-@@ -1470,7 +1472,7 @@ INLINE void m_LoadMatrixf(Matrix *pA, co
+@@ -1470,7 +1485,7 @@ INLINE void m_LoadMatrixf(Matrix *pA, co
     #undef a
  }
  
@@ -1295,7 +1479,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x] = (float)*v++)
  
-@@ -1488,7 +1490,7 @@ INLINE void m_LoadMatrixd(Matrix *pA, co
+@@ -1488,7 +1503,7 @@ INLINE void m_LoadMatrixd(Matrix *pA, co
  }
  
  
@@ -1304,7 +1488,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x] = 0.f)
     #define b(x) (pA->v[OF_##x] = 1.f)
-@@ -1510,7 +1512,7 @@ INLINE void m_LoadIdentity(Matrix *pA)
+@@ -1510,7 +1525,7 @@ INLINE void m_LoadIdentity(Matrix *pA)
  ** this routine may select an optimized matrix multiplication routine.
  */
  
@@ -1313,7 +1497,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
  
  	if(pA->flags == MGLMAT_IDENTITY)
-@@ -1654,7 +1656,7 @@ void m_CombineMatrices(GLcontext context
+@@ -1654,7 +1669,7 @@ void m_CombineMatrices(GLcontext context
  }
  
  
@@ -1967,7 +2151,7 @@ diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
  {
 diff -urNp MiniGL~/src/vertexelements.c MiniGL/src/vertexelements.c
 --- MiniGL~/src/vertexelements.c	2002-11-30 08:15:48.000000000 +0200
-+++ MiniGL/src/vertexelements.c	2016-04-15 17:55:20.000000000 +0300
++++ MiniGL/src/vertexelements.c	2016-11-01 11:01:00.000000000 +0300
 @@ -31,23 +31,19 @@ extern int AE_ClipTriangle(GLcontext con
  extern Convfn Convert;
  
@@ -2056,7 +2240,7 @@ diff -urNp MiniGL~/src/vertexelements.c MiniGL/src/vertexelements.c
  {
        int i;
        int vnum;
-@@ -2770,7 +2762,7 @@ void GLDrawElements(GLcontext context, G
+@@ -2770,12 +2762,11 @@ void GLDrawElements(GLcontext context, G
     if(count < 3)
          return; //invalid vertexcount or primitive
  
@@ -2065,34 +2249,46 @@ diff -urNp MiniGL~/src/vertexelements.c MiniGL/src/vertexelements.c
     switch(type)
     {
        case GL_UNSIGNED_SHORT:
-@@ -2787,12 +2779,9 @@ void GLDrawElements(GLcontext context, G
-                 idx[1] = ub[1];
+                 idx = (UWORD*)indices;
+-
+       break;
+ 
+       case GL_UNSIGNED_BYTE:
+@@ -2788,11 +2779,10 @@ void GLDrawElements(GLcontext context, G
                  idx[2] = ub[2];
  
--                i = 3;
+                 i = 3;
 -
--                while (i < count)
-+                for (i = 3; i < count; ++i)
+                 while (i < count)
                  {
                          idx[i] = ub[i];
 -                i++;
++                        i++;
                  }
        break;
  
-@@ -2808,12 +2797,9 @@ void GLDrawElements(GLcontext context, G
-                 idx[1] = ul[1];
+@@ -2809,11 +2799,10 @@ void GLDrawElements(GLcontext context, G
                  idx[2] = ul[2];
  
--                i = 3;
+                 i = 3;
 -
--                while (i < count)
-+                for (i = 3; i < count; ++i)
+                 while (i < count)
                  {
                          idx[i] = ul[i];
 -                i++;
++                        i++;
                  }
  
        break;
+@@ -2933,7 +2922,7 @@ void GLDrawElements(GLcontext context, G
+    if(context->VertexArrayPipeline == GL_FALSE)
+    {
+ 	ULONG error;
+-   	error = W3D_DrawElements(context->w3dContext, mode, type, count, (void*)indices);
++	error = W3D_DrawElements(context->w3dContext, mode, type, count, (void*)indices);
+    }
+    else
+    {
 
 diff -urNp MiniGL~/demos/addtest.c MiniGL/demos/addtest.c
 --- MiniGL~/demos/addtest.c	2002-11-30 08:14:54.000000000 +0200
