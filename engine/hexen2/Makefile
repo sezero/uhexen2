@@ -126,9 +126,9 @@ USE_CODEC_FLAC=no
 USE_CODEC_MP3=yes
 USE_CODEC_VORBIS=yes
 USE_CODEC_OPUS=no
-# either mikmod (preferred) or modplug (both possible
-# but not needed nor meaningful.)
+# either mikmod, or xmp (or modplug.)
 USE_CODEC_MIKMOD=no
+USE_CODEC_XMP=no
 USE_CODEC_MODPLUG=no
 USE_CODEC_UMX=no
 # either timidity (preferred) or wildmidi (both possible
@@ -247,6 +247,7 @@ USE_CODEC_FLAC=no
 USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_MIKMOD=no
+USE_CODEC_XMP=no
 USE_CODEC_MODPLUG=no
 USE_CODEC_UMX=no
 USE_CODEC_MP3=no
@@ -361,6 +362,10 @@ ifeq ($(USE_CODEC_MIKMOD),yes)
 CODEC_INC = -I$(OSLIBS)/macosx/codecs/include
 CODEC_LINK= -L$(OSLIBS)/macosx/codecs/lib
 endif
+ifeq ($(USE_CODEC_XMP),yes)
+CODEC_INC = -I$(OSLIBS)/macosx/codecs/include
+CODEC_LINK= -L$(OSLIBS)/macosx/codecs/lib
+endif
 ifeq ($(USE_CODEC_MODPLUG),yes)
 CODEC_INC = -I$(OSLIBS)/macosx/codecs/include
 CODEC_LINK= -L$(OSLIBS)/macosx/codecs/lib
@@ -457,6 +462,7 @@ USE_X86_ASM=yes
 USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_MIKMOD=no
+USE_CODEC_XMP=no
 USE_CODEC_MODPLUG=no
 USE_CODEC_UMX=no
 # no need for Opus on DOS
@@ -556,6 +562,10 @@ ifeq ($(USE_CODEC_MIKMOD),yes)
 CODEC_INC = -I$(OSLIBS)/dos/codecs/include
 CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
 endif
+ifeq ($(USE_CODEC_XMP),yes)
+CODEC_INC = -I$(OSLIBS)/dos/codecs/include
+CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
+endif
 ifeq ($(USE_CODEC_MODPLUG),yes)
 CODEC_INC = -I$(OSLIBS)/dos/codecs/include
 CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
@@ -630,6 +640,10 @@ CODEC_INC = -I$(OSLIBS)/windows/codecs/include
 CODEC_LINK= -L$(OSLIBS)/windows/codecs/x86
 endif
 ifeq ($(USE_CODEC_MIKMOD),yes)
+CODEC_INC = -I$(OSLIBS)/windows/codecs/include
+CODEC_LINK= -L$(OSLIBS)/windows/codecs/x86
+endif
+ifeq ($(USE_CODEC_XMP),yes)
 CODEC_INC = -I$(OSLIBS)/windows/codecs/include
 CODEC_LINK= -L$(OSLIBS)/windows/codecs/x86
 endif
@@ -715,6 +729,10 @@ ifeq ($(USE_CODEC_MIKMOD),yes)
 CODEC_INC = -I$(OSLIBS)/windows/codecs/include
 CODEC_LINK= -L$(OSLIBS)/windows/codecs/x64
 endif
+ifeq ($(USE_CODEC_XMP),yes)
+CODEC_INC = -I$(OSLIBS)/windows/codecs/include
+CODEC_LINK= -L$(OSLIBS)/windows/codecs/x64
+endif
 ifeq ($(USE_CODEC_MODPLUG),yes)
 CODEC_INC = -I$(OSLIBS)/windows/codecs/include
 CODEC_LINK= -L$(OSLIBS)/windows/codecs/x64
@@ -754,6 +772,7 @@ USE_CODEC_VORBIS=yes
 USE_CODEC_MP3=yes
 USE_CODEC_OPUS=no
 USE_CODEC_MIKMOD=no
+USE_CODEC_XMP=no
 USE_CODEC_MODPLUG=no
 USE_CODEC_UMX=no
 
@@ -992,6 +1011,10 @@ ifeq ($(USE_CODEC_MIKMOD),yes)
 CPPFLAGS+= -DUSE_CODEC_MIKMOD
 LDFLAGS+=  -lmikmod
 endif
+ifeq ($(USE_CODEC_XMP),yes)
+CPPFLAGS+= -DUSE_CODEC_XMP
+LDFLAGS+=  -lxmp
+endif
 ifeq ($(USE_CODEC_MODPLUG),yes)
 CPPFLAGS+= -DUSE_CODEC_MODPLUG
 LDFLAGS+=  -lmodplug
@@ -1122,6 +1145,7 @@ MUSIC_OBJS:= bgmusic.o \
 	$(mp3_obj) \
 	snd_mikmod.o \
 	snd_modplug.o \
+	snd_xmp.o \
 	snd_umx.o \
 	snd_timidity.o \
 	snd_wildmidi.o

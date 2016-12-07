@@ -34,6 +34,7 @@
 #include "snd_wildmidi.h"
 #include "snd_mikmod.h"
 #include "snd_modplug.h"
+#include "snd_xmp.h"
 #include "snd_umx.h"
 #include "snd_wave.h"
 #include "snd_flac.h"
@@ -81,6 +82,9 @@ void S_CodecInit (void)
 #endif
 #ifdef USE_CODEC_MIKMOD
 	S_CodecRegister(&mikmod_codec);
+#endif
+#ifdef USE_CODEC_XMP
+	S_CodecRegister(&xmp_codec);
 #endif
 #ifdef USE_CODEC_WAVE
 	S_CodecRegister(&wav_codec);
