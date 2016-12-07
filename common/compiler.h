@@ -27,25 +27,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __HX2_COMPILER_H
-#define __HX2_COMPILER_H
+#ifndef HX2_COMPILER_H
+#define HX2_COMPILER_H
 
 #if !defined(__GNUC__)
 #define	__attribute__(x)
 #endif	/* __GNUC__ */
 
-/* argument format attributes for function
- * pointers are supported for gcc >= 3.1
- */
+/* argument format attributes for function pointers are supported for gcc >= 3.1 */
 #if defined(__GNUC__) && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 0))
 #define	__fp_attribute__	__attribute__
 #else
 #define	__fp_attribute__(x)
 #endif
 
-/* function optimize attribute is added
- * starting with gcc 4.4.0
- */
+/* function optimize attribute is added starting with gcc 4.4.0 */
 #if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 3))
 #define	__no_optimize		__attribute__((__optimize__("0")))
 #else
@@ -74,7 +70,7 @@
 #endif
 
 /* Some compilers, such as OpenWatcom, and possibly other compilers
- * from the DOS universe, define __386__ instead of __i386__
+ * from the DOS universe, define __386__ but not __i386__
  */
 #if defined(__386__) && !defined(__i386__)
 #define __i386__		1
@@ -86,5 +82,5 @@
 #endif	/* _MSC_VER */
 
 
-#endif	/* __HX2_COMPILER_H */
+#endif	/* HX2_COMPILER_H */
 

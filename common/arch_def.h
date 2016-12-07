@@ -8,7 +8,7 @@
  *
  * $Id$
  *
- * Copyright (C) 2007-2012  O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2007-2016  O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __HX2_ARCHDEFS__
-#define __HX2_ARCHDEFS__
+#ifndef ARCHDEFS_H
+#define ARCHDEFS_H
 
 
-#if defined(__DJGPP__) || defined(MSDOS) || defined(__MSDOS__) || defined(__DOS__)
+#if defined(__DJGPP__) || defined(__MSDOS__) || defined(__DOS__) || defined(_MSDOS)
 
 #   if !defined(PLATFORM_DOS)
 #	define	PLATFORM_DOS		1
@@ -42,7 +42,7 @@
 #	define	PLATFORM_OS2		1
 #   endif
 
-#elif defined(_WIN32) || defined(_WIN64)
+#elif defined(_WIN32) || defined(__WIN32__) || defined(_WIN64) || defined(__NT__) || defined(_Windows)
 
 #   if !defined(PLATFORM_WINDOWS)
 #	define	PLATFORM_WINDOWS	1
@@ -168,5 +168,5 @@
 #	warning "Platform is UNKNOWN."
 #endif	/* PLATFORM_STRING */
 
-#endif	/* __HX2_ARCHDEFS__ */
+#endif  /* ARCHDEFS_H */
 
