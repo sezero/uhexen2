@@ -48,7 +48,7 @@
 #define inline __inline
 #endif
 #ifndef HAVE_CONFIG_H
-#include "q_endian.h" /*"timi_endian.h"*/
+#include "timi_endian.h"
 #endif
 
 /* Instrument files are little-endian, MIDI files big-endian, so we

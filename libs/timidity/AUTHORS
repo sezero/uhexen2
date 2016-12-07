@@ -8,4 +8,4 @@
   make a separate library from SDL_sound MIDI decoder.
 
 * Ozkan Sezer <sezero@users.sourceforge.net>
-  fork and clean-up/fix/improve over original libtimidity-0.1.0.
+  clean-up, fix and improve over original libtimidity-0.1.0.
