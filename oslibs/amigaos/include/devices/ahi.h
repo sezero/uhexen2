@@ -118,7 +118,11 @@ struct AHIEffDSPMask
 {
 	ULONG	ahie_Effect;			/* Set to AHIET_DSPMASK */
 	UWORD	ahiedm_Channels;		/* Number of elements in array */
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
+	UBYTE	ahiedm_Mask[];			/* Here follows the array */
+#else
 	UBYTE	ahiedm_Mask[0];			/* Here follows the array */
+#endif
 };
 
 #define AHIEDM_WET		(0)
@@ -145,7 +149,11 @@ struct AHIEffChannelInfo
 	UWORD		 ahieci_Channels;
 	UWORD		 ahieci_Pad;
  /* The rest is filled by AHI */
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
+ 	ULONG		 ahieci_Offset[];	/* The array follows */
+#else
  	ULONG		 ahieci_Offset[0];	/* The array follows */
+#endif
 };
 
 /*** TAGS */
