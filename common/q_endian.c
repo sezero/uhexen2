@@ -3,7 +3,7 @@
  * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
- * Copyright (C) 2007-2008  O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2007-2016  O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,23 +28,7 @@
 #define __byteswap_func static
 #else
 #define __byteswap_func
-#endif /* ENDIAN_RUNTIME_DETECT */
-
-#if ENDIAN_RUNTIME_DETECT
-/*
-# warning "Byte order will be detected at runtime"
-*/
-#elif defined(ENDIAN_ASSUMED_UNSAFE)
-# warning "Cannot determine byte order:"
-# if (ENDIAN_ASSUMED_UNSAFE == LITTLE_ENDIAN)
-#    warning "Using LIL endian as an UNSAFE default."
-# elif (ENDIAN_ASSUMED_UNSAFE == BIG_ENDIAN)
-#    warning "Using BIG endian as an UNSAFE default."
-# endif
-# warning "Revise the macros in q_endian.h for this"
-# warning "machine or use runtime detection !!!"
-#endif /* ENDIAN_ASSUMED_UNSAFE */
-
+#endif
 
 int host_byteorder;
 int host_bigendian; /* qboolean */
