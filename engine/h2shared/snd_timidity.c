@@ -69,11 +69,9 @@ static int timidity_fclose (void *ctx)
 }
 
 static const char *cfgfile[] = {
-#if defined(_WIN32) || defined(__OS2__) || defined(__EMX__)
-	"C:\\TIMIDITY",
-#elif defined(__DJGPP__)
+#if defined(__DJGPP__)  /* prefer '/' instead of '\\' */
 	"C:/TIMIDITY",
-#elif defined(MSDOS) || defined(__MSDOS__) || defined(__DOS__)
+#elif defined(PLATFORM_DOS) || defined(PLATFORM_WINDOWS) || defined(PLATFORM_OS2)
 	"C:\\TIMIDITY",
 #elif defined(__MORPHOS__)
 	"LIBS:GerontoPlayer",

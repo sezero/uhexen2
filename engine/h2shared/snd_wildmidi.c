@@ -2,7 +2,7 @@
  * MIDI streaming music support using WildMIDI library.
  *
  * wildmidi at least v0.2.3.x is required at both compile and runtime:
- * Latest stable v0.3.9 (as of this writing) is highly recommended :
+ * Latest stable v0.3.10 (as of this writing) is highly recommended:
  * - wildmidi-0.2.2 has a horrific mistake of freeing the buffer that
  *   you pass with WildMidi_OpenBuffer() when you do WildMidi_Close().
  * - wildmidi-0.2.3.x-0.3.x had a regression, resulting in perversely
@@ -64,11 +64,9 @@ typedef struct _midi_buf_t
 static unsigned short wildmidi_rate;
 static unsigned short wildmidi_opts;
 static const char *cfgfile[] = {
-#if defined(_WIN32) || defined(__OS2__) || defined(__EMX__)
-	"C:\\TIMIDITY",
-#elif defined(__DJGPP__)
+#if defined(__DJGPP__)  /* prefer '/' instead of '\\' */
 	"C:/TIMIDITY",
-#elif defined(MSDOS) || defined(__MSDOS__) || defined(__DOS__)
+#elif defined(PLATFORM_DOS) || defined(PLATFORM_WINDOWS) || defined(PLATFORM_OS2)
 	"C:\\TIMIDITY",
 #elif defined(__MORPHOS__)
 	"LIBS:GerontoPlayer",
