@@ -37,7 +37,6 @@
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
 #endif
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -45,7 +44,6 @@
 #include "timidity_internal.h"
 #include "common.h"
 #include "instrum.h"
-#include "instrum_dls.h"
 #include "resample.h"
 #include "tables.h"
 
@@ -275,10 +273,6 @@ static void load_instrument(MidSong *song, const char *name,
       READ_LONG(sp->low_freq);
       READ_LONG(sp->high_freq);
       READ_LONG(sp->root_freq);
-#if defined(TIMIDITY_USE_DLS)
-      sp->low_vel = 0;
-      sp->high_vel = 127;
-#endif /* USE_DLS */
       fseek(fp, 2, SEEK_CUR); /* Why have a "root frequency" and then
 				* "tuning"?? */
 
@@ -555,13 +549,6 @@ static int fill_bank(MidSong *song, int dr, int b)
     {
       if (bank->instrument[i]==MAGIC_LOAD_INSTRUMENT)
 	{
-#if defined(TIMIDITY_USE_DLS)
-	  load_instrument_dls(song, &bank->instrument[i], dr, b, i);
-	  if (bank->instrument[i])
-	    {
-	      continue;
-	    }
-#endif /* TIMIDITY_USE_DLS */
 	  if (!(bank->tone[i].name))
 	    {
 	      DEBUG_MSG("No instrument mapped to %s %d, program %d%s\n",
@@ -650,3 +637,4 @@ int set_default_instrument(MidSong *song, const char *name)
   song->default_program = SPECIAL_PROGRAM;
   return 0;
 }
+

@@ -486,7 +486,7 @@ int mid_init(const char *config_file)
   return init_with_config(config_file);
 }
 
-static void do_song_load(MidIStream *stream, MidDLSPatches *dlspatches, MidSongOptions *options, MidSong **out)
+static void do_song_load(MidIStream *stream, MidSongOptions *options, MidSong **out)
 {
   MidSong *song;
   int i;
@@ -517,7 +517,6 @@ static void do_song_load(MidIStream *stream, MidDLSPatches *dlspatches, MidSongO
   /* Allocate memory for the song */
   song = (MidSong *)timi_calloc(sizeof(MidSong));
   if (!song) return;
-  song->dlspatches = dlspatches;
 
   for (i = 0; i < 128; i++) {
     if (master_tonebank[i]) {
@@ -608,17 +607,10 @@ fail: mid_song_free (song);
   }
 }
 
-MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *dlspatches, MidSongOptions *options)
-{
-  MidSong *song;
-  do_song_load(stream, dlspatches, options, &song);
-  return song;
-}
-
 MidSong *mid_song_load(MidIStream *stream, MidSongOptions *options)
 {
   MidSong *song;
-  do_song_load(stream, NULL, options, &song);
+  do_song_load(stream, options, &song);
   return song;
 }
 
@@ -688,5 +680,21 @@ void mid_exit(void)
 long mid_get_version (void)
 {
   return LIBTIMIDITY_VERSION;
+}
+
+/* ===== for libtimidity <= 0.2.x compatibility =====
+ */
+MidDLSPatches *mid_dlspatches_load (MidIStream *stream)
+{
+  return NULL;
+}
+
+void mid_dlspatches_free (MidDLSPatches *data)
+{
+}
+
+MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *dlspatches, MidSongOptions *options)
+{
+  return NULL;
 }
 

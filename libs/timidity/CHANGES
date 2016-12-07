@@ -8,6 +8,13 @@ uHexen2-specific changes:
 ------------------------------------------------------------------------
 
 
+Changes by libtimidity-0.2.2:
+-----------------------------
+
+* removed DLS instruments support completely, it was never good enough:
+  one less thing to worry about. and no, the 0.2.x api didn't change.
+
+
 Changes by libtimidity-0.2.1:
 -----------------------------
 

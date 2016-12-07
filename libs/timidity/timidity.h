@@ -44,7 +44,7 @@ extern "C" {
 
 #define LIBTIMIDITY_VERSION_MAJOR 0L
 #define LIBTIMIDITY_VERSION_MINOR 2L
-#define LIBTIMIDITY_PATCHLEVEL    1L
+#define LIBTIMIDITY_PATCHLEVEL    2L
 
 #define LIBTIMIDITY_VERSION               \
         ((LIBTIMIDITY_VERSION_MAJOR<<16)| \
@@ -97,7 +97,6 @@ extern "C" {
     uint16 buffer_size; /* Sample buffer size (in samples, not bytes) */
     uint16 _reserved;
   };
-
 
 /* Compiler magic for shared libraries
  * ===================================
@@ -203,7 +202,7 @@ extern "C" {
  * ===================
  */
 
-/* Load DLS patches
+/* Load DLS patches - No longer supported:  Always returns NULL.
  */
   TIMI_EXPORT extern MidDLSPatches *mid_dlspatches_load (MidIStream *stream);
 
@@ -222,6 +221,7 @@ extern "C" {
                                              MidSongOptions *options);
 
 /* Load MIDI song with specified DLS patches
+ * No longer supported:  Always returns NULL.
  */
   TIMI_EXPORT extern MidSong *mid_song_load_dls (MidIStream *stream,
                                                  MidDLSPatches *dlspatches,

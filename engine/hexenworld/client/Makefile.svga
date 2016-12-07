@@ -55,10 +55,6 @@ USE_CODEC_UMX=no
 # but not needed nor meaningful)
 USE_CODEC_TIMIDITY=yes
 USE_CODEC_WILDMIDI=no
-# compile timidity with DLS instruments support? (no:
-# the dls code isn't good enough and isn't used in unix
-# where timidity is normally needed, either.)
-TIMIDITY_USE_DLS=no
 # which library to use for mp3 decoding: mad or mpg123
 MP3LIB=mad
 # which library to use for ogg decoding: vorbis or tremor
@@ -239,9 +235,6 @@ CPPFLAGS+= -DUSE_CODEC_UMX
 endif
 ifeq ($(USE_CODEC_TIMIDITY),yes)
 CPPFLAGS+= -DUSE_CODEC_TIMIDITY
-ifeq ($(TIMIDITY_USE_DLS),yes)
-CPPFLAGS+= -DTIMIDITY_USE_DLS
-endif
 LDFLAGS+= -L$(LIBS_DIR)/timidity -ltimidity
 TIMIDEPS=$(LIBS_DIR)/timidity/libtimidity.a
 else

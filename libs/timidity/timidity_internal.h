@@ -117,9 +117,6 @@ struct _MidSample
   sint32
     loop_start, loop_end, data_length,
     sample_rate,
-#ifdef TIMIDITY_USE_DLS
-    low_vel, high_vel,
-#endif
     low_freq, high_freq, root_freq;
   sint32 envelope_rate[6], envelope_offset[6];
   float volume;
@@ -208,7 +205,6 @@ struct _MidSong
   int bytes_per_sample;
   float master_volume;
   sint32 amplification;
-  MidDLSPatches *dlspatches;
   MidToneBank *tonebank[128];
   MidToneBank *drumset[128];
   FILE *ifp; /* patch file pointer used by the instrument loader */

@@ -100,10 +100,6 @@ static void select_sample(MidSong *song, int v, MidInstrument *ip, int vel)
   f=song->voice[v].orig_frequency;
   for (i=0; i<s; i++, sp++)
     {
-#ifdef TIMIDITY_USE_DLS
-      if (sp->low_vel > vel || sp->high_vel < vel)
-	continue;
-#endif
       if (sp->low_freq <= f && sp->high_freq >= f)
 	{
 	  song->voice[v].sample=sp;
