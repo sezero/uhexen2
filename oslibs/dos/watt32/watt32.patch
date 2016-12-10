@@ -787,12 +787,9 @@ diff -urp watt_src.orig/src/djgpp/syserr.c watt_src/src/djgpp/syserr.c
 diff -urp watt_src.orig/src/djgpp/watt32.dep watt_src/src/djgpp/watt32.dep
 --- watt_src.orig/src/djgpp/watt32.dep	2009-03-07 17:23:44.000000000 +0200
 +++ watt_src/src/djgpp/watt32.dep	2014-04-25 23:55:50.000000000 +0300
-@@ -36,9 +36,9 @@ $(OBJDIR)/getopt.o: getopt.c wattcp.h la
- $(OBJDIR)/getprot.o: getprot.c wattcp.h strings.h misc.h language.h pcconfig.h get_xby.h
- $(OBJDIR)/getput.o: getput.c wattcp.h chksum.h misc.h
+@@ -38,7 +38,7 @@ $(OBJDIR)/getopt.o: getopt.c wattcp.h la
  $(OBJDIR)/getserv.o: getserv.c wattcp.h strings.h misc.h language.h netaddr.h pcconfig.h get_xby.h pcdbug.h sock_ini.h
--$(OBJDIR)/gettod.o: gettod.c wattcp.h misc.h timer.h x32vm.h cpumodel.h strings.h gettod.h printk.h getopt.h
-+$(OBJDIR)/gettod.o: gettod.c wattcp.h misc.h timer.h x32vm.h cpumodel.h strings.h gettod.h printk.h getopt.h djgpp/djtime.c
+ $(OBJDIR)/gettod.o: gettod.c wattcp.h misc.h timer.h x32vm.h cpumodel.h strings.h gettod.h printk.h getopt.h
  $(OBJDIR)/highc.o: highc.c wattcp.h strings.h pcconfig.h
 -$(OBJDIR)/idna.o: idna.c wattcp.h misc.h strings.h pcconfig.h punycode.h idna.h iconv/ascii.h iconv/jisx0201.h iconv/jisx0208.h iconv/cp437.h iconv/cp737.h iconv/cp775.h iconv/cp850.h iconv/cp852.h iconv/cp853.h iconv/cp855.h iconv/cp856.h iconv/cp857.h iconv/cp858.h iconv/cp860.h iconv/cp861.h iconv/cp862.h iconv/cp863.h iconv/cp864.h iconv/cp865.h iconv/cp866.h iconv/cp869.h iconv/cp874.h iconv/cp922.h iconv/cp932.h iconv/cp943.h iconv/ksc5601.h iconv/cp949.h iconv/big5.h iconv/cp950.h iconv/cp1046.h iconv/cp1124.h iconv/cp1125.h iconv/cp1129.h iconv/cp1133.h iconv/cp1161.h iconv/cp1162.h iconv/cp1163.h iconv/cp1250.h iconv/cp1251.h iconv/cp1252.h iconv/cp1253.h iconv/cp1254.h iconv/cp1255.h iconv/cp1256.h iconv/cp1257.h iconv/vietcomb.h iconv/cp1258.h sock_ini.h udp_dom.h pcdbug.h getopt.h
 +$(OBJDIR)/idna.o: idna.c wattcp.h misc.h strings.h pcconfig.h punycode.h idna.h sock_ini.h udp_dom.h pcdbug.h getopt.h
@@ -977,247 +974,6 @@ diff -urp watt_src.orig/src/getnet.c watt_src/src/getnet.c
       return (NULL);
  
    while (1)
-diff -urp watt_src.orig/src/gettod.c watt_src/src/gettod.c
---- watt_src.orig/src/gettod.c	2005-12-19 05:02:20.000000000 +0200
-+++ watt_src/src/gettod.c	2014-04-25 23:55:50.000000000 +0300
-@@ -76,6 +76,9 @@
- 
- static long utc_offset = 0;  /* UTC to local offset in seconds */
- 
-+#ifdef __DJGPP__ /* OVERRIDES TO SKIP TIMEZONE STUFF */
-+# include "djgpp/djtime.c"
-+#else
- static void get_zone (struct timezone *tz, time_t now)
- {
-   const struct tm *tm = localtime (&now);
-@@ -108,6 +111,7 @@ void set_utc_offset (void)
- #endif
-   utc_offset = 60 * tz.tz_minuteswest;
- }
-+#endif /* OVERRIDEN FOR DJGPP TO SKIP TIMEZONE STUFF */
- 
- #if defined(WIN32)
- /*
-diff -urNp watt_src.orig/src/djgpp/djtime.c watt_src/src/djgpp/djtime.c
---- watt_src.orig/src/djgpp/djtime.c	1970-01-01 02:00:00.000000000 +0200
-+++ watt_src/src/djgpp/djtime.c	2014-04-25 23:55:50.000000000 +0300
-@@ -0,0 +1,216 @@
-+struct tm *gmtime (const time_t *tt)
-+{
-+    static char monthtable[] = {
-+    /* JanFebMarAprMayJunJulAugSepOktNov */
-+       31,29,31,30,31,30,31,31,30,31,30
-+    };
-+    static struct tm _mytm;
-+
-+    struct tm *tm = &_mytm;
-+    signed long tim;
-+    int leapday = 0, leapyear = 0, i;
-+
-+    tim = *tt;
-+
-+    tm->tm_sec = tim % 60;
-+    tim /= 60;
-+
-+    tm->tm_min = tim % 60;
-+    tim /= 60;
-+
-+    /*
-+	719162 number of days between 1.1.1 and 1.1.1970 if the calendar
-+	would go so far which it doesn't :-) this is true for all of the
-+	following.
-+    */
-+    tm->tm_hour = tim % 24;
-+    tim = tim / 24 + 719162;
-+
-+    tm->tm_wday = (tim + 1) % 7;
-+
-+    /* 146097 number of days from 1.1.1 to 1.1.401 */
-+    tm->tm_year = tim / 146097 * 400 - 1899;
-+    tim %= 146097;
-+
-+    /* 145731 number of days from 1.1.1 to 1.1.400 */
-+    if (tim >= 145731)
-+    {
-+	leapyear++; /* The day is in one of the 400th */
-+
-+	/* Be careful: The last of the 4 centuries is 1 day longer */
-+	if (tim == 146096)
-+	{
-+	    tim--;
-+	    leapday++;
-+	}
-+    }
-+
-+    /* 36524 number of days from 1.1.1 to 1.1.101 */
-+    tm->tm_year += tim / 36524 * 100;
-+    tim %= 36524;
-+
-+    /* 36159 number of days from 1.1.1 to 1.1.100 */
-+    if (tim >= 36159)
-+	leapyear--; /* The day is in one of the 100th */
-+
-+    /* 1461 number of days from 1.1.1 to 1.1.5 */
-+    tm->tm_year += tim / 1461 * 4;
-+    tim %= 1461;
-+
-+    /* 1095 number of days from 1.1.1 to 1.1.4 */
-+    if (tim >= 1095)
-+    {
-+	leapyear++; /* The day is in one of the 4th */
-+
-+	/* Be careful: The 4th year is 1 day longer */
-+	if (tim == 1460)
-+	{
-+	    tim--;
-+	    leapday++;
-+	}
-+    }
-+
-+    /* 365 days in a normal year */
-+    tm->tm_year += tim / 365;
-+    tim = tim % 365 + leapday;
-+
-+    tm->tm_yday = tim;
-+
-+    if (!leapyear && tim >= 31+28)
-+	tim++; /* add 1 for 29-Feb if no leap year */
-+
-+    /* Find the month */
-+    for (i=0; i<11; i++)
-+    {
-+	if (tim < monthtable[i])
-+	    break;
-+
-+	tim-=monthtable[i];
-+    }
-+
-+    tm->tm_mon = i;
-+    tm->tm_mday = tim + 1;
-+
-+    tm->tm_isdst = -1;
-+
-+    return tm;
-+}
-+struct tm *localtime(const time_t *) __attribute__((alias("gmtime")));
-+
-+char *asctime (const struct tm *tm)
-+{
-+    static const char wday_name[7][3] = {
-+      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-+    };
-+    static const char mon_name[12][3] = {
-+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-+    };
-+    static char buffer[26];
-+
-+    sprintf(buffer, "%.3s %.3s%3d %02d:%02d:%02d %d\n",
-+      wday_name[tm->tm_wday], mon_name[tm->tm_mon],
-+      tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec,
-+      1900 + tm->tm_year);
-+    return buffer;
-+}
-+
-+char *ctime (const time_t *tt)
-+{
-+    return asctime (localtime (tt));
-+}
-+
-+time_t mktime (struct tm *utim)
-+{
-+    static char monthtable[] = {
-+    /* JanFebMarAprMayJunJulAugSepOktNov */
-+       31,28,31,30,31,30,31,31,30,31,30
-+    };
-+
-+    time_t tt;
-+    int  leapyear, days, year, i;
-+
-+    /* TODO: Add struct tm normalization code here */
-+
-+    /* Compute number of days in the years before this year and after 1970.
-+     * 1972 is the first leapyear
-+     */
-+    year = utim->tm_year-1;
-+    days = 365*(year-69) + (year-68)/4 - year/100 + (year+300)/400;
-+
-+    /* Add the day of the months before this month */
-+    for (i=0; i<utim->tm_mon; i++)
-+    {
-+        days += monthtable[i];
-+    }
-+
-+    /* Is this a leapyear ? */
-+    year = utim->tm_year;
-+    leapyear = year%4==0 && (year%100!=0 || (year+300)%400==0);
-+    if (leapyear && utim->tm_mon>1) days++;
-+
-+    /* Add day in the current month */
-+    days += utim->tm_mday - 1;
-+
-+    tt = ( (days*24+utim->tm_hour)*60 + utim->tm_min )*60 + utim->tm_sec;
-+
-+    return tt;
-+}
-+
-+void tzset(void)
-+{
-+  /* not using timezones */
-+}
-+void set_utc_offset(void) __attribute__((alias("tzset")));	/* for watt32 gettod.c */
-+void __tzset(void) __attribute__((alias("tzset")));
-+
-+static void get_zone (struct timezone *tz, time_t now) {	/* for watt32 gettod.c */
-+  (void)now;
-+  if (tz)
-+    tz->tz_minuteswest = tz->tz_dsttime = 0;
-+}
-+
-+int gettimeofday(struct timeval *tv, struct timezone *tz)
-+{
-+  __dpmi_regs r;
-+  struct tm tmblk;
-+  struct timeval tv_tmp;
-+
-+  if (!tv)
-+    tv = &tv_tmp;
-+
-+  r.h.ah = 0x2c;
-+  __dpmi_int(0x21, &r);
-+
-+  tv->tv_usec = r.h.dl * 10000;
-+  tmblk.tm_sec = r.h.dh;
-+  tmblk.tm_min = r.h.cl;
-+  tmblk.tm_hour = r.h.ch;
-+
-+  r.h.ah = 0x2a;
-+  __dpmi_int(0x21, &r);
-+
-+  tmblk.tm_mday = r.h.dl;
-+  tmblk.tm_mon = r.h.dh - 1;
-+  tmblk.tm_year = (r.x.cx & 0x7ff) - 1900;
-+
-+  tmblk.tm_wday = tmblk.tm_yday = tmblk.tm_gmtoff = 0;
-+  tmblk.tm_zone = 0;
-+  tmblk.tm_isdst = -1;
-+
-+  tv->tv_sec = mktime(&tmblk);
-+
-+  if(tz)
-+    tz->tz_minuteswest = tz->tz_dsttime = 0;/* not using timezones */
-+  return 0;
-+}
-+int __gettimeofday(struct timeval *, struct timezone *) __attribute__((alias("gettimeofday")));
-+
-+time_t time (time_t * tloc)
-+{
-+    struct timeval tv;
-+    gettimeofday(&tv, NULL);
-+    if (tloc)
-+        *tloc = tv.tv_sec;
-+    return tv.tv_sec;
-+}
 Only in watt_src.orig/src: iconv
 diff -urp watt_src.orig/src/ioport.h watt_src/src/ioport.h
 --- watt_src.orig/src/ioport.h	2003-11-14 00:57:54.000000000 +0200
@@ -1883,7 +1639,7 @@ diff -urp watt_src.orig/util/errnos.c watt_src/util/errnos.c
  /*
 diff -urp watt_src.orig/util/bin2c.c watt_src/util/bin2c.c
 --- watt_src.orig/util/bin2c.c	1970-01-01 02:00:00.000000000 +0200
-+++ watt_src/util/bin2c.c	2008-01-08 12:16:29.000000000 +0200
++++ watt_src/util/bin2c.c	2013-01-30 18:01:52.000000000 +0200
 @@ -0,0 +1,43 @@
 +#include <stdio.h>
 +#include <stdlib.h>
@@ -1907,7 +1663,7 @@ diff -urp watt_src.orig/util/bin2c.c watt_src/util/bin2c.c
 +  int    ch, i;
 +
 +  if (argc != 2)
-+     Abort ("Usage: %s bin-file [> result]", argv[0]);
++     Abort ("Usage: %s bin-file [> result]\n", argv[0]);
 +
 +  if ((inFile = fopen(argv[1],"rb")) == NULL)
 +     Abort ("Cannot open %s\n", argv[1]);
