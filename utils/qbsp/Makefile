@@ -54,7 +54,7 @@ INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 
 ifeq ($(TARGET_OS),dos)
 INCLUDES+= -I$(OSLIBS)/dos
-LDFLAGS += -lc -lgcc
+LDFLAGS += $(OSLIBS)/dos/djtime/djtime.a -lc -lgcc
 #LDFLAGS += -lm
 endif
 ifeq ($(TARGET_OS),win32)

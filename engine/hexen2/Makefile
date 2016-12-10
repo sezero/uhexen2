@@ -520,7 +520,7 @@ GL_DEFS+= -DREFGL_MESA
 GL_DEFS+= -DREFGL_SAGE
 endif
 
-SYSLIBS += -lc -lgcc
+SYSLIBS += $(OSLIBS)/dos/djtime/djtime.a -lc -lgcc
 #SYSLIBS += -lm
 
 # PCI sound card support through libau

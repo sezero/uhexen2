@@ -123,7 +123,7 @@ INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
 LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
 endif
 
-SYSLIBS += -lc -lgcc
+SYSLIBS += $(OSLIBS)/dos/djtime/djtime.a -lc -lgcc
 #SYSLIBS += -lm
 
 endif

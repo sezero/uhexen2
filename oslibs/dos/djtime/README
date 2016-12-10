@@ -1,0 +1,4 @@
+time functions for djgpp disregarding the timezone stuff, so no unneeded
+horrid dependencies are pulled in when linking the final exe. things can
+be improved, certainly but this is enough for our needs in uhexen2 tree.
+to replace the stock libc versions link with -ldjtim -lc  in that order.

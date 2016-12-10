@@ -106,7 +106,7 @@ CPPFLAGS+= -DUSE_WATT32 -DWATT32_NO_OLDIES
 INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
 LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
 
-SYSLIBS += -lc -lgcc
+SYSLIBS += $(OSLIBS)/dos/djtime/djtime.a -lc -lgcc
 #SYSLIBS += -lm
 
 endif
