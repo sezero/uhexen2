@@ -1,7 +1,4 @@
-;
 ; asm_nasm.inc -- common header for NASM format x86-assembly sources
-; $Id: asm_nasm.inc,v 1.1 2008-03-16 14:32:15 sezero Exp $
-;
 ; Copyright (C) 2008-2012  O.Sezer <sezero@users.sourceforge.net>
 ;
 ; This program is free software; you can redistribute it and/or
@@ -37,4 +34,15 @@
 ; other definitions / macros
 ;
 %idefine offset
+
+;
+; OS/2 special handlings
+;(see the nasm documentation for obj format.)
+;
+%ifdef __OS2__
+BITS 32
+; declare segments with proper attributes for OS/2 builds
+SEGMENT .data USE32 FLAT
+SEGMENT .text USE32 FLAT
+%endif
 
