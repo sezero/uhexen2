@@ -115,6 +115,13 @@ sys_socket_t UDP_Init (void)
 		return INVALID_SOCKET;
 	}
 #endif	/* PLATFORM_AMIGA */
+#if defined(PLATFORM_OS2) && !defined(__EMX__)
+	if (sock_init() < 0)
+	{
+		Con_SafePrintf("%s: Can't initialize IBM OS/2 sockets\n", __thisfunc__);
+		return INVALID_SOCKET;
+	}
+#endif	/* PLATFORM_OS2 */
 #if defined(PLATFORM_DOS)
 #if defined(USE_MPATH) && defined(USE_WATT32)
 	if (COM_CheckParm ("-mpath"))

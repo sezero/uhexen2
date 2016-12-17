@@ -33,6 +33,7 @@
 
 #if defined(PLATFORM_BSD) || defined(PLATFORM_OSX)	|| \
     defined(PLATFORM_AMIGA) /* bsdsocket.library */	|| \
+    (defined(PLATFORM_OS2) && !defined(__EMX__))	|| \
     defined(__GNU__) /* GNU/Hurd */ || defined(__riscos__)
 /* struct sockaddr has unsigned char sa_len as the first member in BSD
  * variants and the family member is also an unsigned char instead of an
@@ -87,6 +88,50 @@ typedef int	socklen_t;			/* defining as signed int to match the old api */
 COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFFSET);
 
 #endif	/* end of unix stuff */
+
+
+/* os/2 includes and compatibility macros */
+#if defined(PLATFORM_OS2)
+
+#ifdef __EMX__
+#define _EMX_TCPIP
+#endif
+#include <sys/param.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
+typedef int	sys_socket_t;
+#define	INVALID_SOCKET	(-1)
+#define	SOCKET_ERROR	(-1)
+
+typedef u_long	in_addr_t;	/* u_int32_t */
+typedef int	socklen_t;
+
+#ifdef __EMX__
+#define	SOCKETERRNO	errno
+#define	socketerror(x)	strerror((x))
+#define	closesocket	close
+#else
+#include <nerrno.h>
+#define	SOCKETERRNO	sock_errno()
+#define	socketerror(x)	sock_strerror((x))
+#define	closesocket	soclose
+#endif
+#define	ioctlsocket	ioctl
+#define	selectsocket	select
+#define	IOCTLARG_P(x)	/* (char *) */ x
+
+#define	NET_EWOULDBLOCK		EWOULDBLOCK
+#define	NET_ECONNREFUSED	ECONNREFUSED
+
+/* Verify that we defined HAVE_SA_LEN correctly: */
+COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFFSET);
+
+#endif	/* end of os/2 stuff */
 
 
 /* amiga includes and compatibility macros */

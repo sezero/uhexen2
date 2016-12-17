@@ -34,6 +34,9 @@
 #include <io.h>		/* write() */
 #include "io_msvc.h"
 #endif
+#if defined(PLATFORM_OS2)||defined(PLATFORM_DOS)
+#include <io.h>		/* write() */
+#endif
 #if defined(PLATFORM_UNIX) ||	\
     defined(__DJGPP__) ||	\
     defined(PLATFORM_RISCOS)

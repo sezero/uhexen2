@@ -25,6 +25,7 @@
 #include "q_stdinc.h"
 #include "arch_def.h"
 #if defined(PLATFORM_UNIX) ||		\
+    defined(PLATFORM_OS2) ||		\
     defined(PLATFORM_AMIGA) ||		\
     defined(__DJGPP__) ||		\
     defined(PLATFORM_RISCOS)
@@ -371,6 +372,10 @@ void NET_Init (int port)
 	if (!SocketBase)
 		Sys_Error ("Can't open bsdsocket.library.");
 #endif
+#if defined(PLATFORM_OS2) && !defined(__EMX__)
+	if (sock_init() < 0)
+		Sys_Error ("Can't initialize IBM OS/2 sockets");
+#endif /* OS/2 */
 #if defined(PLATFORM_DOS) && defined(USE_WATT32)
 	int i, err;
 

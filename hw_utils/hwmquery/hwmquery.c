@@ -31,6 +31,7 @@
 #include "arch_def.h"
 #include "compiler.h"
 #if defined(PLATFORM_UNIX) ||		\
+    defined(PLATFORM_OS2) ||		\
     defined(PLATFORM_AMIGA) ||		\
     defined(__DJGPP__) ||		\
     defined(PLATFORM_RISCOS)
@@ -156,6 +157,10 @@ static void NET_Init (void)
 	if (err != 0)
 		Sys_Error ("Winsock initialization failed (%s)", socketerror(err));
 #endif	/* PLATFORM_WINDOWS */
+#if defined(PLATFORM_OS2) && !defined(__EMX__)
+	if (sock_init() < 0)
+		Sys_Error ("Can't initialize IBM OS/2 sockets");
+#endif	/* OS/2 */
 #ifdef PLATFORM_AMIGA
 	SocketBase = OpenLibrary("bsdsocket.library", 0);
 	if (!SocketBase)

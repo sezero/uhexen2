@@ -204,7 +204,7 @@ void R_ReadPointFile_f (void)
 	byte	color;
 
 	if (cls.state != ca_connected)
-		return;			// need an active map.
+		return; // need an active map.
 
 	color = (byte)Cvar_VariableValue("leak_color");
 	q_snprintf (name, sizeof(name), "maps/%s.pts", cl.mapname);
@@ -218,6 +218,7 @@ void R_ReadPointFile_f (void)
 
 	Con_Printf ("Reading %s...\n", name);
 	c = 0;
+	VectorClear (org); // silence pesky compiler warnings
 	for ( ;; )
 	{
 		r = fscanf (f,"%f %f %f\n", &org[0], &org[1], &org[2]);
