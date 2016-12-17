@@ -181,12 +181,7 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
 /* dos includes and compatibility macros */
 #if defined(PLATFORM_DOS)
 
-#if !defined(USE_WATT32)
-/* our local headers : */
-#include "dos/dos_inet.h"
-#include "dos/dos_sock.h"
-
-#else	/* USE_WATT32 */
+#if defined(USE_WATT32)
 /* Waterloo TCP defines INVALID_SOCKET and SOCKET_ERROR.
  * It uses ioctlsocket and closesocket, similar to WinSock.
  * Unlike WinSock, ioctl argument is char*, NOT u_long*.
@@ -218,6 +213,10 @@ typedef int	sys_socket_t;
 
 /* Verify that we defined HAVE_SA_LEN correctly: */
 COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFFSET);
+
+#else /* local headers: */
+#include "dos/dos_inet.h"
+#include "dos/dos_sock.h"
 
 #endif	/* USE_WATT32 */
 

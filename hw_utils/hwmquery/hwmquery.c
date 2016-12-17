@@ -31,7 +31,9 @@
 #include "arch_def.h"
 #include "compiler.h"
 #if defined(PLATFORM_UNIX) ||		\
-    defined(PLATFORM_AMIGA)
+    defined(PLATFORM_AMIGA) ||		\
+    defined(__DJGPP__) ||		\
+    defined(PLATFORM_RISCOS)
 #include <sys/time.h>	/* struct timeval */
 #endif
 #define	COMPILE_TIME_ASSERT(name, x)	\
@@ -159,6 +161,17 @@ static void NET_Init (void)
 	if (!SocketBase)
 		Sys_Error ("Can't open bsdsocket.library.");
 #endif	/* PLATFORM_AMIGA */
+#if defined(PLATFORM_DOS) && defined(USE_WATT32)
+	int i, err;
+
+/*	dbug_init();*/
+	i = _watt_do_exit;
+	_watt_do_exit = 0;
+	err = sock_init();
+	_watt_do_exit = i;
+	if (err != 0)
+		Sys_Error ("WATTCP initialization failed (%s)", sock_init_err(err));
+#endif	/* WatTCP  */
 }
 
 static void NET_Shutdown (void)
@@ -227,7 +240,7 @@ int main (int argc, char **argv)
 	socklen_t	fromlen;
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
-#if defined(PLATFORM_WINDOWS)
+#if defined(PLATFORM_WINDOWS) || defined(PLATFORM_DOS)
 	u_long	_true = 1;
 #else
 	int	_true = 1;

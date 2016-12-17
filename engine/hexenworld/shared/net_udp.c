@@ -371,11 +371,10 @@ void NET_Init (int port)
 	if (!SocketBase)
 		Sys_Error ("Can't open bsdsocket.library.");
 #endif
-#ifdef PLATFORM_DOS	/* WatTCP */
+#if defined(PLATFORM_DOS) && defined(USE_WATT32)
 	int i, err;
 
 /*	dbug_init();*/
-
 	i = _watt_do_exit;
 	_watt_do_exit = 0;
 	err = sock_init();

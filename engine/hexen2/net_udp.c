@@ -115,29 +115,31 @@ sys_socket_t UDP_Init (void)
 		return INVALID_SOCKET;
 	}
 #endif	/* PLATFORM_AMIGA */
-#if defined(PLATFORM_DOS)	/* WatTCP */
-#if defined(USE_MPATH)
+#if defined(PLATFORM_DOS)
+#if defined(USE_MPATH) && defined(USE_WATT32)
 	if (COM_CheckParm ("-mpath"))
 	{
 		Con_Printf("Skipping WATTCP due to -mpath\n");
 		return INVALID_SOCKET;
 	}
 #endif
-#if defined(USE_BWTCP)
+#if defined(USE_BWTCP) && defined(USE_WATT32)
 	if (tcpipAvailable)
 	{
 		Con_Printf("Skipping WATTCP (BWTCP present)\n");
 		return INVALID_SOCKET;
 	}
 #endif
+#if defined(USE_WATT32)
 	if (ipxAvailable) /* IPX + PktDrvr don't get along */
 	{
 		Con_Printf("Skipping WATTCP (IPX present)\n");
 		return INVALID_SOCKET;
 	}
+#endif
 
+#if defined(USE_WATT32)
 /*	dbug_init();*/
-
 	i = _watt_do_exit;
 	_watt_do_exit = 0;
 	err = sock_init();
@@ -147,6 +149,7 @@ sys_socket_t UDP_Init (void)
 		Con_Printf("WATTCP initialization failed (%s)\n", sock_init_err(err));
 		return INVALID_SOCKET;
 	}
+#endif
 #endif	/* PLATFORM_DOS */
 
 	// determine my name & address
