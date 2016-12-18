@@ -1,0 +1,116 @@
+--- /dev/null
++++ Tremor/Makefile.os2
+@@ -0,0 +1,22 @@
++# build tremor (libvorbisidec) using OpenWatcom for OS/2 as a static libary
++#
++
++CFLAGS  = -bt=os2 -bm -fp5 -fpi87 -mf -oeatxh -w4 -ei -zp8
++# -5s  :  Pentium stack calling conventions.
++# -5r  :  Pentium register calling conventions.
++CFLAGS += -5s
++CFLAGS += -I./include
++CPPFLAGS= -DHAVE_ALLOCA_H
++LIBNAME = vorbisidec.lib
++
++COMPILE = wcc386 -q $(CFLAGS) $(CPPFLAGS)
++
++OBJ = mdct.obj block.obj window.obj synthesis.obj info.obj floor1.obj floor0.obj vorbisfile.obj res012.obj mapping0.obj registry.obj codebook.obj sharedbook.obj
++
++all: $(LIBNAME)
++
++$(LIBNAME): $(OBJ)
++	wlib -q -b -n $@ $(OBJ)
++
++.c.obj:
++	$(COMPILE) -fo=$^@ $<
+--- Tremor-svn-r19427/os.h
++++ Tremor/os.h
+@@ -27,6 +27,8 @@
+ #    define STIN static __inline__
+ #  elif _WIN32
+ #    define STIN static __inline
++#  elif defined(__WATCOMC__)
++#    define STIN static inline
+ #  endif
+ #else
+ #  define STIN static
+@@ -36,6 +38,10 @@
+ #  define M_PI (3.1415926536f)
+ #endif
+ 
++#if defined(__OS2__) && defined(__WATCOMC__)
++#  include <machine/endian.h>
++#endif
++
+ #ifdef _WIN32
+ #  include <malloc.h>
+ #  define rint(x)   (floor((x)+0.5f)) 
+--- Tremor-svn-r19427/mdct.c
++++ Tremor/mdct.c
+@@ -147,7 +147,7 @@ STIN void mdct_butterfly_32(DATA_TYPE *x
+ /* N/stage point generic N stage butterfly (in place, 2 register) */
+ STIN void mdct_butterfly_generic(DATA_TYPE *x,int points,int step){
+ 
+-  LOOKUP_T *T   = sincos_lookup0;
++  const LOOKUP_T *T   = sincos_lookup0;
+   DATA_TYPE *x1        = x + points      - 8;
+   DATA_TYPE *x2        = x + (points>>1) - 8;
+   REG_TYPE   r0;
+@@ -257,8 +257,8 @@ STIN void mdct_bitreverse(DATA_TYPE *x,i
+   int          bit   = 0;
+   DATA_TYPE   *w0    = x;
+   DATA_TYPE   *w1    = x = w0+(n>>1);
+-  LOOKUP_T    *T = (step>=4)?(sincos_lookup0+(step>>1)):sincos_lookup1;
+-  LOOKUP_T    *Ttop  = T+1024;
++  const LOOKUP_T *T = (step>=4)?(sincos_lookup0+(step>>1)):sincos_lookup1;
++  const LOOKUP_T *Ttop  = T+1024;
+   DATA_TYPE    r2;
+ 
+   do{
+@@ -342,8 +342,8 @@ void mdct_backward(int n, DATA_TYPE *in,
+   int n4=n>>2;
+   DATA_TYPE *iX;
+   DATA_TYPE *oX;
+-  LOOKUP_T *T;
+-  LOOKUP_T *V;
++  const LOOKUP_T *T;
++  const LOOKUP_T *V;
+   int shift;
+   int step;
+ 
+--- Tremor-svn-r19427/misc.h
++++ Tremor/misc.h
+@@ -22,10 +22,10 @@
+ 
+ #ifdef _LOW_ACCURACY_
+ #  define X(n) (((((n)>>22)+1)>>1) - ((((n)>>22)+1)>>9))
+-#  define LOOKUP_T const unsigned char
++#  define LOOKUP_T unsigned char
+ #else
+ #  define X(n) (n)
+-#  define LOOKUP_T const ogg_int32_t
++#  define LOOKUP_T ogg_int32_t
+ #endif
+ 
+ #include "asm_arm.h"
+--- Tremor-svn-r19427/window.c
++++ Tremor/window.c
+@@ -56,7 +56,7 @@ void _vorbis_apply_window(ogg_int32_t *d
+ 			  long *blocksizes,
+ 			  int lW,int W,int nW){
+   
+-  LOOKUP_T *window[2]={window_p[0],window_p[1]};
++  const LOOKUP_T *window[2];
+   long n=blocksizes[W];
+   long ln=blocksizes[lW];
+   long rn=blocksizes[nW];
+@@ -69,6 +69,9 @@ void _vorbis_apply_window(ogg_int32_t *d
+   
+   int i,p;
+ 
++  window[0] = (const LOOKUP_T *)window_p[0];
++  window[0] = (const LOOKUP_T *)window_p[1];
++
+   for(i=0;i<leftbegin;i++)
+     d[i]=0;
+ 

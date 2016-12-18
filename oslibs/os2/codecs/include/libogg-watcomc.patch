@@ -1,0 +1,52 @@
+--- /dev/null
++++ libogg/src/Makefile.os2
+@@ -0,0 +1,21 @@
++# build libogg using OpenWatcom for OS/2 as a static libary
++#
++
++CFLAGS  = -bt=os2 -bm -fp5 -fpi87 -mf -oeatxh -w4 -ei -zp8
++# -5s  :  Pentium stack calling conventions.
++# -5r  :  Pentium register calling conventions.
++CFLAGS += -5s
++CFLAGS += -I../include
++LIBNAME = ogg.lib
++
++COMPILE = wcc386 -q $(CFLAGS) $(CPPFLAGS)
++
++OBJ = bitwise.obj framing.obj
++
++all: $(LIBNAME)
++
++$(LIBNAME): $(OBJ)
++	wlib -q -b -n $@ $(OBJ)
++
++.c.obj:
++	$(COMPILE) -fo=$^@ $<
+--- /dev/null
++++ libogg/include/ogg/config_types.h
+@@ -0,0 +1,25 @@
++#ifndef __CONFIG_TYPES_H__
++#define __CONFIG_TYPES_H__
++
++/* these are filled in by configure */
++#define INCLUDE_INTTYPES_H 0
++#define INCLUDE_STDINT_H 0
++#define INCLUDE_SYS_TYPES_H 1
++
++#if INCLUDE_INTTYPES_H
++#  include <inttypes.h>
++#endif
++#if INCLUDE_STDINT_H
++#  include <stdint.h>
++#endif
++#if INCLUDE_SYS_TYPES_H
++#  include <sys/types.h>
++#endif
++
++typedef short ogg_int16_t;
++typedef unsigned short ogg_uint16_t;
++typedef int ogg_int32_t;
++typedef unsigned int ogg_uint32_t;
++typedef long long ogg_int64_t;
++
++#endif
