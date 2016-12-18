@@ -44,7 +44,7 @@
 #  include <sys/param.h>
 # elif defined(__DJGPP__)
 #  include <machine/endian.h>
-# elif defined(__OS2__) && defined(__WATCOM__)
+# elif defined(__OS2__) && defined(__WATCOMC__)
 #  include <machine/endian.h>
 # elif defined(__amigaos__) && defined(__NEWLIB__)
 #  include <machine/endian.h>
