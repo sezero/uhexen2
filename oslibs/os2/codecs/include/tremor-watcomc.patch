@@ -109,7 +109,7 @@
    int i,p;
  
 +  window[0] = (const LOOKUP_T *)window_p[0];
-+  window[0] = (const LOOKUP_T *)window_p[1];
++  window[1] = (const LOOKUP_T *)window_p[1];
 +
    for(i=0;i<leftbegin;i++)
      d[i]=0;
