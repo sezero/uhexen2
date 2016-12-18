@@ -1,0 +1,108 @@
+# quick'n'dirty makefile to build h2ded.exe for OS/2
+
+# PATH SETTINGS:
+UHEXEN2_TOP=../../..
+ENGINE_TOP=../..
+COMMONDIR=$(ENGINE_TOP)/h2shared
+UHEXEN2_SHARED=$(UHEXEN2_TOP)/common
+LIBS_DIR=$(UHEXEN2_TOP)/libs
+OSLIBS=$(UHEXEN2_TOP)/oslibs
+
+# GENERAL OPTIONS (customize as required)
+
+# Names of the binaries
+BINARY=h2ded.exe
+
+#############################################################
+# Compiler flags
+#############################################################
+
+CFLAGS = -zq -bm -bt=os2 -5s -fp5 -fpi87 -sg -otexan -wx -ei -zp8
+
+# compiler includes
+INCLUDES= -I. -I.. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
+
+# end of compiler flags
+#############################################################
+
+
+#############################################################
+# Other build flags
+#############################################################
+
+CPPFLAGS+= -DSERVERONLY
+
+!ifdef DEMO
+CPPFLAGS+= -DDEMOBUILD
+!endif
+
+!ifdef DEBUG
+CFLAGS  += -d2
+# This activates some extra code in hexen2/hexenworld C source
+CPPFLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
+!endif
+
+
+#############################################################
+# OS/2 flags/settings and overrides:
+#############################################################
+
+INCLUDES+= -I$(OSLIBS)/os2
+
+#############################################################
+
+.c: ..;$(COMMONDIR);$(UHEXEN2_SHARED)
+
+.c.obj:
+	wcc386 $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -fo=$^@ $<
+
+# Objects
+
+SYSOBJ_NET = net_bsd.obj net_udp.obj
+SYSOBJ_SYS = sys_os2.obj
+
+# Final list of objects
+OBJECTS = &
+	q_endian.obj &
+	link_ops.obj &
+	sizebuf.obj &
+	strlcat.obj &
+	strlcpy.obj &
+	qsnprint.obj &
+	msg_io.obj &
+	common.obj &
+	debuglog.obj &
+	quakefs.obj &
+	cmd.obj &
+	crc.obj &
+	cvar.obj &
+	mathlib.obj &
+	zone.obj &
+	$(SYSOBJ_NET) &
+	net_dgrm.obj &
+	net_main.obj &
+	sv_model.obj &
+	host.obj &
+	host_cmd.obj &
+	pr_cmds.obj &
+	pr_edict.obj &
+	pr_exec.obj &
+	host_string.obj &
+	sv_effect.obj &
+	sv_main.obj &
+	sv_move.obj &
+	sv_phys.obj &
+	sv_user.obj &
+	world.obj &
+	$(SYSOBJ_SYS)
+
+all: $(BINARY)
+h2ded: $(BINARY)
+
+$(BINARY): $(OBJECTS)
+	wlink N $@ SYS OS2V2 F {$(OBJECTS)}
+
+clean: .symbolic
+	rm -f *.obj *.res
+distclean: clean .symbolic
+	rm -f $(BINARY)

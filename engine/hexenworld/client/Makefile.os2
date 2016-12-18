@@ -1,0 +1,386 @@
+# quick'n'dirty makefile to build hw.exe for OS/2
+
+# PATH SETTINGS:
+UHEXEN2_TOP=../../..
+ENGINE_TOP=../..
+HW_TOP=..
+COMMONDIR=$(ENGINE_TOP)/h2shared
+COMMON_HW=$(HW_TOP)/shared
+UHEXEN2_SHARED=$(UHEXEN2_TOP)/common
+LIBS_DIR=$(UHEXEN2_TOP)/libs
+OSLIBS=$(UHEXEN2_TOP)/oslibs
+
+# GENERAL OPTIONS (customize as required)
+
+SDL_CFLAGS = -I$(OSLIBS)/os2/SDL/include
+SDL_LIBS   = $(OSLIBS)/os2/SDL/lib/SDL12.lib
+
+# use fast x86 assembly on ia32 machines? (auto-disabled for
+# any other cpu.)
+USE_X86_ASM=yes
+
+# enable sound support?
+USE_SOUND=yes
+
+# include target's MIDI driver if available?
+USE_MIDI=yes
+
+# CDAudio support?
+USE_CDAUDIO=yes
+
+# Enable/disable codecs for streaming music support:
+USE_CODEC_WAVE=yes
+USE_CODEC_FLAC=no
+USE_CODEC_MP3=yes
+USE_CODEC_VORBIS=yes
+USE_CODEC_OPUS=no
+# either mikmod, or xmp (or modplug.)
+USE_CODEC_MIKMOD=no
+USE_CODEC_XMP=no
+USE_CODEC_MODPLUG=no
+USE_CODEC_UMX=no
+# either timidity (preferred) or wildmidi (both possible
+# but not needed nor meaningful)
+USE_CODEC_TIMIDITY=yes
+USE_CODEC_WILDMIDI=no
+# which library to use for mp3 decoding: mad or mpg123
+MP3LIB=mad
+# which library to use for ogg decoding: vorbis or tremor
+VORBISLIB=tremor
+
+# Names of the binaries
+SW_BINARY=hwcl.exe
+
+#############################################################
+# Compiler flags
+#############################################################
+
+CFLAGS = -zq -bm -bt=os2 -5s -fp5 -fpi87 -sg -otexan -wx -ei -zp8
+
+# compiler includes
+INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
+# nasm includes: the trailing directory separator matters
+NASM_INC= -I./ -I$(COMMON_HW)/ -I$(COMMONDIR)/
+
+# end of compiler flags
+#############################################################
+
+
+#############################################################
+# Other build flags
+#############################################################
+
+CPPFLAGS+= -DH2W
+
+!ifdef DEMO
+CPPFLAGS+= -DDEMOBUILD
+!endif
+
+!ifdef DEBUG
+CFLAGS  += -d2
+# This activates some extra code in hexen2/hexenworld C source
+CPPFLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
+!endif
+
+
+#############################################################
+# streaming music initial setup
+#############################################################
+!ifneq USE_SOUND yes
+USE_CODEC_WAVE=no
+USE_CODEC_FLAC=no
+USE_CODEC_TIMIDITY=no
+USE_CODEC_WILDMIDI=no
+USE_CODEC_MIKMOD=no
+USE_CODEC_XMP=no
+USE_CODEC_MODPLUG=no
+USE_CODEC_UMX=no
+USE_CODEC_MP3=no
+USE_CODEC_VORBIS=no
+USE_CODEC_OPUS=no
+!endif
+
+
+#############################################################
+# OS/2 flags/settings and overrides:
+#############################################################
+
+NASMFLAGS=-f obj -d__OS2__ -d_NO_PREFIX
+
+# using SDL for now..
+CPPFLAGS+= -DSDLQUAKE
+CFLAGS  += $(SDL_CFLAGS)
+LIBS    += $(SDL_LIBS)
+
+INCLUDES+= -I$(OSLIBS)/os2
+INCLUDES+= -I$(OSLIBS)/os2/codecs/include
+CODECLIBS=  $(OSLIBS)/os2/codecs/lib
+
+#############################################################
+# Streaming music settings
+#############################################################
+!ifeq MP3LIB mad
+mp3_obj=snd_mp3.obj
+lib_mp3dec=$(CODECLIBS)/mad.lib
+!endif
+!ifeq MP3LIB mpg123
+mp3_obj=snd_mpg123.obj
+lib_mp3dec=$(CODECLIBS)/mpg123.lib
+!endif
+!ifeq VORBISLIB vorbis
+cpp_vorbisdec=
+lib_vorbisdec=$(CODECLIBS)/vorbisfile.lib $(CODECLIBS)/vorbis.lib $(CODECLIBS)/ogg.lib
+!endif
+!ifeq VORBISLIB tremor
+cpp_vorbisdec=-DVORBIS_USE_TREMOR
+lib_vorbisdec=$(CODECLIBS)/vorbisidec.lib $(CODECLIBS)/ogg.lib
+!endif
+
+!ifeq USE_CODEC_FLAC yes
+CPPFLAGS+= -DUSE_CODEC_FLAC
+LIBS    += $(CODECLIBS)/FLAC.lib
+!endif
+!ifeq USE_CODEC_WAVE yes
+CPPFLAGS+= -DUSE_CODEC_WAVE
+!endif
+!ifeq USE_CODEC_OPUS yes
+CPPFLAGS+= -DUSE_CODEC_OPUS
+LIBS    += $(CODECLIBS)/opusfile.lib $(CODECLIBS)/opus.lib
+!ifneq USE_CODEC_VORBIS yes
+LIBS    += $(OSLIBS)/os2/codecs/lib/ogg.lib
+!endif
+!endif
+!ifeq USE_CODEC_VORBIS yes
+CPPFLAGS+= -DUSE_CODEC_VORBIS $(cpp_vorbisdec)
+LIBS    += $(lib_vorbisdec)
+!endif
+!ifeq USE_CODEC_MP3 yes
+CPPFLAGS+= -DUSE_CODEC_MP3
+LIBS    += $(lib_mp3dec)
+!endif
+!ifeq USE_CODEC_MIKMOD yes
+CPPFLAGS+= -DUSE_CODEC_MIKMOD
+LIBS    += $(CODECLIBS)/mikmod.lib
+!endif
+!ifeq USE_CODEC_XMP yes
+CPPFLAGS+= -DUSE_CODEC_XMP
+LIBS    += $(CODECLIBS)/libxmp.lib
+!endif
+!ifeq USE_CODEC_MODPLUG yes
+CPPFLAGS+= -DUSE_CODEC_MODPLUG
+LIBS    += $(CODECLIBS)/modplug.lib
+!endif
+!ifeq USE_CODEC_UMX yes
+CPPFLAGS+= -DUSE_CODEC_UMX
+!endif
+!ifeq USE_CODEC_TIMIDITY yes
+CPPFLAGS+= -DUSE_CODEC_TIMIDITY
+LIBS    += $(CODECLIBS)/timidity.lib
+!endif
+!ifeq USE_CODEC_WILDMIDI yes
+CPPFLAGS+= -DUSE_CODEC_WILDMIDI
+LIBS    += $(CODECLIBS)/WildMidi.lib
+!endif
+
+# End of streaming music settings
+#############################################################
+
+#############################################################
+# Finalize things after the system specific overrides:
+#############################################################
+
+!ifeq USE_X86_ASM yes
+CPPFLAGS+= -DUSE_INTEL_ASM
+!endif
+#
+#############################################################
+
+.c: $(COMMON_HW);$(COMMONDIR);$(UHEXEN2_SHARED)
+.asm: $(COMMON_HW);$(COMMONDIR)
+
+.c.obj:
+	wcc386 $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -fo=$^@ $<
+.asm.obj:
+	nasm $(NASM_INC) $(NASMFLAGS) -o $^@ $<
+
+# Objects
+
+# Intel asm objects
+!ifeq USE_X86_ASM yes
+COMMON_ASM= math.obj &
+	sys_ia32.obj
+
+SOFT_ASM = &
+	d_draw.obj &
+	d_draw16.obj &
+	d_draw16t.obj &
+	d_parta.obj &
+	d_partb.obj &
+	d_polysa.obj &
+	d_polysa2.obj &
+	d_polysa3.obj &
+	d_polysa4.obj &
+	d_polysa5.obj &
+	d_scana.obj &
+	d_spr8.obj &
+	d_spr8t.obj &
+	d_spr8t2.obj &
+	d_varsa.obj &
+	r_aclipa.obj &
+	r_aliasa.obj &
+	r_drawa.obj &
+	r_edgea.obj &
+	r_edgeb.obj &
+	r_varsa.obj &
+	surf8.obj &
+	surf16.obj
+
+SOUND_ASM = snd_mixa.obj
+
+!else
+
+SOFT_ASM =
+COMMON_ASM =
+SOUND_ASM =
+
+!endif
+
+# Sound objects
+!ifneq USE_SOUND yes
+MUSIC_OBJS= bgmnull.obj
+SOUND_ASM =
+CPPFLAGS += -D_NO_SOUND
+SYSOBJ_SND =
+COMOBJ_SND = snd_null.obj $(MUSIC_OBJS)
+!else
+MUSIC_OBJS= bgmusic.obj &
+	snd_codec.obj &
+	snd_flac.obj &
+	snd_wave.obj &
+	snd_vorbis.obj &
+	snd_opus.obj &
+	$(mp3_obj) &
+	snd_mikmod.obj &
+	snd_modplug.obj &
+	snd_xmp.obj &
+	snd_umx.obj &
+	snd_timidity.obj &
+	snd_wildmidi.obj
+COMOBJ_SND = snd_sys.obj snd_dma.obj snd_mix.obj $(SOUND_ASM) snd_mem.obj $(MUSIC_OBJS)
+SYSOBJ_SND = snd_sdl.obj
+!endif
+
+!ifneq USE_MIDI yes
+SYSOBJ_MIDI= midi_nul.obj
+CPPFLAGS += -D_NO_MIDIDRV
+!else
+# FIXME: need to cook something.
+SYSOBJ_MIDI= midi_nul.obj
+CPPFLAGS += -D_NO_MIDIDRV
+!endif
+
+# CDAudio objects
+!ifneq USE_CDAUDIO yes
+SYSOBJ_CDA= cd_null.obj
+CPPFLAGS += -D_NO_CDAUDIO
+!else
+CPPFLAGS+= -DWITH_SDLCD
+SYSOBJ_CDA = cd_sdl.obj
+!endif
+
+SYSOBJ_INPUT = in_sdl.obj
+SYSOBJ_SOFT_VID= vid_sdl.obj
+SYSOBJ_SYS = sys_os2.obj
+
+# Final list of objects
+SOFTOBJS = &
+	d_edge.obj &
+	d_fill.obj &
+	d_init.obj &
+	d_modech.obj &
+	d_part.obj &
+	d_polyse.obj &
+	d_scan.obj &
+	d_sky.obj &
+	d_sprite.obj &
+	d_surf.obj &
+	d_vars.obj &
+	d_zpoint.obj &
+	r_aclip.obj &
+	r_alias.obj &
+	r_bsp.obj &
+	r_draw.obj &
+	r_edge.obj &
+	r_efrag.obj &
+	r_light.obj &
+	r_main.obj &
+	r_misc.obj &
+	r_part.obj &
+	r_sky.obj &
+	r_sprite.obj &
+	r_surf.obj &
+	r_vars.obj &
+	screen.obj &
+	$(SYSOBJ_SOFT_VID) &
+	draw.obj &
+	model.obj
+
+COMMONOBJS = &
+	$(SYSOBJ_INPUT) &
+	$(COMOBJ_SND) &
+	$(SYSOBJ_SND) &
+	$(SYSOBJ_CDA) &
+	$(SYSOBJ_MIDI) &
+	huffman.obj &
+	net_udp.obj &
+	net_chan.obj &
+	cl_cam.obj &
+	cl_demo.obj &
+	cl_effect.obj &
+	cl_ents.obj &
+	cl_inlude.obj &
+	cl_input.obj &
+	cl_main.obj &
+	cl_parse.obj &
+	cl_pred.obj &
+	cl_tent.obj &
+	cl_cmd.obj &
+	console.obj &
+	keys.obj &
+	menu.obj &
+	sbar.obj &
+	skin.obj &
+	view.obj &
+	wad.obj &
+	cmd.obj &
+	q_endian.obj &
+	link_ops.obj &
+	sizebuf.obj &
+	strlcat.obj &
+	strlcpy.obj &
+	qsnprint.obj &
+	msg_io.obj &
+	common.obj &
+	debuglog.obj &
+	quakefs.obj &
+	info_str.obj &
+	crc.obj &
+	cvar.obj &
+	cfgfile.obj &
+	host_string.obj &
+	mathlib.obj &
+	pmove.obj &
+	pmovetst.obj &
+	zone.obj &
+	$(SYSOBJ_SYS)
+
+all: $(SW_BINARY)
+hw: $(SW_BINARY)
+
+$(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS)
+	wlink N $@ SYS OS2V2 LIBR {$(LIBS)} F {$(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS)}
+
+clean: .symbolic
+	rm -f *.obj *.res
+distclean: clean .symbolic
+	rm -f $(SW_BINARY)
