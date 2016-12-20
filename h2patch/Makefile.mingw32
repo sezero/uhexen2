@@ -34,10 +34,10 @@ XDFLAGS:= -DXD3_DEBUG=0
 # when XD3_USE_LARGEFILE64 is not defined, xdelta3 defaults
 # to 64 bit xoff_t.
 # using 32 bit xoff_t is necessary for compatibility
-# with old windows versions (Win9x, WinNT4)
+# with old windows versions, i.e. win9x or nt4.
 XDFLAGS+= -DXD3_USE_LARGEFILE64=0
 # make xdelta3 to use windows api for file i/o:
-XDFLAGS+= -DXD3_STDIO=0 -DXD3_POSIX=0 -DXD3_WIN32=1
+XDFLAGS+= -DXD3_WIN32=1
 XDFLAGS+= -I$(XDELTA_DIR) -I$(UHEXEN2_SHARED)
 XDFLAGS+= $(CFLAGS)
 

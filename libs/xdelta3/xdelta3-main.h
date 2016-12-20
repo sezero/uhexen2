@@ -76,23 +76,31 @@ const char* xd3_mainerror(int err_num);
 #include <stdio.h>  /* fprintf */
 
 #if XD3_POSIX
+#if !(defined(__OS2__)||defined(_WIN32))
 #include <unistd.h> /* close, read, write... */
+#else
+#include <io.h>
+#endif
+#ifndef __DJGPP__
+#include <sys/stat.h> /* stat() and fstat() */
+#endif
 #include <sys/types.h>
 #include <fcntl.h>
 #endif
 
-#if defined(_WIN32)
-	/* */
-#elif defined(__DJGPP__)
+#if XD3_STDIO && !defined(__DJGPP__)
+#include <sys/stat.h> /* stat() and fstat() */
+#endif
+
+#if XD3_AMIGA
+#include <proto/exec.h>
+#include <proto/dos.h>
+#endif
+
+#ifdef __DJGPP__
 #include <dos.h>
 #include <io.h>
 #include <unistd.h>
-#elif (XD3_AMIGA)
-#include <proto/exec.h>
-#include <proto/dos.h>
-#else /* POSIX */
-#include <unistd.h> /* lots */
-#include <sys/stat.h> /* stat() and fstat() */
 #endif
 
 /**********************************************************************

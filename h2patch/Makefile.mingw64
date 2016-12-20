@@ -36,7 +36,7 @@ XDFLAGS:= -DXD3_DEBUG=0
 # use 64 bit xoff_t for win64
 XDFLAGS+= -DXD3_USE_LARGEFILE64=1
 # make xdelta3 to use windows api for file i/o:
-XDFLAGS+= -DXD3_STDIO=0 -DXD3_POSIX=0 -DXD3_WIN32=1
+XDFLAGS+= -DXD3_WIN32=1
 XDFLAGS+= -I$(XDELTA_DIR) -I$(UHEXEN2_SHARED)
 XDFLAGS+= $(CFLAGS)
 
