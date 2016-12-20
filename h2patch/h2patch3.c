@@ -38,6 +38,10 @@
 #include <proto/dos.h>
 #include <proto/timer.h>
 #include <time.h>
+#elif defined(PLATFORM_OS2)
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <io.h>
 #else /* POSIX */
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -488,6 +492,15 @@ static int Sys_FileType (const char *path)
 	return FS_ENT_NONE;
 }
 
+#ifdef PLATFORM_OS2
+static int check_access (const char *name)
+{
+	if (Sys_FileType(name) != FS_ENT_FILE)
+		return ACCESS_NOFILE;
+
+	return ACCESS_FILEOK;
+}
+#else
 static int check_access (const char *name)
 {
 	/* paks copied off of a cdrom might fail R_OK|W_OK */
@@ -501,6 +514,7 @@ static int check_access (const char *name)
 
 	return ACCESS_FILEOK;
 }
+#endif
 
 static long get_millisecs (void)
 {

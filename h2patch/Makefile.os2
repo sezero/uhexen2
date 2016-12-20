@@ -1,0 +1,66 @@
+# quick'n'dirty makefile to build h2patch.exe for OS/2
+# use OpenWatcom:  wmake -f Makefile.os2
+
+!ifdef __UNIX__
+PATH_SEP=/
+UHEXEN2_TOP=..
+UHEXEN2_SHARED=$(UHEXEN2_TOP)/common
+LIBS_DIR=$(UHEXEN2_TOP)/libs
+OSLIBS=$(UHEXEN2_TOP)/oslibs
+XDELTA_DIR= $(LIBS_DIR)/xdelta3
+!else
+PATH_SEP=\
+UHEXEN2_TOP=..
+UHEXEN2_SHARED=$(UHEXEN2_TOP)\common
+LIBS_DIR=$(UHEXEN2_TOP)\libs
+OSLIBS=$(UHEXEN2_TOP)\oslibs
+XDELTA_DIR= $(LIBS_DIR)\xdelta3
+!endif
+
+CFLAGS  = -zq -bm -bt=os2 -5s -fp5 -fpi87 -sg -otexan -wx -ei -zp8
+!ifndef DEBUG
+CFLAGS += -DNDEBUG=1
+!else
+CFLAGS += -d2
+!endif
+CFLAGS += -I. -I$(XDELTA_DIR) -I$(UHEXEN2_SHARED)
+
+XDFLAGS= -DXD3_DEBUG=0
+# when XD3_USE_LARGEFILE64 is not defined, xdelta3 defaults
+# to 64 bit xoff_t.
+# define XD3_USE_LARGEFILE64 as 0 or 1.
+XDFLAGS+= -DXD3_USE_LARGEFILE64=0
+# make xdelta3 to use open(), close() & co:
+XDFLAGS+= -DXD3_POSIX=1
+
+# Targets
+BINARY=h2patch.exe
+all: $(BINARY)
+
+OBJECTS=xdelta3.obj qsnprint.obj h2patch3.obj
+XD3DEPS=xdelta3-decode.h xdelta3-list.h xdelta3-main.h xdelta3-blkcache.h xdelta3.c xdelta3.h
+
+.c: $(UHEXEN2_SHARED);$(XDELTA_DIR)
+.h: $(UHEXEN2_SHARED);$(XDELTA_DIR)
+
+.c.obj:
+	wcc386 $(CFLAGS) -fo=$^@ $<
+
+xdelta3.obj: $(XD3DEPS)
+	wcc386 $(CFLAGS) $(XDFLAGS) -fo=$^@ $(XDELTA_DIR)$(PATH_SEP)xdelta3.c
+
+h2patch.exe: $(OBJECTS)
+	wlink N $@ SYS OS2V2 F {$(OBJECTS)}
+
+!ifdef __UNIX__
+clean: .symbolic
+	rm -f *.obj *.res
+distclean: clean .symbolic
+	rm -f $(BINARY)
+!else
+clean: .symbolic
+	@if exist *.obj del *.obj
+	@if exist *.res del *.res
+distclean: clean .symbolic
+	@if exist $(BINARY) del $(BINARY)
+!endif

@@ -1,12 +1,24 @@
 # quick'n'dirty makefile to build h2ded.exe for OS/2
+# use OpenWatcom:  wmake -f Makefile.os2
 
 # PATH SETTINGS:
+!ifndef __UNIX__
+PATH_SEP=\
+UHEXEN2_TOP=..\..\..
+ENGINE_TOP=..\..
+COMMONDIR=$(ENGINE_TOP)\h2shared
+UHEXEN2_SHARED=$(UHEXEN2_TOP)\common
+LIBS_DIR=$(UHEXEN2_TOP)\libs
+OSLIBS=$(UHEXEN2_TOP)\oslibs
+!else
+PATH_SEP=/
 UHEXEN2_TOP=../../..
 ENGINE_TOP=../..
 COMMONDIR=$(ENGINE_TOP)/h2shared
 UHEXEN2_SHARED=$(UHEXEN2_TOP)/common
 LIBS_DIR=$(UHEXEN2_TOP)/libs
 OSLIBS=$(UHEXEN2_TOP)/oslibs
+!endif
 
 # GENERAL OPTIONS (customize as required)
 
@@ -47,7 +59,7 @@ CPPFLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
 # OS/2 flags/settings and overrides:
 #############################################################
 
-INCLUDES+= -I$(OSLIBS)/os2
+INCLUDES+= -I$(OSLIBS)$(PATH_SEP)os2
 
 #############################################################
 
@@ -102,7 +114,15 @@ h2ded: $(BINARY)
 $(BINARY): $(OBJECTS)
 	wlink N $@ SYS OS2V2 F {$(OBJECTS)}
 
+!ifdef __UNIX__
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
 	rm -f $(BINARY)
+!else
+clean: .symbolic
+	@if exist *.obj del *.obj
+	@if exist *.res del *.res
+distclean: clean .symbolic
+	@if exist $(BINARY) del $(BINARY)
+!endif

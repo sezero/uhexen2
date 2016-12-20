@@ -1,6 +1,19 @@
 # quick'n'dirty makefile to build hw.exe for OS/2
+# use OpenWatcom:  wmake -f Makefile.os2
 
 # PATH SETTINGS:
+!ifndef __UNIX__
+PATH_SEP=\
+UHEXEN2_TOP=..\..\..
+ENGINE_TOP=..\..
+HW_TOP=..
+COMMONDIR=$(ENGINE_TOP)\h2shared
+COMMON_HW=$(HW_TOP)\shared
+UHEXEN2_SHARED=$(UHEXEN2_TOP)\common
+LIBS_DIR=$(UHEXEN2_TOP)\libs
+OSLIBS=$(UHEXEN2_TOP)\oslibs
+!else
+PATH_SEP=/
 UHEXEN2_TOP=../../..
 ENGINE_TOP=../..
 HW_TOP=..
@@ -9,11 +22,9 @@ COMMON_HW=$(HW_TOP)/shared
 UHEXEN2_SHARED=$(UHEXEN2_TOP)/common
 LIBS_DIR=$(UHEXEN2_TOP)/libs
 OSLIBS=$(UHEXEN2_TOP)/oslibs
+!endif
 
 # GENERAL OPTIONS (customize as required)
-
-SDL_CFLAGS = -I$(OSLIBS)/os2/SDL/include
-SDL_LIBS   = $(OSLIBS)/os2/SDL/lib/SDL12.lib
 
 # use fast x86 assembly on ia32 machines? (auto-disabled for
 # any other cpu.)
@@ -60,7 +71,7 @@ CFLAGS = -zq -bm -bt=os2 -5s -fp5 -fpi87 -sg -otexan -wx -ei -zp8
 # compiler includes
 INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 # nasm includes: the trailing directory separator matters
-NASM_INC= -I./ -I$(COMMON_HW)/ -I$(COMMONDIR)/
+NASM_INC= -I.$(PATH_SEP) -I$(COMMON_HW)$(PATH_SEP) -I$(COMMONDIR)$(PATH_SEP)
 
 # end of compiler flags
 #############################################################
@@ -82,7 +93,6 @@ CFLAGS  += -d2
 CPPFLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
 !endif
 
-
 #############################################################
 # streaming music initial setup
 #############################################################
@@ -100,54 +110,63 @@ USE_CODEC_VORBIS=no
 USE_CODEC_OPUS=no
 !endif
 
-
 #############################################################
 # OS/2 flags/settings and overrides:
 #############################################################
 
 NASMFLAGS=-f obj -d__OS2__ -d_NO_PREFIX
 
-# using SDL for now..
+!ifndef __UNIX__
+INCLUDES+= -I$(OSLIBS)\os2
+INCLUDES+= -I$(OSLIBS)\os2\codecs\include
+CODECLIBS=  $(OSLIBS)\os2\codecs\lib\
+SDL_CFLAGS=-I$(OSLIBS)\os2\SDL\include
+SDL_LIBS = $(OSLIBS)\os2\SDL\lib\SDL12.lib
+!else
+INCLUDES+= -I$(OSLIBS)/os2
+INCLUDES+= -I$(OSLIBS)/os2/codecs/include
+CODECLIBS=  $(OSLIBS)/os2/codecs/lib/
+SDL_CFLAGS=-I$(OSLIBS)/os2/SDL/include
+SDL_LIBS = $(OSLIBS)/os2/SDL/lib/SDL12.lib
+!endif
+
+# use SDL for now
 CPPFLAGS+= -DSDLQUAKE
 CFLAGS  += $(SDL_CFLAGS)
 LIBS    += $(SDL_LIBS)
-
-INCLUDES+= -I$(OSLIBS)/os2
-INCLUDES+= -I$(OSLIBS)/os2/codecs/include
-CODECLIBS=  $(OSLIBS)/os2/codecs/lib
 
 #############################################################
 # Streaming music settings
 #############################################################
 !ifeq MP3LIB mad
 mp3_obj=snd_mp3.obj
-lib_mp3dec=$(CODECLIBS)/mad.lib
+lib_mp3dec=$(CODECLIBS)mad.lib
 !endif
 !ifeq MP3LIB mpg123
 mp3_obj=snd_mpg123.obj
-lib_mp3dec=$(CODECLIBS)/mpg123.lib
+lib_mp3dec=$(CODECLIBS)mpg123.lib
 !endif
 !ifeq VORBISLIB vorbis
 cpp_vorbisdec=
-lib_vorbisdec=$(CODECLIBS)/vorbisfile.lib $(CODECLIBS)/vorbis.lib $(CODECLIBS)/ogg.lib
+lib_vorbisdec=$(CODECLIBS)vorbisfile.lib $(CODECLIBS)vorbis.lib $(CODECLIBS)ogg.lib
 !endif
 !ifeq VORBISLIB tremor
 cpp_vorbisdec=-DVORBIS_USE_TREMOR
-lib_vorbisdec=$(CODECLIBS)/vorbisidec.lib $(CODECLIBS)/ogg.lib
+lib_vorbisdec=$(CODECLIBS)vorbisidec.lib $(CODECLIBS)ogg.lib
 !endif
 
 !ifeq USE_CODEC_FLAC yes
 CPPFLAGS+= -DUSE_CODEC_FLAC
-LIBS    += $(CODECLIBS)/FLAC.lib
+LIBS    += $(CODECLIBS)FLAC.lib
 !endif
 !ifeq USE_CODEC_WAVE yes
 CPPFLAGS+= -DUSE_CODEC_WAVE
 !endif
 !ifeq USE_CODEC_OPUS yes
 CPPFLAGS+= -DUSE_CODEC_OPUS
-LIBS    += $(CODECLIBS)/opusfile.lib $(CODECLIBS)/opus.lib
+LIBS    += $(CODECLIBS)opusfile.lib $(CODECLIBS)opus.lib
 !ifneq USE_CODEC_VORBIS yes
-LIBS    += $(OSLIBS)/os2/codecs/lib/ogg.lib
+LIBS    += $(CODECLIBS)ogg.lib
 !endif
 !endif
 !ifeq USE_CODEC_VORBIS yes
@@ -160,26 +179,26 @@ LIBS    += $(lib_mp3dec)
 !endif
 !ifeq USE_CODEC_MIKMOD yes
 CPPFLAGS+= -DUSE_CODEC_MIKMOD
-LIBS    += $(CODECLIBS)/mikmod.lib
+LIBS    += $(CODECLIBS)mikmod.lib
 !endif
 !ifeq USE_CODEC_XMP yes
 CPPFLAGS+= -DUSE_CODEC_XMP
-LIBS    += $(CODECLIBS)/libxmp.lib
+LIBS    += $(CODECLIBS)libxmp.lib
 !endif
 !ifeq USE_CODEC_MODPLUG yes
 CPPFLAGS+= -DUSE_CODEC_MODPLUG
-LIBS    += $(CODECLIBS)/modplug.lib
+LIBS    += $(CODECLIBS)modplug.lib
 !endif
 !ifeq USE_CODEC_UMX yes
 CPPFLAGS+= -DUSE_CODEC_UMX
 !endif
 !ifeq USE_CODEC_TIMIDITY yes
 CPPFLAGS+= -DUSE_CODEC_TIMIDITY
-LIBS    += $(CODECLIBS)/timidity.lib
+LIBS    += $(CODECLIBS)timidity.lib
 !endif
 !ifeq USE_CODEC_WILDMIDI yes
 CPPFLAGS+= -DUSE_CODEC_WILDMIDI
-LIBS    += $(CODECLIBS)/WildMidi.lib
+LIBS    += $(CODECLIBS)WildMidi.lib
 !endif
 
 # End of streaming music settings
@@ -380,7 +399,15 @@ hw: $(SW_BINARY)
 $(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	wlink N $@ SYS OS2V2 LIBR {$(LIBS)} F {$(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS)}
 
+!ifdef __UNIX__
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
 	rm -f $(SW_BINARY)
+!else
+clean: .symbolic
+	@if exist *.obj del *.obj
+	@if exist *.res del *.res
+distclean: clean .symbolic
+	@if exist $(SW_BINARY) del $(SW_BINARY)
+!endif
