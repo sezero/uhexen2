@@ -1,1 +1,5 @@
-ftp://ftp.netlabs.org/pub/sdl/
+latest versions:
+http://hobbes.nmsu.edu/h-search.php?key=SDL-1.2.15-
+https://github.com/OS2World/LIB-SDL-2014
+
+original/old versions: ftp://ftp.netlabs.org/pub/sdl/

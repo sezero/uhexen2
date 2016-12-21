@@ -1,6 +1,6 @@
 /*
     SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2006 Sam Lantinga
+    Copyright (C) 1997-2012 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -107,11 +107,17 @@ typedef unsigned long long  uint64_t;
 #define HAVE_VSNPRINTF 1
 #define HAVE_SETJMP 1
 #define HAVE_CLOCK_GETTIME 1
+//#define HAVE_ICONV 1
+//#define HAVE_ICONV_H 1
 
 /* Enable various audio drivers */
+#ifdef OS2ALT
+#define SDL_AUDIO_DRIVER_DARTALT	1
+#else
 #define SDL_AUDIO_DRIVER_DART	1
-#define SDL_AUDIO_DRIVER_DISK	1
 #define SDL_AUDIO_DRIVER_DUMMY	1
+#endif
+#define SDL_AUDIO_DRIVER_DISK	1
 
 /* Enable various cdrom drivers */
 #define SDL_CDROM_OS2	1
@@ -129,9 +135,12 @@ typedef unsigned long long  uint64_t;
 #define SDL_TIMER_OS2	1
 
 /* Enable various video drivers */
-#define SDL_VIDEO_DRIVER_DUMMY	        1
-#define SDL_VIDEO_DRIVER_OS2FS          1
-#define SDL_VIDEO_DRIVER_OS2VMAN	1
+// #/ifdef OS2ALT
+#define SDL_VIDEO_DRIVER_OS2ALT		1
+// # else
+// #define SDL_VIDEO_DRIVER_DUMMY	1
+// #define SDL_VIDEO_DRIVER_OS2FS	1
+// #endif
 
 /* Enable OpenGL support */
 /* Nothing here yet for OS/2... :( */
