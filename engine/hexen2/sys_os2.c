@@ -26,17 +26,14 @@
 #include "debuglog.h"
 
 #define INCL_DOS
+#define INCL_DOSERRORS
 #include <os2.h>
 
-#include <errno.h>
-#include <sys/stat.h>
-#include <sys/time.h>
 #include <fcntl.h>
 #include <io.h>
+#ifdef __WATCOMC__
 #include <direct.h>
-#include <fnmatch.h>
-#include <time.h>
-#include <utime.h>
+#endif
 #include <conio.h>
 #if defined(SDLQUAKE)
 #include "sdl_inc.h"
@@ -54,8 +51,6 @@ cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 cvar_t		sys_throttle = {"sys_throttle", "0.02", CVAR_ARCHIVE};
 
 qboolean		isDedicated;
-static double		starttime;
-static qboolean		first = true;
 
 
 /*
@@ -68,122 +63,74 @@ FILE IO
 
 int Sys_mkdir (const char *path, qboolean crash)
 {
-	int rc = mkdir (path);
-	if (rc != 0)
+	HDIR findhnd = HDIR_CREATE;
+	FILEFINDBUF3 findbuf = {0};
+	ULONG count = 1;
+	APIRET rc = DosCreateDir(path, NULL);
+	if (rc == 0) return 0;
+	if (DosFindFirst(path, &findhnd, MUST_HAVE_DIRECTORY, &findbuf,
+			 sizeof(findbuf), &count, FIL_STANDARD) == NO_ERROR)
 	{
-		struct stat st;
-		if (stat(path, &st) == 0 && S_ISDIR(st.st_mode))
-			rc = 0;
+		DosFindClose(findhnd);
+		return 0; /* dir exists */
 	}
-	if (rc != 0 && crash)
-	{
-		rc = errno;
-		Sys_Error("Unable to create directory %s: %s", path, strerror(rc));
-	}
-	return rc;
+	if (crash)
+		Sys_Error("Unable to create directory %s (ERR: %lu)", path, rc);
+	return -1;
 }
 
 int Sys_rmdir (const char *path)
 {
-	return rmdir(path);
+	APIRET rc = DosDeleteDir(path);
+	return (rc == NO_ERROR)? 0 : -1;
 }
 
 int Sys_unlink (const char *path)
 {
-	return unlink(path);
+	APIRET rc = DosDelete(path);
+	return (rc == NO_ERROR)? 0 : -1;
 }
 
 int Sys_rename (const char *oldp, const char *newp)
 {
-	return rename(oldp, newp);
+	APIRET rc = DosMove(oldp, newp);
+	return (rc == NO_ERROR)? 0 : -1;
 }
 
 long Sys_filesize (const char *path)
 {
-	struct stat	st;
+	HDIR findhnd = HDIR_CREATE;
+	FILEFINDBUF3 findbuf = {0};
+	ULONG cnt = 1;
+	APIRET rc = DosFindFirst(path, &findhnd, FILE_NORMAL, &findbuf,
+				 sizeof(findbuf), &cnt, FIL_STANDARD);
 
-	if (stat(path, &st) != 0)
+	if (rc != NO_ERROR) return -1;
+	DosFindClose(findhnd);
+	if (findbuf.attrFile & FILE_DIRECTORY)
 		return -1;
-	if (! S_ISREG(st.st_mode))
-		return -1;
-
-	return (long) st.st_size;
+	return (long)findbuf.cbFile;
 }
 
 int Sys_FileType (const char *path)
 {
-	/*
-	if (access(path, R_OK) == -1)
-		return 0;
-	*/
-	struct stat	st;
+	HDIR findhnd = HDIR_CREATE;
+	FILEFINDBUF3 findbuf = {0};
+	ULONG cnt = 1;
+	APIRET rc = DosFindFirst(path, &findhnd, FILE_NORMAL, &findbuf,
+				 sizeof(findbuf), &cnt, FIL_STANDARD);
 
-	if (stat(path, &st) != 0)
-		return FS_ENT_NONE;
-	if (S_ISDIR(st.st_mode))
+	if (rc != NO_ERROR) return FS_ENT_NONE;
+	DosFindClose(findhnd);
+	if (findbuf.attrFile & FILE_DIRECTORY)
 		return FS_ENT_DIRECTORY;
-	if (S_ISREG(st.st_mode))
-		return FS_ENT_FILE;
-
-	return FS_ENT_NONE;
+	return FS_ENT_FILE;
 }
 
-#define	COPY_READ_BUFSIZE		8192	/* BUFSIZ */
 int Sys_CopyFile (const char *frompath, const char *topath)
 {
-	char	buf[COPY_READ_BUFSIZE];
-	FILE	*in, *out;
-	struct stat	st;
-	struct utimbuf	tm;
-/*	off_t	remaining, count;*/
-	size_t	remaining, count;
-
-	if (stat(frompath, &st) != 0)
-	{
-		Con_Printf ("%s: unable to stat %s\n", __thisfunc__, frompath);
-		return 1;
-	}
-	in = fopen (frompath, "rb");
-	if (!in)
-	{
-		Con_Printf ("%s: unable to open %s\n", __thisfunc__, frompath);
-		return 1;
-	}
-	out = fopen (topath, "wb");
-	if (!out)
-	{
-		Con_Printf ("%s: unable to create %s\n", __thisfunc__, topath);
-		fclose (in);
-		return 1;
-	}
-
-	remaining = st.st_size;
-	while (remaining)
-	{
-		if (remaining < sizeof(buf))
-			count = remaining;
-		else	count = sizeof(buf);
-
-		if (fread(buf, 1, count, in) != count)
-			break;
-		if (fwrite(buf, 1, count, out) != count)
-			break;
-
-		remaining -= count;
-	}
-
-	fclose (in);
-	fclose (out);
-
-	if (remaining == 0) {
-	/* restore the file's timestamp */
-		tm.actime = time (NULL);
-		tm.modtime = st.st_mtime;
-		utime (topath, &tm);
-		return 0;
-	}
-
-	return 1;
+	APIRET rc = DosCopy(frompath, topath, DCPY_EXISTING);
+	return (rc == NO_ERROR)? 0 : -1;
 }
 
 /*
@@ -194,61 +141,53 @@ filenames only, not a dirent struct. this is
 what we presently need in this engine.
 =================================================
 */
-static DIR		*finddir;
-static struct dirent	*finddata;
-static char		*findpath, *findpattern;
+static HDIR findhandle = HDIR_CREATE;
+static FILEFINDBUF3 findbuffer;
+static char	findstr[MAX_OSPATH];
 
 const char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
-	if (finddir)
+	ULONG cnt = 1;
+	APIRET rc;
+	if (findhandle != HDIR_CREATE)
 		Sys_Error ("Sys_FindFirst without FindClose");
-
-	finddir = opendir (path);
-	if (!finddir)
+	q_snprintf (findstr, sizeof(findstr), "%s/%s", path, pattern);
+	findbuffer.oNextEntryOffset = 0;
+	rc = DosFindFirst(findstr, &findhandle, FILE_NORMAL, &findbuffer,
+				 sizeof(findbuffer), &cnt, FIL_STANDARD);
+	if (rc != NO_ERROR) {
+		findhandle = HDIR_CREATE;
+		findbuffer.oNextEntryOffset = 0;
 		return NULL;
-
-	findpattern = Z_Strdup (pattern);
-	findpath = Z_Strdup (path);
-
-	return Sys_FindNextFile();
+	}
+	if (findbuffer.attrFile & FILE_DIRECTORY)
+		return Sys_FindNextFile();
+	return findbuffer.achName;
 }
 
 const char *Sys_FindNextFile (void)
 {
-	struct stat	test;
-
-	if (!finddir)
+	APIRET rc;
+	ULONG cnt;
+	if (findhandle == HDIR_CREATE)
 		return NULL;
-
-	while ((finddata = readdir(finddir)) != NULL)
-	{
-		if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
-		{
-			if ( (stat(va("%s/%s", findpath, finddata->d_name), &test) == 0)
-						&& S_ISREG(test.st_mode))
-				return finddata->d_name;
-		}
+	while (1) {
+		cnt = 1;
+		rc = DosFindNext(findhandle, &findbuffer, sizeof(findbuffer), &cnt);
+		if (rc != NO_ERROR)
+			return NULL;
+		if (!(findbuffer.attrFile & FILE_DIRECTORY))
+			return findbuffer.achName;
 	}
-
 	return NULL;
 }
 
 void Sys_FindClose (void)
 {
-	if (finddir != NULL)
-	{
-		closedir(finddir);
-		finddir = NULL;
-	}
-	if (findpath != NULL)
-	{
-		Z_Free (findpath);
-		findpath = NULL;
-	}
-	if (findpattern != NULL)
-	{
-		Z_Free (findpattern);
-		findpattern = NULL;
+	if (findhandle != HDIR_CREATE) {
+		DosFindClose(findhandle);
+		findhandle = HDIR_CREATE;
+		findbuffer.oNextEntryOffset = 0;
 	}
 }
 
@@ -268,9 +207,9 @@ Sys_MakeCodeWriteable
 #if id386 && !defined(GLQUAKE)
 void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 {
-	int r = DosSetMem((void *)startaddr, length, PAG_READ | PAG_WRITE | PAG_EXECUTE);
-	if (r < 0)
-		Sys_Error("Protection change failed\n");
+	APIRET rc = DosSetMem((void *)startaddr, length, PAG_READ | PAG_WRITE | PAG_EXECUTE);
+	if (rc != NO_ERROR)
+		Sys_Error("Protection change failed (ERR: %lu)", rc);
 }
 #endif	/* id386, !GLQUAKE */
 
@@ -325,8 +264,10 @@ void Sys_Error (const char *error, ...)
 		putc (*p, stderr);
 	putc ('\n', stderr);
 	putc ('\n', stderr);
+#if 0
 	if (!isDedicated)
-		WinMessageBox (HWND_DESKTOP, 0, text, ENGINE_NAME " Error", 0, MB_OK | MB_ERROR | MB_SYSTEMMODAL);
+		WinMessageBox (HWND_DESKTOP, HWND_DESKTOP, text, ENGINE_NAME " Error", 0, MB_OK | MB_MOVEABLE | MB_ERROR);
+#endif
 
 	exit (1);
 }
@@ -357,21 +298,22 @@ Sys_DoubleTime
 */
 double Sys_DoubleTime (void)
 {
-	struct timeval	tp;
-	double		now;
-
-	gettimeofday (&tp, NULL);
-
-	now = tp.tv_sec + tp.tv_usec / 1e6;
+	union i64 { QWORD qw; long long ll; };
+	static qboolean		first = true;
+	static ULONG		ticks_per_sec;
+	static union i64	start;
+	union i64		now;
 
 	if (first)
 	{
 		first = false;
-		starttime = now;
+		DosTmrQueryFreq(&ticks_per_sec);
+		DosTmrQueryTime(&start.qw);
 		return 0.0;
 	}
 
-	return now - starttime;
+	DosTmrQueryTime(&now.qw);
+	return (double)(now.ll - start.ll) / (double)ticks_per_sec;
 }
 
 char *Sys_DateTimeString (char *buf)
@@ -430,6 +372,7 @@ const char *Sys_ConsoleInput (void)
 	static int	textlen = 0;
 	char		ch;
 
+/* FIXME: EMX doesn't support this */
 	if (! kbhit())
 		return NULL;
 
@@ -485,20 +428,16 @@ char *Sys_GetClipboardData (void)
 
 static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 {
-	char	*tmp;
+	ULONG l, drv;
 
-	if (getcwd(dst, dstsize - 1) == NULL)
+	if (dstsize < 8) return -1;
+	l = dstsize - 3;
+	if (DosQueryCurrentDir(0, (PBYTE) dst + 3, &l) != NO_ERROR)
 		return -1;
-
-	tmp = dst;
-	while (*tmp != 0)
-		tmp++;
-	while (*tmp == 0 && tmp != dst)
-	{
-		--tmp;
-		if (tmp != dst && *tmp == '/')
-			*tmp = 0;
-	}
+	DosQueryCurrentDisk(&drv, &l);
+	dst[0] = drv + 'A' - 1;
+	dst[1] = ':';
+	dst[2] = '\\';
 
 	return 0;
 }

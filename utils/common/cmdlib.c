@@ -35,6 +35,9 @@
 #ifdef PLATFORM_DOS
 #include <time.h>
 #endif
+#ifdef PLATFORM_OS2
+#include <sys/timeb.h>
+#endif
 #ifdef PLATFORM_UNIX
 #include <sys/time.h>
 #include <time.h>
@@ -200,6 +203,14 @@ double COM_GetTime (void)
 {
 /* See  DJGPP uclock() man page for its limitations */
 	return (double) uclock() / (double) UCLOCKS_PER_SEC;
+}
+
+#elif defined(PLATFORM_OS2)
+double COM_GetTime (void)
+{
+	struct timeb tb;
+	ftime (&tb);
+	return tb.time + tb.millitm / 1000.0;
 }
 
 #elif defined(PLATFORM_UNIX)

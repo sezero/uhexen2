@@ -33,6 +33,15 @@
 #include <direct.h>
 #include <windows.h>
 #include "io_msvc.h"
+#elif defined(PLATFORM_OS2)
+#define INCL_DOS
+#define INCL_DOSERRORS
+#include <os2.h>
+#include <fcntl.h>
+#include <io.h>
+#ifdef __WATCOMC__
+#include <direct.h>
+#endif
 #elif defined(PLATFORM_DOS)
 #include <unistd.h>
 #include <sys/stat.h>
@@ -185,6 +194,144 @@ int Q_FileType (const char *path)
 }
 
 
+#elif defined(PLATFORM_OS2)
+
+static HDIR findhandle = HDIR_CREATE;
+static FILEFINDBUF3 findbuffer;
+static char	findstr[256];
+
+const char *Q_FindFirstFile (const char *path, const char *pattern)
+{
+	ULONG cnt = 1;
+	APIRET rc;
+	if (findhandle != HDIR_CREATE)
+		COM_Error ("FindFirst without FindClose");
+	q_snprintf (findstr, sizeof(findstr), "%s/%s", path, pattern);
+	findbuffer.oNextEntryOffset = 0;
+	rc = DosFindFirst(findstr, &findhandle, FILE_NORMAL, &findbuffer,
+				 sizeof(findbuffer), &cnt, FIL_STANDARD);
+	if (rc != NO_ERROR) {
+		findhandle = HDIR_CREATE;
+		findbuffer.oNextEntryOffset = 0;
+		return NULL;
+	}
+	if (findbuffer.attrFile & FILE_DIRECTORY)
+		return Q_FindNextFile();
+	return findbuffer.achName;
+}
+
+const char *Q_FindNextFile (void)
+{
+	APIRET rc;
+	ULONG cnt;
+	if (findhandle == HDIR_CREATE)
+		return NULL;
+	while (1) {
+		cnt = 1;
+		rc = DosFindNext(findhandle, &findbuffer, sizeof(findbuffer), &cnt);
+		if (rc != NO_ERROR)
+			return NULL;
+		if (!(findbuffer.attrFile & FILE_DIRECTORY))
+			return findbuffer.achName;
+	}
+	return NULL;
+}
+
+void Q_FindClose (void)
+{
+	if (findhandle != HDIR_CREATE) {
+		DosFindClose(findhandle);
+		findhandle = HDIR_CREATE;
+		findbuffer.oNextEntryOffset = 0;
+	}
+}
+
+void Q_getwd (char *out, size_t size, qboolean trailing_dirsep)
+{
+	ULONG l, drv;
+
+	if (size < 8) COM_Error ("Too small buffer for getcwd");
+	l = size - 3;
+	if (DosQueryCurrentDir(0, (PBYTE) out + 3, &l) != NO_ERROR)
+		COM_Error ("Couldn't determine current directory");
+	DosQueryCurrentDisk(&drv, &l);
+	out[0] = drv + 'A' - 1;
+	out[1] = ':';
+	out[2] = '\\';
+
+	if (!trailing_dirsep)
+		return;
+	l = strlen(out);
+	if (out[l - 1] == '\\' || out[l - 1] == '/')
+		return;
+	qerr_strlcat(__thisfunc__, __LINE__, out, "\\", size);
+}
+
+void Q_mkdir (const char *path)
+{
+	HDIR findhnd = HDIR_CREATE;
+	FILEFINDBUF3 findbuf = {0};
+	ULONG count = 1;
+	APIRET rc = DosCreateDir(path, NULL);
+	if (rc == 0) return;
+	if (DosFindFirst(path, &findhnd, MUST_HAVE_DIRECTORY, &findbuf,
+			 sizeof(findbuf), &count, FIL_STANDARD) == NO_ERROR)
+	{
+		DosFindClose(findhnd);
+		return; /* dir exists */
+	}
+	COM_Error ("Unable to create directory %s", path);
+}
+
+int Q_rmdir (const char *path)
+{
+	APIRET rc = DosDeleteDir(path);
+	return (rc == NO_ERROR)? 0 : -1;
+}
+
+int Q_unlink (const char *path)
+{
+	APIRET rc = DosDelete(path);
+	return (rc == NO_ERROR)? 0 : -1;
+}
+
+int Q_rename (const char *oldp, const char *newp)
+{
+	APIRET rc = DosMove(oldp, newp);
+	return (rc == NO_ERROR)? 0 : -1;
+}
+
+long Q_filesize (const char *path)
+{
+	HDIR findhnd = HDIR_CREATE;
+	FILEFINDBUF3 findbuf = {0};
+	ULONG cnt = 1;
+	APIRET rc = DosFindFirst(path, &findhnd, FILE_NORMAL, &findbuf,
+				 sizeof(findbuf), &cnt, FIL_STANDARD);
+
+	if (rc != NO_ERROR) return -1;
+	DosFindClose(findhnd);
+	if (findbuf.attrFile & FILE_DIRECTORY)
+		return -1;
+	return (long)findbuf.cbFile;
+}
+
+int Q_FileType (const char *path)
+{
+	HDIR findhnd = HDIR_CREATE;
+	FILEFINDBUF3 findbuf = {0};
+	ULONG cnt = 1;
+	APIRET rc = DosFindFirst(path, &findhnd, FILE_NORMAL, &findbuf,
+				 sizeof(findbuf), &cnt, FIL_STANDARD);
+
+	if (rc != NO_ERROR) return FS_ENT_NONE;
+	DosFindClose(findhnd);
+	if (findbuf.attrFile & FILE_DIRECTORY)
+		return FS_ENT_DIRECTORY;
+	return FS_ENT_FILE;
+}
+
+
 #elif defined(PLATFORM_DOS)
 
 static struct ffblk	finddata;
@@ -286,6 +433,7 @@ int Q_FileType (const char *path)
 
 	return FS_ENT_FILE;
 }
+
 
 #elif defined(PLATFORM_AMIGA)
 
@@ -482,6 +630,7 @@ int Q_FileType (const char *path)
 	return type;
 }
 
+
 #else	/* Unix */
 
 static DIR		*finddir;
@@ -625,6 +774,7 @@ int Q_FileType (const char *path)
 
 	return FS_ENT_NONE;
 }
+
 #endif	/* End of platform-specifics */
 
 /*

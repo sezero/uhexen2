@@ -39,10 +39,10 @@
 #include <proto/timer.h>
 #include <time.h>
 #elif defined(PLATFORM_OS2)
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <fcntl.h>
-#include <io.h>
+#define INCL_DOS
+#define INCL_DOSERRORS
+#include <os2.h>
+#include <sys/timeb.h>
 #else /* POSIX */
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -247,7 +247,7 @@ static long get_millisecs (void)
 	return uclock() / (UCLOCKS_PER_SEC / 1000);
 }
 
-#elif defined(_WIN32)
+#elif defined(PLATFORM_WINDOWS)
 
 static int Sys_unlink (const char *path)
 {
@@ -320,6 +320,65 @@ static long get_millisecs (void)
 	ul1.LowPart = ft.dwLowDateTime;
 
 	return (long)(ul1.QuadPart / 10000);
+}
+
+#elif defined(PLATFORM_OS2)
+
+int Sys_unlink (const char *path)
+{
+	APIRET rc = DosDelete(path);
+	return (rc == NO_ERROR)? 0 : -1;
+}
+
+int Sys_rename (const char *oldp, const char *newp)
+{
+	APIRET rc = DosMove(oldp, newp);
+	return (rc == NO_ERROR)? 0 : -1;
+}
+
+long Sys_filesize (const char *path)
+{
+	HDIR findhnd = HDIR_CREATE;
+	FILEFINDBUF3 findbuf = {0};
+	ULONG cnt = 1;
+	APIRET rc = DosFindFirst(path, &findhnd, FILE_NORMAL, &findbuf,
+				 sizeof(findbuf), &cnt, FIL_STANDARD);
+
+	if (rc != NO_ERROR) return -1;
+	DosFindClose(findhnd);
+	if (findbuf.attrFile & FILE_DIRECTORY)
+		return -1;
+	return (long)findbuf.cbFile;
+}
+
+int Sys_FileType (const char *path)
+{
+	HDIR findhnd = HDIR_CREATE;
+	FILEFINDBUF3 findbuf = {0};
+	ULONG cnt = 1;
+	APIRET rc = DosFindFirst(path, &findhnd, FILE_NORMAL, &findbuf,
+				 sizeof(findbuf), &cnt, FIL_STANDARD);
+
+	if (rc != NO_ERROR) return FS_ENT_NONE;
+	DosFindClose(findhnd);
+	if (findbuf.attrFile & FILE_DIRECTORY)
+		return FS_ENT_DIRECTORY;
+	return FS_ENT_FILE;
+}
+
+static int check_access (const char *name)
+{
+	if (Sys_FileType(name) != FS_ENT_FILE)
+		return ACCESS_NOFILE;
+
+	return ACCESS_FILEOK;
+}
+
+static long get_millisecs (void)
+{
+	struct timeb tb;
+	ftime (&tb);
+	return (long)(tb.time * 1000 + tb.millitm);
 }
 
 #elif defined(PLATFORM_AMIGA)
@@ -495,18 +554,14 @@ static int Sys_FileType (const char *path)
 
 static int check_access (const char *name)
 {
-#ifndef PLATFORM_OS2
 	/* paks copied off of a cdrom might fail R_OK|W_OK */
 	chmod (name, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-#endif
 
 	if (Sys_FileType(name) != FS_ENT_FILE)
 		return ACCESS_NOFILE;
 
-#ifndef PLATFORM_OS2
 	if (access(name,R_OK|W_OK) != 0)
 		return ACCESS_NOPERM;
-#endif
 
 	return ACCESS_FILEOK;
 }
