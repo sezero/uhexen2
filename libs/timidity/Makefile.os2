@@ -6,7 +6,7 @@ CPPFLAGS=-DTIMIDITY_BUILD
 # to build a debug version :
 #CPPFLAGS+= -DTIMIDITY_DEBUG
 
-CFLAGS = -zq -bt=os2 -bm -fp5 -fpi87 -mf -oeatxh -w4 -ei -zp8
+CFLAGS = -zq -bt=os2 -bm -fp5 -fpi87 -mf -oeatxh -w4 -ei -j -zp8
 # -5s  :  Pentium stack calling conventions.
 # -5r  :  Pentium register calling conventions.
 CFLAGS+= -5s

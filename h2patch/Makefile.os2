@@ -17,7 +17,7 @@ OSLIBS=$(UHEXEN2_TOP)\oslibs
 XDELTA_DIR= $(LIBS_DIR)\xdelta3
 !endif
 
-CFLAGS  = -zq -bm -bt=os2 -5s -fp5 -fpi87 -sg -otexan -wx -ei -zp8
+CFLAGS  = -zq -bm -bt=os2 -5s -fp5 -fpi87 -sg -otexan -wx -ei -j -zp8
 !ifndef DEBUG
 CFLAGS += -DNDEBUG=1
 !else
@@ -31,6 +31,7 @@ XDFLAGS= -DXD3_DEBUG=0
 # define XD3_USE_LARGEFILE64 as 0 or 1.
 XDFLAGS+= -DXD3_USE_LARGEFILE64=0
 # make xdelta3 to use open(), close() & co:
+# they are just fine with OS/2.
 XDFLAGS+= -DXD3_POSIX=1
 
 # Targets

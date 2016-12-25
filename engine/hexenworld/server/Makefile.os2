@@ -33,7 +33,7 @@ BINARY=hwsv.exe
 # Compiler flags
 #############################################################
 
-CFLAGS = -zq -bm -bt=os2 -5s -fp5 -fpi87 -sg -otexan -wx -ei -zp8
+CFLAGS = -zq -wx -bm -bt=os2 -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
 
 # compiler includes
 INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
