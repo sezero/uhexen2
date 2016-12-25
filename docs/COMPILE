@@ -232,6 +232,20 @@ I've been successfully using the R5 "2008 refresh" (21 Aug.2008) as well
 as the R7 (07 Jan. 2010) versions for quite some time.
 
 
+Compiling for OS/2:
+========================================
+
+You need OpenWatcom, currently at version 1.9.0 which is the version I
+used myself.  Change into the relevant directory and run:
+	wmake -f Makefile.os2
+
+The makefiles work both when using on OS/2 natively and also when cross
+compiling on linux.
+
+One can possibly adjust stuff to build with EMX environment, but that's
+not tested.
+
+
 Compiling for Amiga variants:
 ========================================
 
