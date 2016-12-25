@@ -63,8 +63,9 @@ OBJECTS = qsnprint.obj &
 
 all: $(BINARY)
 
+# FIXME: request 4 MB stack.
 $(BINARY): $(OBJECTS)
-	wlink N $@ SYS OS2V2 F {$(OBJECTS)}
+	wlink N $@ SYS OS2V2 OPTION STACK=0x400000 F {$(OBJECTS)}
 
 !ifdef __UNIX__
 clean: .symbolic

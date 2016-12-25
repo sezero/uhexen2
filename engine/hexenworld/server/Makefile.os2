@@ -118,8 +118,9 @@ OBJECTS = &
 all: $(BINARY)
 h2ded: $(BINARY)
 
+# 512 KB stack size.
 $(BINARY): $(OBJECTS)
-	wlink N $@ SYS OS2V2 F {$(OBJECTS)}
+	wlink N $@ SYS OS2V2 OPTION STACK=0x80000 F {$(OBJECTS)}
 
 !ifdef __UNIX__
 clean: .symbolic
