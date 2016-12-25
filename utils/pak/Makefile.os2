@@ -1,0 +1,78 @@
+# quick'n'dirty makefile to build h2ded.exe for OS/2
+# use OpenWatcom:  wmake -f Makefile.os2
+
+# PATH SETTINGS:
+!ifndef __UNIX__
+PATH_SEP=\
+UHEXEN2_TOP=..\..
+UTILS_TOP=..
+COMMONDIR=$(UTILS_TOP)\common
+UHEXEN2_SHARED=$(UHEXEN2_TOP)\common
+LIBS_DIR=$(UHEXEN2_TOP)\libs
+OSLIBS=$(UHEXEN2_TOP)\oslibs
+!else
+PATH_SEP=/
+UHEXEN2_TOP=../..
+UTILS_TOP=..
+COMMONDIR=$(UTILS_TOP)/common
+UHEXEN2_SHARED=$(UHEXEN2_TOP)/common
+LIBS_DIR=$(UHEXEN2_TOP)/libs
+OSLIBS=$(UHEXEN2_TOP)/oslibs
+!endif
+
+# Names of the binaries
+PAKX=pakx.exe
+PAKLIST=paklist.exe
+
+# Compiler flags
+CFLAGS = -zq -wx -bm -bt=os2 -5s -sg -otexan -fp5 -fpi87 -ei -zp8
+!ifdef DEBUG
+CFLAGS+= -d2
+!else
+CFLAGS+= -DNDEBUG=1
+!endif
+
+INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
+INCLUDES+= -I$(OSLIBS)$(PATH_SEP)os2
+
+#############################################################
+
+.c: $(COMMONDIR);$(UHEXEN2_SHARED)
+
+.c.obj:
+	wcc386 $(INCLUDES) $(CFLAGS) -fo=$^@ $<
+
+# Objects
+OBJ_COMMON= qsnprint.obj &
+	strlcat.obj &
+	strlcpy.obj &
+	cmdlib.obj &
+	util_io.obj &
+	crc.obj &
+	q_endian.obj &
+	byteordr.obj &
+	pakfile.obj
+OBJ_PAKX= pakx.obj
+OBJ_PAKL= paklist.obj
+
+all: $(PAKX) $(PAKLIST)
+
+$(PAKX): $(OBJ_COMMON) $(OBJ_PAKX)
+	wlink N $@ SYS OS2V2 F {$(OBJ_COMMON) $(OBJ_PAKX)}
+
+$(PAKLIST): $(OBJ_COMMON) $(OBJ_PAKL)
+	wlink N $@ SYS OS2V2 F {$(OBJ_COMMON) $(OBJ_PAKL)}
+
+!ifdef __UNIX__
+clean: .symbolic
+	rm -f *.obj *.res
+distclean: clean .symbolic
+	rm -f $(PAKX) $(PAKLIST)
+!else
+clean: .symbolic
+	@if exist *.obj del *.obj
+	@if exist *.res del *.res
+distclean: clean .symbolic
+	@if exist $(PAKLIST) del $(PAKLIST)
+	@if exist $(PAKX) del $(PAKX)
+!endif

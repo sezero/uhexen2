@@ -1,0 +1,75 @@
+# quick'n'dirty makefile to build h2ded.exe for OS/2
+# use OpenWatcom:  wmake -f Makefile.os2
+
+# PATH SETTINGS:
+!ifndef __UNIX__
+PATH_SEP=\
+UHEXEN2_TOP=..\..
+UTILS_TOP=..
+COMMONDIR=$(UTILS_TOP)\common
+UHEXEN2_SHARED=$(UHEXEN2_TOP)\common
+LIBS_DIR=$(UHEXEN2_TOP)\libs
+OSLIBS=$(UHEXEN2_TOP)\oslibs
+!else
+PATH_SEP=/
+UHEXEN2_TOP=../..
+UTILS_TOP=..
+COMMONDIR=$(UTILS_TOP)/common
+UHEXEN2_SHARED=$(UHEXEN2_TOP)/common
+LIBS_DIR=$(UHEXEN2_TOP)/libs
+OSLIBS=$(UHEXEN2_TOP)/oslibs
+!endif
+
+# Names of the binaries
+BINARY=hcc.exe
+
+# Compiler flags
+CFLAGS = -zq -wx -bm -bt=os2 -5s -sg -otexan -fp5 -fpi87 -ei -zp8
+!ifdef DEBUG
+CFLAGS+= -d2
+!else
+CFLAGS+= -DNDEBUG=1
+!endif
+
+INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
+INCLUDES+= -I$(OSLIBS)$(PATH_SEP)os2
+
+#############################################################
+
+.c: $(COMMONDIR);$(UHEXEN2_SHARED)
+
+.c.obj:
+	wcc386 $(INCLUDES) $(CFLAGS) -fo=$^@ $<
+
+# Objects
+OBJECTS = qsnprint.obj &
+	strlcat.obj &
+	strlcpy.obj &
+	cmdlib.obj &
+	util_io.obj &
+	q_endian.obj &
+	byteordr.obj &
+	crchash.obj &
+	expr.obj &
+	hcc.obj &
+	pr_comp.obj &
+	pr_lex.obj &
+	stmt.obj
+
+all: $(BINARY)
+
+$(BINARY): $(OBJECTS)
+	wlink N $@ SYS OS2V2 F {$(OBJECTS)}
+
+!ifdef __UNIX__
+clean: .symbolic
+	rm -f *.obj *.res
+distclean: clean .symbolic
+	rm -f $(BINARY)
+!else
+clean: .symbolic
+	@if exist *.obj del *.obj
+	@if exist *.res del *.res
+distclean: clean .symbolic
+	@if exist $(BINARY) del $(BINARY)
+!endif
