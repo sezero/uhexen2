@@ -1374,12 +1374,12 @@ by parsing maplist.txt
 ===============
 */
 static const char def_progname[] = "progs.dat";
-static const char maplist_name[] = "maplist.txt";
 static const char *PR_GetProgFilename (void)
 {
 #if !USE_MULTIPLE_PROGS
 	return def_progname;
 #else
+static const char maplist_name[] = "maplist.txt";
 /* original format:
  * line #1 : <number of lines excluding this one>
  * line #2+: <map name><one space><prog filename>

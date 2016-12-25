@@ -1076,6 +1076,6 @@ int main (int argc, char **argv)
 	stop = COM_GetTime ();
 	printf("\n%d seconds elapsed.\n", (int)(stop - start));
 
-	exit (0);
+	return 0;
 }
 

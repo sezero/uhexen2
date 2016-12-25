@@ -285,6 +285,6 @@ int main (int argc, char *argv[])
 
 /* clean up */
 	NET_Shutdown ();
-	exit (0);
+	return 0;
 }
 

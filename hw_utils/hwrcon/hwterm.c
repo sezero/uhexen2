@@ -369,6 +369,6 @@ int main (int argc, char *argv[])
 
 /* never reached */
 	NET_Shutdown ();
-	exit (0);
+	return 0;
 }
 

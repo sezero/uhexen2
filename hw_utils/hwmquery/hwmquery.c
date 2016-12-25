@@ -347,6 +347,6 @@ int main (int argc, char **argv)
 	}
 
 	NET_Shutdown ();
-	exit (0);
+	return 0;
 }
 
