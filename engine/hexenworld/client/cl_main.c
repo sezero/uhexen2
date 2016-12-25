@@ -266,26 +266,24 @@ CL_Rcon_f
   an unconnected command.
 =====================
 */
+static const unsigned char rcon_hdr[10] =
+	{ 255, 255, 255, 255,
+	  'r', 'c', 'o', 'n', ' ', '\0' };
+
 static void CL_Rcon_f (void)
 {
 	char	message[1024];
 	int		i;
 	netadr_t	to;
 
-	if (!rcon_password.string)
+	if (!rcon_password.string[0])
 	{
 		Con_Printf ("You must set 'rcon_password' before\n"
 					"issuing an rcon command.\n");
 		return;
 	}
 
-	message[0] = 255;
-	message[1] = 255;
-	message[2] = 255;
-	message[3] = 255;
-	message[4] = 0;
-
-	q_strlcat (message, "rcon ", sizeof(message));
+	memcpy (message, rcon_hdr, sizeof(rcon_hdr));
 
 	q_strlcat (message, rcon_password.string, sizeof(message));
 	q_strlcat (message, " ", sizeof(message));
@@ -663,7 +661,7 @@ Contents allows \n escape character
 */
 static void CL_Packet_f (void)
 {
-	char	senddata[2048];
+	unsigned char	senddata[2048];
 	int		i, l;
 	const char	*in;
 	char		*out;
@@ -682,7 +680,7 @@ static void CL_Packet_f (void)
 	}
 
 	in = Cmd_Argv(2);
-	out = senddata + 4;
+	out = (char *)senddata + 4;
 	senddata[0] = senddata[1] = senddata[2] = senddata[3] = 0xff;
 
 	l = strlen (in);
@@ -700,7 +698,8 @@ static void CL_Packet_f (void)
 	}
 	*out = 0;
 
-	NET_SendPacket (out-senddata, senddata, &adr);
+	l = (int) (out - (char *)senddata);
+	NET_SendPacket (l, senddata, &adr);
 }
 
 
