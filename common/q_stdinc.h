@@ -156,7 +156,7 @@ typedef int	fixed16_t;
  * http://www.gnu.org/software/hurd/community/gsoc/project_ideas/maxpath.html
  * http://insanecoding.blogspot.com/2007/11/pathmax-simply-isnt.html */
 
-#if defined(__DJGPP__) || defined(MSDOS) || defined(__MSDOS__) || defined(__DOS__)
+#if defined(__DJGPP__) || defined(_MSDOS) || defined(__MSDOS__) || defined(__DOS__)
 /* 256 is more than enough */
 #if !defined(PATH_MAX)
 #define PATH_MAX	256

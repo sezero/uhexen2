@@ -21,7 +21,7 @@
 #include "q_stdint.h"
 #include "arch_def.h"
 
-#if defined(_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #include <windows.h>
 #include <io.h>
 #include <direct.h>
@@ -714,7 +714,7 @@ int main (int argc, char **argv)
 		Sys_unlink (out);
 	}
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	setvbuf(stderr, NULL, _IONBF, 0);  /* Do not buffer stderr */
 #endif
 
