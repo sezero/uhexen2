@@ -1,5 +1,8 @@
 # quick'n'dirty makefile to build hw.exe for OS/2
 # use OpenWatcom:  wmake -f Makefile.os2
+#
+# to build the opengl version:
+#                  wmake -f Makefile.os2 BUILDGL=1
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -25,6 +28,11 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
 !endif
 
 # GENERAL OPTIONS (customize as required)
+
+# link to the opengl libraries at compile time? (defaults
+# to no, so the binaries will dynamically load the necessary
+# libraries and functions at runtime.)
+LINK_GL_LIBS=yes
 
 # use fast x86 assembly on ia32 machines? (auto-disabled for
 # any other cpu.)
@@ -61,6 +69,7 @@ VORBISLIB=tremor
 
 # Names of the binaries
 SW_BINARY=hwcl.exe
+GL_BINARY=glhwcl.exe
 
 #############################################################
 # Compiler flags
@@ -92,6 +101,13 @@ CFLAGS  += -d2
 # This activates some extra code in hexen2/hexenworld C source
 CPPFLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
 !endif
+
+
+#############################################################
+# OpenGL settings
+#############################################################
+GL_DEFS = -DGLQUAKE
+GL_LIBS =
 
 #############################################################
 # streaming music initial setup
@@ -134,6 +150,8 @@ SDL_LIBS = $(OSLIBS)/os2/SDL/lib/SDL12.lib
 CPPFLAGS+= -DSDLQUAKE
 CFLAGS  += $(SDL_CFLAGS)
 LIBS    += $(SDL_LIBS)
+
+GL_LINK=opengl.lib
 
 #############################################################
 # Streaming music settings
@@ -210,6 +228,19 @@ LIBS    += $(CODECLIBS)WildMidi.lib
 
 !ifeq USE_X86_ASM yes
 CPPFLAGS+= -DUSE_INTEL_ASM
+!endif
+
+!ifneq LINK_GL_LIBS yes
+GL_DEFS+= -DGL_DLSYM
+!else
+GL_LIBS+= $(GL_LINK)
+!endif
+
+!ifndef BUILDGL
+BUILD_TARGET=$(GL_BINARY)
+!else
+CPPFLAGS+= $(GL_DEFS)
+BUILD_TARGET=$(GL_BINARY)
 !endif
 #
 #############################################################
@@ -308,6 +339,7 @@ SYSOBJ_CDA = cd_sdl.obj
 !endif
 
 SYSOBJ_INPUT = in_sdl.obj
+SYSOBJ_GL_VID= gl_vidsdl.obj
 SYSOBJ_SOFT_VID= vid_sdl.obj
 SYSOBJ_SYS = sys_os2.obj
 
@@ -343,6 +375,21 @@ SOFTOBJS = &
 	$(SYSOBJ_SOFT_VID) &
 	draw.obj &
 	model.obj
+
+GLOBJS = &
+	gl_refrag.obj &
+	gl_rlight.obj &
+	gl_rmain.obj &
+	gl_rmisc.obj &
+	gl_ngraph.obj &
+	r_part.obj &
+	gl_rsurf.obj &
+	gl_screen.obj &
+	gl_warp.obj &
+	$(SYSOBJ_GL_VID) &
+	gl_draw.obj &
+	gl_mesh.obj &
+	gl_model.obj
 
 COMMONOBJS = &
 	$(SYSOBJ_INPUT) &
@@ -393,22 +440,26 @@ COMMONOBJS = &
 	zone.obj &
 	$(SYSOBJ_SYS)
 
-all: $(SW_BINARY)
-hw: $(SW_BINARY)
+all: $(BUILD_TARGET)
 
 # 1 MB stack size.
 $(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	wlink N $@ SYS OS2V2 OPTION STACK=0x100000 LIBR {$(LIBS)} F {$(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS)}
 
+# 1 MB stack size.
+$(GL_BINARY): $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
+	wlink N $@ SYS OS2V2 OPTION STACK=0x100000 LIBR {$(LIBS) $(GL_LIBS)} F {$(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)}
+
 !ifdef __UNIX__
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
-	rm -f $(SW_BINARY)
+	rm -f $(SW_BINARY) $(GL_BINARY)
 !else
 clean: .symbolic
 	@if exist *.obj del *.obj
 	@if exist *.res del *.res
 distclean: clean .symbolic
 	@if exist $(SW_BINARY) del $(SW_BINARY)
+	@if exist $(GL_BINARY) del $(GL_BINARY)
 !endif
