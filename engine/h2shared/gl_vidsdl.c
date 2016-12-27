@@ -40,7 +40,6 @@
 #include "bgmusic.h"
 #include "cdaudio.h"
 #include "sdl_inc.h"
-#include <unistd.h>
 #include "filenames.h"
 
 #define WARP_WIDTH		320
@@ -172,7 +171,7 @@ static cvar_t	gl_texture_NPOT = {"gl_texture_NPOT", "0", CVAR_ARCHIVE};
 GLfloat		gl_max_anisotropy;
 float		gldepthmin, gldepthmax;
 
-// palettized textures
+/* palettized textures */
 static qboolean	have8bit = false;
 qboolean	is8bit = false;
 static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit", "0", CVAR_ARCHIVE};
