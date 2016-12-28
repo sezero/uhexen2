@@ -127,6 +127,20 @@ int Thread_GetNumCPUS (void)
 	return numcpus;
 }
 
+#elif defined(PLATFORM_OS2)
+#define INCL_DOS
+#define INCL_DOSERRORS
+#include <os2.h>
+#ifndef QSV_NUMPROCESSORS
+#define QSV_NUMPROCESSORS 26
+#endif
+int Thread_GetNumCPUS (void)
+{
+	int numcpus = 1;
+	DosQuerySysInfo(QSV_NUMPROCESSORS, QSV_NUMPROCESSORS, &numcpus, sizeof(numcpus));
+	return (numcpus < 1) ? 1 : numcpus;
+}
+
 #elif defined(PLATFORM_DOS)
 int Thread_GetNumCPUS (void)
 {
@@ -517,6 +531,98 @@ void RunThreadsOn (threadfunc_t func)
 	}
 }
 #endif	/* USE_PTHREADS */
+
+
+#elif defined(PLATFORM_OS2)
+
+#define INCL_DOS
+#define INCL_DOSERRORS
+#include <os2.h>
+#include <process.h>
+
+static int	work_threads[MAX_THREADS];
+static int	numthreads;
+static unsigned int	stacksiz;
+static HMTX	my_mutex = NULLHANDLE;
+static threadfunc_t	workfunc;
+
+static void ThreadWorkerFunc (void *threadnum)
+{
+	LONG i = (LONG) threadnum;
+	workfunc (threadnum);
+	work_threads[i] = -1;
+	/* the C library automatically calls
+	 * _endthread() when we return here. */
+}
+
+void InitThreads (int wantthreads, size_t needstack)
+{
+	APIRET		rc;
+
+	if (needstack != 0)
+		stacksiz = needstack;
+	else	stacksiz = DEFAULT_STACKSIZ;
+
+	numthreads = wantthreads;
+	if (numthreads < 0)
+		numthreads = Thread_GetNumCPUS ();
+	if (numthreads < 1)
+		numthreads = 1;
+	if (numthreads > MAX_THREADS)
+		numthreads = MAX_THREADS;
+
+	printf ("Setup for %d threads, 0x%x stack size\n",
+			numthreads, (unsigned int)stacksiz);
+	if (numthreads <= 1)
+		return;
+
+	if ((rc = DosCreateMutexSem(NULL, &my_mutex, 0, 0)) != NO_ERROR)
+		COM_Error("CreateMutexSem failed (%lu)", rc);
+}
+
+void ThreadLock (void)
+{
+	if (numthreads > 1)
+		DosRequestMutexSem (my_mutex, SEM_INDEFINITE_WAIT);
+}
+
+void ThreadUnlock (void)
+{
+	if (numthreads > 1)
+		DosReleaseMutexSem (my_mutex);
+}
+
+/*
+===============
+RunThreadsOn
+===============
+*/
+void RunThreadsOn (threadfunc_t func)
+{
+	LONG		i;
+
+	if (numthreads <= 1)
+	{
+		work_threads[0] = -1;
+		func (NULL);
+		return;
+	}
+
+	workfunc = func;
+
+	for (i = 0; i < numthreads; i++)
+	{
+		work_threads[i] = _beginthread(ThreadWorkerFunc, NULL, stacksiz, (void *)i);
+		if (work_threads[i] == -1)
+			COM_Error ("_beginthread() failed");
+	}
+
+	for (i = 0; i < numthreads; i++)
+	{
+		while (work_threads[i] != -1)
+			DosSleep (100);
+	}
+}
 
 
 #else	/* no threads  */
