@@ -1,8 +1,5 @@
-/*
- * midi_mac.c -- MIDI module for Mac OS X using QuickTime.
- * $Id$
- *
- * Based the macglquake project with adjustments to make
+/* midi_mac.c -- MIDI module for Mac OS using QuickTime.
+ * Based on the macglquake project with adjustments to make
  * it work with Mac OS X and Hexen II: Hammer of Thyrion.
  * (FIXME: Maybe update this to use QuickTime TunePlayer,
  *	   as in native_midi_mac of SDL_mixer, sometime?)
@@ -177,7 +174,14 @@ static void *MIDI_Play (const char *filename)
 	Con_DPrintf("Extracting %s from pakfile\n", filename);
 	FS_MakePath_BUF(FS_USERBASE, &err, midipath, sizeof(midipath), TEMP_MIDINAME);
 	if (err == 0)
-		err = FS_WriteFile (midipath, buf, len);
+	{
+		FILE *f = fopen (midipath, "wb");
+		if (!f) err = 1;
+		else {
+			err = (fwrite(buf, 1, len, f) != len);
+			fclose (f);
+		}
+	}
 	if (err != 0)
 	{
 		Con_Printf("Error extracting %s from pak\n", filename);
@@ -260,4 +264,3 @@ void MIDI_Cleanup(void)
 		ExitMovies ();
 	}
 }
-
