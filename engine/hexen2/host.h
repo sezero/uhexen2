@@ -21,8 +21,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __HX2_HOST_H
-#define __HX2_HOST_H
+#ifndef HX2_HOST_H
+#define HX2_HOST_H
 
 // quakeparms structure specifies the base of the directory tree, the
 // command line parms passed to the program, and the amount of memory
@@ -66,11 +66,15 @@ void Host_InitCommands (void);
 void Host_Shutdown(void);
 void Host_Callback_Notify (cvar_t *var);	/* callback function for CVAR_NOTIFY */
 /* Host_Error and Host_EndGame doesn't return either due to Sys_Error() or longjmp() */
-void Host_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
-void Host_EndGame (const char *message, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
+FUNC_NORETURN void Host_Error (const char *error, ...) FUNC_PRINTF(1,2);
+FUNC_NORETURN void Host_EndGame (const char *message, ...) FUNC_PRINTF(1,2);
+#ifdef __WATCOMC__
+#pragma aux Host_Error aborts;
+#pragma aux Host_EndGame aborts;
+#endif
 void Host_Frame (float time);
 void Host_Quit_f (void);
-void Host_ClientCommands (const char *fmt, ...) __attribute__((__format__(__printf__,1,2)));
+void Host_ClientCommands (const char *fmt, ...) FUNC_PRINTF(1,2);
 void Host_ShutdownServer (qboolean crash);
 
 void Host_ClearMemory (void);
@@ -89,5 +93,4 @@ extern	int		sv_kingofhill;		// mission pack king of the hill.
 
 extern	unsigned int	info_mask, info_mask2;	// mission pack objectives
 
-#endif	/* __HX2_HOST_H */
-
+#endif	/* HX2_HOST_H */

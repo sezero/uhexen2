@@ -82,7 +82,7 @@ static void ExtractFile (pack_t *pak, const char *filename, const char *destdir)
 		fprintf (stderr, "** %s not in %s\n", filename, pak->filename);
 }
 
-__attribute__((__noreturn__)) static void usage (int ret) {
+FUNC_NORETURN static void usage (int ret) {
 	printf ("Usage:  pakx [-outdir <destdir>] <pakfile> [file [file ....]]\n");
 	printf ("        pakx  -h  to display this help message.\n");
 	printf ("<destdir> :  Optional. Output directory to extract the files into.\n");

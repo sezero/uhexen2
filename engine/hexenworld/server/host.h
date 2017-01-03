@@ -24,8 +24,8 @@
 #error "this header is for hw server only"
 #endif	/* SERVERONLY */
 
-#ifndef __HX2_HOST_H
-#define __HX2_HOST_H
+#ifndef HX2_HOST_H
+#define HX2_HOST_H
 
 // quakeparms structure specifies the base of the directory tree, the
 // command line parms passed to the program, and the amount of memory
@@ -58,8 +58,12 @@ extern	double		realtime;		// not bounded in any way, changed at
 						// start of every frame, never reset
 
 void SV_Init (void);
-void SV_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), noreturn));
+FUNC_NORETURN void SV_Error (const char *error, ...) FUNC_PRINTF(1,2);
 #define Host_Error	SV_Error
 
-#endif	/* __HX2_HOST_H */
+#ifdef __WATCOMC__
+#pragma aux SV_Error aborts;
+#endif
+
+#endif	/* HX2_HOST_H */
 

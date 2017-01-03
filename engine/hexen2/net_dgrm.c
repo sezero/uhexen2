@@ -81,8 +81,7 @@ static void NET_Ban_f (void)
 {
 	char	addrStr [32];
 	char	maskStr [32];
-	void	(*print_fn)(unsigned int flg, const char *fmt, ...)
-				__fp_attribute__((__format__(__printf__,2,3)));
+	void	(*print_fn) (unsigned int, const char *, ...) FUNCP_PRINTF(2,3);
 
 	if (cmd_source == src_command)
 	{

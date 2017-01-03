@@ -389,7 +389,13 @@ const char	*PR_ParseName (void);
 void	PR_Lex (void);	// reads the next token into pr_token and classifies its type
 qboolean PR_Check (const char *string);
 void	PR_Expect (const char *string);
-void	PR_ParseError (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
+
+#ifdef __WATCOMC__
+#pragma aux PR_ParseError aborts;
+#endif
+FUNC_NORETURN
+void	PR_ParseError (const char *error, ...) FUNC_PRINTF(1,2);
+
 void	PR_NewLine (void);
 def_t	*PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocate);
 void	PR_SkipToSemicolon (void);
@@ -458,4 +464,3 @@ extern	int	precache_files_block[MAX_SOUNDS];
 extern	int	numfiles;
 
 #endif	/* __QCC_H__ */
-

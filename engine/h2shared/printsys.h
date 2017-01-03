@@ -33,7 +33,7 @@
  *		HexenWorld server: sv_send.c
  *	Hexen II dedicated server: host.c
  */
-void CON_Printf (unsigned int flags, const char *fmt, ...) __attribute__((__format__(__printf__,2,3)));
+void CON_Printf (unsigned int flags, const char *fmt, ...) FUNC_PRINTF(2,3);
 
 /* common print flags */
 #define	_PRINT_NORMAL			0	/* print to both terminal and to the in-game console */

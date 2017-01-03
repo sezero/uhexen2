@@ -146,10 +146,10 @@ static char *FSERR_MakePath_BUF (const char *caller, int linenum, int base,
 				 char *buf, size_t siz, const char *path);
 static char *FSERR_MakePath_VABUF (const char *caller, int linenum, int base,
 				char *buf, size_t siz, const char *format, ...)
-				__attribute__((__format__(__printf__,6,7)));
+							FUNC_PRINTF(6,7);
 static char *do_MakePath_VA (int base, int *error, char *buf, size_t siz,
 					const char *format, va_list args)
-				__attribute__((__format__(__printf__,5,0)));
+							FUNC_PRINTF(5,0);
 
 /*
 All of Quake's data access is through a hierchal file system, but the contents

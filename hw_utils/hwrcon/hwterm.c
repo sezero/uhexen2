@@ -34,6 +34,7 @@
 
 #include "arch_def.h"
 #include "compiler.h"
+
 #if defined(PLATFORM_UNIX) ||		\
     defined(PLATFORM_OS2) ||		\
     defined(PLATFORM_AMIGA) ||		\
@@ -66,7 +67,10 @@ static WSADATA	winsockdata;
 #endif
 static sys_socket_t	socketfd = INVALID_SOCKET;
 
-void Sys_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
+FUNC_NORETURN void Sys_Error (const char *error, ...) FUNC_PRINTF(1,2);
+#ifdef __WATCOMC__
+#pragma aux Sys_Error aborts;
+#endif
 
 /*****************************************************************************/
 

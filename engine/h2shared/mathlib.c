@@ -64,7 +64,10 @@ Split out like this for ASM to call.
 ==================
 */
 __ASM_FUNCS_BEGIN	/* called from asm. */
-void BOPS_Error (void) __attribute__((__noreturn__));
+#if defined(__WATCOMC__)
+#pragma aux BOPS_Error aborts;
+#endif
+FUNC_NORETURN void BOPS_Error (void);
 __ASM_FUNCS_END
 void BOPS_Error (void)
 {

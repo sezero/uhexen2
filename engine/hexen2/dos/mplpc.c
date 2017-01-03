@@ -27,8 +27,7 @@
 #include "mpdosock.h"
 
 #include "compiler.h"
-extern void Sys_Error (const char *error, ...)
-	__attribute__((__format__(__printf__,1,2), __noreturn__));
+FUNC_NORETURN extern void Sys_Error (const char *error, ...) FUNC_PRINTF(1,2);
 
 /*#include "lpc.h"*/
 typedef struct {

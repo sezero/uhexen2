@@ -166,7 +166,7 @@ static	char	dst[MAX_OSPATH],
 
 static xd3_progress_t h2patch_progress;
 
-static void log_print (const char *fmt, ...) __attribute__((__format__(__printf__,1,2)));
+static void log_print (const char *fmt, ...) FUNC_PRINTF(1,2);
 static void progress_print (void);
 
 static xd3_options_t h2patch_options =

@@ -132,12 +132,10 @@ void  FS_LoadCacheFile (const char *path, struct cache_user_s *cu,
 
 char *FS_MakePath (int base, int *error, const char *path);
 	/* strcat to an FS path basename. returns a static buffer.  */
-char *FS_MakePath_VA (int base, int *error, const char *format, ...)
-				__attribute__((__format__(__printf__,3,4)));
+char *FS_MakePath_VA (int base, int *error, const char *format, ...) FUNC_PRINTF(3,4);
 				/* like FS_MakePath(), but does varargs.  */
 char *FS_MakePath_BUF (int base, int *error, char *buf, size_t siz, const char *path);
-char *FS_MakePath_VABUF (int base, int *error, char *buf, size_t siz, const char *format, ...)
-				__attribute__((__format__(__printf__,5,6)));
+char *FS_MakePath_VABUF (int base, int *error, char *buf, size_t siz, const char *format, ...) FUNC_PRINTF(5,6);
 		/* like the two above, but with a user-provided buffer.  */
 
 /* The following FS_*() stdio replacements are necessary if one is

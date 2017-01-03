@@ -63,7 +63,7 @@ static char	*Get_Immediate (gofs_t ofs);
 static void	Clear_Immediates (void);
 static void	PR_Indent (void);
 static void	PR_FunctionHeader (dfunction_t *df);
-static void	PR_Print (const char *s,...) __attribute__((__format__(__printf__,1,2)));
+static void	PR_Print (const char *s,...) FUNC_PRINTF(1,2);
 static const char *PR_PrintGlobal (gofs_t ofs, def_t* typ);
 static ddef_t	*PR_GetField (const char *name, ddef_t*);
 static int	DEC_GetFunctionIdxByName (const char *name);

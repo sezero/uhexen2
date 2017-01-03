@@ -33,7 +33,7 @@
 
 //======================================================================
 
-__attribute__((__noreturn__)) static void usage (int ret) {
+FUNC_NORETURN static void usage (int ret) {
 	printf ("Usage:  paklist <pakfile>\n");
 	printf ("        paklist  -h  to display this help message.\n");
 	printf ("\n");

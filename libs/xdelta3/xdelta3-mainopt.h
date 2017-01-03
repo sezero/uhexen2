@@ -26,9 +26,9 @@
 #include "xdelta3-sizedefs.h"
 
 #if defined(__GNUC__) && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 0))
-#define __fp_printf_like(_one, _two)	__attribute__((__format__ (__printf__,_one,_two)))
+#define XD_FUNCP_PRINTF(_one,_two)	__attribute__((__format__ (__printf__,_one,_two)))
 #else
-#define __fp_printf_like(_one, _two)
+#define XD_FUNCP_PRINTF(_one,_two)
 #endif
 typedef struct _xd3_progress_t
 {
@@ -52,7 +52,7 @@ typedef struct _xd3_options_t
 /* progress bar data: */
 	xd3_progress_t	*progress_data;
 /* message printing : */
-	void	(*debug_print) (const char *fmt, ...) __fp_printf_like(1,2);
+	void	(*debug_print) (const char *fmt, ...) XD_FUNCP_PRINTF(1,2);
 			/* print debug messages from the xdelta side.  */
 	void	(*progress_log)(void);
 			/* print progress from the xdelta side. only

@@ -43,7 +43,7 @@
 extern	unsigned int		con_debuglog;
 
 void LOG_Print (const char *logdata);
-void LOG_Printf(const char *fmt, ...) __attribute__((__format__(__printf__,1,2)));
+void LOG_Printf(const char *fmt, ...) FUNC_PRINTF(1,2);
 
 struct quakeparms_s;
 void LOG_Init (struct quakeparms_s *parms);

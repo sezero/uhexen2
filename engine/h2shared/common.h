@@ -60,8 +60,7 @@ extern "C" {
  */
 extern size_t qerr_strlcat (const char *caller, int linenum, char *dst, const char *src, size_t size);
 extern size_t qerr_strlcpy (const char *caller, int linenum, char *dst, const char *src, size_t size);
-extern int qerr_snprintf (const char *caller, int linenum, char *str, size_t size, const char *format, ...)
-									__attribute__((__format__(__printf__,5,6)));
+extern int qerr_snprintf (const char *caller, int linenum, char *str, size_t size, const char *format, ...) FUNC_PRINTF(5,6);
 
 /* locale-insensitive strcasecmp replacement functions: */
 extern int q_strcasecmp (const char * s1, const char * s2);
@@ -106,7 +105,7 @@ void COM_AddExtension (char *path, const char *extension, size_t len);
 void COM_DefaultExtension (char *path, const char *extension, size_t len);
 #endif
 
-char	*va (const char *format, ...) __attribute__((__format__(__printf__,1,2)));
+char	*va (const char *format, ...) FUNC_PRINTF(1,2);
 /* does a varargs printf into a temp buffer. cycles between
  * 4 different static buffers. the number of buffers cycled
  * is defined in VA_NUM_BUFFS. */

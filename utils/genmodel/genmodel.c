@@ -206,7 +206,7 @@ static const char *DigitDefs[] =
 //
 //==========================================================================
 
-__attribute__((__noreturn__)) static void usage (void) {
+FUNC_NORETURN static void usage (void) {
 	printf("usage: genmodel [-opt] [-archive path] model.hc\n");
 	exit(1);
 }

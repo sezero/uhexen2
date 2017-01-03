@@ -240,7 +240,7 @@ void ReadFiles (void)
 main
 =============
 */
-__attribute__((__noreturn__)) static void usage (void) {
+FUNC_NORETURN static void usage (void) {
 	printf ("qfiles -pak <0 / 1 / 2 / 3> : build a .pak file\n");
 	printf ("qfiles -bspmodels : regenerates all brush models\n");
 	exit (1);

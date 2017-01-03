@@ -22,11 +22,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __HX2_SYS_H
-#define __HX2_SYS_H
+#ifndef HX2_SYS_H
+#define HX2_SYS_H
 
-void Sys_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
-void Sys_Quit (void) __attribute__((__noreturn__));
+FUNC_NORETURN void Sys_Quit (void);
+FUNC_NORETURN void Sys_Error (const char *error, ...) FUNC_PRINTF(1,2);
+
+#ifdef __WATCOMC__
+#pragma aux Sys_Error aborts;
+#pragma aux Sys_Quit aborts;
+#endif
+
 double Sys_DoubleTime (void);
 
 char *Sys_ConsoleInput (void);
@@ -39,5 +45,4 @@ char *Sys_ConsoleInput (void);
 #define	DO_USERDIRS	0
 #endif	/* DO_USERDIRS  */
 
-#endif	/* __HX2_SYS_H */
-
+#endif	/* HX2_SYS_H */

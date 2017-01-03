@@ -302,7 +302,7 @@ extern	qboolean	worldmodel;
 // verbose printf
 
 extern	qboolean	verbose;
-void	qprintf (const char *fmt, ...) __attribute__((__format__(__printf__,1,2)));	// only prints if verbose
+void	qprintf (const char *fmt, ...) FUNC_PRINTF(1,2);	// only prints if verbose
 
 
 //=============================================================================

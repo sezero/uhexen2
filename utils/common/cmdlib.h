@@ -44,8 +44,7 @@
  */
 extern size_t qerr_strlcat (const char *caller, int linenum, char *dst, const char *src, size_t size);
 extern size_t qerr_strlcpy (const char *caller, int linenum, char *dst, const char *src, size_t size);
-extern int qerr_snprintf (const char *caller, int linenum, char *str, size_t size, const char *format, ...)
-									__attribute__((__format__(__printf__,5,6)));
+extern int qerr_snprintf (const char *caller, int linenum, char *str, size_t size, const char *format, ...) FUNC_PRINTF(5,6);
 
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
 
@@ -72,7 +71,12 @@ double	COM_GetTime (void);
 void	*SafeMalloc (size_t size);
 char	*SafeStrdup (const char *str);
 
-void	COM_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
+#ifdef __WATCOMC__
+#pragma aux COM_Error aborts;
+#endif
+FUNC_NORETURN
+void	COM_Error (const char *error, ...) FUNC_PRINTF(1,2);
+
 int	CheckParm (const char *check);
 
 const char	*COM_Parse (const char *data);

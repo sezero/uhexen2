@@ -36,7 +36,10 @@
 #define HuffPrintf(...)			fprintf(stderr, __VA_ARGS__)
 #endif	/* HuffPrintf */
 
-extern void Sys_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
+FUNC_NORETURN extern void Sys_Error (const char *error, ...) FUNC_PRINTF(1,2);
+#ifdef __WATCOMC__
+#pragma aux Sys_Error aborts;
+#endif
 
 
 //

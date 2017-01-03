@@ -189,8 +189,12 @@ enum
 // hcc.c
 int	CopyString (const char *str);
 
-void	PR_ParseError(const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
-void	PR_ParseWarning(const char *error, ...) __attribute__((__format__(__printf__,1,2)));
+#ifdef __WATCOMC__
+#pragma aux PR_ParseError aborts;
+#endif
+FUNC_NORETURN
+void	PR_ParseError(const char *error, ...) FUNC_PRINTF(1,2);
+void	PR_ParseWarning(const char *error, ...) FUNC_PRINTF(1,2);
 
 // lexi.c
 void	LX_Init (void);

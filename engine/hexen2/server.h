@@ -285,8 +285,8 @@ void SV_AddUpdates (void);
 void SV_ClientThink (void);
 void SV_AddClientToServer (struct qsocket_s	*ret);
 
-void SV_ClientPrintf (unsigned int unused, const char *fmt, ...) __attribute__((__format__(__printf__,2,3)));
-void SV_BroadcastPrintf (const char *fmt, ...) __attribute__((__format__(__printf__,1,2)));
+void SV_ClientPrintf (unsigned int unused, const char *fmt, ...) FUNC_PRINTF(2,3);
+void SV_BroadcastPrintf (const char *fmt, ...) FUNC_PRINTF(1,2);
 
 void SV_Physics (void);
 
