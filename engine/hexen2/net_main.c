@@ -719,6 +719,7 @@ int NET_SendToAll (sizebuf_t *data, double blocktime)
 	{
 		if (host_client->netconnection && host_client->active)
 		{
+			#if !defined(NO_LOOP_DRIVER)
 			if (IS_LOOP_DRIVER(host_client->netconnection->driver))
 			{
 				NET_SendMessage(host_client->netconnection, data);
@@ -726,6 +727,7 @@ int NET_SendToAll (sizebuf_t *data, double blocktime)
 				msg_sent[i] = true;
 				continue;
 			}
+			#endif
 			count++;
 			msg_init[i] = false;
 			msg_sent[i] = false;
