@@ -333,7 +333,7 @@ static void CutNodePortals_r (node_t *node)
 		else
 		{
 			COM_Error ("%s: mislinked portal", __thisfunc__);
-			side = 0;	// shut up compiler warnings
+			return; /* silence compiler */
 		}
 
 		w = ClipWinding (w, &clipplane, true);

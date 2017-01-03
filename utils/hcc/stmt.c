@@ -549,8 +549,7 @@ static void ParseSwitch (void)
 		break;
 	default:
 		PR_ParseError("bad type for switch");
-		opcode = 0;	// avoid compiler warning
-		break;
+		return; /* silence compiler */
 	}
 	patch = &statements[numstatements];
 	CO_GenCode(&pr_opcodes[opcode], e, NULL);

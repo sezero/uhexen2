@@ -1554,7 +1554,7 @@ void PR_LoadProgs (void)
 	default:
 		Host_Error ("%s is of unsupported version (%d, should be %d or %d)",
 			    progname, progs->version, PROG_VERSION_V6, PROG_VERSION_V7);
-		break;
+		return; /* silence compiler */
 	}
 	switch (progs->crc)
 	{
@@ -1572,10 +1572,7 @@ void PR_LoadProgs (void)
 		break;
 	default:
 		Host_Error ("Unexpected crc ( %d ) for %s", progs->crc, progname);
-		/* silence compiler */
-		def = globals_v112;
-		progvstr = "Unknown";
-		break;
+		return; /* silence compiler */
 	}
 
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);

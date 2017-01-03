@@ -128,7 +128,7 @@ void SV_Init (void)
 	default:
 		Sys_Error ("Bad protocol version request %i. Accepted values: %i, %i, %i.",
 				sv_protocol, PROTOCOL_RAVEN_111, PROTOCOL_RAVEN_112, PROTOCOL_UQE_113);
-		p = "Unknown";
+		return; /* silence compiler */
 	}
 	Sys_Printf ("Server using protocol %i (%s)\n", sv_protocol, p);
 }

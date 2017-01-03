@@ -1661,10 +1661,7 @@ void PR_LoadProgs (void)
 		break;
 	default:
 		Host_Error ("Unexpected crc ( %d ) for %s", progs->crc, progname);
-		/* silence compiler */
-		def = globals_v015;
-		progvstr = "Unknown";
-		break;
+		return; /* silence compiler */
 	}
 
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);

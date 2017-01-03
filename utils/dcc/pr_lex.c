@@ -652,7 +652,7 @@ type_t *PR_ParseType (void)
 	else
 	{
 		PR_ParseError ("\"%s\" is not a type", pr_token);
-		type = &type_float;	// shut up compiler warning
+		return NULL; /* silence compiler */
 	}
 	PR_Lex ();
 

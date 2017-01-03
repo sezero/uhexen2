@@ -497,8 +497,7 @@ static def_t *PR_ParseRandom (void)
 	}
 
 	PR_ParseError ("type mismatch on random");
-	def_ret.type = def_float.type;
-	return &def_ret;
+	return NULL; /* silence compiler */
 }
 
 /*
