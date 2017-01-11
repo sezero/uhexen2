@@ -96,6 +96,11 @@ ifdef AMIGABUILD
 CROSS_COMPILE=y
 TARGET_OS=amigaos
 endif
+ifdef AMIGA4BUILD
+# cross compilation for amigaos4
+CROSS_COMPILE=y
+TARGET_OS=amigaos4
+endif
 ifeq ($(CROSS_COMPILE),n)
 # compiling for the host os.
 ifneq (,$(findstring darwin,$(HOST_OS)))
@@ -123,6 +128,9 @@ endif
 ifeq ($(TARGET_OS),amigaos)
 MACH_TYPE=m68k
 endif
+ifeq ($(TARGET_OS),amigaos4)
+MACH_TYPE=ppc
+endif
 ifeq ($(TARGET_OS),dos)
 MACH_TYPE=x86
 endif
@@ -145,6 +153,25 @@ ifneq (,$(findstring morphos,$(HOST_OS)))
 HOST_OS  =morphos
 TARGET_OS=morphos
 MACH_TYPE=ppc
+CROSS_COMPILE=n
+endif
+
+ifneq (,$(findstring amigaos,$(HOST_OS)))
+ifeq ($(shell uname -m),ppc)
+HOST_OS =amigaos4
+TARGET_OS=amigaos4
+MACH_TYPE=ppc
+else
+ifeq ($(shell uname -m),powerpc)
+HOST_OS =amigaos4
+TARGET_OS=amigaos4
+MACH_TYPE=ppc
+else
+HOST_OS =amigaos
+TARGET_OS=amigaos
+MACH_TYPE=m68k
+endif
+endif
 CROSS_COMPILE=n
 endif
 
