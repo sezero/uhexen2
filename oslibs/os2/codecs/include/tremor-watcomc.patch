@@ -9,7 +9,7 @@
 +# -5r  :  Pentium register calling conventions.
 +CFLAGS += -5s
 +CFLAGS += -I./include
-+CPPFLAGS= -DHAVE_ALLOCA_H
++CPPFLAGS= -DHAVE_ALLOCA_H -D_LOW_ACCURACY_
 +LIBNAME = vorbisidec.lib
 +
 +COMPILE = wcc386 -q $(CFLAGS) $(CPPFLAGS)

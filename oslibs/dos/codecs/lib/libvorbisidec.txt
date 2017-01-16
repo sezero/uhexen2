@@ -2,6 +2,8 @@ removed unnecessary NULL pointer checks (since we are using Z_Malloc
 and friends, alloc failures are Sys_Error(), and the returned memory
 is zero filled, as well.)
 
+configured with --enable-low-accuracy
+
 --- Tremor/info.c.orig
 +++ Tremor/info.c
 @@ -194,13 +194,11 @@ static int _vorbis_unpack_comment(vorbis
