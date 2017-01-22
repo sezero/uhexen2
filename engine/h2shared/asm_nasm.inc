@@ -42,7 +42,7 @@
 %ifdef __OS2__
 BITS 32
 ; declare segments with proper attributes for OS/2 builds
-SEGMENT .data USE32 FLAT
-SEGMENT .text USE32 FLAT
+SEGMENT .data CLASS=DATA ALIGN=16 USE32 FLAT
+SEGMENT .text CLASS=CODE ALIGN=16 USE32 FLAT
 %endif
 
