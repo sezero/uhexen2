@@ -240,10 +240,8 @@ used myself.  Change into the relevant directory and run:
 	wmake -f Makefile.os2
 
 The makefiles work both when using on OS/2 natively and also when cross
-compiling on linux.
-
-One can possibly adjust stuff to build with EMX environment, but that's
-not tested.
+compiling on linux. The source tree builds with EMX too, but that's not
+well tested.
 
 
 Compiling for Amiga variants:
