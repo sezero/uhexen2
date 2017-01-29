@@ -36,7 +36,7 @@
 #include "SDL_config_symbian.h"  /* must be before win32! */
 #elif defined(__WIN32__)
 #include "SDL_config_win32.h"
-#elif defined(__OS2__)
+#elif defined(__OS2__) || defined(__EMX__)
 #include "SDL_config_os2.h"
 #else
 #include "SDL_config_minimal.h"
