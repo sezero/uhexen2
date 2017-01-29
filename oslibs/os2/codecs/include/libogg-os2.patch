@@ -23,6 +23,29 @@
 +.c.obj:
 +	$(COMPILE) -fo=$^@ $<
 --- /dev/null
++++ libogg/src/Makefile.emx
+@@ -0,0 +1,20 @@
++CFLAGS  = -Zmt -O2 -fsigned-char -Wall -I../include
++LIBNAME =  ogg.a
++
++CC      = gcc
++AR      = ar
++
++LIBOBJ = bitwise.o framing.o
++
++all: $(LIBNAME)
++
++$(LIBNAME): $(LIBOBJ)
++	$(AR) cru $(LIBNAME) $(LIBOBJ)
++
++%.o: %.c
++	$(CC) $(CFLAGS) -c -o $@ $<
++
++clean:
++	$(RM) *.o
++distclean: clean
++	$(RM) $(LIBNAME)
+--- /dev/null
 +++ libogg/include/ogg/config_types.h
 @@ -0,0 +1,25 @@
 +#ifndef __CONFIG_TYPES_H__

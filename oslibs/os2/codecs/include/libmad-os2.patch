@@ -47,6 +47,32 @@
 +
 +.c.obj:
 +	$(COMPILE) -fo=$^@ $<
+--- /dev/null
++++ Makefile.emx
+@@ -0,0 +1,23 @@
++CFLAGS  = -Zmt -march=i486 -Wall
++CFLAGS += -O1 -fforce-mem -fforce-addr -fthread-jumps -fcse-follow-jumps -fcse-skip-blocks -fexpensive-optimizations -fschedule-insns2 -fomit-frame-pointer
++CFLAGS += -DNDEBUG -DHAVE_LIMITS_H -DHAVE_ASSERT_H
++CFLAGS += -DFPM_INTEL
++LIBNAME =  mad.a
++
++CC      = gcc
++AR      = ar
++
++LIBOBJ = version.o fixed.o bit.o timer.o stream.o frame.o synth.o layer12.o layer3.o huffman.o
++
++all: $(LIBNAME)
++
++$(LIBNAME): $(LIBOBJ)
++	$(AR) cru $(LIBNAME) $(LIBOBJ)
++
++%.o: %.c
++	$(CC) $(CFLAGS) -c -o $@ $<
++
++clean:
++	$(RM) *.o
++distclean: clean
++	$(RM) $(LIBNAME)
 --- timer.c.orig
 +++ timer.c
 @@ -342,6 +342,7 @@ unsigned long mad_timer_fraction(mad_tim

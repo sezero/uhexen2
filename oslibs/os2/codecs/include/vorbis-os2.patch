@@ -9,7 +9,7 @@
  #  else
  #    define STIN static
  #  endif
-@@ -52,6 +54,11 @@
+@@ -52,6 +54,19 @@
  #  define FAST_HYPOT(a, b) sqrt((a)*(a) + (b)*(b))
  #endif
  
@@ -18,10 +18,18 @@
 +#pragma aux rint parm [8087] value [8087] = "frndint";
 +#endif
 +
++#ifdef __EMX__
++extern inline double rint (double x) {
++  double retval;
++  __asm__ ("frndint;": "=t" (retval) : "0" (x));
++  return retval;
++}
++#endif
++
  #if defined(__SYMBIAN32__) && defined(__WINS__)
  void *_alloca(size_t size);
  #  define alloca _alloca
-@@ -118,6 +125,32 @@
+@@ -118,6 +133,32 @@
  #endif /* Special i386 GCC implementation */
  
  
@@ -84,3 +92,26 @@
 +
 +.c.obj:
 +	$(COMPILE) -fo=$^@ $<
+--- /dev/null
++++ vorbis/lib/Makefile.emx
+@@ -0,0 +1,20 @@
++CFLAGS  = -Zmt -Wall -O2 -ffast-math -mno-ieee-fp -fsigned-char -D_REENTRANT -I../include
++CFLAGS += -DHAVE_ALLOCA_H
++LIBNAME = vorbis.a
++LIBNAME2= vorbisfile.a
++
++CC      = gcc
++AR      = ar
++
++OBJ = mdct.o smallft.o block.o envelope.o window.o lsp.o lpc.o analysis.o synthesis.o psy.o info.o floor1.o floor0.o res0.o mapping0.o registry.o codebook.o sharedbook.o lookup.o bitrate.o
++OBJ2= vorbisfile.o
++
++all: $(LIBNAME) $(LIBNAME2)
++
++%.o: %.c
++	$(CC) $(CFLAGS) -c -o $@ $<
++
++$(LIBNAME): $(OBJ)
++	$(AR) cru $(LIBNAME) $(OBJ)
++$(LIBNAME2): $(OBJ2)
++	$(AR) cru $(LIBNAME2) $(OBJ2)
