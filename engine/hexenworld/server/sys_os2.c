@@ -23,6 +23,10 @@
 
 #define INCL_DOS
 #define INCL_DOSERRORS
+#ifdef __EMX__
+#define INCL_KBD
+#define INCL_VIO
+#endif
 #include <os2.h>
 
 #include <fcntl.h>
@@ -310,13 +314,26 @@ char *Sys_DateTimeString (char *buf)
 Sys_ConsoleInput
 ================
 */
+#ifdef __EMX__
+int putch (int c) {
+	char ch = c;
+	VioWrtTTY(&ch, 1, 0);
+	return c;
+}
+int kbhit (void) {
+	KBDKEYINFO k;
+	if (KbdPeek(&k, 0))
+		return 0;
+	return (k.fbStatus & KBDTRF_FINAL_CHAR_IN);
+}
+#endif
+
 const char *Sys_ConsoleInput (void)
 {
 	static char	con_text[256];
 	static int	textlen = 0;
 	char		ch;
 
-/* FIXME: EMX doesn't support this! */
 	if (! kbhit())
 		return NULL;
 
