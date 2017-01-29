@@ -112,8 +112,13 @@ typedef u_long	in_addr_t;	/* u_int32_t */
 typedef int	socklen_t;
 
 #ifdef __EMX__
+#include <sys/select.h>
 #define	SOCKETERRNO	errno
 #define	socketerror(x)	strerror((x))
+#if !(defined(__INNOTEK_LIBC__) || defined(__KLIBC__))
+/* no hstrerror() in old EMX */
+#define	hstrerror(x)	strerror((x))
+#endif
 #define	closesocket	close
 #else
 #include <nerrno.h>
