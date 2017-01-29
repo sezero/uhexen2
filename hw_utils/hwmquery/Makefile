@@ -110,6 +110,16 @@ LDFLAGS += -lsocket -lnsl -lresolv
 endif
 endif
 
+ifeq ($(TARGET_OS),os2)
+INCLUDES+= -I$(OSLIBS)/os2/emx/include
+CFLAGS  += -Zmt
+ifndef DEBUG
+LDFLAGS += -s
+endif
+LDFLAGS += -Zmt
+LDFLAGS += -lsocket
+endif
+
 ifeq ($(TARGET_OS),aros)
 endif
 

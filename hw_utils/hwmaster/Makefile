@@ -110,6 +110,16 @@ LDFLAGS += -lsocket -lnsl -lresolv
 endif
 endif
 
+ifeq ($(TARGET_OS),os2)
+INCLUDES+= -I$(OSLIBS)/os2/emx/include
+CFLAGS  += -Zmt
+ifndef DEBUG
+LDFLAGS += -s
+endif
+LDFLAGS += -Zmt
+LDFLAGS += -lsocket
+endif
+
 ifeq ($(TARGET_OS),aros)
 endif
 
@@ -148,6 +158,9 @@ SYSOBJ_SYS = sys_unix.o
 endif
 ifeq ($(TARGET_OS),darwin)
 SYSOBJ_SYS = sys_unix.o
+endif
+ifeq ($(TARGET_OS),os2)
+SYSOBJ_SYS = sys_os2.o
 endif
 ifeq ($(TARGET_OS),aros)
 SYSOBJ_SYS = sys_amiga.o

@@ -1,0 +1,70 @@
+# GNU Makefile for the H2PATCH tool - OS/2, using EMX.
+#
+# To build a debug version:		make DEBUG=yes
+#
+
+UHEXEN2_TOP:=..
+UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
+LIBS_DIR:=$(UHEXEN2_TOP)/libs
+OSLIBS:=$(UHEXEN2_TOP)/oslibs
+
+CC ?= gcc
+ifeq ($(origin CC),default)
+# refuse the stupid 'cc' default of make
+# which not necessarily exist everywhere
+CC  = gcc
+endif
+LINKER = $(CC)
+
+CPUFLAGS=
+CFLAGS  = -g -Zmt -Wall
+CFLAGS += $(CPUFLAGS)
+LDFLAGS = -Zmt
+ifndef DEBUG
+CFLAGS += -O2 -DNDEBUG=1
+LDFLAGS+= -s
+endif
+
+XDELTA_DIR:= $(LIBS_DIR)/xdelta3
+XDFLAGS:= -DXD3_DEBUG=0
+# when XD3_USE_LARGEFILE64 is not defined, xdelta3 defaults
+# to 64 bit xoff_t.
+# define XD3_USE_LARGEFILE64 as 0 or 1.
+XDFLAGS+= -DXD3_USE_LARGEFILE64=0
+# make xdelta3 to use open(), close() & co:
+# they are just fine with OS/2.
+XDFLAGS+= -DXD3_POSIX=1
+
+CFLAGS  += -I. -I$(XDELTA_DIR) -I$(UHEXEN2_SHARED)
+# for missing headers, etc:
+CFLAGS  += -I$(OSLIBS)/os2/emx/include
+
+TARGETS:= h2patch.exe
+
+# Targets
+.PHONY: clean distclean
+
+all: $(TARGETS)
+
+OBJECTS:= xdelta3.o qsnprint.o h2patch3.o
+
+XD3DEPS:= xdelta3-decode.h xdelta3-list.h xdelta3-main.h xdelta3-blkcache.h \
+	xdelta3.c xdelta3.h
+XD3DEPS:= $(patsubst %,$(XDELTA_DIR)/%,$(XD3DEPS))
+
+# Rules for turning source files into .o files
+%.o: %.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+%.o: $(UHEXEN2_SHARED)/%.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+xdelta3.o: $(XD3DEPS)
+	$(CC) $(XDFLAGS) $(CFLAGS) -c $(XDELTA_DIR)/xdelta3.c -o xdelta3.o
+
+h2patch.exe: $(OBJECTS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@
+
+clean:
+	$(RM) *.o *.res
+distclean: clean
+	$(RM) $(TARGETS)

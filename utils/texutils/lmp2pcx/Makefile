@@ -55,6 +55,14 @@ ifeq ($(TARGET_OS),dos)
 INCLUDES+= -I$(OSLIBS)/dos
 LDFLAGS += $(OSLIBS)/dos/djtime/djtime.a -lc
 endif
+ifeq ($(TARGET_OS),os2)
+INCLUDES+= -I$(OSLIBS)/os2/emx/include
+CFLAGS  += -Zmt
+ifndef DEBUG
+LDFLAGS += -s
+endif
+LDFLAGS += -Zmt
+endif
 ifeq ($(TARGET_OS),win32)
 CFLAGS  += -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows/misc/include

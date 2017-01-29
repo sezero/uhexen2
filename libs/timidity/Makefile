@@ -29,6 +29,8 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
+LIBTIMIDITY = libtimidity.a
+
 # compiler flags, customize as needed
 ifeq ($(MACH_TYPE),x86)
 CPU_X86=-march=i586
@@ -79,8 +81,17 @@ CFLAGS += -noixemul -m68020-60
 INCLUDES += -I$(OSLIBS)/amigaos/include
 endif
 
+ifeq ($(TARGET_OS),dos)
+# nothing extra is needed
+endif
 
-TARGETS:= libtimidity.a
+ifeq ($(TARGET_OS),os2)
+CFLAGS += -Zmt
+LIBTIMIDITY:= timidity.a
+endif
+
+
+TARGETS:= $(LIBTIMIDITY)
 
 OBJECTS = common.o \
 	instrum.o \
@@ -118,12 +129,12 @@ timidity.o: timidity.c common.h instrum.h output.h playmidi.h readmidi.h tables.
 timidity_internal.h: options.h timi_endian.h timidity.h
 
 # rule for target:
-libtimidity.a: $(OBJECTS)
-	$(AR) cru libtimidity.a $(OBJECTS)
-	$(RANLIB) libtimidity.a
+$(LIBTIMIDITY): $(OBJECTS)
+	$(AR) cru $@ $^
+	-$(RANLIB) $@
 
 clean:
-	rm -f *.o libtimidity.a timidity.lib
+	rm -f *.o libtimidity.a timidity.a timidity.lib
 
 distclean: clean
 

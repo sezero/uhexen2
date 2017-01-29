@@ -115,6 +115,24 @@ endif
 
 
 #############################################################
+# OS/2 flags/settings
+#############################################################
+ifeq ($(TARGET_OS),os2)
+
+INCLUDES+= -I$(OSLIBS)/os2/emx/include
+CFLAGS  += -Zmt
+LDFLAGS += -Zmt
+ifndef DEBUG
+LDFLAGS += -s
+endif
+SYSLIBS += -lsocket
+
+endif
+# End of OS/2 settings
+#############################################################
+
+
+#############################################################
 # Win32 flags/settings
 #############################################################
 ifeq ($(TARGET_OS),win32)
@@ -271,6 +289,9 @@ SYSOBJ_SYS = sys_win.o
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_SYS := dos_v2.o sys_dos.o
+endif
+ifeq ($(TARGET_OS),os2)
+SYSOBJ_SYS := sys_os2.o
 endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_SYS = sys_unix.o

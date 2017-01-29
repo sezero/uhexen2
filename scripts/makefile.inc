@@ -33,6 +33,12 @@ HOST_OS =$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 #TARGET_OS=dos
 #endif
 
+ifneq (,$(findstring OS/2,$(HOST_OS0)))
+HOST_OS  =os2
+TARGET_OS=os2
+MACH_TYPE=x86
+endif
+
 ifneq (,$(findstring mingw32,$(HOST_OS)))
 HOST_OS =windows
 endif
@@ -57,6 +63,7 @@ endif #
 
 ifneq ($(HOST_OS),windows)
 ifneq ($(HOST_OS),dos)
+ifneq ($(HOST_OS),os2)
 # assuming a unix host
 
 ifdef W32BUILD
@@ -111,6 +118,7 @@ TARGET_OS=unix
 endif
 endif
 
+endif
 endif
 endif #
 
@@ -180,6 +188,9 @@ endif
 
 exe_ext=
 ifeq ($(TARGET_OS),dos)
+exe_ext=.exe
+endif
+ifeq ($(TARGET_OS),os2)
 exe_ext=.exe
 endif
 ifeq ($(TARGET_OS),win32)

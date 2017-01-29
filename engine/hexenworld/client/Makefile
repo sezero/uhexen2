@@ -416,6 +416,84 @@ endif
 
 
 #############################################################
+# OS/2 flags/settings and overrides:
+#############################################################
+ifeq ($(TARGET_OS),os2)
+# OS/2, using EMX:
+
+INCLUDES+= -I$(OSLIBS)/os2/emx/include
+CFLAGS  += -Zmt
+LDFLAGS += -Zmt
+ifndef DEBUG
+LDFLAGS += -s
+endif
+# using SDL for now:
+SDL_CFLAGS=-I$(OSLIBS)/os2/SDL/include
+SDL_LIBS = -L$(OSLIBS)/os2/SDL/lib -lSDL12
+USE_SDLCD=yes
+USE_SDLAUDIO=yes
+
+NASMFLAGS=-f aout
+
+SYSLIBS += -lsocket
+
+LINK_GL_LIBS=yes
+GL_LINK=-lopengl
+
+ifeq ($(USE_SOUND),yes)
+ifneq ($(USE_SDLAUDIO),yes)
+CPPFLAGS+= -DNO_SDL_AUDIO
+endif
+endif
+
+ifeq ($(USE_CDAUDIO),yes)
+ifeq ($(USE_SDLCD),yes)
+CPPFLAGS+= -DWITH_SDLCD
+endif
+endif
+
+# SDLQUAKE must be defined for all SDL using platforms/targets
+CPPFLAGS+= -DSDLQUAKE
+CFLAGS  += $(SDL_CFLAGS)
+LDFLAGS += $(SDL_LIBS)
+
+ifeq ($(USE_CODEC_VORBIS),yes)
+CODEC_INC = -I$(OSLIBS)/os2/codecs/include
+CODEC_LINK= -L$(OSLIBS)/os2/codecs/lib
+endif
+ifeq ($(USE_CODEC_MP3),yes)
+CODEC_INC = -I$(OSLIBS)/os2/codecs/include
+CODEC_LINK= -L$(OSLIBS)/os2/codecs/lib
+endif
+ifeq ($(USE_CODEC_FLAC),yes)
+CODEC_INC = -I$(OSLIBS)/os2/codecs/include
+CODEC_LINK= -L$(OSLIBS)/os2/codecs/lib
+endif
+ifeq ($(USE_CODEC_OPUS),yes)
+CODEC_INC = -I$(OSLIBS)/os2/codecs/include
+CODEC_LINK= -L$(OSLIBS)/os2/codecs/lib
+endif
+ifeq ($(USE_CODEC_MIKMOD),yes)
+CODEC_INC = -I$(OSLIBS)/os2/codecs/include
+CODEC_LINK= -L$(OSLIBS)/os2/codecs/lib
+endif
+ifeq ($(USE_CODEC_XMP),yes)
+CODEC_INC = -I$(OSLIBS)/os2/codecs/include
+CODEC_LINK= -L$(OSLIBS)/os2/codecs/lib
+endif
+ifeq ($(USE_CODEC_MODPLUG),yes)
+CODEC_INC = -I$(OSLIBS)/os2/codecs/include
+CODEC_LINK= -L$(OSLIBS)/os2/codecs/lib
+endif
+INCLUDES += $(CODEC_INC)
+LDFLAGS += $(CODEC_LINK)
+
+endif
+# End of OS/2 settings
+#############################################################
+
+
+#############################################################
 # DOS flags/settings and overrides:
 #############################################################
 ifeq ($(TARGET_OS),dos)
@@ -980,7 +1058,12 @@ endif
 ifeq ($(USE_CODEC_TIMIDITY),yes)
 CPPFLAGS+= -DUSE_CODEC_TIMIDITY
 LDFLAGS+= -L$(LIBS_DIR)/timidity -ltimidity
-TIMIDEPS=$(LIBS_DIR)/timidity/libtimidity.a
+ifeq ($(TARGET_OS),os2)
+LIBTIMIDITY=timidity.a
+else
+LIBTIMIDITY=libtimidity.a
+endif
+TIMIDEPS=$(LIBS_DIR)/timidity/$(LIBTIMIDITY)
 else
 TIMIDEPS=
 endif
@@ -1118,6 +1201,9 @@ endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_SND := snd_sb.o snd_gus.o snd_pci.o
 endif
+ifeq ($(TARGET_OS),os2)
+SYSOBJ_SND := snd_sdl.o
+endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o snd_sdl.o
 endif
@@ -1148,6 +1234,10 @@ ifeq ($(TARGET_OS),win64)
 SYSOBJ_MIDI:= midi_win.o mid2strm.o
 endif
 ifeq ($(TARGET_OS),dos)
+SYSOBJ_MIDI:= midi_nul.o
+CPPFLAGS += -D_NO_MIDIDRV
+endif
+ifeq ($(TARGET_OS),os2)
 SYSOBJ_MIDI:= midi_nul.o
 CPPFLAGS += -D_NO_MIDIDRV
 endif
@@ -1187,6 +1277,9 @@ SYSOBJ_CDA := cd_win.o
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_CDA := cd_dos.o
+endif
+ifeq ($(TARGET_OS),os2)
+SYSOBJ_CDA := cd_sdl.o
 endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_CDA := cd_sdl.o cd_bsd.o cd_linux.o
@@ -1245,6 +1338,13 @@ SYSOBJ_SOFT_VID+= no_dxe.o
 endif
 SYSOBJ_SYS := dos_v2.o sys_dos.o
 #	dosasm.o
+endif
+ifeq ($(TARGET_OS),os2)
+SYSOBJ_INPUT := in_sdl.o
+SYSOBJ_GL_VID:= gl_vidsdl.o
+SYSOBJ_SOFT_VID:= vid_sdl.o
+SYSOBJ_SYS := sys_os2.o
+SYSOBJ_SYS += sys_sdl.o
 endif
 ifeq ($(TARGET_OS),unix)
 # unix clients use SDL:
