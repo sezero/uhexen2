@@ -176,13 +176,15 @@ extern DECLSPEC void * SDLCALL SDL_calloc(size_t nmemb, size_t size);
 extern DECLSPEC void * SDLCALL SDL_realloc(void *mem, size_t size);
 #endif
 
-#ifdef __EMX__
+#ifdef HAVE_FREE
+# if defined(__OS2__) && (defined(__INNOTEK_LIBC__) || defined(__KLIBC__))
 /* workaround for klibc's free(NULL) */
 static inline void SDL_free(void *mem) {
     if (mem) free(mem);
 }
-#elif defined(HAVE_FREE)
-#define SDL_free	free
+# else
+#  define SDL_free	free
+# endif
 #else
 extern DECLSPEC void SDLCALL SDL_free(void *mem);
 #endif
