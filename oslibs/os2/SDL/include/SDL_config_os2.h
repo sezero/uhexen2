@@ -27,7 +27,7 @@
 
 /* This is a set of defines to configure the SDL features */
 
-#if 0 /* have stdint.h */
+#if 0 /* have stdint.h instead */
 typedef signed char         int8_t;
 typedef unsigned char       uint8_t;
 typedef signed short        int16_t;
@@ -115,12 +115,9 @@ typedef unsigned long long  uint64_t;
 //#define HAVE_ICONV_H 1
 
 /* Enable various audio drivers */
-#ifdef OS2ALT
 #define SDL_AUDIO_DRIVER_DARTALT	1
-#else
-#define SDL_AUDIO_DRIVER_DART	1
-#define SDL_AUDIO_DRIVER_DUMMY	1
-#endif
+//#define SDL_AUDIO_DRIVER_DART	1
+//#define SDL_AUDIO_DRIVER_DUMMY	1
 #define SDL_AUDIO_DRIVER_DISK	1
 
 /* Enable various cdrom drivers */
@@ -139,12 +136,9 @@ typedef unsigned long long  uint64_t;
 #define SDL_TIMER_OS2	1
 
 /* Enable various video drivers */
-// #/ifdef OS2ALT
-#define SDL_VIDEO_DRIVER_OS2ALT		1
-// # else
+#define SDL_VIDEO_DRIVER_OS2GROP	1
 // #define SDL_VIDEO_DRIVER_DUMMY	1
 // #define SDL_VIDEO_DRIVER_OS2FS	1
-// #endif
 
 /* Enable OpenGL support */
 /* Nothing here yet for OS/2... :( */

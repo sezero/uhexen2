@@ -93,6 +93,9 @@
 # if defined(__WIN32__) && !defined(__GNUC__)
 #  define SDLCALL __cdecl
 # elif defined(__OS2__)
+#  if defined (__GNUC__) && !defined(_System)
+#   define _System /* For compatibility with old GCC/EMX */
+#  endif
 #  if defined (__GNUC__) && __GNUC__ < 4 && (0) /* using Watcom-built dll */
 #   /* Added support for GCC-EMX <v4.x */
 #   /* this is needed for XFree86/OS2 developement */
