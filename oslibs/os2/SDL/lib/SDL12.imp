@@ -1,5 +1,4 @@
 ; to build an EMX import lib:  emximp -o SDL12.a SDL12.imp
-;
 SDL_InitSubSystem SDL12 SDL_InitSubSystem ?
 SDL_Init SDL12 SDL_Init ?
 SDL_QuitSubSystem SDL12 SDL_QuitSubSystem ?
@@ -11,9 +10,6 @@ SDL_GetError SDL12 SDL_GetError ?
 SDL_ClearError SDL12 SDL_ClearError ?
 SDL_Error SDL12 SDL_Error ?
 SDL_revcpy SDL12 SDL_revcpy ?
-SDL_strtoul SDL12 SDL_strtoul ?
-SDL_strtoull SDL12 SDL_strtoull ?
-SDL_strncasecmp SDL12 SDL_strncasecmp ?
 SDL_ConvertAudio SDL12 SDL_ConvertAudio ?
 SDL_BuildAudioCVT SDL12 SDL_BuildAudioCVT ?
 SDL_MixAudio SDL12 SDL_MixAudio ?
