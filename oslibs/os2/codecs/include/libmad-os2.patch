@@ -49,15 +49,16 @@
 +	$(COMPILE) -fo=$^@ $<
 --- /dev/null
 +++ Makefile.emx
-@@ -0,0 +1,23 @@
+@@ -0,0 +1,25 @@
 +CFLAGS  = -Zmt -march=i486 -Wall
-+CFLAGS += -O1 -fforce-mem -fforce-addr -fthread-jumps -fcse-follow-jumps -fcse-skip-blocks -fexpensive-optimizations -fschedule-insns2 -fomit-frame-pointer
++CFLAGS += -O1 -fforce-mem -fforce-addr -fthread-jumps -fcse-follow-jumps -fcse-skip-blocks -fexpensive-optimizations -fschedule-insns2
 +CFLAGS += -DNDEBUG -DHAVE_LIMITS_H -DHAVE_ASSERT_H
 +CFLAGS += -DFPM_INTEL
 +LIBNAME =  mad.a
 +
 +CC      = gcc
 +AR      = ar
++RANLIB  = ranlib
 +
 +LIBOBJ = version.o fixed.o bit.o timer.o stream.o frame.o synth.o layer12.o layer3.o huffman.o
 +
@@ -65,6 +66,7 @@
 +
 +$(LIBNAME): $(LIBOBJ)
 +	$(AR) cru $(LIBNAME) $(LIBOBJ)
++	$(RANLIB) $(LIBNAME)
 +
 +%.o: %.c
 +	$(CC) $(CFLAGS) -c -o $@ $<

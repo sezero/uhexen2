@@ -24,12 +24,13 @@
 +	$(COMPILE) -fo=$^@ $<
 --- /dev/null
 +++ libogg/src/Makefile.emx
-@@ -0,0 +1,20 @@
+@@ -0,0 +1,22 @@
 +CFLAGS  = -Zmt -O2 -fsigned-char -Wall -I../include
 +LIBNAME =  ogg.a
 +
 +CC      = gcc
 +AR      = ar
++RANLIB  = ranlib
 +
 +LIBOBJ = bitwise.o framing.o
 +
@@ -37,6 +38,7 @@
 +
 +$(LIBNAME): $(LIBOBJ)
 +	$(AR) cru $(LIBNAME) $(LIBOBJ)
++	$(RANLIB) $(LIBNAME)
 +
 +%.o: %.c
 +	$(CC) $(CFLAGS) -c -o $@ $<

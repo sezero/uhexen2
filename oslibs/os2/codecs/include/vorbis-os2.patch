@@ -94,14 +94,15 @@
 +	$(COMPILE) -fo=$^@ $<
 --- /dev/null
 +++ vorbis/lib/Makefile.emx
-@@ -0,0 +1,20 @@
-+CFLAGS  = -Zmt -Wall -O2 -ffast-math -mno-ieee-fp -fsigned-char -D_REENTRANT -I../include
+@@ -0,0 +1,23 @@
++CFLAGS  = -Zmt -Wall -O2 -ffast-math -fsigned-char -D_REENTRANT -I../include
 +CFLAGS += -DHAVE_ALLOCA_H
 +LIBNAME = vorbis.a
 +LIBNAME2= vorbisfile.a
 +
 +CC      = gcc
 +AR      = ar
++RANLIB  = ranlib
 +
 +OBJ = mdct.o smallft.o block.o envelope.o window.o lsp.o lpc.o analysis.o synthesis.o psy.o info.o floor1.o floor0.o res0.o mapping0.o registry.o codebook.o sharedbook.o lookup.o bitrate.o
 +OBJ2= vorbisfile.o
@@ -113,5 +114,7 @@
 +
 +$(LIBNAME): $(OBJ)
 +	$(AR) cru $(LIBNAME) $(OBJ)
++	$(RANLIB) $(LIBNAME)
 +$(LIBNAME2): $(OBJ2)
 +	$(AR) cru $(LIBNAME2) $(OBJ2)
++	$(RANLIB) $(LIBNAME2)
