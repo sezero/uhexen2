@@ -465,6 +465,9 @@ CFLAGS  += -Zmt
 LDFLAGS += -Zmt
 ifndef DEBUG
 LDFLAGS += -s
+# -fomit-frame-pointer/-ffast-math seems to cause trouble
+# with EMX at least with the old compilers I tried.
+CFLAGS  += -fno-omit-frame-pointer
 endif
 # using SDL for now:
 SDL_CFLAGS=-I$(OSLIBS)/os2/SDL/include

@@ -88,6 +88,9 @@ endif
 ifeq ($(TARGET_OS),os2)
 CFLAGS += -Zmt
 LIBTIMIDITY:= timidity.a
+# -fomit-frame-pointer/-ffast-math seems to cause trouble
+# with EMX at least with the old compilers I tried.
+CFLAGS  += -fno-omit-frame-pointer
 endif
 
 

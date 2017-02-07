@@ -124,6 +124,9 @@ CFLAGS  += -Zmt
 LDFLAGS += -Zmt
 ifndef DEBUG
 LDFLAGS += -s
+# -fomit-frame-pointer/-ffast-math seems to cause trouble
+# with EMX at least with the old compilers I tried.
+CFLAGS  += -fno-omit-frame-pointer
 endif
 SYSLIBS += -lsocket
 
