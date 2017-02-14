@@ -344,7 +344,7 @@ static void VID_Fullscreen_f (void)
 	VID_SetMode (vid_fullscreen_mode.integer, vid_curpal);
 }
 
-static int VID_Suspend (MGLDC *dc, int flags)
+static int ASMAPI VID_Suspend (MGLDC *dc, int flags) /* callback for MGL_setSuspendAppCallback() */
 {
 	qboolean	s;
 
