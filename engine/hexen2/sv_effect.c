@@ -617,6 +617,7 @@ void SV_ParseEffect (sizebuf_t *sb)
 void SV_SaveEffects (FILE *FH)
 {
 	int	idx, count;
+	unsigned int	u;
 
 	for (idx = count = 0 ; idx < MAX_EFFECTS ; idx++)
 	{
@@ -666,7 +667,6 @@ void SV_SaveEffects (FILE *FH)
 			fprintf(FH, "%f ", sv.Effects[idx].ef.Rain.dir[2]);
 			fprintf(FH, "%d ", sv.Effects[idx].ef.Rain.count);
 			//fprintf(FH, "%d ", sv.Effects[idx].ef.Rain.veer);
-
 			/*
 			O.S:	a linefeed is missing here. not adding
 				it so as not to break existing saves.
@@ -814,7 +814,6 @@ void SV_SaveEffects (FILE *FH)
 			fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.avelocity[0]);
 			fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.avelocity[1]);
 			fprintf(FH, "%f ", sv.Effects[idx].ef.Missile.avelocity[2]);
-
 			/*
 			O.S:	a linefeed is missing here. not adding
 				it so as not to break existing saves.
@@ -826,12 +825,13 @@ void SV_SaveEffects (FILE *FH)
 			fprintf(FH, "%f ", sv.Effects[idx].ef.Chunk.origin[0]);
 			fprintf(FH, "%f ", sv.Effects[idx].ef.Chunk.origin[1]);
 			fprintf(FH, "%f ", sv.Effects[idx].ef.Chunk.origin[2]);
-			fprintf(FH, "%d ", sv.Effects[idx].ef.Chunk.type);
+			u = sv.Effects[idx].ef.Chunk.type;
+			fprintf(FH, "%u ", u);
 			fprintf(FH, "%f ", sv.Effects[idx].ef.Chunk.srcVel[0]);
 			fprintf(FH, "%f ", sv.Effects[idx].ef.Chunk.srcVel[1]);
 			fprintf(FH, "%f ", sv.Effects[idx].ef.Chunk.srcVel[2]);
-			fprintf(FH, "%d ", sv.Effects[idx].ef.Chunk.numChunks);
-
+			u = sv.Effects[idx].ef.Chunk.numChunks;
+			fprintf(FH, "%u ", u);
 			/*
 			O.S:	a linefeed is missing here. not adding
 				it so as not to break existing saves.
@@ -852,16 +852,22 @@ void SV_LoadEffects (FILE *FH)
 {
 	int		idx, Total, count;
 	int		c;
+	unsigned int	u;
 
+	Total = idx = -1;
 	/* Since the map is freshly loaded, clear out any effects as a result of
 	   the loading */
 	SV_ClearEffects();
 
 	fscanf(FH, "Effects: %d\n", &Total);
+	if (Total < 0 || Total > MAX_EFFECTS)
+		PR_RunError ("%s: bad numeffects", __thisfunc__);
 
-	for (count = 0 ; count < Total ; count++)
+	for (count = 0 ; count < Total ; idx = -1, count++)
 	{
 		fscanf(FH, "Effect: %d ", &idx);
+		if (idx < 0 || idx >= MAX_EFFECTS)
+			PR_RunError ("%s: bad index", __thisfunc__);
 		fscanf(FH, "%d %f: ", &sv.Effects[idx].type, &sv.Effects[idx].expire_time);
 
 		switch (sv.Effects[idx].type)
@@ -897,7 +903,6 @@ void SV_LoadEffects (FILE *FH)
 			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[2]);
 			fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.count);
 			//fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.veer);
-
 			/*
 			O.S:	a linefeed is missing here. not adding
 				it so as not to break existing saves.
@@ -1056,7 +1061,6 @@ void SV_LoadEffects (FILE *FH)
 			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[0]);
 			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[1]);
 			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[2]);
-
 			/*
 			O.S:	a linefeed is missing here. not adding
 				it so as not to break existing saves.
@@ -1065,7 +1069,6 @@ void SV_LoadEffects (FILE *FH)
 			break;
 
 		case CE_CHUNK:
-		    {	unsigned int u;
 			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[0]);
 			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[1]);
 			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[2]);
@@ -1076,7 +1079,6 @@ void SV_LoadEffects (FILE *FH)
 			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[2]);
 			fscanf(FH, "%u ", &u);
 			sv.Effects[idx].ef.Chunk.numChunks = u & 0xff;
-			}
 			/*
 			O.S:	a linefeed is missing here. not adding
 				it so as not to break existing saves.

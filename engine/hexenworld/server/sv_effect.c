@@ -494,7 +494,6 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 	}
 }
 
-
 // All changes need to be in SV_SendEffect(), SV_ParseEffect(),
 // SV_SaveEffects(), SV_LoadEffects(), CL_ParseEffect()
 void SV_ParseEffect (sizebuf_t *sb)
@@ -1065,15 +1064,20 @@ void SV_LoadEffects (FILE *FH)
 {
 	int		idx, Total, count;
 
+	Total = idx = -1;
 	/* Since the map is freshly loaded, clear out any effects as a result of
 	   the loading */
 	SV_ClearEffects();
 
 	fscanf(FH, "Effects: %d\n", &Total);
+	if (Total < 0 || Total > MAX_EFFECTS)
+		PR_RunError ("%s: bad numeffects", __thisfunc__);
 
-	for (count = 0 ; count < Total ; count++)
+	for (count = 0 ; count < Total ; idx = -1, count++)
 	{
 		fscanf(FH, "Effect: %d ", &idx);
+		if (idx < 0 || idx >= MAX_EFFECTS)
+			PR_RunError ("%s: bad index", __thisfunc__);
 		fscanf(FH, "%d %f: ", &sv.Effects[idx].type, &sv.Effects[idx].expire_time);
 
 		switch (sv.Effects[idx].type)
