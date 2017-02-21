@@ -60,6 +60,28 @@ sint32 XCHG_LONG (__reg("d0") sint32) =
     "\trol.w\t#8,d0\n"
     "\tswap\td0\n"
     "\trol.w\t#8,d0";
+
+#elif defined(__WATCOMC__) && defined(__386__)
+extern uint16 XCHG_SHORT(uint16);
+extern sint32 XCHG_LONG (sint32);
+#ifndef __SW_3 /* 486+ */
+#pragma aux XCHG_LONG = \
+    "bswap eax"  \
+    parm   [eax] \
+    modify [eax];
+#else  /* 386-only */
+#pragma aux XCHG_LONG = \
+    "xchg al, ah"  \
+    "ror  eax, 16" \
+    "xchg al, ah"  \
+    parm   [eax]   \
+    modify [eax];
+#endif
+#pragma aux XCHG_SHORT = \
+    "xchg al, ah" \
+    parm   [ax]   \
+    modify [ax];
+
 #else
 #define XCHG_SHORT(x) ((((x)&0xFF)<<8) | (((x)>>8)&0xFF))
 #ifdef __i486__
