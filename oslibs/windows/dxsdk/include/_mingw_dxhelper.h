@@ -115,3 +115,21 @@
 # endif
 #endif	/* DECL_WINELIB_TYPE_AW */
 
+#ifndef __WATCOMC__
+# define DX_CDECL_
+#else /* WATCOM: */
+# define DX_CDECL_ __cdecl
+ /* Open Watcom has broken __cdecl (leading underscore) name mangling for Windows
+  * internal var names. It is fixed in Open Watcom V2 fork as of May/2014:
+  * https://github.com/open-watcom/open-watcom-v2/commit/961ef1ff756f3ec5a7248cefcae00a6ecaa97ff4
+  */
+# if (__WATCOMC__ < 1300)
+#  undef DEFINE_GUID
+#  ifdef INITGUID
+#   define DEFINE_GUID(name,l,w1,w2,b1,b2,b3,b4,b5,b6,b7,b8) EXTERN_C const GUID __cdecl name = { l,w1,w2,{ b1,b2,b3,b4,b5,b6,b7,b8 } }
+#  else
+#   define DEFINE_GUID(name,l,w1,w2,b1,b2,b3,b4,b5,b6,b7,b8) EXTERN_C const GUID __cdecl name
+#  endif
+# endif
+#endif
+

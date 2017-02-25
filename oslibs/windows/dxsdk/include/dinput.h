@@ -2142,14 +2142,14 @@ typedef struct DIMOUSESTATE2 {
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern const DIDATAFORMAT c_dfDIMouse;
+extern const DIDATAFORMAT DX_CDECL_ c_dfDIMouse;
 #if DIRECTINPUT_VERSION >= 0x0700
-extern const DIDATAFORMAT c_dfDIMouse2; /* DX 7 */
+extern const DIDATAFORMAT DX_CDECL_ c_dfDIMouse2; /* DX 7 */
 #endif /* DI7 */
-extern const DIDATAFORMAT c_dfDIKeyboard;
+extern const DIDATAFORMAT DX_CDECL_ c_dfDIKeyboard;
 #if DIRECTINPUT_VERSION >= 0x0500
-extern const DIDATAFORMAT c_dfDIJoystick;
-extern const DIDATAFORMAT c_dfDIJoystick2;
+extern const DIDATAFORMAT DX_CDECL_ c_dfDIJoystick;
+extern const DIDATAFORMAT DX_CDECL_ c_dfDIJoystick2;
 #endif /* DI5 */
 #ifdef __cplusplus
 };
