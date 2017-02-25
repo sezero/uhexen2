@@ -1,5 +1,5 @@
-# quick'n'dirty makefile to build h2ded.exe for OS/2
-# use OpenWatcom:  wmake -f Makefile.os2
+# makefile to build hexen2 jsh2colour tool for OS/2 using Open Watcom:
+#   wmake -f Makefile.os2
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -33,7 +33,6 @@ CFLAGS+= -DNDEBUG=1
 CFLAGS+= -DDOUBLEVEC_T
 
 INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
-INCLUDES+= -I$(OSLIBS)$(PATH_SEP)os2
 
 #############################################################
 

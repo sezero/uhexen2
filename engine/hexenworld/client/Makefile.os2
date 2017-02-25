@@ -1,8 +1,8 @@
-# quick'n'dirty makefile to build hw.exe for OS/2
-# use OpenWatcom:  wmake -f Makefile.os2
+# makefile to build hw.exe for OS/2 using Open Watcom:
+#   wmake -f Makefile.os2
 #
 # to build the opengl version:
-#                  wmake -f Makefile.os2 BUILDGL=1
+#   wmake -f Makefile.os2 BUILDGL=1
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -133,13 +133,11 @@ USE_CODEC_OPUS=no
 NASMFLAGS=-f obj -d__OS2__ -d_NO_PREFIX
 
 !ifndef __UNIX__
-INCLUDES+= -I$(OSLIBS)\os2
 INCLUDES+= -I$(OSLIBS)\os2\codecs\include
 CODECLIBS=  $(OSLIBS)\os2\codecs\lib\
 SDL_CFLAGS=-I$(OSLIBS)\os2\SDL\include
 SDL_LIBS = $(OSLIBS)\os2\SDL\lib\SDL12.lib
 !else
-INCLUDES+= -I$(OSLIBS)/os2
 INCLUDES+= -I$(OSLIBS)/os2/codecs/include
 CODECLIBS=  $(OSLIBS)/os2/codecs/lib/
 SDL_CFLAGS=-I$(OSLIBS)/os2/SDL/include
