@@ -51,13 +51,15 @@
 #  define _rmdir	rmdir
 #endif	/* __LCC__ */
 
-#if defined(__WATCOMC__) && (__WATCOMC__ < 1280)
+#if defined(__WATCOMC__)
+#  define _putch	putch
+#if (__WATCOMC__ < 1280)
 #  define _read		read
 #  define _write	write
 #  define _unlink	unlink
 #  define _kbhit	kbhit
-#  define _putch	putch
 #  define _ungetch	ungetch
+#endif
 #endif	/* __WATCOMC__ */
 
 #endif	/* _WIN32/_WIN64 */
