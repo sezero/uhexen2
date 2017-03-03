@@ -360,9 +360,11 @@ const char *Sys_ConsoleInput (void)
 
 static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 {
-	char		*tmp;
+	char *tmp;
+	size_t rc;
 
-	if (GetCurrentDirectory(dstsize, dst) == 0)
+	rc = GetCurrentDirectory(dstsize, dst);
+	if (rc == 0 || rc > dstsize)
 		return -1;
 
 	tmp = dst;
