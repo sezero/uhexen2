@@ -126,7 +126,8 @@ void Q_getwd (char *out, size_t size, qboolean trailing_dirsep)
 {
 	size_t sz;
 
-	if (_getcwd(out, size) == NULL)
+	sz = GetCurrentDirectory(size, out);
+	if (sz == 0 || sz > size)
 		COM_Error ("Couldn't determine current directory");
 	if (!trailing_dirsep)
 		return;
@@ -138,25 +139,31 @@ void Q_getwd (char *out, size_t size, qboolean trailing_dirsep)
 
 void Q_mkdir (const char *path)
 {
-	if (_mkdir (path) != -1)
+	if (CreateDirectory(path, NULL) != 0)
 		return;
-	if (errno != EEXIST)
+	if (GetLastError() != ERROR_ALREADY_EXISTS)
 		COM_Error ("Unable to create directory %s", path);
 }
 
 int Q_rmdir (const char *path)
 {
-	return _rmdir(path);
+	if (RemoveDirectory(path) != 0)
+		return 0;
+	return -1;
 }
 
 int Q_unlink (const char *path)
 {
-	return _unlink(path);
+	if (DeleteFile(path) != 0)
+		return 0;
+	return -1;
 }
 
 int Q_rename (const char *oldp, const char *newp)
 {
-	return rename(oldp, newp);
+	if (MoveFile(oldp, newp) != 0)
+		return 0;
+	return -1;
 }
 
 long Q_filesize (const char *path)
