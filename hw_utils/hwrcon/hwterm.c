@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <signal.h>
 
 #include "arch_def.h"
 #include "compiler.h"
@@ -220,6 +221,21 @@ void Sys_Error (const char *error, ...)
 
 /*****************************************************************************/
 
+static void hwterm_sighandler (int sig)
+{
+	signal(SIGINT, SIG_DFL);
+#ifdef SIGBREAK
+	signal(SIGBREAK, SIG_DFL);
+#endif
+	signal(SIGTERM, SIG_DFL);
+	/* cleanup */
+	printf ("\nQUIT\n");
+	NET_Shutdown ();
+	exit (EXIT_SUCCESS);
+}
+
+/*****************************************************************************/
+
 #define	VER_HWTERM_MAJ		1
 #define	VER_HWTERM_MID		2
 #define	VER_HWTERM_MIN		7
@@ -307,6 +323,12 @@ int main (int argc, char *argv[])
 /* init Huffman */
 	HuffInit ();
 
+	signal(SIGINT, hwterm_sighandler);
+#ifdef SIGBREAK
+	signal(SIGBREAK, hwterm_sighandler);
+#endif
+	signal(SIGTERM, hwterm_sighandler);
+
 /* user input loop */
 	printf ("Use CTRL-C to exit\n");
 	while (1)
@@ -372,7 +394,6 @@ int main (int argc, char *argv[])
 	}
 
 /* never reached */
-	NET_Shutdown ();
 	return 0;
 }
 
