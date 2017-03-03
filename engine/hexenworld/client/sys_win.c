@@ -282,7 +282,6 @@ static void Sys_Init (void)
 	timeBeginPeriod (1);	/* 1 ms timer precision */
 	starttime = timeGetTime ();
 
-#if !defined(SERVERONLY)
 /* allocate a named semaphore on the client so
    the front end can tell if it is alive
    mutex will fail if semephore already exists */
@@ -299,7 +298,6 @@ static void Sys_Init (void)
 					0,	/* Initial count	*/
 					1,	/* Maximum count	*/
 					"hwcl");/* Semaphore name	*/
-#endif	/* ! SERVERONLY */
 
 /* do we really need these with opengl ?? */
 	MaskExceptions ();
@@ -328,10 +326,8 @@ void Sys_Error (const char *error, ...)
 
 	MessageBox(NULL, text, ENGINE_NAME " Error", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 
-#if !defined(SERVERONLY)
 	if (qwclsemaphore)
 		CloseHandle (qwclsemaphore);
-#endif	/* ! SERVERONLY */
 
 	exit (1);
 }
@@ -344,10 +340,8 @@ void Sys_PrintTerm (const char *msgtxt)
 void Sys_Quit (void)
 {
 	Host_Shutdown();
-#if !defined(SERVERONLY)
 	if (qwclsemaphore)
 		CloseHandle (qwclsemaphore);
-#endif	/* ! SERVERONLY */
 
 	exit (0);
 }
