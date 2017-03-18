@@ -8,6 +8,13 @@ uHexen2-specific changes:
 ------------------------------------------------------------------------
 
 
+Changes by libtimidity-0.2.3:
+-----------------------------
+
+* fixed a potential buffer overrun in timi_fgets() which might have led
+  to a crash during config parsing.
+
+
 Changes by libtimidity-0.2.2:
 -----------------------------
 
