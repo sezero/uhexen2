@@ -6,12 +6,13 @@ Features:
 * Support for Hexen II, Hexen II demo, Portal of Praevus mission pack,
   and HexenWorld.
 
-* Supported operating systems/platforms: Well tested on Linux, FreeBSD,
-  Mac OS X, Windows, AROS, MorphOS and even DOS. Other unices with SDL
+* Supported operating systems / platforms:  Linux, FreeBSD, Mac OS X,
+  Windows, AROS, MorphOS, DOS, and OS/2.  Any other platforms with SDL
   support should also work fine. Known to build and run just fine for
   QNX, and Nokia internet tablets N770, N800 and N810 using Maemo. There
   are separate ports to AmigaOS4, RISC OS, PalmOS, GP2X and Pandora.
-  Well tested on both 32 bit and 64 bit platforms. Well tested on both
+
+* Well tested on both 32 bit and 64 bit platforms.  Well tested on both
   little endian and big endian platforms.
 
 * In-game resolution changing for both opengl and software renderers.

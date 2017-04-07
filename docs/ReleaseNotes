@@ -1,6 +1,40 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
+Changes in v1.5.9: (Apr. 07, 2017.)
+========================================================================
+
+This is a minor bug fix and maintenance release:
+
+- OS/2 support using SDL.
+
+- Updated third-party libraries (music codecs, SDL, etc.)
+
+- Support for Watcom compiler targeting OS/2 and Windows.
+
+- Support for libxmp for tracker music decoding (disabled by default.)
+
+- Other minor fixes/tidy-ups elsewhere in the source.
+
+
+========================================================================
+Changes in v1.5.8a (Aug. 28, 2016)
+========================================================================
+
+This is a post-release patch against v1.5.8 fixing a few Amiga issues:
+
+- Amiga sound (AHI backend): fix sample rates lower than 11025 Hz.
+
+- Amiga sound (AHI backend): fix bad sound with sample rates which are
+  not a multiple of 11025.
+
+- Amiga input: limit lowlevel.library joystick ports to 0-3.
+
+- AmigaOS3, MiniGL: smart and automatic locking support.  New cvar:
+  gl_lockmode, valid values: "manual" (default), "auto", and "smart".
+
+
+========================================================================
 Changes in v1.5.8: (Aug. 12, 2016.)
 ========================================================================
 
