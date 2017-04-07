@@ -1160,7 +1160,7 @@ void CL_ParseEffect (void)
 		break;
 
 	default:
-		Sys_Error ("%s: bad type", __thisfunc__);
+		Host_Error ("%s: bad type", __thisfunc__);
 	}
 
 	if (ImmediateFree)
@@ -1701,7 +1701,7 @@ static void CL_LinkEntity (entity_t *ent)
 	if (cl_numvisedicts == MAX_VISEDICTS)
 	{
 	/* object list is full */
-	//	Sys_Error("%s: Out of vis edicts", __thisfunc__);
+	//	Host_Error("%s: Out of vis edicts", __thisfunc__);
 		return;
 	}
 
@@ -2514,7 +2514,7 @@ void CL_ParseMultiEffect (void)
 		break;
 
 	default:
-		Sys_Error ("%s: bad type", __thisfunc__);
+		Host_Error ("%s: bad type", __thisfunc__);
 	}
 }
 

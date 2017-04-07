@@ -214,7 +214,6 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 		break;
 
 	default:
-	//	Sys_Error ("%s: bad type", __thisfunc__);
 		PR_RunError ("%s: bad type", __thisfunc__);
 		break;
 	}
@@ -470,7 +469,6 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 		break;
 
 	default:
-	//	Sys_Error ("%s: bad type", __thisfunc__);
 		PR_RunError ("%s: bad type", __thisfunc__);
 		break;
 	}
@@ -731,7 +729,6 @@ void SV_ParseEffect (sizebuf_t *sb)
 		break;
 
 	default:
-	//	Sys_Error ("%s: bad type", __thisfunc__);
 		PR_RunError ("%s: bad type", __thisfunc__);
 	}
 
@@ -1052,7 +1049,7 @@ void SV_SaveEffects (FILE *FH)
 			break;
 
 		default:
-			PR_RunError ("%s: bad type", __thisfunc__);
+			Host_Error ("%s: bad type", __thisfunc__);
 			break;
 		}
 	}
@@ -1071,13 +1068,13 @@ void SV_LoadEffects (FILE *FH)
 
 	fscanf(FH, "Effects: %d\n", &Total);
 	if (Total < 0 || Total > MAX_EFFECTS)
-		PR_RunError ("%s: bad numeffects", __thisfunc__);
+		Host_Error ("%s: bad numeffects", __thisfunc__);
 
 	for (count = 0 ; count < Total ; idx = -1, count++)
 	{
 		fscanf(FH, "Effect: %d ", &idx);
 		if (idx < 0 || idx >= MAX_EFFECTS)
-			PR_RunError ("%s: bad index", __thisfunc__);
+			Host_Error ("%s: bad index", __thisfunc__);
 		fscanf(FH, "%d %f: ", &sv.Effects[idx].type, &sv.Effects[idx].expire_time);
 
 		switch (sv.Effects[idx].type)
@@ -1291,7 +1288,7 @@ void SV_LoadEffects (FILE *FH)
 			break;
 
 		default:
-			PR_RunError ("%s: bad type", __thisfunc__);
+			Host_Error ("%s: bad type", __thisfunc__);
 			break;
 		}
 	}

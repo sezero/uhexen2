@@ -934,7 +934,7 @@ void CL_ParseEffect (void)
 		break;
 
 	default:
-		Sys_Error ("%s: bad type", __thisfunc__);
+		Host_Error ("%s: bad type", __thisfunc__);
 	}
 
 	if (ImmediateFree)
