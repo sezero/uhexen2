@@ -34,6 +34,7 @@
 #include <sys/movedata.h>
 #include <setjmp.h>
 #include <crt0.h>
+#include <string.h>
 #include <ctype.h>
 #if 1 /* for mesa w/o 3dfx glide */
 #include <stubinfo.h>
@@ -105,6 +106,7 @@ DXE_EXPORT_TABLE (syms)
 	DXE_EXPORT (strnicmp)
 	DXE_EXPORT (strlwr)
 	DXE_EXPORT (strupr)
+	DXE_EXPORT (stpcpy)
 
 	/* stdio */
 	DXE_EXPORT (__dj_stderr)
@@ -145,6 +147,7 @@ DXE_EXPORT_TABLE (syms)
 #endif
 	/* unistd */
 	DXE_EXPORT (usleep)
+	DXE_EXPORT (write)
 	/* time */
 	DXE_EXPORT (clock)
 	DXE_EXPORT (uclock)
