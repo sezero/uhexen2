@@ -113,6 +113,7 @@ static qboolean S_TIMIDITY_CodecInitialize (void)
 {
 	const char *timi_env;
 	int i, err;
+	long ver;
 
 	if (timidity_codec.initialized)
 		return true;
@@ -145,7 +146,9 @@ static qboolean S_TIMIDITY_CodecInitialize (void)
 		return false;
 	}
 
-	Con_Printf ("Timidity initialized\n");
+	ver = mid_get_version();
+	Con_Printf ("libTiMidity v%ld.%ld.%ld initialized\n",
+			    (ver>>16)&255, (ver>>8)&255, ver&255);
 	timidity_codec.initialized = true;
 
 	return true;
