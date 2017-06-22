@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.9: (Apr. 07, 2017.)
+Changes in v1.5.9: (June 22, 2017.)
 ========================================================================
 
 This is a minor bug fix and maintenance release:
@@ -14,7 +14,7 @@ This is a minor bug fix and maintenance release:
 
 - Support for libxmp for tracker music decoding (disabled by default.)
 
-- Other minor fixes/tidy-ups elsewhere in the source.
+- Other minor fixes, tidy-ups, and protability tweaks.
 
 
 ========================================================================
