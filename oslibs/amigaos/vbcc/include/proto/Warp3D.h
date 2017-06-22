@@ -14,14 +14,14 @@ extern struct Library *Warp3DBase;
 
 #ifdef __GNUC__
 #ifdef __AROS__
-#include <defines/warp3d.h>
+#include <defines/Warp3D.h>
 #else
-#include <inline/warp3d.h>
+#include <inline/Warp3D.h>
 #endif
 #elif defined(__VBCC__)
-#include <inline/warp3d_protos.h>
+#include <inline/Warp3D_protos.h>
 #else
-#include <pragma/warp3d_lib.h>
+#include <pragma/Warp3D_lib.h>
 #endif
 
 #endif	/*  _PROTO_WARP3D_H  */

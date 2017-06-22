@@ -3,22 +3,22 @@
 #ifndef PROTO_WARP3D_H
 #define PROTO_WARP3D_H
 
-#include <clib/warp3d_protos.h>
+#include <clib/Warp3D_protos.h>
 
 #ifndef _NO_INLINE
 # if defined(__GNUC__)
 #  ifdef __AROS__
-#   include <defines/warp3d.h>
+#   include <defines/Warp3D.h>
 #  else
-#   include <inline/warp3d.h>
+#   include <inline/Warp3D.h>
 #  endif
 # else
-#  include <pragmas/warp3d_pragmas.h>
+#  include <pragmas/Warp3D_pragmas.h>
 # endif
 #endif /* _NO_INLINE */
 
 #ifdef __amigaos4__
-# include <interfaces/warp3d.h>
+# include <interfaces/Warp3D.h>
 # ifndef __NOGLOBALIFACE__
    extern struct Warp3DIFace *IWarp3D;
 # endif /* __NOGLOBALIFACE__*/

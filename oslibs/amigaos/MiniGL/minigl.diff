@@ -542,15 +542,6 @@ diff -urNp MiniGL~/include/mgl/minigl.h MiniGL/include/mgl/minigl.h
 diff -urNp MiniGL~/src/sysinc.h MiniGL/src/sysinc.h
 --- MiniGL~/src/sysinc.h	2002-11-30 08:15:44.000000000 +0200
 +++ MiniGL/src/sysinc.h	2016-07-01 07:01:10.000000000 +0300
-@@ -92,7 +92,7 @@ extern struct Library *Warp3DBase;
-     #define inline __inline
- #elif defined(__VBCC__)
- #pragma amiga-align
--    #include <proto/Warp3D.h>
-+    #include <proto/warp3d.h>
-     #include <proto/intuition.h>
-     #include <proto/exec.h>
-     #include <proto/graphics.h>
 @@ -104,10 +104,10 @@ extern struct Library *Warp3DBase;
  
  #pragma default-align
