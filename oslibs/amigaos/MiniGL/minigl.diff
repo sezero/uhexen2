@@ -1,6 +1,3 @@
-[also remember to update the VBCC_INCLUDES/vincludem68k directory
-for the updated Warp3D headers.]
-
 diff -urNp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
 --- MiniGL~/Build_gcc/makefile	2002-11-30 08:14:20.000000000 +0200
 +++ MiniGL/Build_gcc/makefile	2016-07-01 07:11:00.000000000 +0300
@@ -152,9 +149,10 @@ diff -urNp MiniGL~/makefile.vbcc68k MiniGL/makefile.vbcc68k
  #
  
 -INCLUDE =
-+INCLUDE = -IVBCC_INCLUDES/vincludem68k -Iinclude
++INCLUDE   = -Iinclude
++# -IVBCC_INCLUDES/vincludem68k
  DEBUG =
- 
+-
 -CFLAGS = -O1 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(DEBUG)
 -
 +CFLAGS    = -O1 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(DEBUG)
@@ -176,11 +174,11 @@ diff -urNp MiniGL~/makefile.vbcc68k MiniGL/makefile.vbcc68k
  
 -CC=vc +m68kdb
 -AR=join as
-+CC=vc
++CC = vc
 +# +m68kdb
 +MKDIR = mkdir -p
-+#MKLIB=join $(LIBOBJ) as $(LIBNAME)
-+MKLIB=cat $(LIBOBJ) > $(LIBNAME)
++#MKLIB = join $(LIBOBJ) as $(LIBNAME)
++MKLIB = cat $(LIBOBJ) > $(LIBNAME)
  
 -LIBOBJ = $(DIR)/kprintf.o $(DIR)/init.o $(DIR)/glu.o \
 +LIBOBJ = $(DIR)/init.o $(DIR)/glu.o \
@@ -2295,6 +2293,15 @@ diff -urNp MiniGL~/demos/addtest.c MiniGL/demos/addtest.c
 diff -urNp MiniGL~/demos/driverinfo.c MiniGL/demos/driverinfo.c
 --- MiniGL~/demos/driverinfo.c	2002-11-30 08:14:56.000000000 +0200
 +++ MiniGL/demos/driverinfo.c	2016-04-15 17:55:10.000000000 +0300
+@@ -12,7 +12,7 @@
+ 
+ #include <Warp3D/Warp3D.h>
+ #ifdef __VBCC__
+-	#include <proto/warp3d.h>
++	#include <proto/Warp3D.h>
+ #else
+ 	#ifdef __GNUC__
+ 		#ifdef __PPC__
 @@ -23,6 +23,11 @@
  	#elif defined(__STORM__)
  		#include <clib/Warp3D_protos.h>
