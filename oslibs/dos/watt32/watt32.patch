@@ -1470,6 +1470,98 @@ diff -urp watt_src.orig/src/printk.c watt_src/src/printk.c
  }
  
  /*
+diff -urp watt_src.orig/src/split.c watt_src/src/split.c
+--- watt_src.orig/src/split.c	2004-08-24 11:18:34.000000000 +0300
++++ watt_src/src/split.c	2015-09-30 18:15:48.000000000 +0300
+@@ -3,7 +3,7 @@
+  *  Splitting of link-layer packets into components.
+  */
+ 
+-/*  Copyright (c) 1997-2002 Gisle Vanem <giva@bgnett.no>
++/*  Copyright (c) 1997-2002 Gisle Vanem <gvanem@yahoo.no>
+  *
+  *  Redistribution and use in source and binary forms, with or without
+  *  modification, are permitted provided that the following conditions
+@@ -29,7 +29,7 @@
+  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  *
+- *  G. Vanem <giva@bgnett.no> 2002
++ *  G. Vanem <gvanem@yahoo.no> 2002
+  */
+ 
+ #include <stdio.h>
+@@ -50,7 +50,7 @@
+ 
+ #define MARKER     0xDEAFABBA
+ #define MAX_SPLITS 10
+-                   
++
+ static struct pkt_split split_list_in [MAX_SPLITS];
+ static struct pkt_split split_list_out[MAX_SPLITS];
+ 
+@@ -182,14 +182,14 @@ static void split_mac (struct pkt_split 
+     ps->type = TYPE_ARP;
+     ps->data = &pkt->eth.data[0];
+     ps->len  = sizeof(arp_Header);
+-  }     
++  }
+   else if (type == RARP_TYPE)
+   {
+     ps++;
+     ps->type = TYPE_RARP;
+     ps->data = &pkt->eth.data[0];
+     ps->len  = sizeof(rarp_Header);
+-  }     
++  }
+   else if (type == PPPOE_DISC_TYPE)
+   {
+     pppoe_Packet *pppoe = (pppoe_Packet*)&pkt->eth.data[0];
+@@ -198,7 +198,7 @@ static void split_mac (struct pkt_split 
+     ps->type = TYPE_PPPOE_DISC;
+     ps->data = pppoe;
+     ps->len  = intel16 (pppoe->length);
+-  }     
++  }
+   else if (type == PPPOE_SESS_TYPE)
+   {
+     const pppoe_Packet *pppoe = (const pppoe_Packet*)&pkt->eth.data[0];
+@@ -230,7 +230,7 @@ static void split_mac (struct pkt_split 
+       ps->data = bp;
+       ps->len  = intel16 (*(WORD*)(bp+2));
+     }
+-  }     
++  }
+   else if (intel16(type) < ETH_MAX_DATA)   /* LLC unsupported */
+   {
+     ps++;
+@@ -378,7 +378,7 @@ static void split_ip6 (struct pkt_split 
+            ps->type = TYPE_UDP_HEAD;
+            ps->data = ip6 + 1;
+            ps->len  = sizeof (udp_Header);
+-           nxt_hd   = 0;
++           nxt_hd   = 0;   /* no next headers allowed */
+            break;
+ 
+       case IP6_NEXT_HOP:
+@@ -426,7 +426,8 @@ static void split_ip6 (struct pkt_split 
+            ps->data = NULL;
+            ps->len  = 0;
+            nxt_hd   = 0;
+-      
++           break;
++
+       /** \todo Handle Fragment, ESP, AUTH, IPv6 encap */
+       case IP6_NEXT_FRAGMENT:
+       case IP6_NEXT_ESP:
+@@ -447,6 +448,7 @@ static void split_ip6 (struct pkt_split 
+            ps->data = NULL;
+            ps->len  = 0;
+            nxt_hd   = 0;
++           break;
+     }
+     ps++;
+   }
 diff -urp watt_src.orig/src/src/tcp_fsm.c watt_src/src/tcp_fsm.c
 --- watt_src.orig/src/tcp_fsm.c	2005-10-21 01:04:18.000000000 +0300
 +++ watt_src/src/tcp_fsm.c	2015-07-15 17:11:10.000000000 +0300
