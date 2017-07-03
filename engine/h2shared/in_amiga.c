@@ -83,7 +83,7 @@ static int joy_available = 0;
 static ULONG oldjoyflag = 0;
 
 static	cvar_t	in_joystick = {"joystick", "1", CVAR_ARCHIVE};		/* enable/disable joystick */
-static	cvar_t	joy_index = {"joy_index", "0", CVAR_NONE};		/* joystick to use when have multiple */
+static	cvar_t	joy_index = {"joy_index", "1", CVAR_NONE};		/* joystick to use when have multiple */
 
 /* forward-referenced functions */
 static void IN_StartupJoystick (void);
@@ -307,8 +307,6 @@ HANDLERPROTO(IN_KeyboardHandler, struct InputEvent *, struct InputEvent *moo, AP
 	if (!window || !(window->Flags & WFLG_WINDOWACTIVE))
 		return moo;
 
-	coin = moo;
-
 	if (window->WScreen)
 	{
 #ifdef __MORPHOS__
@@ -321,7 +319,7 @@ HANDLERPROTO(IN_KeyboardHandler, struct InputEvent *, struct InputEvent *moo, AP
 	else
 		screeninfront = 1;
 
-	do
+	for (coin = moo; coin; coin = coin->ie_NextEvent)
 	{
 		if (coin->ie_Class == IECLASS_RAWKEY)
 		{
@@ -364,9 +362,7 @@ HANDLERPROTO(IN_KeyboardHandler, struct InputEvent *, struct InputEvent *moo, AP
 			IN_AddEvent(coin);
 			coin->ie_Code = IECODE_NOBUTTON;
 		}
-
-		coin = coin->ie_NextEvent;
-	} while (coin);
+	}
 
 	return moo;
 }
@@ -390,7 +386,7 @@ void IN_Init (void)
 
 	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 
-	pointermem = (UWORD *) AllocVec(256, MEMF_CHIP | MEMF_CLEAR);
+	pointermem = (UWORD *) AllocVec(16 * 16, MEMF_CHIP | MEMF_CLEAR);
 
 	IN_StartupMouse ();
 	IN_StartupJoystick ();
@@ -572,24 +568,9 @@ void IN_Move (usercmd_t *cmd)
 	}
 }
 
-static int PortIndex (int idx)
-{
-	switch (idx)
-	{
-	case 0:
-		return 1;
-	case 1:
-		return 0;
-	default:
-		break;
-	}
-
-	return idx;
-}
-
 static const char *JoystickName(int port)
 {
-	ULONG joyflag = ReadJoyPort(PortIndex(port));
+	ULONG joyflag = ReadJoyPort(port);
 
 	switch (joyflag & JP_TYPE_MASK)
 	{
@@ -626,15 +607,18 @@ static void IN_StartupJoystick (void)
 
 	if (LowLevelBase)
 	{
+		/*
 		joy_available = 0;
 
 		while (joy_available < 4)
 		{
-			joyflag = ReadJoyPort(PortIndex(joy_available));
+			joyflag = ReadJoyPort(joy_available);
 			if ((joyflag & JP_TYPE_MASK) == JP_TYPE_NOTAVAIL)
 				break;
 			joy_available++;
 		}
+		*/
+		joy_available = 4;
 	}
 	else
 	{
@@ -642,6 +626,7 @@ static void IN_StartupJoystick (void)
 		return;
 	}
 
+	/*
 	if (joy_available == 0)
 	{
 		CloseLibrary(LowLevelBase);
@@ -649,6 +634,7 @@ static void IN_StartupJoystick (void)
 		Con_Printf ("No joystick devices found\n");
 		return;
 	}
+	*/
 
 	Con_Printf ("lowlevel.library: %d devices are reported:\n", joy_available);
 	for (i = 0; i < joy_available; i++)
@@ -673,7 +659,7 @@ static void IN_Callback_JoyEnable (cvar_t *var)
 
 static void IN_Callback_JoyIndex (cvar_t *var)
 {
-	ULONG joyflag;
+	//ULONG joyflag;
 	int idx = var->integer;
 
 	if (!LowLevelBase)
@@ -685,11 +671,11 @@ static void IN_Callback_JoyIndex (cvar_t *var)
 	}
 	else if (in_joystick.integer)
 	{
-		joy_port = -1;
+		//joy_port = -1;
 
-		joyflag = ReadJoyPort(PortIndex(idx));
+		//joyflag = ReadJoyPort(idx);
 
-		if (joyflag & (JP_TYPE_GAMECTLR | JP_TYPE_JOYSTK))
+		//if (joyflag & (JP_TYPE_GAMECTLR | JP_TYPE_JOYSTK))
 			joy_port = idx;
 
 		if (joy_port != -1)
@@ -714,7 +700,7 @@ static void IN_HandleJoystick (void)
 	if (!LowLevelBase || joy_port == -1)
 		return;
 
-	joyflag = ReadJoyPort(PortIndex(joy_port));
+	joyflag = ReadJoyPort(joy_port);
 
 	if (joyflag != oldjoyflag)
 	{
