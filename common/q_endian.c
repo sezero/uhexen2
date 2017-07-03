@@ -35,7 +35,11 @@ int host_bigendian; /* qboolean */
 
 int DetectByteorder (void)
 {
-	int	i = 0x12345678;
+	union
+	{
+		uint32_t i;
+		char c[4];
+	} bint = {0x12345678};
 		/*    U N I X */
 
 	/*
@@ -49,11 +53,11 @@ int DetectByteorder (void)
 		   N  U  X  I
 	*/
 
-	if ( *(char *)&i == 0x12 )
+	if ( bint.c[0] == 0x12 )
 		return BIG_ENDIAN;
-	else if ( *(char *)&i == 0x78 )
+	else if ( bint.c[0] == 0x78 )
 		return LITTLE_ENDIAN;
-	else if ( *(char *)&i == 0x34 )
+	else if ( bint.c[0] == 0x34 )
 		return PDP_ENDIAN;
 
 	return -1;
