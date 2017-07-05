@@ -27,11 +27,14 @@
 #include <intuition/intuition.h>
 #include <intuition/intuitionbase.h>
 #include <cybergraphx/cybergraphics.h>
+#include <exec/execbase.h>
 
 #include <proto/exec.h>
 #include <proto/intuition.h>
 #include <proto/graphics.h>
 #include <proto/cybergraphics.h>
+
+#include <SDI/SDI_compiler.h>
 
 /* WriteLUTPixelArray not included in vbcc_target_m68k-amigaos.lha */
 #if defined(__VBCC__) && defined(__M68K__) && !defined(WriteLUTPixelArray)
@@ -58,6 +61,22 @@ static pixel_t *buffer = NULL;
 static byte *directbitmap = NULL;
 #ifdef PLATFORM_AMIGAOS3
 struct Library *CyberGfxBase = NULL;
+#ifdef USE_C2P
+static qboolean use_c2p = false;
+static int currentBitMap;
+static struct ScreenBuffer *sbuf[2];
+
+typedef void (*c2p_init_func)(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d3, WORD scroffsy), REG(d5, LONG bplsize));
+typedef void (*c2p_write_func)(REG(a0, APTR c2pscreen), REG(a1, APTR bitplanes));
+
+static c2p_init_func c2p_init;
+static c2p_write_func c2p_write;
+
+extern void c2p1x1_8_c5_030_smcinit(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d3, WORD scroffsy), REG(d5, LONG bplsize));
+extern void c2p1x1_8_c5_030(REG(a0, APTR c2pscreen), REG(a1, APTR bitplanes));
+extern void c2p1x1_8_c5_040_init(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d3, WORD scroffsy), REG(d5, LONG bplsize));
+extern void c2p1x1_8_c5_040(REG(a0, APTR c2pscreen), REG(a1, APTR bitplanes));
+#endif
 #endif
 
 /* ----------------------------------------- */
@@ -474,7 +493,7 @@ static void VID_DestroyWindow (void)
 
 	if (buffer)
 	{
-		FreeVec(buffer);
+		free(buffer);
 		buffer = NULL;
 	}
 
@@ -483,6 +502,20 @@ static void VID_DestroyWindow (void)
 		FreeVec(pointermem);
 		pointermem = NULL;
 	}*/
+
+#ifdef USE_C2P
+	if (sbuf[0])
+	{
+		FreeScreenBuffer(screen, sbuf[0]);
+		sbuf[0] = NULL;
+	}
+
+	if (sbuf[1])
+	{
+		FreeScreenBuffer(screen,sbuf[1]);
+		sbuf[1] = NULL;
+	}
+#endif
 
 	if (screen)
 	{
@@ -527,6 +560,7 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 	if (vid_config_fscr.integer)
 	{
 		ULONG ModeID;
+		struct BitMap *bm;
 
 		/*ModeID = BestCModeIDTags(
 			CYBRBIDTG_Depth, 8,
@@ -542,6 +576,22 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 			SA_Depth, 8,
 			SA_Quiet, TRUE,
 			TAG_DONE);
+
+#ifdef USE_C2P
+		currentBitMap = 0;
+		bm = screen->RastPort.BitMap;
+
+		if ((GetBitMapAttr(bm, BMA_FLAGS) & BMF_STANDARD))
+		{
+			if ((sbuf[0] = AllocScreenBuffer(screen, 0, SB_SCREEN_BITMAP)) && (sbuf[1] = AllocScreenBuffer(screen, 0, 0)))
+			{
+				use_c2p = true;
+				c2p_init(modelist[modenum].width, modelist[modenum].height, 0, bm->BytesPerRow*bm->Rows);
+				// this fixes some RTG modes which would otherwise display garbage on the 1st buffer swap
+				//VID_Update(NULL);
+			}
+		}
+#endif
 	}
 
 	if (screen)
@@ -571,7 +621,7 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 		if (pointermem) {*/
 			vid.height = vid.conheight = modelist[modenum].height;
 			vid.rowbytes = vid.conrowbytes = vid.width = vid.conwidth = modelist[modenum].width;
-			buffer = (pixel_t *) AllocVec(vid.width * vid.height, MEMF_ANY);
+			buffer = (pixel_t *) malloc(vid.width * vid.height);
 
 			if (buffer)
 			{
@@ -607,7 +657,7 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 
 					return true;
 				}
-				FreeVec(buffer);
+				free(buffer);
 				buffer = NULL;
 			}
 		/*	FreeVec(pointermem);
@@ -746,6 +796,19 @@ void VID_Init (const unsigned char *palette)
 	CyberGfxBase = OpenLibrary("cybergraphics.library", 0);
 	/*if (!CyberGfxBase)
 		Sys_Error ("Cannot open cybergraphics.library!");*/
+
+#ifdef USE_C2P
+	if (SysBase->AttnFlags & AFF_68040)
+	{
+		c2p_init = c2p1x1_8_c5_040_init;
+		c2p_write = c2p1x1_8_c5_040;
+	}
+	else
+	{
+		c2p_init = c2p1x1_8_c5_030_smcinit;
+		c2p_write = c2p1x1_8_c5_030;
+	}
+#endif
 #endif
 
 	temp = scr_disabled_for_loading;
@@ -916,6 +979,16 @@ void VID_Shutdown (void)
 
 static void FlipScreen (vrect_t *rects)
 {
+#ifdef USE_C2P
+	if (use_c2p)
+	{
+		currentBitMap ^= 1;
+		c2p_write(vid.buffer, sbuf[currentBitMap]->sb_BitMap->Planes[0]);
+		ChangeScreenBuffer(screen, sbuf[currentBitMap]);
+		return;
+	}
+#endif
+
 	while (rects)
 	{
 #ifdef PLATFORM_AMIGAOS3
