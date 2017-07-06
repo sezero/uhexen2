@@ -24,7 +24,7 @@ INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 # for extra missing headers
 INCLUDES+=-I$(OSLIBS)/amigaos/vbcc/include -I$(OSLIBS)/amigaos/include
 LDFLAGS = -L$(OSLIBS)/amigaos/vbcc/lib
-LDLIBS  = -lm040
+LDLIBS  = -lm060
 
 # Other build flags
 

@@ -30,7 +30,7 @@ CPPFLAGS= -D__AMIGA__
 CPPFLAGS+=-DNDEBUG=1
 LDFLAGS = -L$(OSLIBS)/amigaos/vbcc/lib
 # linkage may be sensitive to order: add SYSLIBS after all others.
-SYSLIBS = -lm040
+SYSLIBS = -lm060
 # compiler includes
 INCLUDES= -I. -I.. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 # for extra missing headers

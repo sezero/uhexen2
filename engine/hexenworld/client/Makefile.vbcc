@@ -18,6 +18,9 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
 
 # GENERAL OPTIONS (customize as required)
 
+# use optimized assembly C2P for amiga native chipset modes
+USE_C2P=yes
+
 # Don't use SDL on AmigaOS
 USE_SDL=no
 # the sdl-config command
@@ -68,8 +71,6 @@ VORBISLIB=tremor
 # whether the codecs allocate on the zone instead of
 # system memory (set to yes for DOS builds, for example)
 CODECS_USE_ZONE=no
-# use optimized assembly C2P for native chipset modes
-USE_C2P=yes
 
 # Names of the binaries
 SW_BINARY:=hwcl
@@ -86,7 +87,7 @@ LINKER   = $(CC)
 CFLAGS  = -O2 -speed -maxoptpasses=16 -c99 -cpu=68060 -fpu=68060
 CPPFLAGS= -D__AMIGA__
 CPPFLAGS+=-DNDEBUG=1
-ASFLAGS = -Faout -m68020
+ASFLAGS = -Fhunk -m68020 -phxass -quiet
 LDFLAGS = -L$(OSLIBS)/amigaos/vbcc/lib
 # linkage may be sensitive to order: add SYSLIBS after all others.
 SYSLIBS = -lm060 -lamiga -lauto
@@ -303,8 +304,8 @@ endif
 #	$(AS) $(ASFLAGS) -o $@ $<
 %.o: $(COMMONDIR)/%.s
 	$(AS) $(ASFLAGS) -o $@ $<
-#%.o: $(UHEXEN2_SHARED)/%.s
-#	$(AS) $(ASFLAGS) -o $@ $<
+%.o: $(UHEXEN2_SHARED)/%.s
+	$(AS) $(ASFLAGS) -o $@ $<
 
 # Objects
 
