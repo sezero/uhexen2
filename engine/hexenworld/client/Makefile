@@ -59,6 +59,10 @@ SDL_LIBS   = $(shell $(SDL_CONFIG) --libs 2> /dev/null)
 # any other cpu.)
 USE_X86_ASM=yes
 
+# use optimized assembly C2P for amiga native chipset modes
+# requires vasm from http://sun.hasenbraten.de/vasm/
+USE_C2P=yes
+
 # link to the opengl libraries at compile time? (defaults
 # to no, so the binaries will dynamically load the necessary
 # libraries and functions at runtime.)
@@ -934,6 +938,13 @@ CFLAGS  += -noixemul -m68020-60
 LDFLAGS += -noixemul
 SYSLIBS += -lm
 
+# for C2P assembly:
+AS=vasm
+ASFLAGS = -Faout -m68020 -phxass -quiet
+ifeq ($(USE_C2P),yes)
+CPPFLAGS+= -DUSE_C2P
+endif
+
 # for extra missing headers
 INCLUDES += -I$(OSLIBS)/amigaos/include
 # AmiTCP SDK
@@ -1130,6 +1141,14 @@ endif
 	$(WINDRES) $(RC_DEFS) $(RC_INC) $(RCFLAGS) -o $@ $<
 %.res: $(COMMONDIR)/%.rc
 	$(WINDRES) $(RC_DEFS) $(RC_INC) $(RCFLAGS) -o $@ $<
+ifeq ($(TARGET_OS),amigaos)
+#%.o: %.s
+#	$(AS) $(ASFLAGS) -o $@ $<
+%.o: $(COMMONDIR)/%.s
+	$(AS) $(ASFLAGS) -o $@ $<
+%.o: $(UHEXEN2_SHARED)/%.s
+	$(AS) $(ASFLAGS) -o $@ $<
+endif
 
 # Objects
 
@@ -1402,6 +1421,9 @@ else
 SYSOBJ_INPUT := in_amiga.o
 SYSOBJ_GL_VID:= gl_vidamiga.o
 SYSOBJ_SOFT_VID:= vid_cgx.o
+ifeq ($(USE_C2P),yes)
+SYSOBJ_SOFT_VID+= c2p1x1_8_c5_030.o c2p1x1_8_c5_040.o
+endif
 endif
 SYSOBJ_SYS := sys_amiga.o
 endif
