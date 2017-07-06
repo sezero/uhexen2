@@ -2538,6 +2538,30 @@ static void M_Setup_Key (int k)
 		M_Menu_MultiPlayer_f ();
 		break;
 
+	case K_ENTER:
+		if (setup_cursor == 0 || setup_cursor == 1)
+			return;
+
+		if (setup_cursor == 2 || setup_cursor == 3 || setup_cursor == 4 || setup_cursor == 5)
+			goto forward;
+
+		if (strcmp(name.string, setup_myname) != 0)
+			Cbuf_AddText ( va ("name \"%s\"\n", setup_myname) );
+		if (setup_top != setup_oldtop || setup_bottom != setup_oldbottom)
+			Cbuf_AddText( va ("color %i %i\n", setup_top, setup_bottom) );
+		Cbuf_AddText ( va ("playerclass %d\n", setup_class) );
+		m_entersound = true;
+		M_Menu_MultiPlayer_f ();
+		break;
+
+	case K_BACKSPACE:
+		if (setup_cursor == 1)
+		{
+			if (strlen(setup_myname))
+				setup_myname[strlen(setup_myname)-1] = 0;
+		}
+		break;
+
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
 		setup_cursor--;
@@ -2616,30 +2640,6 @@ forward:
 			setup_top = setup_top + 1;
 		else if (setup_cursor == 5)
 			setup_bottom = setup_bottom + 1;
-		break;
-
-	case K_ENTER:
-		if (setup_cursor == 0 || setup_cursor == 1)
-			return;
-
-		if (setup_cursor == 2 || setup_cursor == 3 || setup_cursor == 4 || setup_cursor == 5)
-			goto forward;
-
-		if (strcmp(name.string, setup_myname) != 0)
-			Cbuf_AddText ( va ("name \"%s\"\n", setup_myname) );
-		if (setup_top != setup_oldtop || setup_bottom != setup_oldbottom)
-			Cbuf_AddText( va ("color %i %i\n", setup_top, setup_bottom) );
-		Cbuf_AddText ( va ("playerclass %d\n", setup_class) );
-		m_entersound = true;
-		M_Menu_MultiPlayer_f ();
-		break;
-
-	case K_BACKSPACE:
-		if (setup_cursor == 1)
-		{
-			if (strlen(setup_myname))
-				setup_myname[strlen(setup_myname)-1] = 0;
-		}
 		break;
 
 	default:
