@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.9: (June 22, 2017.)
+Changes in v1.5.9: (July 10, 2017.)
 ========================================================================
 
 This is a minor bug fix and maintenance release:
@@ -13,6 +13,10 @@ This is a minor bug fix and maintenance release:
 - Support for Watcom compiler targeting OS/2 and Windows.
 
 - Support for libxmp for tracker music decoding (disabled by default.)
+
+- New AmigaOS MIDI driver using CAMD library.
+
+- Optimized C2P assembly for Amiga native chipset modes.
 
 - Other minor fixes, tidy-ups, and protability tweaks.
 
