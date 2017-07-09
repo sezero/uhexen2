@@ -37,7 +37,7 @@ USE_SOUND=yes
 USE_SDLAUDIO=no
 
 # no native midi driver code yet
-USE_MIDI=no
+USE_MIDI=yes
 
 # no native cdaudio code yet
 USE_CDAUDIO=no
@@ -340,9 +340,7 @@ ifneq ($(USE_MIDI),yes)
 SYSOBJ_MIDI:= midi_nul.o
 CPPFLAGS += -D_NO_MIDIDRV
 else
-# no native midi driver yet
-SYSOBJ_MIDI:= midi_nul.o
-CPPFLAGS += -D_NO_MIDIDRV
+SYSOBJ_MIDI:= midi_camd.o
 # end of MIDI objects
 endif
 
