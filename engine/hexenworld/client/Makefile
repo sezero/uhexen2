@@ -1280,8 +1280,7 @@ SYSOBJ_MIDI:= midi_nul.o
 CPPFLAGS += -D_NO_MIDIDRV
 endif
 ifeq ($(TARGET_OS),amigaos)
-SYSOBJ_MIDI:= midi_nul.o
-CPPFLAGS += -D_NO_MIDIDRV
+SYSOBJ_MIDI:= midi_camd.o
 endif
 # end of MIDI objects
 endif

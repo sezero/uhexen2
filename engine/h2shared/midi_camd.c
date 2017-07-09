@@ -32,10 +32,10 @@
 #include <midi/camd.h>
 #include <midi/mididefs.h>
 #include <libraries/realtime.h>
-#include <libraries/iffparse.h> // MAKE_ID
+#include <libraries/iffparse.h> /* MAKE_ID */
 #include <clib/alib_protos.h>
 
-#include <SDI/SDI_compiler.h> // IPTR
+#include <SDI/SDI_compiler.h> /* IPTR */
 
 
 /* prototypes of functions exported to BGM: */
@@ -104,7 +104,11 @@ struct SysEx
 {
 	struct MinNode se_node;	/* node for linking */
 	//ULONG se_size;			/* sysex size */
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
 	UBYTE se_data[];		/* sysex data */
+#else
+	UBYTE se_data[0];		/* sysex data */
+#endif
 };
 
 #define MAXTRAX 200
@@ -143,7 +147,7 @@ struct Global
 	struct MinList SysExList[2];
 };
 
-UBYTE CommandSize[7]=
+static UBYTE CommandSize[7]=
 {
 	2, /* 80-8f */
 	2, /* 90-9f */
@@ -154,7 +158,7 @@ UBYTE CommandSize[7]=
 	2, /* e0-ef */
 };
 
-UBYTE CommonSize[8]=
+static UBYTE CommonSize[8]=
 {
 	0, /* f0 */
 	1, /* f1 */
@@ -166,7 +170,7 @@ UBYTE CommonSize[8]=
 	0, /* f7 */
 };
 
-UBYTE ProgramReset[] =
+static UBYTE ProgramReset[] =
 {
 	MS_Prog |  0, 0,
 	MS_Prog |  1, 0,
@@ -186,7 +190,7 @@ UBYTE ProgramReset[] =
 	MS_Prog | 15, 0
 };
 
-UBYTE ResetAllControllers[] =
+static UBYTE ResetAllControllers[] =
 {
 	MS_Ctrl | 0,  MM_ResetCtrl, 0,
 	MS_Ctrl | 1,  MM_ResetCtrl, 0,
@@ -206,7 +210,7 @@ UBYTE ResetAllControllers[] =
 	MS_Ctrl | 15, MM_ResetCtrl, 0
 };
 
-UBYTE AllNotesOff[] =
+static UBYTE AllNotesOff[] =
 {
 	MS_Ctrl | 0,  MM_AllOff, 0,
 	MS_Ctrl | 1,  MM_AllOff, 0,
@@ -226,7 +230,7 @@ UBYTE AllNotesOff[] =
 	MS_Ctrl | 15, MM_AllOff, 0
 };
 
-UBYTE AllSoundsOff[] =
+static UBYTE AllSoundsOff[] =
 {
 	MS_Ctrl | 0,  0x78, 0,
 	MS_Ctrl | 1,  0x78, 0,
@@ -247,12 +251,12 @@ UBYTE AllSoundsOff[] =
 };
 
 struct Library *CamdBase;
-#ifdef __MORPHOS__
-struct Library *RealTimeBase;
-#else
+#ifdef PLATFORM_AMIGAOS3
 struct RealTimeBase *RealTimeBase;
+#else
+struct Library *RealTimeBase;
 #endif
-static qboolean	midi_file_open, midi_playing, midi_paused;
+static qboolean	midi_playing, midi_paused;
 static UBYTE *smfdata;
 static struct Global *glob;
 static struct MidiNode *pMidiNode;
@@ -318,6 +322,10 @@ static char *MIDI_GetDeviceName(char *dst, size_t dstsize)
 
 qboolean MIDI_Init(void)
 {
+	static const char midi_name[] = "Hexen II Player";
+	static const char mlink_comment[] = "Hexen II Player Link";
+	static const char player_name[] = "Hexen II player";
+
 	char linkName[32];
 
 	if (midi_amiga_camd.available)
@@ -334,36 +342,45 @@ qboolean MIDI_Init(void)
 		return false;
 	}
 
-	if ((!(RealTimeBase = OpenLibrary("realtime.library", 37))))
+#ifdef PLATFORM_AMIGAOS3
+	RealTimeBase = (struct RealTimeBase *) OpenLibrary("realtime.library", 37);
+#else
+	RealTimeBase = OpenLibrary("realtime.library", 37);
+#endif
+	if (!RealTimeBase)
 	{
 		Con_Printf ("Can't open realtime.library\n");
+		MIDI_Cleanup();
 		return false;
 	}
 
 	if (!MIDI_GetDeviceName(linkName, sizeof(linkName)))
 	{
 		Con_Printf ("No output device found\n");
+		MIDI_Cleanup();
 		return false;
 	}
 
 	if (!(pMidiNode = CreateMidi(
-		MIDI_Name, "Hexen II Player",
+		MIDI_Name, (IPTR)midi_name,
 		MIDI_MsgQueue, 0,
 		MIDI_SysExSize, 4096,
 		TAG_END)))
 	{
 		Con_Printf("Can't create MIDI Node");
+		MIDI_Cleanup();
 		return false;
 	}
 
 	if (!(pMidiLink = AddMidiLink(
 		pMidiNode, MLTYPE_Sender,
-		MLINK_Comment, "Hexen II Player Link",
+		MLINK_Comment, (IPTR)mlink_comment,
 		MLINK_Parse, TRUE,
-		MLINK_Location, linkName,
+		MLINK_Location, (IPTR)linkName,
 		TAG_END)))
 	{
 		Con_Printf("Can't create MIDI Link");
+		MIDI_Cleanup();
 		return false;
 	}
 
@@ -373,12 +390,12 @@ qboolean MIDI_Init(void)
 	Delay(5);
 
 	if (!(pPlayer = CreatePlayer(
-		PLAYER_Name, "Hexen II player",
-		//PLAYER_Conductor, "Hexen II conductor",
-		PLAYER_Conductor, (ULONG)-1,
+		PLAYER_Name, (IPTR)player_name,
+		PLAYER_Conductor, (IPTR)-1,
 		TAG_END)))
 	{
 		Con_Printf("Can't create the RealTime player");
+		MIDI_Cleanup();
 		return false;
 	}
 
@@ -398,8 +415,7 @@ static ULONG GetDelta(UBYTE **value)
 	UWORD i;
 	UBYTE dat;
 
-	for(i=0; i<4; i++)
-	{
+	for (i = 0; i < 4; i++) {
 		dat = *((*value)++);
 		newval = newval<<7;
 		newval |= dat & 0x7f;
@@ -572,7 +588,7 @@ static void CollectEvents(struct Global *glob)
 		delta = lowclock - glob->lastclock;
 		glob->lastclock = lowclock;
 
-		for (track=0; track < glob->trackct; track++)
+		for (track = 0; track < glob->trackct; track++)
 		{
 			struct DecTrack *pDT = &glob->dtrack[track];
 
@@ -720,7 +736,7 @@ static void PlayerFunc(void)
 
 		/* Send off one buffer... */
 		for (se = (struct SysEx *)glob->SysExList[glob->masterswitch^1].mlh_Head;
-			(nse = (struct SysEx *)se->se_node.mln_Succ);
+			(nse = (struct SysEx *)se->se_node.mln_Succ) != NULL;
 			se = nse)
 		{
 			PutSysEx(pMidiLink, se->se_data);
@@ -759,6 +775,8 @@ static void PlayerFunc(void)
 
 static void *MIDI_Play (const char *filename)
 {
+	static const char task_name[] = "Hexen II CAMD player task";
+
 	struct SMFHeader *hdr;
 	UBYTE *pbyte;
 	size_t smfdatasize;
@@ -849,17 +867,17 @@ static void *MIDI_Play (const char *filename)
 		glob->ptrack[track] = DecodeEvent(glob->ptrackstart[track], &glob->dtrack[track]);
 	}
 
-	// start thread
+	/* start thread */
 #ifdef __MORPHOS__
 	playerTask = (struct Task *)CreateNewProcTags(
-		NP_Entry, PlayerFunc,
+		NP_Entry, (IPTR)PlayerFunc,
 		NP_CodeType, CODETYPE_PPC,
-		NP_Name, "Hexen II CAMD player task",
+		NP_Name, (IPTR)task_name,
 		TAG_DONE);
 #else
 	playerTask = (struct Task *)CreateNewProcTags(
-		NP_Entry, PlayerFunc,
-		NP_Name, "Hexen II CAMD player task",
+		NP_Entry, (IPTR)PlayerFunc,
+		NP_Name, (IPTR)task_name,
 		TAG_DONE);
 #endif
 
@@ -873,13 +891,13 @@ static void *MIDI_Play (const char *filename)
 	midi_playing = true;
 
 	if (!SetPlayerAttrs(pPlayer,
-		PLAYER_AlarmSigTask, playerTask,
+		PLAYER_AlarmSigTask, (IPTR)playerTask,
 		PLAYER_AlarmSigBit, SIGBREAKB_CTRL_E,
 		//PLAYER_Ready, TRUE,
 		PLAYER_ErrorCode, (IPTR)&error,
 		TAG_END))
 	{
-		Con_Printf("Can't set the RealTime player attrs, error %d\n", error);
+		Con_Printf("Can't set the RealTime player attrs, error %ld\n", (long)error);
 		MIDI_Stop (NULL);
 		return false;
 	}
@@ -937,12 +955,12 @@ static void MIDI_Stop (void **handle)
 	{
 		struct MinNode *se, *nse;
 
-		for (se = glob->SysExList[0].mlh_Head; nse = se->mln_Succ; se = nse)
+		for (se = glob->SysExList[0].mlh_Head; (nse = se->mln_Succ) != NULL; se = nse)
 		{
 			Remove((struct Node *)se);
 			free(se);
 		}
-		for (se = glob->SysExList[1].mlh_Head; nse = se->mln_Succ; se = nse)
+		for (se = glob->SysExList[1].mlh_Head; (nse = se->mln_Succ) != NULL; se = nse)
 		{
 			Remove((struct Node *)se);
 			free(se);
@@ -966,35 +984,35 @@ void MIDI_Cleanup(void)
 		midi_amiga_camd.available = false;
 
 		MIDI_Stop (NULL);
+	}
 
-		if (pMidiLink)
-		{
-			RemoveMidiLink(pMidiLink);
-			pMidiLink = NULL;
-		}
+	if (pMidiLink)
+	{
+		RemoveMidiLink(pMidiLink);
+		pMidiLink = NULL;
+	}
 
-		if (pMidiNode)
-		{
-			DeleteMidi(pMidiNode);
-			pMidiNode = NULL;
-		}
+	if (pMidiNode)
+	{
+		DeleteMidi(pMidiNode);
+		pMidiNode = NULL;
+	}
 
-		if (pPlayer)
-		{
-			DeletePlayer(pPlayer);
-			pPlayer = NULL;
-		}
+	if (pPlayer)
+	{
+		DeletePlayer(pPlayer);
+		pPlayer = NULL;
+	}
 
-		if (RealTimeBase)
-		{
-			CloseLibrary((struct Library *)RealTimeBase);
-			RealTimeBase = NULL;
-		}
+	if (RealTimeBase)
+	{
+		CloseLibrary((struct Library *)RealTimeBase);
+		RealTimeBase = NULL;
+	}
 
-		if (CamdBase)
-		{
-			CloseLibrary(CamdBase);
-			CamdBase = NULL;
-		}
+	if (CamdBase)
+	{
+		CloseLibrary(CamdBase);
+		CamdBase = NULL;
 	}
 }

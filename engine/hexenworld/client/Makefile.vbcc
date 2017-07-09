@@ -36,7 +36,7 @@ USE_SOUND=yes
 # SDL audio support?
 USE_SDLAUDIO=no
 
-# no native midi driver code yet
+# include the native MIDI driver?
 USE_MIDI=yes
 
 # no native cdaudio code yet
