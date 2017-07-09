@@ -1,8 +1,7 @@
-/* midi_mac.c -- MIDI module for Amiga using CAMD
+/* midi_camd.c -- MIDI module for Amiga using CAMD
  * Based on PlayMF by Dan Baker, Christian Buchner
  *
- * Copyright (C) 2016
- * Copyright (C) 2017
+ * Copyright (C) 2017 Szilard Biro <col.lawrence@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
