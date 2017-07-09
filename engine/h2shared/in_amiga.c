@@ -597,7 +597,6 @@ IN_StartupJoystick
 static void IN_StartupJoystick (void)
 {
 	int	i;
-	ULONG joyflag;
 
 	if (safemode || COM_CheckParm ("-nojoy"))
 		return;
@@ -608,6 +607,7 @@ static void IN_StartupJoystick (void)
 	if (LowLevelBase)
 	{
 		/*
+		ULONG joyflag;
 		joy_available = 0;
 
 		while (joy_available < 4)
@@ -659,7 +659,6 @@ static void IN_Callback_JoyEnable (cvar_t *var)
 
 static void IN_Callback_JoyIndex (cvar_t *var)
 {
-	//ULONG joyflag;
 	int idx = var->integer;
 
 	if (!LowLevelBase)
@@ -671,8 +670,9 @@ static void IN_Callback_JoyIndex (cvar_t *var)
 	}
 	else if (in_joystick.integer)
 	{
-		//joy_port = -1;
+		//ULONG joyflag;
 
+		//joy_port = -1;
 		//joyflag = ReadJoyPort(idx);
 
 		//if (joyflag & (JP_TYPE_GAMECTLR | JP_TYPE_JOYSTK))
