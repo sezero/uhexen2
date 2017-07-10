@@ -784,6 +784,7 @@ static void *MIDI_Play (const char *filename)
 	size_t smfdatasize;
 	UWORD track;
 	LONG error;
+	ULONG id;
 
 	if (!midi_amiga_camd.available)
 		return NULL;
@@ -805,10 +806,15 @@ static void *MIDI_Play (const char *filename)
 	smfdatasize = fs_filesize;
 
 	hdr = (struct SMFHeader *)smfdata;
+	hdr->ChunkID = BigLong(hdr->ChunkID);
+	hdr->VarLeng = BigLong(hdr->VarLeng);
+	hdr->Format = BigShort(hdr->Format);
+	hdr->Ntrks = (UWORD) BigShort(hdr->Ntrks);
+	hdr->Division = BigShort(hdr->Division);
 
-	if (hdr->ChunkID != ID_MTHD || BigLong(hdr->VarLeng) != 6 ||
-		(BigShort(hdr->Format) != 0 && BigShort(hdr->Format) != 1) ||
-		BigShort(hdr->Ntrks) > MAXTRAX || BigShort(hdr->Division) < 0)
+	if (hdr->ChunkID != ID_MTHD || hdr->VarLeng != 6 ||
+		hdr->Format != 0 && hdr->Format != 1 ||
+		hdr->Ntrks > MAXTRAX || hdr->Division < 0)
 	{
 		Con_Printf("Can't recognize the MIDI format.");
 		MIDI_Stop (NULL);
@@ -822,7 +828,7 @@ static void *MIDI_Play (const char *filename)
 		return false;
 	}
 
-	glob->division = BigShort(hdr->Division);
+	glob->division = hdr->Division;
 	glob->lastRSchan = 0xf1;
 	glob->tempo = 500000;
 
@@ -834,12 +840,13 @@ static void *MIDI_Play (const char *filename)
 
 	while ((pbyte-smfdata < smfdatasize) && (glob->trackct < MAXTRAX))
 	{
-		if (*(ULONG *)pbyte == ID_MTRK)
+		id = (ULONG) BigLong(*(ULONG *)pbyte);
+		if (id == ID_MTRK)
 		{
 			if (glob->trackct > 0)
 				glob->ptrackend[glob->trackct-1] = pbyte;
 
-			if (glob->trackct == BigShort(hdr->Ntrks))
+			if (glob->trackct == hdr->Ntrks)
 				break;
 
 			glob->ptrackstart[glob->trackct] = pbyte+8;
@@ -855,9 +862,9 @@ static void *MIDI_Play (const char *filename)
 	if (glob->trackct > 0)
 		glob->ptrackend[glob->trackct-1] = pbyte;
 
-	if (glob->trackct != BigShort(hdr->Ntrks))
+	if (glob->trackct != hdr->Ntrks)
 	{
-		Con_Printf("Missing tracks. Only %d tracks found (%d expected).", glob->trackct, BigShort(hdr->Ntrks));
+		Con_Printf("Missing tracks. Only %d tracks found (%d expected).\n", glob->trackct, hdr->Ntrks);
 		MIDI_Stop (NULL);
 		return false;
 	}
