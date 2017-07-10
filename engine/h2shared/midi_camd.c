@@ -26,14 +26,18 @@
 
 #include <proto/exec.h>
 #include <proto/dos.h>
-#include <proto/camd.h>
 #include <proto/realtime.h>
 #include <dos/dostags.h>
-#include <midi/camd.h>
-#include <midi/mididefs.h>
 #include <libraries/realtime.h>
 #include <libraries/iffparse.h> /* MAKE_ID */
 #include <clib/alib_protos.h>
+
+#ifdef __MORPHOS__
+#define USE_INLINE_STDARG
+#endif
+#include <proto/camd.h>
+#include <midi/camd.h>
+#include <midi/mididefs.h>
 
 #include <SDI/SDI_compiler.h> /* IPTR */
 
@@ -723,14 +727,12 @@ static void PlayerFunc(void)
 			break;
 		}
 
-		/* Fill the other buffer... */
+		/* Fill the other buffer */
 		glob->masterswitch ^= 1;
 		CollectEvents(glob);
 
 		sigs = Wait(SIGBREAKF_CTRL_E | SIGBREAKF_CTRL_C);
-
-		if (sigs & SIGBREAKF_CTRL_C)
-		{
+		if (sigs & SIGBREAKF_CTRL_C) {
 			break;
 		}
 
