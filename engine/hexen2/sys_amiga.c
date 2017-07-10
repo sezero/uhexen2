@@ -36,7 +36,7 @@
 
 #if defined(SDLQUAKE)
 #include "sdl_inc.h"
-#endif	/* SDLQUAKE */
+#endif
 
 int __stack = 0x100000; /* 1 MB stack */
 #ifdef __AROS__
@@ -51,6 +51,8 @@ static jmp_buf exit_buf;
 static int my_rc = 0;
 #define HAVE_AROS_MAIN_WRAPPER
 #endif
+
+#include <SDI/SDI_compiler.h> /* IPTR */
 
 // heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
 // -heapsize argument will abide by these min/max settings
@@ -702,13 +704,6 @@ void Sys_SendKeyEvents (void)
 {
 	IN_SendKeyEvents();
 }
-
-#if !(defined(__AROS__) || defined(__MORPHOS__))
-#if !defined(IPTR) /* SDI headers may define it */
-typedef ULONG IPTR;
-#define IPTR IPTR
-#endif
-#endif
 
 #define MAX_CLIPBOARDTXT	MAXCMDLINE	/* 256 */
 char *Sys_GetClipboardData (void)
