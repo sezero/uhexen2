@@ -797,7 +797,7 @@ static void *MIDI_Play (const char *filename)
 
 	MIDI_Stop (NULL);
 
-	smfdata = FS_LoadMallocFile (filename, NULL);
+	smfdata = (UBYTE *) FS_LoadMallocFile (filename, NULL);
 	if (!smfdata)
 	{
 		Con_DPrintf("Couldn't open %s\n", filename);
@@ -813,7 +813,7 @@ static void *MIDI_Play (const char *filename)
 	hdr->Division = BigShort(hdr->Division);
 
 	if (hdr->ChunkID != ID_MTHD || hdr->VarLeng != 6 ||
-		hdr->Format != 0 && hdr->Format != 1 ||
+		(hdr->Format != 0 && hdr->Format != 1) ||
 		hdr->Ntrks > MAXTRAX || hdr->Division < 0)
 	{
 		Con_Printf("Can't recognize the MIDI format.");
