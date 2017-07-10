@@ -802,6 +802,7 @@ endif
 CFLAGS  += -noixemul
 LDFLAGS += -noixemul
 SYSLIBS += -lm
+INCLUDES += -I$(OSLIBS)/morphos/misc/include
 
 GL_LINK=-lGL
 # dynamic loading of ogl functions doesn't work
