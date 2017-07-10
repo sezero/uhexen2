@@ -65,12 +65,7 @@ typedef void (*AMIGAGL_Proc)();
 #include "cdaudio.h"
 #include "filenames.h"
 
-#if !(defined(__AROS__) || defined(__MORPHOS__))
-#if !defined(IPTR) /* SDI headers may define it */
-typedef ULONG IPTR;
-#define IPTR IPTR
-#endif
-#endif
+#include <SDI/SDI_compiler.h> /* IPTR */
 
 #define WARP_WIDTH		320
 #define WARP_HEIGHT		200

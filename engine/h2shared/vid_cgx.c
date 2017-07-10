@@ -34,7 +34,7 @@
 #include <proto/graphics.h>
 #include <proto/cybergraphics.h>
 
-#include <SDI/SDI_compiler.h>
+#include <SDI/SDI_compiler.h> /* IPTR */
 
 /* WriteLUTPixelArray not included in vbcc_target_m68k-amigaos.lha */
 #if defined(__VBCC__) && defined(__M68K__) && !defined(WriteLUTPixelArray)
@@ -178,13 +178,6 @@ static void VID_MenuKey (int key);
 #	define WM_TITLEBAR_TEXT	"HexenWorld"
 #else
 #	define WM_TITLEBAR_TEXT	"Hexen II"
-#endif
-
-#if !(defined(__AROS__) || defined(__MORPHOS__))
-#if !defined(IPTR) /* SDI headers may define it */
-typedef ULONG IPTR;
-#define IPTR IPTR
-#endif
 #endif
 
 //====================================

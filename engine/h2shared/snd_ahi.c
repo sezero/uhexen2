@@ -38,6 +38,7 @@
 #elif !defined __MORPHOS__
 #include <SDI/SDI_hook.h>
 #endif
+#include <SDI/SDI_compiler.h> /* IPTR */
 
 static char s_ahi_driver[] = "AHI audio system";
 
@@ -62,13 +63,6 @@ struct AHIdata
 };
 
 static struct AHIdata *ad;
-
-#if !(defined(__AROS__) || defined(__MORPHOS__))
-#if !defined(IPTR) /* SDI headers may define it */
-typedef ULONG IPTR;
-#define IPTR IPTR
-#endif
-#endif
 
 #ifdef __MORPHOS__
 IPTR EffectFuncTramp();
