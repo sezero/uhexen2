@@ -798,6 +798,8 @@ USE_SDLAUDIO=no
 # no native cdaudio code yet
 USE_CDAUDIO=no
 endif
+# don't build the CAMD MIDI driver yet
+USE_MIDI=no
 
 CFLAGS  += -noixemul
 LDFLAGS += -noixemul
@@ -863,6 +865,8 @@ USE_CDAUDIO=no
 # native ogl code need this:
 LINK_GL_LIBS=yes
 endif
+# don't build the CAMD MIDI driver yet
+USE_MIDI=no
 
 NASMFLAGS=-f elf -d_NO_PREFIX
 #USE_X86_ASM=no
@@ -1273,14 +1277,10 @@ ifeq ($(TARGET_OS),darwin)
 SYSOBJ_MIDI:= midi_osx.o
 endif
 ifeq ($(TARGET_OS),aros)
-#SYSOBJ_MIDI:= midi_camd.o
-SYSOBJ_MIDI:= midi_nul.o
-CPPFLAGS += -D_NO_MIDIDRV
+SYSOBJ_MIDI:= midi_camd.o
 endif
 ifeq ($(TARGET_OS),morphos)
-#SYSOBJ_MIDI:= midi_camd.o
-SYSOBJ_MIDI:= midi_nul.o
-CPPFLAGS += -D_NO_MIDIDRV
+SYSOBJ_MIDI:= midi_camd.o
 endif
 ifeq ($(TARGET_OS),amigaos)
 SYSOBJ_MIDI:= midi_camd.o
