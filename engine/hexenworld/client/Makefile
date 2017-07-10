@@ -1273,10 +1273,12 @@ ifeq ($(TARGET_OS),darwin)
 SYSOBJ_MIDI:= midi_osx.o
 endif
 ifeq ($(TARGET_OS),aros)
+#SYSOBJ_MIDI:= midi_camd.o
 SYSOBJ_MIDI:= midi_nul.o
 CPPFLAGS += -D_NO_MIDIDRV
 endif
 ifeq ($(TARGET_OS),morphos)
+#SYSOBJ_MIDI:= midi_camd.o
 SYSOBJ_MIDI:= midi_nul.o
 CPPFLAGS += -D_NO_MIDIDRV
 endif
