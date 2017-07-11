@@ -490,7 +490,7 @@ const char *Q_FindFirstFile (const char *path, const char *pattern)
 	BPTR newdir;
 
 	if (apath)
-		COM_Error ("Sys_FindFirst without FindClose");
+		COM_Error ("FindFirst without FindClose");
 
 	apath = (struct AnchorPath *) AllocVec (sizeof(struct AnchorPath) + PATH_SIZE, MEMF_CLEAR);
 	if (!apath)
@@ -518,7 +518,7 @@ const char *Q_FindFirstFile (const char *path, const char *pattern)
 		return (const char *) (apath->ap_Info.fib_FileName);
 	}
 
-	return Sys_FindNextFile();
+	return Q_FindNextFile();
 }
 
 const char *Q_FindNextFile (void)
