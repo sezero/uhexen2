@@ -371,7 +371,7 @@ qboolean MIDI_Init(void)
 		MIDI_SysExSize, 4096,
 		TAG_END)))
 	{
-		Con_Printf("Can't create MIDI Node");
+		Con_Printf("Can't create MIDI Node\n");
 		MIDI_Cleanup();
 		return false;
 	}
@@ -383,7 +383,7 @@ qboolean MIDI_Init(void)
 		MLINK_Location, (IPTR)linkName,
 		TAG_END)))
 	{
-		Con_Printf("Can't create MIDI Link");
+		Con_Printf("Can't create MIDI Link\n");
 		MIDI_Cleanup();
 		return false;
 	}
@@ -398,7 +398,7 @@ qboolean MIDI_Init(void)
 		PLAYER_Conductor, (IPTR)-1,
 		TAG_END)))
 	{
-		Con_Printf("Can't create the RealTime player");
+		Con_Printf("Can't create the RealTime player\n");
 		MIDI_Cleanup();
 		return false;
 	}
@@ -445,7 +445,7 @@ static UBYTE *DecodeEvent(UBYTE *ptdata, struct DecTrack *pDT)
 
 	if (ptdata >= pDT->endmarker)
 	{
-		Con_DPrintf("Warning: missing proper track end marker in track %d.", pDT->tracknum);
+		Con_DPrintf("Warning: missing proper track end marker in track %d.\n", pDT->tracknum);
 
 		pDT->eventptr = ptdata;
 		pDT->eventtype = Event_trackend;
@@ -542,7 +542,7 @@ static UBYTE *DecodeEvent(UBYTE *ptdata, struct DecTrack *pDT)
 
 			if (status == 0)
 			{
-				Con_DPrintf("Warning: Data bytes without initial status in track %d.", pDT->tracknum);
+				Con_DPrintf("Warning: Data bytes without initial status in track %d.\n", pDT->tracknum);
 				comsize = 1;
 				skipit = TRUE;
 			}
@@ -683,7 +683,7 @@ static void CollectEvents(struct Global *glob)
 
 						default:
 						{
-							Con_DPrintf("Unknown MIDI event $%02x", pDT->eventtype);
+							Con_DPrintf("Unknown MIDI event $%02x\n", pDT->eventtype);
 						}
 						break;
 					}
@@ -816,14 +816,14 @@ static void *MIDI_Play (const char *filename)
 		(hdr->Format != 0 && hdr->Format != 1) ||
 		hdr->Ntrks > MAXTRAX || hdr->Division < 0)
 	{
-		Con_Printf("Can't recognize the MIDI format.");
+		Con_Printf("Can't recognize the MIDI format.\n");
 		MIDI_Stop (NULL);
 		return false;
 	}
 
 	if (!(glob = calloc(1, sizeof(struct Global))))
 	{
-		Con_DPrintf("No memory for global MIDI variables");
+		Con_DPrintf("No memory for global MIDI variables\n");
 		MIDI_Stop (NULL);
 		return false;
 	}
