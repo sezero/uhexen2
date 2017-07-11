@@ -492,13 +492,13 @@ const char *Q_FindFirstFile (const char *path, const char *pattern)
 	if (apath)
 		COM_Error ("Sys_FindFirst without FindClose");
 
-	apath = AllocVec (sizeof(struct AnchorPath) + PATH_SIZE, MEMF_CLEAR);
+	apath = (struct AnchorPath *) AllocVec (sizeof(struct AnchorPath) + PATH_SIZE, MEMF_CLEAR);
 	if (!apath)
 		return NULL;
 
 	apath->ap_Strlen = PATH_SIZE;
 	apath->ap_BreakBits = 0;
-	apath->ap_Flags = APB_DOWILD | !APB_DODIR;
+	apath->ap_Flags = 0;  /* APF_DOWILD */
 
 	newdir = Lock((const STRPTR) path, SHARED_LOCK);
 	if (newdir)
@@ -513,9 +513,12 @@ const char *Q_FindFirstFile (const char *path, const char *pattern)
 	pattern_str = pattern_helper (pattern);
 
 	if (MatchFirst((const STRPTR) pattern_str, apath) == 0)
+	{
+	    if (apath->ap_Info.fib_DirEntryType < 0)
 		return (const char *) (apath->ap_Info.fib_FileName);
+	}
 
-	return NULL;
+	return Sys_FindNextFile();
 }
 
 const char *Q_FindNextFile (void)
@@ -523,8 +526,11 @@ const char *Q_FindNextFile (void)
 	if (!apath)
 		return NULL;
 
-	if (MatchNext(apath) == 0)
+	while (MatchNext(apath) == 0)
+	{
+	    if (apath->ap_Info.fib_DirEntryType < 0)
 		return (const char *) (apath->ap_Info.fib_FileName);
+	}
 
 	return NULL;
 }
