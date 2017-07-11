@@ -634,8 +634,7 @@ static void CollectEvents(struct Global *glob)
 							{
 								ULONG length = GetDelta(&src);
 
-								if ((se = calloc(1, sizeof(struct SysEx)+length+1)))
-								{
+								if ((se = (struct SysEx *) calloc(1, sizeof(struct SysEx)+length+1)) != NULL) {
 									UBYTE *dst = se->se_data;
 									//se->se_size = length+1;
 									*dst++ = 0xf0;
@@ -647,16 +646,14 @@ static void CollectEvents(struct Global *glob)
 							{
 								ULONG length = GetDelta(&src);
 
-								if ((se = calloc(1, sizeof(struct SysEx)+length+1)))
-								{
+								if ((se = (struct SysEx *) calloc(1, sizeof(struct SysEx)+length+1)) != NULL) {
 									UBYTE *dst = se->se_data;
 									//se->se_size = length;
 									while (length--) *dst++ = *src++;
 								}
 							}
 
-							if (se)
-							{
+							if (se) {
 								AddTail((struct List *)&glob->SysExList[mswitch], (struct Node *)se);
 							}
 						}
@@ -821,7 +818,7 @@ static void *MIDI_Play (const char *filename)
 		return false;
 	}
 
-	if (!(glob = calloc(1, sizeof(struct Global))))
+	if (!(glob = (struct Global *) calloc(1, sizeof(struct Global))))
 	{
 		Con_DPrintf("No memory for global MIDI variables\n");
 		MIDI_Stop (NULL);
