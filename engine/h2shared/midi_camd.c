@@ -806,8 +806,19 @@ static void *MIDI_Play (const char *filename)
 		return NULL;
 	}
 	smfdatasize = fs_filesize;
+	if (smfdatasize < 34)
+	{
+		Con_Printf("MIDI file too short.\n");
+		MIDI_Stop (NULL);
+		return false;
+	}
 
-	hdr = (struct SMFHeader *)smfdata;
+	pbyte = smfdata;
+	if (memcmp(pbyte,"RIFF",4) == 0 && memcmp(pbyte +8,"RMID",4) == 0
+					&& memcmp(pbyte+12,"data",4) == 0)
+		pbyte += 20; /* Microsoft RMID */
+
+	hdr = (struct SMFHeader *)pbyte;
 	hdr->ChunkID = BigLong(hdr->ChunkID);
 	hdr->VarLeng = BigLong(hdr->VarLeng);
 	hdr->Format = BigShort(hdr->Format);
@@ -816,7 +827,7 @@ static void *MIDI_Play (const char *filename)
 
 	if (hdr->ChunkID != ID_MTHD || hdr->VarLeng != 6 ||
 		(hdr->Format != 0 && hdr->Format != 1) ||
-		hdr->Ntrks > MAXTRAX || hdr->Division < 0)
+		!hdr->Ntrks || hdr->Ntrks > MAXTRAX || hdr->Division <= 0)
 	{
 		Con_Printf("Can't recognize the MIDI format.\n");
 		MIDI_Stop (NULL);
@@ -838,7 +849,6 @@ static void *MIDI_Play (const char *filename)
 	NewList((struct List *)&glob->SysExList[1]);
 
 	glob->trackct = 0;
-	pbyte = smfdata;
 
 	while ((pbyte-smfdata < smfdatasize) && (glob->trackct < MAXTRAX))
 	{
