@@ -66,16 +66,24 @@ static qboolean use_c2p = false;
 static int currentBitMap;
 static struct ScreenBuffer *sbuf[2];
 
+#define C2P_BITMAP
+
+#ifdef C2P_BITMAP
+typedef void (*c2p_write_bm_func)(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d2, WORD offsx), REG(d3, WORD offsy), REG(a0, APTR chunkyscreen), REG(a1, struct BitMap *bitmap));
+static c2p_write_bm_func c2p_write_bm;
+#else
 typedef void (*c2p_init_func)(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d3, WORD scroffsy), REG(d5, LONG bplsize));
 typedef void (*c2p_write_func)(REG(a0, APTR c2pscreen), REG(a1, APTR bitplanes));
-
 static c2p_init_func c2p_init;
 static c2p_write_func c2p_write;
+#endif
 
 extern void c2p1x1_8_c5_030_smcinit(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d3, WORD scroffsy), REG(d5, LONG bplsize));
 extern void c2p1x1_8_c5_030(REG(a0, APTR c2pscreen), REG(a1, APTR bitplanes));
 extern void c2p1x1_8_c5_040_init(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d3, WORD scroffsy), REG(d5, LONG bplsize));
 extern void c2p1x1_8_c5_040(REG(a0, APTR c2pscreen), REG(a1, APTR bitplanes));
+extern void c2p1x1_8_c5_bm(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d2, WORD offsx), REG(d3, WORD offsy), REG(a0, APTR chunkyscreen), REG(a1, struct BitMap *bitmap));
+extern void c2p1x1_8_c5_bm_040(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d2, WORD offsx), REG(d3, WORD offsy), REG(a0, APTR chunkyscreen), REG(a1, struct BitMap *bitmap));
 #endif
 #endif
 
@@ -497,6 +505,8 @@ static void VID_DestroyWindow (void)
 	}*/
 
 #ifdef USE_C2P
+	use_c2p = false;
+
 	if (sbuf[0])
 	{
 		FreeScreenBuffer(screen, sbuf[0]);
@@ -505,7 +515,7 @@ static void VID_DestroyWindow (void)
 
 	if (sbuf[1])
 	{
-		FreeScreenBuffer(screen,sbuf[1]);
+		FreeScreenBuffer(screen, sbuf[1]);
 		sbuf[1] = NULL;
 	}
 #endif
@@ -574,12 +584,14 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 		currentBitMap = 0;
 		bm = screen->RastPort.BitMap;
 
-		if ((GetBitMapAttr(bm, BMA_FLAGS) & BMF_STANDARD))
+		if ((GetBitMapAttr(bm, BMA_FLAGS) & BMF_STANDARD) && (modelist[modenum].width % 32) == 0)
 		{
 			if ((sbuf[0] = AllocScreenBuffer(screen, 0, SB_SCREEN_BITMAP)) && (sbuf[1] = AllocScreenBuffer(screen, 0, 0)))
 			{
 				use_c2p = true;
+#ifndef C2P_BITMAP
 				c2p_init(modelist[modenum].width, modelist[modenum].height, 0, bm->BytesPerRow*bm->Rows);
+#endif
 				// this fixes some RTG modes which would otherwise display garbage on the 1st buffer swap
 				//VID_Update(NULL);
 			}
@@ -793,13 +805,21 @@ void VID_Init (const unsigned char *palette)
 #ifdef USE_C2P
 	if (SysBase->AttnFlags & AFF_68040)
 	{
+#ifdef C2P_BITMAP
+		c2p_write_bm = c2p1x1_8_c5_bm_040;
+#else
 		c2p_init = c2p1x1_8_c5_040_init;
 		c2p_write = c2p1x1_8_c5_040;
+#endif
 	}
 	else
 	{
+#ifdef C2P_BITMAP
+		c2p_write_bm = c2p1x1_8_c5_bm;
+#else
 		c2p_init = c2p1x1_8_c5_030_smcinit;
 		c2p_write = c2p1x1_8_c5_030;
+#endif
 	}
 #endif
 #endif
@@ -976,7 +996,11 @@ static void FlipScreen (vrect_t *rects)
 	if (use_c2p)
 	{
 		currentBitMap ^= 1;
+#ifdef C2P_BITMAP
+		c2p_write_bm(vid.width, vid.height, 0, 0, vid.buffer, sbuf[currentBitMap]->sb_BitMap);
+#else
 		c2p_write(vid.buffer, sbuf[currentBitMap]->sb_BitMap->Planes[0]);
+#endif
 		ChangeScreenBuffer(screen, sbuf[currentBitMap]);
 		return;
 	}
