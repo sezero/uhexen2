@@ -26,7 +26,7 @@
 
 int	d_vrectx, d_vrecty, d_vrectright_particle, d_vrectbottom_particle;
 
-int	d_y_aspect_shift, d_pix_min, d_pix_max, d_pix_shift;
+int	d_y_aspect_shift, d_y_aspect_rshift, d_pix_min, d_pix_max, d_pix_shift;
 
 int	d_scantable[MAXHEIGHT];
 short	*zspantable[MAXHEIGHT];
@@ -86,15 +86,31 @@ void D_ViewChanged (void)
 		d_pix_max = 1;
 
 	if (pixelAspect > 1.4)
+	{
 		d_y_aspect_shift = 1;
+		d_y_aspect_rshift = 0;
+	}
 	else
+	{
 		d_y_aspect_shift = 0;
+		if (pixelAspect < 0.27)
+			d_y_aspect_rshift = 2;
+		else if (pixelAspect < 0.54)
+			d_y_aspect_rshift = 1;
+		else
+			d_y_aspect_rshift = 0;
+	}
 
 	d_vrectx = r_refdef.vrect.x;
 	d_vrecty = r_refdef.vrect.y;
 	d_vrectright_particle = r_refdef.vrectright - d_pix_max;
+#if id386
 	d_vrectbottom_particle =
 			r_refdef.vrectbottom - (d_pix_max << d_y_aspect_shift);
+#else
+	d_vrectbottom_particle =
+			r_refdef.vrectbottom - ((d_pix_max << d_y_aspect_shift) >> d_y_aspect_rshift);
+#endif
 
 	for (i = 0; i < vid.height; i++)
 	{

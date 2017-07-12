@@ -109,6 +109,7 @@ void D_DrawParticle (particle_t *pparticle)
 	{
 	case 1:
 		count = 1 << d_y_aspect_shift;
+		count >>= d_y_aspect_rshift;
 
 		for ( ; count ; count--, pz += d_zwidth, pdest += screenwidth)
 		{
@@ -122,6 +123,7 @@ void D_DrawParticle (particle_t *pparticle)
 
 	case 2:
 		count = 2 << d_y_aspect_shift;
+		count >>= d_y_aspect_rshift;
 
 		for ( ; count ; count--, pz += d_zwidth, pdest += screenwidth)
 		{
@@ -140,6 +142,7 @@ void D_DrawParticle (particle_t *pparticle)
 
 	case 3:
 		count = 3 << d_y_aspect_shift;
+		count >>= d_y_aspect_rshift;
 
 		for ( ; count ; count--, pz += d_zwidth, pdest += screenwidth)
 		{
@@ -163,6 +166,7 @@ void D_DrawParticle (particle_t *pparticle)
 
 	case 4:
 		count = 4 << d_y_aspect_shift;
+		count >>= d_y_aspect_rshift;
 
 		for ( ; count ; count--, pz += d_zwidth, pdest += screenwidth)
 		{
@@ -191,6 +195,7 @@ void D_DrawParticle (particle_t *pparticle)
 
 	default:
 		count = pix << d_y_aspect_shift;
+		count >>= d_y_aspect_rshift;
 
 		for ( ; count ; count--, pz += d_zwidth, pdest += screenwidth)
 		{
