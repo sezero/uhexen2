@@ -115,8 +115,8 @@ struct SysEx
 #endif
 };
 
-#define MAXTRAX 200
-#define MIDIBUFSIZE 512
+#define MAXTRAX 40
+#define MIDIBUFSIZE 256
 
 struct Global
 {
@@ -605,6 +605,11 @@ static void CollectEvents(struct Global *glob)
 					{
 						case Event_playable:
 						{
+							if (pos >= MIDIBUFSIZE-3)
+							{
+								Con_DPrintf("MIDI buffer overflow (>=%d), dropped event\n", MIDIBUFSIZE);
+								break;
+							}
 							if (pDT->rstatus == glob->lastRSchan)
 							{
 								/* Running status */
