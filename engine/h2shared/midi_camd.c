@@ -850,6 +850,7 @@ static void *MIDI_Play (const char *filename)
 
 	glob->trackct = 0;
 
+	pbyte += 14; /* sizeof(struct SMFHeader) */
 	while ((pbyte-smfdata < smfdatasize) && (glob->trackct < MAXTRAX))
 	{
 		id = (ULONG) BigLong(*(ULONG *)pbyte);
