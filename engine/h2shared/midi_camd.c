@@ -78,6 +78,7 @@ struct SMFHeader
 	UWORD Ntrks;
 	WORD  Division;
 };
+typedef int _SMFHeader_check[(offsetof(struct SMFHeader,Division) == 12)*2 - 1]; /* (sizeof(struct SMFHeader) == 14) */
 
 typedef enum
 {
