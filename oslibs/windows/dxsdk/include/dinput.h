@@ -23,6 +23,7 @@
 #include <objbase.h>
 #include <_mingw_dxhelper.h>
 
+#define DIRECTINPUT_HEADER_VERSION	0x0800
 #ifndef DIRECTINPUT_VERSION
 #define DIRECTINPUT_VERSION	0x0800
 #endif
@@ -2144,7 +2145,7 @@ extern "C" {
 #endif
 extern const DIDATAFORMAT DX_CDECL_ c_dfDIMouse;
 #if DIRECTINPUT_VERSION >= 0x0700
-extern const DIDATAFORMAT DX_CDECL_ c_dfDIMouse2; /* DX 7 */
+extern const DIDATAFORMAT DX_CDECL_ c_dfDIMouse2; /* DX7 */
 #endif /* DI7 */
 extern const DIDATAFORMAT DX_CDECL_ c_dfDIKeyboard;
 #if DIRECTINPUT_VERSION >= 0x0500
