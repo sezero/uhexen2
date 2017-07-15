@@ -2733,7 +2733,7 @@ void M_Draw (void)
 		else
 			Draw_FadeScreen ();
 
-		scr_fullupdate = 0;
+		//scr_fullupdate = 0;
 	}
 	else
 	{
