@@ -544,7 +544,8 @@ void Con_DrawNotify (void)
 			continue;
 		text = con->text + (i % con_totallines)*con_linewidth;
 
-		clearnotify = 0;
+		if (scr_viewsize.integer < 100)
+			clearnotify = 0;
 		scr_copytop = 1;
 
 		for (x = 0; x < con_linewidth; x++)
@@ -557,7 +558,8 @@ void Con_DrawNotify (void)
 	{
 		const char	*s;
 
-		clearnotify = 0;
+		if (scr_viewsize.integer < 100)
+			clearnotify = 0;
 		scr_copytop = 1;
 
 		if (chat_team)

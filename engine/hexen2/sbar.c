@@ -1125,6 +1125,9 @@ static void DrawActiveArtifacts(void)
 		scr_topupdate = 0;
 	}
 
+	if (scr_viewsize.integer >= 100)
+		scr_topupdate = vid.numpages;
+
 	oldflags = flag;
 }
 
