@@ -2731,9 +2731,10 @@ void M_Draw (void)
 			VID_LockBuffer ();
 		}
 		else
+		{
 			Draw_FadeScreen ();
-
-		//scr_fullupdate = 0;
+			scr_fullupdate = 0;
+		}
 	}
 	else
 	{
