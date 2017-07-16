@@ -64,13 +64,7 @@ static int my_rc = 0;
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 cvar_t		sys_throttle = {"sys_throttle", "0.02", CVAR_ARCHIVE};
 
-#ifdef PLATFORM_AMIGAOS3
-#define USE_ECLOCK_TIMER
-#define MY_TIMERUNIT	UNIT_ECLOCK
-#else
-#define MY_TIMERUNIT	UNIT_MICROHZ
 static double		starttime;
-#endif
 static qboolean		first = true;
 
 struct timerequest	*timerio;
@@ -408,7 +402,7 @@ static void Sys_Init (void)
 	{
 		if ((timerio = (struct timerequest *)CreateIORequest(timerport, sizeof(struct timerequest))))
 		{
-			if (OpenDevice((STRPTR) TIMERNAME, MY_TIMERUNIT,
+			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
 					(struct IORequest *) timerio, 0) == 0)
 			{
 #if defined(__MORPHOS__) || defined(__VBCC__)
@@ -551,21 +545,6 @@ Sys_DoubleTime
 */
 double Sys_DoubleTime (void)
 {
-#if defined(USE_ECLOCK_TIMER)
-	static ULONG old_lo;
-	ULONG E_Freq;
-	struct EClockVal eclock;
-
-	E_Freq = ReadEClock(&eclock);
-
-	if (first)
-	{
-		first = false;
-		old_lo = eclock.ev_lo;
-		return 0.0;
-	}
-	return (double)(eclock.ev_lo - old_lo) / (double)E_Freq;
-#else
 	struct timeval	tp;
 	double		now;
 
@@ -581,7 +560,6 @@ double Sys_DoubleTime (void)
 	}
 
 	return now - starttime;
-#endif
 }
 
 char *Sys_DateTimeString (char *buf)
