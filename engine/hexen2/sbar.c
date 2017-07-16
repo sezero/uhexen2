@@ -78,7 +78,7 @@ static void DrawActiveArtifacts(void);
 static int CalcAC(void);
 static void DrawBarArtifactIcon(int x, int y, int artifact);
 
-static void SetChainPosition(float health, float maxHealth);
+static qboolean SetChainPosition(float health, float maxHealth, qboolean immediate);
 
 static void ShowInfoDown_f(void);
 static void ShowInfoUp_f(void);
@@ -224,16 +224,28 @@ void Sbar_Draw(void)
 	if (scr_con_current == vid.height)	// console is full screen
 		return;
 
+	DrawArtifactInventory();
+
+	DrawActiveRings();
+	DrawActiveArtifacts();
+
+	trans_level = 0;
+
+	if (sb_ShowDM)
+	{
+		if (cl.gametype == GAME_DEATHMATCH)
+			Sbar_DeathmatchOverlay();
+		else
+			Sbar_PuzzlePieceOverlay();
+	}
+	else if (cl.gametype == GAME_DEATHMATCH && DMMode.integer)
+	{
+		Sbar_SmallDeathmatchOverlay();
+	}
+
 	trans_level = sbtrans.integer;
 	if (trans_level < 0 || trans_level > 2)
 		trans_level = 0;
-
-// Draw always until we fix things
-//	if (sb_updates >= vid.numpages)
-//		return;
-
-//	if (BarHeight == BarTargetHeight)
-//		return;
 
 	if (BarHeight < BarTargetHeight)
 	{
@@ -243,7 +255,8 @@ void Sbar_Draw(void)
 		BarHeight += delta;
 		if (BarHeight > BarTargetHeight)
 			BarHeight = BarTargetHeight;
-		scr_fullupdate = 0;
+		if (scr_viewsize.integer < 100)
+			scr_fullupdate = 0;
 	}
 	else if (BarHeight > BarTargetHeight)
 	{
@@ -253,20 +266,38 @@ void Sbar_Draw(void)
 		BarHeight -= delta;
 		if (BarHeight < BarTargetHeight)
 			BarHeight = BarTargetHeight;
-		scr_fullupdate = 0;
+		if (scr_viewsize.integer < 100)
+			scr_fullupdate = 0;
 	}
+
+	Sbar_DrawTransPic(0, -23, Draw_CachePic("gfx/topbumpl.lmp"));
+	Sbar_DrawTransPic(138, -8, Draw_CachePic("gfx/topbumpm.lmp"));
+	Sbar_DrawTransPic(269, -23, Draw_CachePic("gfx/topbumpr.lmp"));
+
+	if (BarHeight > BAR_TOP_HEIGHT || m_state != m_none || scr_viewsize.integer > 100)
+		sb_updates = 0;
+
+	if (sb_updates >= vid.numpages)
+		return;
+
+//	if (BarHeight == BarTargetHeight)
+//		return;
 
 	scr_copyeverything = 1;
 	sb_updates++;
 
 	if (BarHeight < 0 && scr_viewsize.integer <= 120)
+	{
+		SetChainPosition(cl.v.health, cl.v.max_health, true);
 		DrawFullScreenInfo();
+		return;
+	}
 
 	Sbar_DrawPic(0, 0, Draw_CachePic("gfx/topbar1.lmp"));
 	Sbar_DrawPic(160, 0, Draw_CachePic("gfx/topbar2.lmp"));
-	Sbar_DrawTransPic(0, -23, Draw_CachePic("gfx/topbumpl.lmp"));
-	Sbar_DrawTransPic(138, -8, Draw_CachePic("gfx/topbumpm.lmp"));
-	Sbar_DrawTransPic(269, -23, Draw_CachePic("gfx/topbumpr.lmp"));
+	//Sbar_DrawTransPic(0, -23, Draw_CachePic("gfx/topbumpl.lmp"));
+	//Sbar_DrawTransPic(138, -8, Draw_CachePic("gfx/topbumpm.lmp"));
+	//Sbar_DrawTransPic(269, -23, Draw_CachePic("gfx/topbumpr.lmp"));
 
 	maxMana = (int)cl.v.max_mana;
 	// Blue mana
@@ -302,7 +333,8 @@ void Sbar_Draw(void)
 		Sbar_DrawNum(58, 14, -99, 3);
 	else
 		Sbar_DrawNum(58, 14, cl.v.health, 3);
-	SetChainPosition(cl.v.health, cl.v.max_health);
+	if (SetChainPosition(cl.v.health, cl.v.max_health, false))
+		sb_updates = 0;
 	Sbar_DrawTransPic(45+((int)ChainPosition&7), 38, Draw_CachePic("gfx/hpchain.lmp"));
 	Sbar_DrawTransPic(45+(int)ChainPosition, 36, Draw_CachePic("gfx/hpgem.lmp"));
 	Sbar_DrawPic(43, 36, Draw_CachePic("gfx/chnlcov.lmp"));
@@ -322,25 +354,6 @@ void Sbar_Draw(void)
 		DrawBarArtifactIcon(144, 3, cl.inv_order[cl.inv_selected]);
 	//	Sbar_DrawTransPic(144, 3, Draw_CachePic(va("gfx/arti%02d.lmp", cl.inv_order[cl.inv_selected])));
 	}
-
-	DrawArtifactInventory();
-
-	DrawActiveRings();
-	DrawActiveArtifacts();
-
-	trans_level = 0;
-
-	if (sb_ShowDM)
-	{
-		if (cl.gametype == GAME_DEATHMATCH)
-			Sbar_DeathmatchOverlay();
-		else
-			Sbar_PuzzlePieceOverlay();
-	}
-	else if (cl.gametype == GAME_DEATHMATCH && DMMode.integer)
-	{
-		Sbar_SmallDeathmatchOverlay();
-	}
 }
 
 //==========================================================================
@@ -349,7 +362,7 @@ void Sbar_Draw(void)
 //
 //==========================================================================
 
-static void SetChainPosition(float health, float maxHealth)
+static qboolean SetChainPosition(float health, float maxHealth, qboolean immediate)
 {
 	float delta;
 	float chainTargetPosition;
@@ -360,7 +373,9 @@ static void SetChainPosition(float health, float maxHealth)
 		health = maxHealth;
 	chainTargetPosition = (health*195)/maxHealth;
 	if (fabs(ChainPosition-chainTargetPosition) < 0.1)
-		return;
+		return false;
+	if (immediate)
+		ChainPosition = chainTargetPosition;
 	if (ChainPosition < chainTargetPosition)
 	{
 		delta = ((chainTargetPosition-ChainPosition)*5)*host_frametime;
@@ -379,6 +394,7 @@ static void SetChainPosition(float health, float maxHealth)
 		if (ChainPosition < chainTargetPosition)
 			ChainPosition = chainTargetPosition;
 	}
+	return true;
 }
 
 //==========================================================================
@@ -816,7 +832,8 @@ void Sbar_DeathmatchOverlay(void)
 	scoreboard_t	*s;
 
 	scr_copyeverything = 1;
-	scr_fullupdate = 0;
+	if (scr_viewsize.integer < 100)
+		scr_fullupdate = 0;
 
 	pic = Draw_CachePic ("gfx/menu/title8.lmp");
 	M_DrawTransPic ((320-pic->width)/2, 0, pic);
@@ -886,7 +903,8 @@ static void Sbar_PuzzlePieceOverlay(void)
 	char		Name[40];
 
 	scr_copyeverything = 1;
-	scr_fullupdate = 0;
+	if (scr_viewsize.integer < 100)
+		scr_fullupdate = 0;
 
 	piece = 0;
 	y = 40;
@@ -943,7 +961,8 @@ static void Sbar_SmallDeathmatchOverlay(void)
 		trans_level = 0;
 
 	scr_copyeverything = 1;
-	scr_fullupdate = 0;
+	if (scr_viewsize.integer < 100)
+		scr_fullupdate = 0;
 
 	// scores
 	Sbar_SortFrags ();
@@ -1146,7 +1165,8 @@ void Inv_Update(qboolean force)
 
 		if (!force)
 		{
-			scr_fullupdate = 0;
+			if (scr_viewsize.integer < 100)
+				scr_fullupdate = 0;
 			inv_flg = false;	// Toggle menu off
 		}
 
@@ -1309,7 +1329,8 @@ static void InvLeft_f(void)
 			cl.inv_selected = (cl.inv_selected - 1 + cl.inv_count) % cl.inv_count;
 		}
 
-		scr_fullupdate = 0;
+		if (scr_viewsize.integer < 100)
+			scr_fullupdate = 0;
 	}
 	else
 	{
@@ -1345,7 +1366,8 @@ static void InvRight_f(void)
 
 		cl.inv_selected = (cl.inv_selected + 1) % cl.inv_count;
 
-		scr_fullupdate = 0;
+		if (scr_viewsize.integer < 100)
+			scr_fullupdate = 0;
 	}
 	else
 	{
@@ -1369,7 +1391,8 @@ static void InvUse_f(void)
 	//Inv_Update(false);
 	Inv_Update(true);
 	inv_flg = false;
-	scr_fullupdate = 0;
+	if (scr_viewsize.integer < 100)
+		scr_fullupdate = 0;
 	in_impulse = 23;
 }
 
@@ -1382,7 +1405,8 @@ static void InvUse_f(void)
 static void InvOff_f(void)
 {
 	inv_flg = false;
-	scr_fullupdate = 0;
+	if (scr_viewsize.integer < 100)
+		scr_fullupdate = 0;
 }
 
 //==========================================================================
@@ -1481,7 +1505,8 @@ void SB_InvReset(void)
 	cl.inv_count = cl.inv_startpos = 0;
 	cl.inv_selected = -1;
 	inv_flg = false;
-	scr_fullupdate = 0;
+	if (scr_viewsize.integer < 100)
+		scr_fullupdate = 0;
 }
 
 //==========================================================================

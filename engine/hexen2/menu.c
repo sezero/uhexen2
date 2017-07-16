@@ -363,6 +363,7 @@ void M_ToggleMenu_f (void)
 		}
 		Key_SetDest (key_game);
 		m_state = m_none;
+		Sbar_Changed ();
 		return;
 	}
 	if (dest == key_console)
@@ -632,6 +633,7 @@ static void M_Main_Key (int key)
 		old_bgmtype[0] = 0;
 		Key_SetDest (key_game);
 		m_state = m_none;
+		Sbar_Changed ();
 		cls.demonum = m_save_demonum;
 		if (cls.demonum != -1 && !cls.demoplayback && cls.state != ca_connected)
 			CL_NextDemo ();
@@ -1108,6 +1110,7 @@ static void M_Load_Key (int k)
 		if (!loadable[load_cursor])
 			return;
 		m_state = m_none;
+		Sbar_Changed ();
 		Key_SetDest (key_game);
 
 	// Host_Loadgame_f can't bring up the loading plaque because too much
@@ -1158,6 +1161,7 @@ static void M_Save_Key (int k)
 
 	case K_ENTER:
 		m_state = m_none;
+		Sbar_Changed ();
 		Key_SetDest (key_game);
 		Cbuf_AddText (va("save s%i\n", load_cursor));
 		menu_disabled_mouse = false;
@@ -1269,6 +1273,7 @@ static void M_MLoad_Key (int k)
 		if (!loadable[load_cursor])
 			return;
 		m_state = m_none;
+		Sbar_Changed ();
 		Key_SetDest (key_game);
 
 		if (sv.active)
@@ -1323,6 +1328,7 @@ static void M_MSave_Key (int k)
 
 	case K_ENTER:
 		m_state = m_none;
+		Sbar_Changed ();
 		Key_SetDest (key_game);
 		Cbuf_AddText (va("save ms%i\n", load_cursor));
 		menu_disabled_mouse = false;

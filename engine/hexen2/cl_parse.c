@@ -776,13 +776,13 @@ static void CL_ParseClientdata (int bits)
 	if (bits & SU_ARMOR)
 	{
 		cl.stats[STAT_ARMOR] = MSG_ReadByte ();
-		Sbar_Changed();
+		//Sbar_Changed();
 	}
 
 	if (bits & SU_WEAPON)
 	{
 		cl.stats[STAT_WEAPON] = MSG_ReadShort ();
-		Sbar_Changed();
+		//Sbar_Changed();
 	}
 
 	/*

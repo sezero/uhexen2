@@ -252,6 +252,7 @@ void M_ToggleMenu_f (void)
 		}
 		Key_SetDest (key_game);
 		m_state = m_none;
+		Sbar_Changed ();
 		return;
 	}
 	if (dest == key_console && cls.state == ca_active)
@@ -520,6 +521,7 @@ static void M_Main_Key (int key)
 		old_bgmtype[0] = 0;
 		Key_SetDest (key_game);
 		m_state = m_none;
+		Sbar_Changed ();
 		cls.demonum = m_save_demonum;
 		if (cls.demonum != -1 && !cls.demoplayback && cls.state == ca_disconnected)
 			CL_NextDemo ();
