@@ -636,6 +636,9 @@ const char *Sys_ConsoleInput (void)
 	static int	textlen;
 	char		c;
 
+	if (!isDedicated)
+		return NULL;
+
 	while (WaitForChar(amiga_stdin,10))
 	{
 		Read (amiga_stdin, &c, 1);
@@ -736,7 +739,7 @@ static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 		return 0;
 	return -1;
 #else
-	if (NameFromLock(((struct Process *) FindTask(NULL))->pr_CurrentDir, (STRPTR) dst, dstsize) != 0)
+	if (NameFromLock(GetProgramDir(), (STRPTR) dst, dstsize) != 0)
 		return 0;
 	return -1;
 #endif
@@ -840,6 +843,7 @@ int main (int argc, char **argv)
 {
 	int			i;
 	double		time, oldtime, newtime;
+	ULONG		availMem;
 
 #ifdef HAVE_AROS_MAIN_WRAPPER
 	if (setjmp(exit_buf))
@@ -889,7 +893,8 @@ int main (int argc, char **argv)
 
 	Sys_CheckSDL ();
 
-	if (isDedicated)
+	availMem = AvailMem(MEMF_ANY|MEMF_LARGEST);
+	if (isDedicated || availMem < STD_MEM_ALLOC)
 		parms.memsize = MIN_MEM_ALLOC;
 	else
 		parms.memsize = STD_MEM_ALLOC;

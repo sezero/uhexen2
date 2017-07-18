@@ -604,7 +604,7 @@ static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 		return 0;
 	return -1;
 #else
-	if (NameFromLock(((struct Process *) FindTask(NULL))->pr_CurrentDir, (STRPTR) dst, dstsize) != 0)
+	if (NameFromLock(GetProgramDir(), (STRPTR) dst, dstsize) != 0)
 		return 0;
 	return -1;
 #endif
@@ -630,6 +630,7 @@ int main (int argc, char **argv)
 {
 	int			i;
 	double		newtime, time, oldtime;
+	ULONG		availMem;
 
 #ifdef HAVE_AROS_MAIN_WRAPPER
 	if (setjmp(exit_buf))
@@ -675,7 +676,11 @@ int main (int argc, char **argv)
 
 	COM_ValidateByteorder ();
 
-	parms.memsize = STD_MEM_ALLOC;
+	availMem = AvailMem(MEMF_ANY|MEMF_LARGEST);
+	if (availMem < STD_MEM_ALLOC)
+		parms.memsize = MIN_MEM_ALLOC;
+	else
+		parms.memsize = STD_MEM_ALLOC;
 
 	i = COM_CheckParm ("-heapsize");
 	if (i && i < com_argc-1)
