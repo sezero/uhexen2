@@ -32,7 +32,7 @@ CHUNKYYMAX EQU	BPLY
 	xdef	_c2p1x1_8_c5_030
 
 ;	incdir	include:
-;	include	lvo/exec_lib.i
+	include	lvo/exec_lib.i
 
 
 	section	code,code
