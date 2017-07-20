@@ -979,6 +979,9 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),amigaos)
 
+# crt: libnix or clib2:
+USE_CLIB2=yes
+
 # Don't use SDL on AmigaOS
 USE_SDL=no
 ifneq ($(USE_SDL),yes)
@@ -993,8 +996,14 @@ CFLAGS  += -O3
 # -fomit-frame-pointer / -ffast-math causes trouble with gcc2.95
 CFLAGS  += -fno-omit-frame-pointer
 endif
-CFLAGS  += -noixemul -m68060 -m68881
-LDFLAGS += -noixemul -m68060 -m68881
+ifeq ($(USE_CLIB2),yes)
+CLIB2DIR =/clib2
+CRT_FLAGS=-mcrt=clib2
+else
+CRT_FLAGS=-noixemul
+endif
+CFLAGS  += $(CRT_FLAGS) -m68060 -m68881
+LDFLAGS += $(CRT_FLAGS) -m68060 -m68881
 SYSLIBS += -lm
 
 # for C2P assembly:
@@ -1016,12 +1025,12 @@ ifeq ($(AMIGA_GLIMP),minigl)
 GL_DEFS+= -DREFGL_MINIGL
 #GL_DEFS+= -DUSE_MGLAPI=1
 GL_DEFS+= -I$(OSLIBS)/amigaos/MiniGL/include
-GL_LINK = -L$(OSLIBS)/amigaos/MiniGL/lib -lmgl
+GL_LINK = -L$(OSLIBS)/amigaos/MiniGL/lib$(CLIB2DIR) -lmgl
 endif
 ifeq ($(AMIGA_GLIMP),amesa)
 GL_DEFS+= -DREFGL_AMESA
 GL_DEFS+= -I$(OSLIBS)/amigaos/StormMesa/include
-GL_LINK = -L$(OSLIBS)/amigaos/StormMesa/lib -lgl
+GL_LINK = -L$(OSLIBS)/amigaos/StormMesa/lib$(CLIB2DIR) -lgl
 endif
 # dynamic loading of ogl functions doesn't work
 LINK_GL_LIBS=yes

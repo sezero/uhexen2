@@ -24,7 +24,17 @@ LDFLAGS =
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
 endif
+
+NOIXEMUL= 1
+
 ifeq ($(AOS3),1)
+# crt: libnix or clib2:
+USE_CLIB2=yes
+ifeq ($(USE_CLIB2),yes)
+NOIXEMUL= 0
+CFLAGS += -mcrt=clib2
+LDFLAGS+= -mcrt=clib2
+endif
 CFLAGS  += -I$(OSLIBS)/amigaos/include
 CPUFLAGS = -m68020-60
 LDFLAGS += -m68020
@@ -33,7 +43,6 @@ CFLAGS += -fno-omit-frame-pointer
 endif
 endif
 
-NOIXEMUL= 1
 ifeq ($(NOIXEMUL),1)
 CFLAGS += -noixemul
 LDFLAGS+= -noixemul

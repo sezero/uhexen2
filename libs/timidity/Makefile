@@ -76,7 +76,15 @@ ifeq ($(TARGET_OS),aros)
 endif
 
 ifeq ($(TARGET_OS),amigaos)
-CFLAGS += -noixemul -m68060 -m68881
+# crt: libnix or clib2:
+USE_CLIB2=yes
+ifeq ($(USE_CLIB2),yes)
+CRT_FLAGS=-mcrt=clib2
+else
+CRT_FLAGS=-noixemul
+endif
+
+CFLAGS += $(CRT_FLAGS) -m68060 -m68881
 ifndef DEBUG
 CFLAGS += -O3
 CFLAGS += -fno-omit-frame-pointer
