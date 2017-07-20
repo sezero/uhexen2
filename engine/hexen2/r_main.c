@@ -165,6 +165,7 @@ cvar_t	r_aliasmip = {"r_aliasmip", "80", CVAR_NONE};
 cvar_t	r_wholeframe = {"r_wholeframe", "1", CVAR_ARCHIVE};
 cvar_t	r_transwater = {"r_transwater", "1", CVAR_ARCHIVE};
 cvar_t	r_texture_external = {"r_texture_external", "0", CVAR_ARCHIVE};
+cvar_t	r_dynamic = {"r_dynamic", "1", CVAR_NONE};
 
 //void CreatePassages (void);
 //void SetVisibilityByPassages (void);
@@ -267,6 +268,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_wholeframe);
 	Cvar_RegisterVariable (&r_transwater);
 	Cvar_RegisterVariable (&r_texture_external);
+	Cvar_RegisterVariable (&r_dynamic);
 
 	Cvar_SetValueQuick (&r_maxedges, (float)NUMSTACKEDGES);
 	Cvar_SetValueQuick (&r_maxsurfs, (float)NUMSTACKSURFACES);
@@ -642,25 +644,28 @@ static void R_PrepareAlias (void)
 
 		lighting.plightvec = lightvec;
 
-		for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
+		if (r_dynamic.integer)
 		{
-			if (cl_dlights[lnum].die >= cl.time)
+			for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 			{
-				VectorSubtract (currententity->origin, cl_dlights[lnum].origin, dist);
-
-				if (cl_dlights[lnum].radius> 0)
+				if (cl_dlights[lnum].die >= cl.time)
 				{
-					add = cl_dlights[lnum].radius - VectorLength(dist);
+					VectorSubtract (currententity->origin, cl_dlights[lnum].origin, dist);
 
-					if (add > 0)
-						lighting.ambientlight += add;
-				}
-				else
-				{
-					add = VectorLength(dist) + cl_dlights[lnum].radius;
+					if (cl_dlights[lnum].radius> 0)
+					{
+						add = cl_dlights[lnum].radius - VectorLength(dist);
 
-					if (add < 0)
-						lighting.ambientlight += add;
+						if (add > 0)
+							lighting.ambientlight += add;
+					}
+					else
+					{
+						add = VectorLength(dist) + cl_dlights[lnum].radius;
+
+						if (add < 0)
+							lighting.ambientlight += add;
+					}
 				}
 			}
 		}
@@ -800,29 +805,32 @@ static void R_DrawViewModel (void)
 	r_viewlighting.shadelight = j;
 
 // add dynamic lights
-	for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
+	if (r_dynamic.integer)
 	{
-		dl = &cl_dlights[lnum];
-		if (!dl->radius)
-			continue;
-		if (dl->die < cl.time)
-			continue;
-
-		VectorSubtract (currententity->origin, dl->origin, dist);
-
-		if (dl->radius > 0)
+		for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 		{
-			add = dl->radius - VectorLength(dist);
+			dl = &cl_dlights[lnum];
+			if (!dl->radius)
+				continue;
+			if (dl->die < cl.time)
+				continue;
 
-			if (add > 0)
-				r_viewlighting.ambientlight += add;
-		}
-		else
-		{
-			add = VectorLength(dist) + dl->radius;
+			VectorSubtract (currententity->origin, dl->origin, dist);
 
-			if (add < 0)
-				r_viewlighting.ambientlight += add;
+			if (dl->radius > 0)
+			{
+				add = dl->radius - VectorLength(dist);
+
+				if (add > 0)
+					r_viewlighting.ambientlight += add;
+			}
+			else
+			{
+				add = VectorLength(dist) + dl->radius;
+
+				if (add < 0)
+					r_viewlighting.ambientlight += add;
+			}
 		}
 	}
 
@@ -1025,16 +1033,19 @@ static void R_DrawBEntitiesOnList (void)
 
 				// calculate dynamic lighting for bmodel
 				// if it's not an instanced model
-				if (clmodel->firstmodelsurface != 0)
+				if (r_dynamic.integer)
 				{
-					for (k = 0; k < MAX_DLIGHTS; k++)
+					if (clmodel->firstmodelsurface != 0)
 					{
-						if ((cl_dlights[k].die < cl.time) || (!cl_dlights[k].radius))
+						for (k = 0; k < MAX_DLIGHTS; k++)
 						{
-							continue;
-						}
+							if ((cl_dlights[k].die < cl.time) || (!cl_dlights[k].radius))
+							{
+								continue;
+							}
 
-						R_MarkLights (&cl_dlights[k], 1<<k, clmodel->nodes + clmodel->hulls[0].firstclipnode);
+							R_MarkLights (&cl_dlights[k], 1<<k, clmodel->nodes + clmodel->hulls[0].firstclipnode);
+						}
 					}
 				}
 

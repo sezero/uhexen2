@@ -85,6 +85,7 @@ extern cvar_t	r_transwater;
 extern cvar_t	r_teamcolor;
 #endif
 extern cvar_t	r_texture_external;
+extern cvar_t	r_dynamic;
 
 #define XCENTERING	(1.0 / 2.0)
 #define YCENTERING	(1.0 / 2.0)

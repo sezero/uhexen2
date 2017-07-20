@@ -79,6 +79,9 @@ static void R_AddDynamicLights (void)
 	mtexinfo_t	*tex;
 	msurface_t	*surf;
 
+	if (!r_dynamic.integer)
+		return;
+
 	surf = r_drawsurf.surf;
 	smax = (surf->extents[0]>>4)+1;
 	tmax = (surf->extents[1]>>4)+1;
