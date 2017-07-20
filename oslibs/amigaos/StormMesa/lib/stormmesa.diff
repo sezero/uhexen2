@@ -1,0 +1,197 @@
+update StormMesa gcc and vbcc makefiles.
+
+diff -urNp StormMesa/AMIGA/llibs/egcs/Makefile~ StormMesa/AMIGA/llibs/egcs/Makefile
+--- StormMesa/AMIGA/llibs/egcs/Makefile~	1998-10-03 02:16:48.000000000 +0300
++++ StormMesa/AMIGA/llibs/egcs/Makefile	2017-07-20 17:56:00.000000000 +0300
+@@ -4,34 +4,30 @@ OBJ = $(OBJ1) $(OBJ2)
+ 
+ # Modify the following two lines for your assembler
+ # This version uses phxass from the StormC distribution
+-ASM = StormC:StormSYS/PhxAss
++ASM = vasm
+ 
+ # This line specifies the include directory
+-ASM_OPTS = i=lvo
++ASM_OPTS = -Faout -phxass -quiet -Ilvo
+ 
+-# The install program. Used to avoid conflics with the CBM install
+-INSTALL = /usr/bin/install
++CC = m68k-amigaos-gcc
++AR = m68k-amigaos-ar
++RANLIB = m68k-amigaos-ranlib
+ 
+-all: warning libgl.a
++all: libgl.a
+ 
+ .s.o:
+-	$(ASM) $(ASM_OPTS) $<
++	$(ASM) $(ASM_OPTS) -o $@ $<
+ 
+-CFLAGS = -g -gstabs
++CFLAGS = -g -noixemul
++# -gstabs
++# -mcrt=clib2
+ 
+ # If your assembler generates a.out format, you must change the lines
+ # below
+ libgl.a: $(OBJ)
+-	-rm obj.*
+-	hunk2aout $(OBJ1) >/dev/null
+-	-rm -f libgl.a
+-	ar cru libgl.a $(OBJ2) obj.*
+-	ranlib libgl.a
+-
+-install:
+-	$(INSTALL) --directory /usr/lib
+-	ln -s /usr/lib/libgl.a /usr/lib/libglut.a
+-	ln -s /usr/lib/libgl.a /usr/lib/libglu.a
++	$(AR) cru libgl.a $(OBJ2)  $(OBJ1)
++	$(RANLIB) libgl.a
++
++clean:
++	$(RM) *.a *.o
+ 
+-warning:
+-	@echo Make sure to read the README file
+
+
+diff -urNp StormMesa/AMIGA/llibs/vbcc/src/glinit.c~ StormMesa/AMIGA/llibs/vbcc/src/glinit.c
+--- StormMesa/AMIGA/llibs/vbcc/src/glinit.c~	1999-02-04 23:35:20.000000000 +0200
++++ StormMesa/AMIGA/llibs/vbcc/src/glinit.c	2017-07-20 11:37:50.000000000 +0300
+@@ -65,8 +65,6 @@ void _INIT_8_gl()
+   glut_reg.glubase = GLUBASE;
+ #ifdef __PPC__
+   glut_reg.base = getR2();
+-#else
+-  glut_reg.base = (void *)0;
+ #endif
+   glut_reg.charmode = 1;
+   registerGLUT(&glut_reg);
+diff -urNp StormMesa/AMIGA/llibs/vbcc/src/fd2lib.c~ StormMesa/AMIGA/llibs/vbcc/src/fd2lib.c
+--- StormMesa/AMIGA/llibs/vbcc/src/fd2lib.c~	1998-12-15 14:39:52.000000000 +0200
++++ StormMesa/AMIGA/llibs/vbcc/src/fd2lib.c	2017-07-20 11:37:50.000000000 +0300
+@@ -368,6 +368,7 @@ static void ProcessFD(const char *name, 
+       if(mode & DEBUG)
+         printf("function=%s, loops=%d\n", functionp, loops);
+ 
++#ifdef __AMIGA__
+       /* This should be AMIGA OS only: */
+       if (strlen(functionp) > 28) {
+         sprintf(ff, "%s%.27s%c.s", outdir, functionp, lastchar);
+@@ -379,6 +380,7 @@ static void ProcessFD(const char *name, 
+           lastchar++;
+       }
+       else
++#endif
+         sprintf(ff, "%s%s.s", outdir, functionp);
+ 
+       /* Open function stub source file */
+diff -urNp /dev/null StormMesa/AMIGA/llibs/vbcc/bin/.dummy
+--- /dev/null	1970-01-01 02:00:00.000000000 +0200
++++ StormMesa/AMIGA/llibs/vbcc/bin/.dummy	2017-07-20 11:37:50.000000000 +0300
+@@ -0,0 +1 @@
++
+diff -urNp /dev/null StormMesa/AMIGA/llibs/vbcc/lib_68k/.dummy
+--- /dev/null	1970-01-01 02:00:00.000000000 +0200
++++ StormMesa/AMIGA/llibs/vbcc/lib_68k/.dummy	2017-07-20 11:37:50.000000000 +0300
+@@ -0,0 +1 @@
++
+diff -urNp /dev/null StormMesa/AMIGA/llibs/vbcc/T/.dummy
+--- /dev/null	1970-01-01 02:00:00.000000000 +0200
++++ StormMesa/AMIGA/llibs/vbcc/T/.dummy	2017-07-20 11:37:50.000000000 +0300
+@@ -0,0 +1 @@
++
+diff -urNp /dev/null StormMesa/AMIGA/llibs/vbcc/Makefile.m68k
+--- /dev/null	1970-01-01 02:00:00.000000000 +0200
++++ StormMesa/AMIGA/llibs/vbcc/Makefile.m68k	2017-07-20 11:37:50.000000000 +0300
+@@ -0,0 +1,90 @@
++# makefile for cross-compiling gl.lib on a unix host using vbcc
++
++CC		= gcc
++
++CC68		= vc
++COPTS68		= -notmpfile -fpu=68881 -Isrc
++FD2LIB68	= bin/fd2lib
++FD2LIBOPTS68	= -o T
++
++OBJDIR68	= lib_68k
++LIBGL68		= $(OBJDIR68)/gl.lib
++LIBGLE68	= $(OBJDIR68)/gle.lib
++LIBGLSMAP68	= $(OBJDIR68)/glsmap.lib
++
++GLFD		= ../../fd/agl_lib.fd
++GLUFD		= ../../fd/aglu_lib.fd
++GLUTFD		= ../../fd/aglut_lib.fd
++GLEFD		= ../../fd/agle_lib.fd
++GLSMAPFD	= ../../fd/aglsmap_lib.fd
++
++
++all: M68k
++
++M68k: $(LIBGL68) $(LIBGLE68) $(LIBGLSMAP68)
++
++clean:
++	$(RM) $(FD2LIB68) $(OBJDIR68)/*.o $(OBJDIR68)/*.lib T/*.s T/*.o
++
++
++$(LIBGL68): $(OBJDIR68)/glinit.o $(OBJDIR68)/gl_stubs.lib \
++            $(OBJDIR68)/glu_stubs.lib $(OBJDIR68)/glut_stubs.lib
++	cat $(OBJDIR68)/glinit.o $(OBJDIR68)/gl_stubs.lib \
++		$(OBJDIR68)/glu_stubs.lib $(OBJDIR68)/glut_stubs.lib >  $(LIBGL68)
++
++$(LIBGLE68): $(OBJDIR68)/gleinit.o $(OBJDIR68)/gle_stubs.lib
++	cat $(OBJDIR68)/gleinit.o $(OBJDIR68)/gle_stubs.lib > $(LIBGLE68)
++
++$(LIBGLSMAP68): $(OBJDIR68)/glsmapinit.o $(OBJDIR68)/glsmap_stubs.lib
++	cat $(OBJDIR68)/glsmapinit.o $(OBJDIR68)/glsmap_stubs.lib >  $(LIBGLSMAP68)
++
++
++$(OBJDIR68)/glinit.o: src/glinit.c src/glinit.h
++	$(CC68) $(COPTS68) -c -o $@ src/glinit.c
++
++$(OBJDIR68)/gleinit.o: src/gleinit.c src/gleinit.h
++	$(CC68) $(COPTS68) -c -o $@ src/gleinit.c
++
++$(OBJDIR68)/glsmapinit.o: src/glsmapinit.c src/glsmapinit.h
++	$(CC68) $(COPTS68) -c -o $@ src/glsmapinit.c
++
++
++$(OBJDIR68)/gl_stubs.lib: $(GLFD) $(FD2LIB68)
++	$(RM) T/*.s T/*.o
++	$(FD2LIB68) $(FD2LIBOPTS68) $(GLFD)
++	$(CC68) -c T/*.s
++	cat T/*.o > $(OBJDIR68)/gl_stubs.lib
++	$(RM) T/*.s T/*.o
++
++$(OBJDIR68)/glu_stubs.lib: $(GLUFD) $(FD2LIB68)
++	$(RM) T/*.s T/*.o
++	$(FD2LIB68) $(FD2LIBOPTS68) $(GLUFD)
++	$(CC68) -c T/*.s
++	cat T/*.o > $(OBJDIR68)/glu_stubs.lib
++	$(RM) T/*.s T/*.o
++
++$(OBJDIR68)/glut_stubs.lib: $(GLUTFD) $(FD2LIB68)
++	$(RM) T/*.s T/*.o
++	$(FD2LIB68) $(FD2LIBOPTS68) $(GLUTFD)
++	$(CC68) -c T/*.s
++	cat T/*.o > $(OBJDIR68)/glut_stubs.lib
++	$(RM) T/*.s T/*.o
++
++$(OBJDIR68)/gle_stubs.lib: $(GLEFD) $(FD2LIB68)
++	$(RM) T/*.s T/*.o
++	$(FD2LIB68) $(FD2LIBOPTS68) $(GLEFD)
++	$(CC68) -c T/*.s
++	cat T/*.o > $(OBJDIR68)/gle_stubs.lib
++	$(RM) T/*.s T/*.o
++
++$(OBJDIR68)/glsmap_stubs.lib: $(GLSMAPFD) $(FD2LIB68)
++	$(RM) T/*.s T/*.o
++	$(FD2LIB68) $(FD2LIBOPTS68) $(GLSMAPFD)
++	$(CC68) -c T/*.s
++	cat T/*.o > $(OBJDIR68)/glsmap_stubs.lib
++	$(RM) T/*.s T/*.o
++
++
++$(FD2LIB68): src/fd2lib.c src/vargs.h
++	$(CC) -o $@ src/fd2lib.c
++
