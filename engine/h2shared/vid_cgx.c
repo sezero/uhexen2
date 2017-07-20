@@ -366,6 +366,11 @@ static void VID_PrepareModes (void)
 
 		fmodelist[num_fmodes].width = diminfo.Nominal.MaxX + 1;
 		fmodelist[num_fmodes].height = diminfo.Nominal.MaxY + 1;
+#ifdef PLATFORM_AMIGAOS3
+		// round down PAL resolutions to the nearest multiple of 240
+		if (fmodelist[num_fmodes].height % 256 == 0)
+			fmodelist[num_fmodes].height -= fmodelist[num_fmodes].height % MIN_HEIGHT;
+#endif
 		fmodelist[num_fmodes].fullscreen = 1;
 		fmodelist[num_fmodes].bpp = 8; // diminfo.MaxDepth
 		fmodelist[num_fmodes].modeid = id;
@@ -604,7 +609,7 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 
 	if (screen)
 	{
-		flags |= WFLG_BORDERLESS;
+		flags |= WFLG_BACKDROP | WFLG_BORDERLESS;
 	}
 	else
 	{

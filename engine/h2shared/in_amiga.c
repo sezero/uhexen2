@@ -613,7 +613,7 @@ static void IN_StartupJoystick (void)
 		return;
 
 #ifdef __CLIB2__
-	KeymapBase = OpenLibrary("keymap.library", 39);
+	KeymapBase = OpenLibrary("keymap.library", 37);
 #endif
 
 	if (!LowLevelBase)
