@@ -20,13 +20,18 @@ LINKER = $(CC)
 CPUFLAGS=
 CFLAGS  = -g -Wall
 CFLAGS += $(CPUFLAGS)
+LDFLAGS =
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
 endif
 ifeq ($(AOS3),1)
 CFLAGS  += -I$(OSLIBS)/amigaos/include
+CPUFLAGS = -m68020-60
+LDFLAGS += -m68020
+ifndef DEBUG
+CFLAGS += -fno-omit-frame-pointer
 endif
-LDFLAGS =
+endif
 
 NOIXEMUL= 1
 ifeq ($(NOIXEMUL),1)

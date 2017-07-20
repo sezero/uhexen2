@@ -274,8 +274,13 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),amigaos)
 
-CFLAGS  += -noixemul -m68020-60
-LDFLAGS += -noixemul
+ifndef DEBUG
+CFLAGS  += -O3
+# -fomit-frame-pointer / -ffast-math causes trouble with gcc2.95
+CFLAGS  += -fno-omit-frame-pointer
+endif
+CFLAGS  += -noixemul -m68060 -m68881
+LDFLAGS += -noixemul -m68060 -m68881
 SYSLIBS += -lm
 
 # for extra missing headers

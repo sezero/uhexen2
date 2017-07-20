@@ -16,5 +16,5 @@ linux)	MAKE_CMD=make ;;
 *)	MAKE_CMD=make ;;
 esac
 
-exec $MAKE_CMD -f Makefile.amiga AOS3=1 CPUFLAGS=-m68020-60 $*
+exec $MAKE_CMD -f Makefile.amiga AOS3=1 $*
 

@@ -131,7 +131,10 @@ endif
 
 ifeq ($(TARGET_OS),amigaos)
 CFLAGS += -noixemul -m68020-60
-LDFLAGS += -noixemul
+LDFLAGS += -noixemul -m68020
+ifndef DEBUG
+CFLAGS  += -fno-omit-frame-pointer
+endif
 # for extra missing headers
 INCLUDES += -I$(OSLIBS)/amigaos/include
 # AmiTCP SDK

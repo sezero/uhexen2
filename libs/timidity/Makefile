@@ -76,7 +76,11 @@ ifeq ($(TARGET_OS),aros)
 endif
 
 ifeq ($(TARGET_OS),amigaos)
-CFLAGS += -noixemul -m68020-60
+CFLAGS += -noixemul -m68060 -m68881
+ifndef DEBUG
+CFLAGS += -O3
+CFLAGS += -fno-omit-frame-pointer
+endif
 # for extra missing headers
 INCLUDES += -I$(OSLIBS)/amigaos/include
 endif

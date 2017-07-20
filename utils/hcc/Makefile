@@ -85,10 +85,13 @@ CFLAGS  += -noixemul
 LDFLAGS += -noixemul
 endif
 ifeq ($(TARGET_OS),amigaos)
-CFLAGS  += -noixemul -m68020-60
-LDFLAGS += -noixemul
+CFLAGS  += -noixemul -m68020-60 -m68881
+LDFLAGS += -noixemul -m68020 -m68881
 # -lm is needed for atof()
 LDLIBS  += -lm
+ifndef DEBUG
+CFLAGS  += -fno-omit-frame-pointer
+endif
 # for extra missing headers
 INCLUDES += -I$(OSLIBS)/amigaos/include
 endif

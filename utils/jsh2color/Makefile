@@ -70,7 +70,7 @@ CFLAGS  += -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows/misc/include
 CFLAGS  += -m32
 LDFLAGS += -m32 -mconsole
-# default 2 MB stack is not enough
+# FIXME: default 2 MB stack is not enough:
 LDFLAGS += -Wl,--stack,4194304
 endif
 ifeq ($(TARGET_OS),win64)
@@ -78,7 +78,7 @@ CFLAGS  += -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows/misc/include
 CFLAGS  += -m64
 LDFLAGS += -m64 -mconsole
-# default 2 MB stack is not enough
+# FIXME: default 2 MB stack is not enough:
 LDFLAGS += -Wl,--stack,4194304
 endif
 ifeq ($(TARGET_OS),aros)
@@ -90,9 +90,13 @@ LDFLAGS += -noixemul
 LDLIBS  += -lm
 endif
 ifeq ($(TARGET_OS),amigaos)
-CFLAGS  += -noixemul -m68020-60
-LDFLAGS += -noixemul
+CFLAGS  += -noixemul -m68060 -m68881
+LDFLAGS += -noixemul -m68060 -m68881
 LDLIBS  += -lm
+ifndef DEBUG
+CFLAGS  += -O3
+CFLAGS  += -fno-omit-frame-pointer
+endif
 # for extra missing headers
 INCLUDES += -I$(OSLIBS)/amigaos/include
 endif
