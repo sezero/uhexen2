@@ -30,7 +30,12 @@
 #include <proto/timer.h>
 #include <time.h>
 
-int __stack = 0x100000; /* 1 MB stack */
+#define MIN_STACK_SIZE 0x100000 /* 1 MB stack */
+#ifdef __CLIB2__
+int __stack_size = MIN_STACK_SIZE;
+#else
+int __stack = MIN_STACK_SIZE;
+#endif
 #ifdef __AROS__
 #include "incstack.h"
 /* The problem here is that our real main never returns: the exit

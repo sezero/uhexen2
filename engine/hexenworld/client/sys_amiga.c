@@ -38,7 +38,12 @@
 #include "sdl_inc.h"
 #endif
 
-int __stack = 0x100000; /* 1 MB stack */
+#define MIN_STACK_SIZE 0x100000 /* 1 MB stack */
+#ifdef __CLIB2__
+int __stack_size = MIN_STACK_SIZE;
+#else
+int __stack = MIN_STACK_SIZE;
+#endif
 #ifdef __AROS__
 #include "incstack.h"
 /* The problem here is that our real main never returns: the exit
@@ -73,6 +78,10 @@ struct MsgPort		*timerport;
 struct Library		*TimerBase;
 #else
 struct Device		*TimerBase;
+#endif
+#ifdef __CLIB2__
+struct IntuitionBase *IntuitionBase;
+struct Library *IFFParseBase;
 #endif
 
 
@@ -398,6 +407,14 @@ static void Sys_Init (void)
 	/*MaskExceptions ();*/
 	Sys_SetFPCW ();
 
+#ifdef __CLIB2__
+	IntuitionBase = (struct IntuitionBase *)OpenLibrary("intuition.library", 39);
+	if (!IntuitionBase)
+		Sys_Error ("Cannot open intuition.library!");
+
+	IFFParseBase = OpenLibrary("iffparse.library", 39);
+#endif
+
 	if ((timerport = CreateMsgPort()))
 	{
 		if ((timerio = (struct timerequest *)CreateIORequest(timerport, sizeof(struct timerequest))))
@@ -456,6 +473,18 @@ static void Sys_AtExit (void)
 		DeleteMsgPort(timerport);
 		TimerBase = NULL;
 	}
+#ifdef __CLIB2__
+	if (IntuitionBase)
+	{
+		CloseLibrary((struct Library *)IntuitionBase);
+		IntuitionBase = NULL;
+	}
+	if (IFFParseBase)
+	{
+		CloseLibrary(IFFParseBase);
+		IFFParseBase = NULL;
+	}
+#endif
 #if defined(SDLQUAKE)
 	SDL_Quit();
 #endif
@@ -630,6 +659,9 @@ char *Sys_GetClipboardData (void)
 	struct ContextNode *cn;
 	LONG readbytes;
 	char *chunk_buffer = NULL;
+
+	if (!IFFParseBase)
+		return NULL;
 
 	if ((IFFHandle = AllocIFF())) {
 	    if ((IFFHandle->iff_Stream = (IPTR) OpenClipboard(0))) {

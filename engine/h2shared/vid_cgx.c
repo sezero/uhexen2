@@ -59,6 +59,9 @@ static struct Screen *screen = NULL;
 static unsigned char ppal[256 * 4];
 static pixel_t *buffer = NULL;
 static byte *directbitmap = NULL;
+#ifdef __CLIB2__
+struct GfxBase *GfxBase;
+#endif
 #ifdef PLATFORM_AMIGAOS3
 struct Library *CyberGfxBase = NULL;
 #ifdef USE_C2P
@@ -797,6 +800,12 @@ void VID_Init (const unsigned char *palette)
 				"vid_config_swy" };
 #define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
 
+#ifdef __CLIB2__
+	GfxBase = (struct GfxBase *)OpenLibrary("graphics.library", 39);
+	if (!GfxBase)
+		Sys_Error ("Cannot open graphics.library!");
+#endif
+
 #ifdef PLATFORM_AMIGAOS3
 	CyberGfxBase = OpenLibrary("cybergraphics.library", 0);
 	/*if (!CyberGfxBase)
@@ -985,6 +994,14 @@ void VID_Shutdown (void)
 	{
 		CloseLibrary(CyberGfxBase);
 		CyberGfxBase = NULL;
+	}
+#endif
+
+#ifdef __CLIB2__
+	if (GfxBase)
+	{
+		CloseLibrary((struct Library *)GfxBase);
+		GfxBase = NULL;
 	}
 #endif
 }

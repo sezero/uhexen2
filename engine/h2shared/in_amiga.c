@@ -53,6 +53,9 @@
 #include "quakedef.h"
 
 struct Library *LowLevelBase = NULL;
+#ifdef __CLIB2__
+struct Library *KeymapBase;
+#endif
 
 extern struct Window *window;
 static struct Interrupt InputHandler;
@@ -460,6 +463,14 @@ void IN_Shutdown (void)
 	joy_port = -1;
 	joy_available = 0;
 	oldjoyflag = 0;
+
+#ifdef __CLIB2__
+	if (KeymapBase)
+	{
+		CloseLibrary(KeymapBase);
+		KeymapBase = NULL;
+	}
+#endif
 }
 
 /*
@@ -600,6 +611,10 @@ static void IN_StartupJoystick (void)
 
 	if (safemode || COM_CheckParm ("-nojoy"))
 		return;
+
+#ifdef __CLIB2__
+	KeymapBase = OpenLibrary("keymap.library", 39);
+#endif
 
 	if (!LowLevelBase)
 		LowLevelBase = OpenLibrary("lowlevel.library", 37);
@@ -785,7 +800,7 @@ void IN_SendKeyEvents (void)
 			if (!Key_IsGameKey())
 			{
 				UBYTE bufascii;
-				if (MapRawKey(inputev, (STRPTR) &bufascii, sizeof(bufascii), NULL) > 0)
+				if (KeymapBase && MapRawKey(inputev, (STRPTR) &bufascii, sizeof(bufascii), NULL) > 0)
 				{
 					//Con_Printf("%d\n", bufascii);
 					sym = (bufascii == 8) ? K_BACKSPACE	: bufascii;
