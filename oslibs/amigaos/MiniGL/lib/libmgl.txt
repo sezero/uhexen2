@@ -1,3 +1,0 @@
-this was compiled against Warp3DDev-4.2a using the GG-Lite-bin-m68k.lha
-package from aminet (binutils-2.7/gcc-2.95.3) after applying the minigl
-patches included here.

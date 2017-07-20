@@ -1,0 +1,335 @@
+updates for gcc:
+
+- remove -fomit-frame-pointer from CFLAGS (can cause trouble)
+- add -m68881 to CFLAGS
+- add -m68060 -m68881 to LDFLAGS
+- reorder includes for better compatibility with newer gcc
+
+diff -urNp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
+--- MiniGL~/Build_gcc/makefile	2016-07-01 07:11:00.000000000 +0300
++++ MiniGL/Build_gcc/makefile	2017-07-20 03:01:00.000000000 +0300
+@@ -18,7 +18,8 @@ INCLUDE = -I../include
+ 
+ DEBUG = -DNDEBUG
+ 
+-CFLAGS = -m68060 -D__M68K__ $(DEBUG) $(ADDFLAG) -ffast-math -fomit-frame-pointer
++CFLAGS = -m68060 -m68881 -D__M68K__ $(DEBUG) -ffast-math
++#-fomit-frame-pointer
+ CFLAGS+= -O3 -DINLINE=__inline
+ #CFLAGS+= -g
+ CFLAGS+= -noixemul
+@@ -30,6 +31,7 @@ LIBNAME = $(LIBDIR)/libmgl.a
+ DEMOS = GLTest varray warp mtex gears driverinfo
+ DEBUGLIB= -ldebug
+ LDFLAGS = -noixemul
++LDFLAGS+= -m68060 -m68881
+ LDLIBS  = -L$(LIBDIR) -lmgl $(DEBUGLIB) -lm
+ 
+ CC = m68k-amigaos-gcc
+diff -urNp MiniGL~/src/context.c MiniGL/src/context.c
+--- MiniGL~/src/context.c	2016-07-01 07:01:10.000000000 +0300
++++ MiniGL/src/context.c	2017-07-20 03:01:00.000000000 +0300
+@@ -12,13 +12,12 @@
+  *
+  */
+ 
+-
+-#include "sysinc.h"
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ 
++#include "sysinc.h"
++
+ #if 0
+ static char rcsid[] = "$Id: context.c,v 1.1.1.1 2000/04/07 19:44:51 hfrieden Exp $";
+ #endif
+diff -urNp MiniGL~/src/draw.c MiniGL/src/draw.c
+--- MiniGL~/src/draw.c	2016-07-01 07:01:10.000000000 +0300
++++ MiniGL/src/draw.c	2017-07-20 03:01:00.000000000 +0300
+@@ -25,14 +25,14 @@
+ #endif
+ 
+ 
+-#include "sysinc.h"
+-#include "vertexarray.h"
+-
+ #include <math.h>
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
+ 
++#include "sysinc.h"
++#include "vertexarray.h"
++
+ #ifdef DISABLE_TRANSFORMATION
+ #warning "Compiling without transformation pipeline. Only flat geometry supported"
+ #endif
+diff -urNp MiniGL~/src/GLTest.c MiniGL/src/GLTest.c
+--- MiniGL~/src/GLTest.c	2002-11-30 08:15:40.000000000 +0200
++++ MiniGL/src/GLTest.c	2017-07-20 03:01:00.000000000 +0300
+@@ -12,21 +12,20 @@
+  *
+  */
+ 
+-#include "mgl/gl.h"
+-
+ #include <math.h>
+ 
+ #ifdef __VBCC__
+ #pragma amiga-align
+ #endif
+ 
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
+ #include <exec/exec.h>
+ #include <intuition/intuition.h>
+ #include <graphics/gfx.h>
+ #include <libraries/lowlevel.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>	//OF
+ #include <dos/dos.h>
+ 
+ #ifdef __VBCC__
+@@ -50,7 +49,6 @@
+ #endif
+ 
+ #ifdef __STORMC__
+-//#include <string.h>	//OF (made include string.h for all compilers)
+ #include <clib/powerpc_protos.h>
+ #ifndef __PPC__
+ #include <proto/exec.h>
+@@ -65,11 +63,8 @@
+ #include <clib/dos_protos.h>
+ #include <clib/graphics_protos.h>
+ #endif
+-
+-
+ #define M_PI 3.1415927
+ 
+-
+ int kprintf(char *format, ...)
+ {
+     return 0;
+@@ -96,6 +91,9 @@ int kprintf(char *format, ...)
+ 
+ #endif
+ 
++#include "mgl/gl.h"
++
++
+ static char rcsid[] = "$Id: GLTest.c,v 1.1.1.1 2000/04/07 19:44:51 hfrieden Exp $";
+ struct Library *LowLevelBase;
+ 
+diff -urNp MiniGL~/src/glu.c MiniGL/src/glu.c
+--- MiniGL~/src/glu.c	2016-07-01 07:01:10.000000000 +0300
++++ MiniGL/src/glu.c	2017-07-20 03:01:00.000000000 +0300
+@@ -11,13 +11,13 @@
+  * See the file Licence.txt for more details
+  *
+  */
+-#include "sysinc.h"
+ 
+-#include <mgl/gl.h>
+ #include <math.h>
++#include <stdio.h>
+ 
++#include "sysinc.h"
+ 
+-#include <stdio.h>
++#include <mgl/gl.h>
+ 
+ 
+ #define VEC_NORM(v)                                      \
+diff -urNp MiniGL~/src/hclip.c MiniGL/src/hclip.c
+--- MiniGL~/src/hclip.c	2016-07-01 07:01:10.000000000 +0300
++++ MiniGL/src/hclip.c	2017-07-20 03:01:00.000000000 +0300
+@@ -16,11 +16,11 @@
+ static char rcsid[] = "$Id: hclip.c,v 1.1.1.1 2000/04/07 19:44:51 hfrieden Exp $";
+ #endif
+ 
+-#include "sysinc.h"
+ #include <math.h>
+-
+ #include <stdio.h> //remove this
+ 
++#include "sysinc.h"
++
+ #define CLIP_EPS (1e-7)
+ 
+ #define DUMP_VERTEX(vert) \
+diff -urNp MiniGL~/src/init.c MiniGL/src/init.c
+--- MiniGL~/src/init.c	2016-08-08 05:55:00.000000000 +0300
++++ MiniGL/src/init.c	2017-07-20 03:01:00.000000000 +0300
+@@ -12,8 +12,8 @@
+  *
+  */
+ 
+-#include "sysinc.h"
+ #include <stdio.h>
++#include "sysinc.h"
+ 
+ 
+ #if 0
+diff -urNp MiniGL~/src/kprintf.c MiniGL/src/kprintf.c
+--- MiniGL~/src/kprintf.c	2002-11-30 08:15:42.000000000 +0200
++++ MiniGL/src/kprintf.c	2017-07-20 03:01:00.000000000 +0300
+@@ -4,7 +4,6 @@
+ ** to the serial connector (or Sushi, if it's installed).
+ */
+ 
+-#include "sysinc.h"
+ #include <stdarg.h>
+ #include <stdio.h>
+ 
+@@ -26,11 +25,13 @@
+ #endif
+ #endif
+ 
+-
+ #ifdef __VBCC__
+ #pragma default-align
+ #endif
+ 
++#include "sysinc.h"
++
++
+ int kprintf(char *format, ...)
+ {
+ #ifndef NDEBUG
+diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
+--- MiniGL~/src/matrix.c	2016-11-01 11:01:00.000000000 +0300
++++ MiniGL/src/matrix.c	2017-07-20 03:01:00.000000000 +0300
+@@ -12,15 +12,14 @@
+  *
+  */
+ 
+-
+-#include "sysinc.h"
+ #include <math.h>
+-
+ #include <stdlib.h>
+ #ifdef __VBCC__
+ #include <stdio.h>
+ #endif
+ 
++#include "sysinc.h"
++
+ #ifndef PI
+ 	#ifdef M_PI
+ 	#define PI M_PI
+diff -urNp MiniGL~/src/others.c MiniGL/src/others.c
+--- MiniGL~/src/others.c	2016-07-01 07:01:10.000000000 +0300
++++ MiniGL/src/others.c	2017-07-20 03:01:00.000000000 +0300
+@@ -12,11 +12,11 @@
+  *
+  */
+ 
+-#include "sysinc.h"
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ 
++#include "sysinc.h"
++
+ #if 0
+ static char rcsid[] = "$Id: others.c,v 1.1.1.1 2000/04/07 19:44:51 hfrieden Exp $";
+ #endif
+@@ -111,8 +111,8 @@ void GLBlendFunc(GLcontext context, GLen
+ {
+ 	ULONG src, dest;
+ 
+-   if((context->CurBlendSrc == sfactor) && (context->CurBlendDst == dfactor))
+-	return;
++	if((context->CurBlendSrc == sfactor) && (context->CurBlendDst == dfactor))
++		return;
+ 
+ 
+ 	context->CurBlendSrc = sfactor ;
+diff -urNp MiniGL~/src/texture.c MiniGL/src/texture.c
+--- MiniGL~/src/texture.c	2016-07-01 07:01:10.000000000 +0300
++++ MiniGL/src/texture.c	2017-07-20 03:01:00.000000000 +0300
+@@ -12,14 +12,14 @@
+  *
+  */
+ 
+-#include "sysinc.h"
+-
+ #include <stdlib.h>
+ #include <stdio.h>
+ #ifdef __VBCC__
+ #include <string.h> //inlined memcpy
+ #endif
+ 
++#include "sysinc.h"
++
+ #if 0
+ static char rcsid[] = "$Id: texture.c,v 1.1.1.1 2000/04/07 19:44:51 tfrieden Exp $";
+ #endif
+diff -urNp MiniGL~/src/vertexarray.c MiniGL/src/vertexarray.c
+--- MiniGL~/src/vertexarray.c	2016-04-15 17:55:20.000000000 +0300
++++ MiniGL/src/vertexarray.c	2017-07-20 03:01:00.000000000 +0300
+@@ -36,15 +36,14 @@
+ ** lower the general performance of glDrawArrays.
+ */
+ 
+-
+-#include "sysinc.h"
+-#include "vertexarray.h"
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <math.h>
+ 
++#include "sysinc.h"
++#include "vertexarray.h"
++
+ 
+ //Clipping (convert color and texcoords to vertexbuffer)
+ 
+diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
+--- MiniGL~/src/vertexbuffer.c	2016-07-01 07:01:10.000000000 +0300
++++ MiniGL/src/vertexbuffer.c	2017-07-20 03:01:00.000000000 +0300
+@@ -30,8 +30,8 @@ See include/mgl/mglmacros.h
+ This boolean is only set in the event of glTexCoord4f and cleared to GL_FALSE by glBegin
+ */
+ 
+-#include "sysinc.h"
+ #include <stdio.h>
++#include "sysinc.h"
+ 
+ #if defined (__VBCC__) && defined(__M68K__)
+ 	#include <inline/timer_protos.h>
+@@ -124,8 +124,7 @@ void TMA_Start(LockTimeHandle *handle)
+ {
+ 	struct EClockVal eval;
+ 	extern struct ExecBase *SysBase;
+-	if (!TimerBase)
+-	{
++	if (!TimerBase) {
+ 		TimerBase = (struct Device *)FindName(&SysBase->DeviceList, "timer.device");
+ 	}
+ 
+diff -urNp MiniGL~/src/vertexelements.c MiniGL/src/vertexelements.c
+--- MiniGL~/src/vertexelements.c	2016-11-01 11:01:00.000000000 +0300
++++ MiniGL/src/vertexelements.c	2017-07-20 03:01:00.000000000 +0300
+@@ -1,11 +1,11 @@
+-#include "sysinc.h"
+-#include "vertexarray.h"
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <math.h>
+ 
++#include "sysinc.h"
++#include "vertexarray.h"
++
+ /*
+ ** glDrawElements pipeline by Christian 'Surgeon' Michael
+ ** Thanks to Olivier Fabre for bug-hunting
