@@ -149,9 +149,15 @@ static AROSMesaContext context = NULL;
 GLContext *__tglContext = NULL;
 static qboolean contextinit = false;
 #elif defined(__AMIGA__) && defined(REFGL_MINIGL)
+#ifdef __CLIB2__
+struct GfxBase *GfxBase = NULL;
+#endif
 static int lockmode = MGL_LOCK_MANUAL;
 static cvar_t	gl_lockmode = {"gl_lockmode", "manual", CVAR_ARCHIVE};
 #elif defined(__AMIGA__) && defined(REFGL_AMESA)
+#ifdef __CLIB2__
+struct GfxBase *GfxBase = NULL;
+#endif
 struct Library *CyberGfxBase = NULL;
 static AmigaMesaContext context = NULL;
 #endif
@@ -1546,6 +1552,11 @@ void	VID_Init (const unsigned char *palette)
 	vid.numpages = 2;
 
 #if defined(REFGL_MINIGL)
+	#ifdef __CLIB2__
+	GfxBase = (struct GfxBase *)OpenLibrary("graphics.library", 39);
+	if (!GfxBase)
+		Sys_Error ("Cannot open graphics.library!");
+	#endif
 	mini_CurrentContext = NULL;/* should I do this? */
 	Cvar_RegisterVariable (&gl_lockmode);
 	Cvar_SetCallback (&gl_lockmode, gl_lockmode_f);
@@ -1555,6 +1566,11 @@ void	VID_Init (const unsigned char *palette)
 	mglChoosePixelDepth (16);/* set pixel depth to 16 */
 #endif
 #if defined(REFGL_AMESA)
+	#ifdef __CLIB2__
+	GfxBase = (struct GfxBase *)OpenLibrary("graphics.library", 39);
+	if (!GfxBase)
+		Sys_Error ("Cannot open graphics.library!");
+	#endif
 	CyberGfxBase = OpenLibrary("cybergraphics.library", 0);
 	if (!CyberGfxBase)
 		Sys_Error ("Cannot open cybergraphics.library!");
