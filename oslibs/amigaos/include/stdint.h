@@ -1,3 +1,8 @@
+#ifdef __CLIB2__
+#include_next <stdint.h> /* clib2 provides a stdint.h already */
+
+#else
+
 #ifndef __STDINT_H
 #define __STDINT_H 1
 
@@ -105,3 +110,5 @@ typedef unsigned long long uintmax_t;
 #define UINTMAX_C(x) x##ULL
 
 #endif /* __STDINT_H */
+
+#endif /* __CLIB2__ */
