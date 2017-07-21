@@ -95,7 +95,7 @@
    typedef uint32_t ogg_uint32_t;
    typedef int64_t ogg_int64_t;
 
-#elif defined (__EMX__)
+#elif defined (__EMX__) || defined (__OS2__)
 
    /* OS/2 GCC */
    typedef short ogg_int16_t;
