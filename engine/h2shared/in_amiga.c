@@ -54,7 +54,7 @@
 
 struct Library *LowLevelBase = NULL;
 #ifdef __CLIB2__
-struct Library *KeymapBase;
+struct Library *KeymapBase = NULL;
 #endif
 
 extern struct Window *window;
@@ -465,8 +465,7 @@ void IN_Shutdown (void)
 	oldjoyflag = 0;
 
 #ifdef __CLIB2__
-	if (KeymapBase)
-	{
+	if (KeymapBase) {
 		CloseLibrary(KeymapBase);
 		KeymapBase = NULL;
 	}

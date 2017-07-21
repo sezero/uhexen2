@@ -408,11 +408,11 @@ static void Sys_Init (void)
 	Sys_SetFPCW ();
 
 #ifdef __CLIB2__
-	IntuitionBase = (struct IntuitionBase *)OpenLibrary("intuition.library", 39);
+	IntuitionBase = (struct IntuitionBase *) OpenLibrary("intuition.library", 0);
 	if (!IntuitionBase)
 		Sys_Error ("Cannot open intuition.library!");
 
-	IFFParseBase = OpenLibrary("iffparse.library", 39);
+	IFFParseBase = OpenLibrary("iffparse.library", 0);
 #endif
 
 	if ((timerport = CreateMsgPort()))

@@ -60,7 +60,7 @@ static unsigned char ppal[256 * 4];
 static pixel_t *buffer = NULL;
 static byte *directbitmap = NULL;
 #ifdef __CLIB2__
-struct GfxBase *GfxBase;
+struct GfxBase *GfxBase = NULL;
 #endif
 #ifdef PLATFORM_AMIGAOS3
 struct Library *CyberGfxBase = NULL;
@@ -806,7 +806,7 @@ void VID_Init (const unsigned char *palette)
 #define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
 
 #ifdef __CLIB2__
-	GfxBase = (struct GfxBase *)OpenLibrary("graphics.library", 39);
+	GfxBase = (struct GfxBase *)OpenLibrary("graphics.library", 0);
 	if (!GfxBase)
 		Sys_Error ("Cannot open graphics.library!");
 #endif
@@ -995,16 +995,13 @@ void VID_Shutdown (void)
 	VID_DestroyWindow ();
 
 #ifdef PLATFORM_AMIGAOS3
-	if (CyberGfxBase)
-	{
+	if (CyberGfxBase) {
 		CloseLibrary(CyberGfxBase);
 		CyberGfxBase = NULL;
 	}
 #endif
-
 #ifdef __CLIB2__
-	if (GfxBase)
-	{
+	if (GfxBase) {
 		CloseLibrary((struct Library *)GfxBase);
 		GfxBase = NULL;
 	}

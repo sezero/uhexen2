@@ -1553,7 +1553,7 @@ void	VID_Init (const unsigned char *palette)
 
 #if defined(REFGL_MINIGL)
 	#ifdef __CLIB2__
-	GfxBase = (struct GfxBase *)OpenLibrary("graphics.library", 39);
+	GfxBase = (struct GfxBase *)OpenLibrary("graphics.library", 0);
 	if (!GfxBase)
 		Sys_Error ("Cannot open graphics.library!");
 	#endif
@@ -1567,7 +1567,7 @@ void	VID_Init (const unsigned char *palette)
 #endif
 #if defined(REFGL_AMESA)
 	#ifdef __CLIB2__
-	GfxBase = (struct GfxBase *)OpenLibrary("graphics.library", 39);
+	GfxBase = (struct GfxBase *)OpenLibrary("graphics.library", 0);
 	if (!GfxBase)
 		Sys_Error ("Cannot open graphics.library!");
 	#endif
@@ -1716,12 +1716,24 @@ void	VID_Shutdown (void)
 	VID_KillContext();
 #ifdef REFGL_MINIGL
 	MGLTerm();
+	#ifdef __CLIB2__
+	if (GfxBase) {
+		CloseLibrary(GfxBase);
+		GfxBase = NULL;
+	}
+	#endif
 #endif
 #ifdef REFGL_AMESA
 	if (CyberGfxBase) {
 		CloseLibrary(CyberGfxBase);
 		CyberGfxBase = NULL;
 	}
+	#ifdef __CLIB2__
+	if (GfxBase) {
+		CloseLibrary(GfxBase);
+		GfxBase = NULL;
+	}
+	#endif
 #endif
 }
 
