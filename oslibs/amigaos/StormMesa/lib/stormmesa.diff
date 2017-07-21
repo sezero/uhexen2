@@ -28,8 +28,8 @@ diff -urNp StormMesa/AMIGA/llibs/egcs/Makefile~ StormMesa/AMIGA/llibs/egcs/Makef
 +	$(ASM) $(ASM_OPTS) -o $@ $<
  
 -CFLAGS = -g -gstabs
-+CFLAGS = -g -noixemul
-+# -gstabs
++CFLAGS = -noixemul
++# -g -gstabs
 +# -mcrt=clib2
  
  # If your assembler generates a.out format, you must change the lines
