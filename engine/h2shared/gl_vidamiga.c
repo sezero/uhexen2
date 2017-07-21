@@ -1718,7 +1718,7 @@ void	VID_Shutdown (void)
 	MGLTerm();
 	#ifdef __CLIB2__
 	if (GfxBase) {
-		CloseLibrary(GfxBase);
+		CloseLibrary((struct Library *)GfxBase);
 		GfxBase = NULL;
 	}
 	#endif
@@ -1730,7 +1730,7 @@ void	VID_Shutdown (void)
 	}
 	#ifdef __CLIB2__
 	if (GfxBase) {
-		CloseLibrary(GfxBase);
+		CloseLibrary((struct Library *)GfxBase);
 		GfxBase = NULL;
 	}
 	#endif
