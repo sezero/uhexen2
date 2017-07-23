@@ -250,8 +250,12 @@ For AROS and MorphOS, gcc is used.  For AROS, only ABIv0 is tested: we
 build against AROS snapshot from 2014-07-26 (i.e. the ABI_V0 branch at
 aros svn: https://trac.aros.org/trac/browser/AROS/branches/ABI_V0 , or
 https://gitorious.org/aros/aros.git).  For MorphOS, any SDK should work.
-For AmigaOS 3.x (m68k-amigaos), gcc presented code generation issues in
-our experience: we tested builds with VBCC version 0.9e instead.
+For AmigaOS 3.x (m68k-amigaos), you can use gcc or vbcc:  vbcc-0.9e,
+vbcc-0.9f and gcc-2.95 were tested with the following cross-toolchains:
+https://github.com/cahirwpz/amigaos-cross-toolchain.git
+https://github.com/sezero/amigaos-cross-toolchain.git
+With gcc, builds against libnix were found to be broken: build against
+clib2 instead.
 
 
 Links:
