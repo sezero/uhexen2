@@ -16,7 +16,9 @@ This is a minor bug fix and maintenance release:
 
 - New AmigaOS MIDI driver using CAMD library.
 
-- Optimized C2P assembly for Amiga native chipset modes.
+- Several optimized assembler sources for m68k-amigaos.
+
+- Software renderer: Reduced some 2D overdraw.
 
 - Other minor fixes, tidy-ups, and protability tweaks.
 
