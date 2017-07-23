@@ -199,6 +199,17 @@ void R_AliasTransformAndProjectFinalVerts (finalvert_t *fv, stvert_t *pstverts);
 
 void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
 #endif
+#ifdef id68k
+void R_DrawSurfaceBlock16 (void);
+void R_DrawSurfaceBlock8_mip0 (void);
+void R_DrawSurfaceBlock8_mip1 (void);
+void R_DrawSurfaceBlock8_mip2 (void);
+void R_DrawSurfaceBlock8_mip3 (void);
+
+void R_AliasTransformAndProjectFinalVerts (finalvert_t *fv, stvert_t *pstverts);
+
+void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
+#endif
 
 __ASM_FUNCS_END
 

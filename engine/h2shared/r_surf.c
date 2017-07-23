@@ -41,7 +41,7 @@ unsigned char	*r_source, *r_sourcemax;
 
 static unsigned int	blocklights[18*18];
 
-#if !id386
+#if !id386 && !defined id68k
 static void R_DrawSurfaceBlock16 (void);
 static void R_DrawSurfaceBlock8_mip0 (void);
 static void R_DrawSurfaceBlock8_mip1 (void);
@@ -358,7 +358,7 @@ void R_DrawSurface (void)
 
 //=============================================================================
 
-#if	!id386
+#if	!id386 && !defined id68k
 
 /*
 ================

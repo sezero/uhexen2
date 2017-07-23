@@ -59,9 +59,9 @@ SDL_LIBS   = $(shell $(SDL_CONFIG) --libs 2> /dev/null)
 # any other cpu.)
 USE_X86_ASM=yes
 
-# use optimized assembly C2P for amiga native chipset modes
+# use optimized m68k assembly for amiga
 # requires vasm from http://sun.hasenbraten.de/vasm/
-USE_C2P=yes
+USE_M68K_ASM=yes
 
 # link to the opengl libraries at compile time? (defaults
 # to no, so the binaries will dynamically load the necessary
@@ -958,9 +958,9 @@ SYSLIBS += -lm
 
 # for C2P assembly:
 AS=vasm
-ASFLAGS = -Faout -m68020 -phxass -quiet
-ifeq ($(USE_C2P),yes)
-CPPFLAGS+= -DUSE_C2P
+ASFLAGS = -Faout -m68060 -phxass -quiet
+ifeq ($(USE_M68K_ASM),yes)
+CPPFLAGS+= -DUSE_C2P -Did68k=1
 endif
 
 # for extra missing headers
@@ -1436,8 +1436,8 @@ else
 SYSOBJ_INPUT := in_amiga.o
 SYSOBJ_GL_VID:= gl_vidamiga.o
 SYSOBJ_SOFT_VID:= vid_cgx.o
-ifeq ($(USE_C2P),yes)
-SYSOBJ_SOFT_VID+= c2p1x1_8_c5_030.o c2p1x1_8_c5_040.o c2p1x1_8_c5_bm.o c2p1x1_8_c5_bm_040.o
+ifeq ($(USE_M68K_ASM),yes)
+SYSOBJ_SOFT_VID+= c2p1x1_8_c5_bm.o c2p1x1_8_c5_bm_040.o amiga_d_68k.o amiga_d_polyse68k.o amiga_r_68k.o
 endif
 endif
 SYSOBJ_SYS := sys_amiga.o

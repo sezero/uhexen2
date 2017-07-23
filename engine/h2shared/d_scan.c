@@ -98,6 +98,7 @@ void D_WarpScreen (void)
 D_DrawTurbulent8Span
 =============
 */
+#ifndef id68k
 static void D_DrawTurbulent8Span (void)
 {
 	int		sturb, tturb;
@@ -111,6 +112,7 @@ static void D_DrawTurbulent8Span (void)
 		r_turb_t += r_turb_tstep;
 	} while (--r_turb_spancount > 0);
 }
+#endif
 
 static void D_DrawTurbulent8TSpan (void)
 {
@@ -136,7 +138,7 @@ static void D_DrawTurbulent8TSpan (void)
 	} while (--r_turb_spancount > 0);
 }
 
-void D_DrawTurbulent8TQuickSpan (void)
+static void D_DrawTurbulent8TQuickSpan (void)
 {
 	int		sturb, tturb;
 	unsigned char	temp;
@@ -321,6 +323,7 @@ void Turbulent8 (surf_t *s)
 D_DrawSpans8
 =============
 */
+#ifndef id68k
 void D_DrawSpans8 (espan_t *pspan)
 {
 	int				count, spancount;
@@ -446,6 +449,7 @@ void D_DrawSpans8 (espan_t *pspan)
 
 	} while ((pspan = pspan->pnext) != NULL);
 }
+#endif
 
 void D_DrawSpans8T (espan_t *pspan)
 {
@@ -594,6 +598,7 @@ void D_DrawSpans8T (espan_t *pspan)
 D_DrawZSpans
 =============
 */
+#ifndef id68k
 void D_DrawZSpans (espan_t *pspan)
 {
 	int			count, doublecount, izistep;
@@ -646,6 +651,7 @@ void D_DrawZSpans (espan_t *pspan)
 
 	} while ((pspan = pspan->pnext) != NULL);
 }
+#endif
 
 /*
 =============

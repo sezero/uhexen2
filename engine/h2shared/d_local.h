@@ -159,6 +159,11 @@ void R_TranPatch5 (void);
 void R_TranPatch6 (void);
 void R_TranPatch7 (void);
 #endif /* id386 */
+#ifdef id68k
+void D_SpriteDrawSpans (sspan_t *pspan);
+void D_DrawTurbulent8Span (void);
+void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage);
+#endif
 
 /* C funcs called from asm code: */
 void D_PolysetSetEdgeTable (void);

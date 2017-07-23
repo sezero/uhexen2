@@ -89,7 +89,9 @@ byte	*skinstart;
 #if !id386
 static spanpackage_t	spans[DPS_MAXSPANS + 1 + ((CACHE_SIZE - 1) / sizeof(spanpackage_t)) + 1];
 						/* one extra because of cache line pretouching */
+#ifndef id68k
 static void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage);
+#endif
 static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage);
@@ -104,6 +106,7 @@ static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage);
 D_PolysetDrawFinalVerts
 ================
 */
+#ifndef id68k
 static inline void do_PolysetDrawFinalVerts (finalvert_t *pv)
 {
 	int		z;
@@ -126,6 +129,7 @@ static inline void do_PolysetDrawFinalVerts (finalvert_t *pv)
 		}
 	}
 }
+#endif
 
 static inline void do_PolysetDrawFinalVertsT (finalvert_t *pv)
 {
@@ -252,12 +256,14 @@ static inline void do_PolysetDrawFinalVertsT5 (finalvert_t *pv)
 	}
 }
 
+#ifndef id68k
 void D_PolysetDrawFinalVerts (finalvert_t *pv1, finalvert_t *pv2, finalvert_t *pv3)
 {
 	do_PolysetDrawFinalVerts (pv1);
 	do_PolysetDrawFinalVerts (pv2);
 	do_PolysetDrawFinalVerts (pv3);
 }
+#endif
 
 void D_PolysetDrawFinalVertsT (finalvert_t *pv1, finalvert_t *pv2, finalvert_t *pv3)
 {
@@ -293,6 +299,7 @@ void D_PolysetDrawFinalVertsT5 (finalvert_t *pv1, finalvert_t *pv2, finalvert_t 
 D_PolysetRecursiveTriangle
 ================
 */
+#ifndef id68k
 static void D_PolysetRecursiveTriangle (int *lp1, int *lp2, int *lp3)
 {
 	int		*temp;
@@ -368,6 +375,7 @@ nodraw:
 	D_PolysetRecursiveTriangle (lp3, lp1, new_p);
 	D_PolysetRecursiveTriangle (lp3, new_p, lp2);
 }
+#endif
 
 static void D_PolysetRecursiveTriangleT (int *lp1, int *lp2, int *lp3)
 {
@@ -1271,6 +1279,7 @@ static void D_PolysetSetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
 D_PolysetCalcGradients
 ================
 */
+#ifndef id68k
 static void D_PolysetCalcGradients (int skin_width)
 {
 	float	xstepdenominv, ystepdenominv, t0, t1;
@@ -1315,6 +1324,7 @@ static void D_PolysetCalcGradients (int skin_width)
 
 	a_ststepxwhole = skin_width * (r_tstepx >> 16) + (r_sstepx >> 16);
 }
+#endif
 
 #endif	/* !id386 */
 
@@ -1343,6 +1353,7 @@ void InitGel (byte *palette)
 D_PolysetDrawSpans8
 ================
 */
+#ifndef id68k
 static void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage)
 {
 	int		lcount;
@@ -1407,6 +1418,7 @@ static void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage)
 		pspanpackage++;
 	} while (pspanpackage->count != -999999);
 }
+#endif
 
 static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage)
 {
