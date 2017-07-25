@@ -185,19 +185,36 @@ static int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 	unsigned int	scale;
 	int			maps;
 
+loc0: // surgeon: optimized recursion
+
 	if (node->contents < 0)
 		return -1;		// didn't hit anything
 
 // calculate mid point
 
-// FIXME: optimize for axial
+// optimization borrowed from LordHavoc (darkplaces engine)
 	plane = node->plane;
-	front = DotProduct (start, plane->normal) - plane->dist;
-	back = DotProduct (end, plane->normal) - plane->dist;
+	if (plane->type < 3)
+	{
+		front = start[plane->type] - plane->dist;
+		back = end[plane->type] - plane->dist;
+	}
+	else
+	{
+		front = DotProduct (start, plane->normal) - plane->dist;
+		back = DotProduct (end, plane->normal) - plane->dist;
+	}
 	side = front < 0;
 
-	if ( (back < 0) == side)
-		return RecursiveLightPoint (node->children[side], start, end);
+	/*if ( (back < 0) == side)
+		return RecursiveLightPoint (node->children[side], start, end);*/
+
+// optimization borrowed from LordHavoc (darkplaces engine)
+	if ((back < 0) == side)
+	{
+		node = node->children[side];
+		goto loc0;
+	}
 
 	frac = front / (front-back);
 	mid[0] = start[0] + (end[0] - start[0])*frac;
@@ -260,7 +277,12 @@ static int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 	}
 
 // go down back side
-	return RecursiveLightPoint (node->children[!side], mid, end);
+	//return RecursiveLightPoint (node->children[!side], mid, end);
+
+// surgeon: optimized recursion
+	node = node->children[!side];
+	VectorCopy(start, mid);
+	goto loc0;
 }
 
 int R_LightPoint (vec3_t p)
