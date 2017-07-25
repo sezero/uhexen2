@@ -277,8 +277,10 @@ void Sbar_Draw(void)
 	if (BarHeight > BAR_TOP_HEIGHT || m_state != m_none || scr_viewsize.integer > 100)
 		sb_updates = 0;
 
+#ifndef GLQUAKE
 	if (sb_updates >= vid.numpages)
 		return;
+#endif
 
 //	if (BarHeight == BarTargetHeight)
 //		return;

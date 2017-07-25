@@ -2001,6 +2001,7 @@ static void M_Quit_Key (int key)
 		{
 			Key_SetDest (key_game);
 			m_state = m_none;
+			Sbar_Changed ();
 		}
 		break;
 
