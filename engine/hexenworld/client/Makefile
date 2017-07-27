@@ -123,10 +123,9 @@ USE_CODEC_FLAC=no
 USE_CODEC_MP3=yes
 USE_CODEC_VORBIS=yes
 USE_CODEC_OPUS=no
-# either mikmod, or xmp (or modplug.)
+# either mikmod or xmp
 USE_CODEC_MIKMOD=no
 USE_CODEC_XMP=no
-USE_CODEC_MODPLUG=no
 USE_CODEC_UMX=no
 # either timidity (preferred) or wildmidi (both possible
 # but not needed nor meaningful)
@@ -217,7 +216,6 @@ USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_MIKMOD=no
 USE_CODEC_XMP=no
-USE_CODEC_MODPLUG=no
 USE_CODEC_UMX=no
 USE_CODEC_MP3=no
 USE_CODEC_VORBIS=no
@@ -332,10 +330,6 @@ CODEC_INC = -I$(OSLIBS)/macosx/codecs/include
 CODEC_LINK= -L$(OSLIBS)/macosx/codecs/lib
 endif
 ifeq ($(USE_CODEC_XMP),yes)
-CODEC_INC = -I$(OSLIBS)/macosx/codecs/include
-CODEC_LINK= -L$(OSLIBS)/macosx/codecs/lib
-endif
-ifeq ($(USE_CODEC_MODPLUG),yes)
 CODEC_INC = -I$(OSLIBS)/macosx/codecs/include
 CODEC_LINK= -L$(OSLIBS)/macosx/codecs/lib
 endif
@@ -488,10 +482,6 @@ ifeq ($(USE_CODEC_XMP),yes)
 CODEC_INC = -I$(OSLIBS)/os2/codecs/include
 CODEC_LINK= -L$(OSLIBS)/os2/codecs/lib
 endif
-ifeq ($(USE_CODEC_MODPLUG),yes)
-CODEC_INC = -I$(OSLIBS)/os2/codecs/include
-CODEC_LINK= -L$(OSLIBS)/os2/codecs/lib
-endif
 INCLUDES += $(CODEC_INC)
 LDFLAGS += $(CODEC_LINK)
 
@@ -513,7 +503,6 @@ USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_MIKMOD=no
 USE_CODEC_XMP=no
-USE_CODEC_MODPLUG=no
 USE_CODEC_UMX=no
 # no need for Opus on DOS
 USE_CODEC_OPUS=no
@@ -606,10 +595,6 @@ ifeq ($(USE_CODEC_XMP),yes)
 CODEC_INC = -I$(OSLIBS)/dos/codecs/include
 CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
 endif
-ifeq ($(USE_CODEC_MODPLUG),yes)
-CODEC_INC = -I$(OSLIBS)/dos/codecs/include
-CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
-endif
 INCLUDES += $(CODEC_INC)
 LDFLAGS += $(CODEC_LINK)
 
@@ -684,10 +669,6 @@ CODEC_INC = -I$(OSLIBS)/windows/codecs/include
 CODEC_LINK= -L$(OSLIBS)/windows/codecs/x86
 endif
 ifeq ($(USE_CODEC_XMP),yes)
-CODEC_INC = -I$(OSLIBS)/windows/codecs/include
-CODEC_LINK= -L$(OSLIBS)/windows/codecs/x86
-endif
-ifeq ($(USE_CODEC_MODPLUG),yes)
 CODEC_INC = -I$(OSLIBS)/windows/codecs/include
 CODEC_LINK= -L$(OSLIBS)/windows/codecs/x86
 endif
@@ -773,10 +754,6 @@ ifeq ($(USE_CODEC_XMP),yes)
 CODEC_INC = -I$(OSLIBS)/windows/codecs/include
 CODEC_LINK= -L$(OSLIBS)/windows/codecs/x64
 endif
-ifeq ($(USE_CODEC_MODPLUG),yes)
-CODEC_INC = -I$(OSLIBS)/windows/codecs/include
-CODEC_LINK= -L$(OSLIBS)/windows/codecs/x64
-endif
 INCLUDES += $(CODEC_INC)
 LDFLAGS += $(CODEC_LINK)
 
@@ -816,7 +793,6 @@ USE_CODEC_MP3=yes
 USE_CODEC_OPUS=no
 USE_CODEC_MIKMOD=no
 USE_CODEC_XMP=no
-USE_CODEC_MODPLUG=no
 USE_CODEC_UMX=no
 
 ifeq ($(USE_CODEC_MP3),yes)
@@ -884,7 +860,6 @@ GL_LINK=-lGL
 USE_CODEC_FLAC=no
 USE_CODEC_OPUS=no
 USE_CODEC_MIKMOD=no
-USE_CODEC_MODPLUG=no
 USE_CODEC_UMX=no
 # both WildMidi and the local timidity work nice on AROS
 USE_CODEC_WILDMIDI=no
@@ -988,7 +963,6 @@ LINK_GL_LIBS=yes
 USE_CODEC_FLAC=no
 USE_CODEC_OPUS=no
 USE_CODEC_MIKMOD=no
-USE_CODEC_MODPLUG=no
 USE_CODEC_UMX=no
 #use integer-only Tremor as Vorbis decoder for m68k-amigaos
 VORBISLIB=tremor
@@ -1079,10 +1053,6 @@ endif
 ifeq ($(USE_CODEC_XMP),yes)
 CPPFLAGS+= -DUSE_CODEC_XMP
 LDFLAGS+=  -lxmp
-endif
-ifeq ($(USE_CODEC_MODPLUG),yes)
-CPPFLAGS+= -DUSE_CODEC_MODPLUG
-LDFLAGS+=  -lmodplug
 endif
 ifeq ($(USE_CODEC_UMX),yes)
 CPPFLAGS+= -DUSE_CODEC_UMX
@@ -1226,7 +1196,6 @@ MUSIC_OBJS:= bgmusic.o \
 	snd_opus.o \
 	$(mp3_obj) \
 	snd_mikmod.o \
-	snd_modplug.o \
 	snd_xmp.o \
 	snd_umx.o \
 	snd_timidity.o \
