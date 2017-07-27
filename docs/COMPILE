@@ -224,8 +224,8 @@ Cross-compiling for DOS on Windows in a command console or under MSYS
 should be possible too: remember adding DOSBUILD=1 to your environment,
 like above.
 
-Compilers other than djgpp, such as OpenWatcom, most probably won't work
-and would need specifically porting to.
+Compilers other than djgpp, such as Open Watcom, won't work and need
+specifically porting to.
 
 CWSDPMI.EXE is needed at runtime: use the "0.90+ r5" or a newer version.
 I've been successfully using the R5 "2008 refresh" (21 Aug.2008) as well
@@ -235,12 +235,13 @@ as the R7 (07 Jan. 2010) versions for quite some time.
 Compiling for OS/2:
 ========================================
 
-You need OpenWatcom, currently at version 1.9.0 which is the version I
-used myself.  Change into the relevant directory and run:
+You need Open Watcom: The latest official release is 1.9.0 which is the
+version I used myself.  Newer snapshots or the unofficial V2 fork work
+just as well.  Change into the relevant directory and run:
 	wmake -f Makefile.os2
 
-The makefiles work both when using on OS/2 natively and also when cross
-compiling on linux.  The source builds and runs with EMX too.
+The Watcom makefiles work both when using on OS/2 natively and also when
+cross compiling on linux.  The source builds and runs with EMX/GCC too.
 
 
 Compiling for Amiga variants:
@@ -254,8 +255,8 @@ For AmigaOS 3.x (m68k-amigaos), you can use gcc or vbcc:  vbcc-0.9e,
 vbcc-0.9f and gcc-2.95 were tested with the following cross-toolchains:
 https://github.com/cahirwpz/amigaos-cross-toolchain.git
 https://github.com/sezero/amigaos-cross-toolchain.git
-With gcc, builds against libnix were found to be broken: build against
-clib2 instead.
+With gcc, builds against libnix were found to be broken (stdio issues):
+build against clib2, instead.
 
 
 Links:
@@ -282,4 +283,7 @@ MinGW/MSYS homepage	: http://mingw.org/
 			  http://sourceforge.net/projects/mingw/
 MinGW-w64 homepage	: http://mingw-w64.sourceforge.net/
 			  http://sourceforge.net/projects/mingw-w64/
+Open Watcom		: http://www.openwatcom.org/
+			  https://efbe.musca.uberspace.de/
+			  https://github.com/open-watcom/
 
