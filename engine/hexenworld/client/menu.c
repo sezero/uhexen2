@@ -2736,7 +2736,7 @@ void M_Draw (void)
 		else
 		{
 			Draw_FadeScreen ();
-			if (scr_viewsize.integer < 100)
+			if (scr_viewsize.integer < 110)
 				scr_fullupdate = 0;
 		}
 	}
