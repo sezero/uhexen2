@@ -605,6 +605,8 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 	int			side;
 	float		midf;
 
+loc0: // optimized recursion
+
 // check for empty
 	if (num < 0)
 	{
@@ -644,9 +646,17 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 
 #if 1
 	if (t1 >= 0 && t2 >= 0)
-		return SV_RecursiveHullCheck (hull, node->children[0], p1f, p2f, p1, p2, trace);
+	{
+		//return SV_RecursiveHullCheck (hull, node->children[0], p1f, p2f, p1, p2, trace);
+		num = node->children[0];
+		goto loc0;
+	}
 	if (t1 < 0 && t2 < 0)
-		return SV_RecursiveHullCheck (hull, node->children[1], p1f, p2f, p1, p2, trace);
+	{
+		//return SV_RecursiveHullCheck (hull, node->children[1], p1f, p2f, p1, p2, trace);
+		num = node->children[1];
+		goto loc0;
+	}
 #else
 	if ( (t1 >= DIST_EPSILON && t2 >= DIST_EPSILON) || (t2 > t1 && t1 >= 0) )
 		return SV_RecursiveHullCheck (hull, node->children[0], p1f, p2f, p1, p2, trace);
@@ -683,8 +693,14 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 #endif
 
 	if (SV_HullPointContents (hull, node->children[side^1], mid) != CONTENTS_SOLID)
+	{
 		// go past the node
-		return SV_RecursiveHullCheck (hull, node->children[side^1], midf, p2f, mid, p2, trace);
+		//return SV_RecursiveHullCheck (hull, node->children[side^1], midf, p2f, mid, p2, trace);
+		num = node->children[side^1];
+		p1f = midf;
+		VectorCopy(p1, mid);
+		goto loc0;
+	}
 
 	if (trace->allsolid)
 		return false;		// never got out of the solid area
@@ -837,6 +853,8 @@ static void SV_ClipToLinks (areanode_t *node, moveclip_t *clip)
 	edict_t		*touch;
 	trace_t		trace;
 
+loc0: // optimized recursion
+
 // touch linked edicts
 	for (l = node->solid_edicts.next ; l != &node->solid_edicts ; l = next)
 	{
@@ -899,9 +917,18 @@ static void SV_ClipToLinks (areanode_t *node, moveclip_t *clip)
 		return;
 
 	if ( clip->boxmaxs[node->axis] > node->dist )
-		SV_ClipToLinks ( node->children[0], clip );
+	{
+		//SV_ClipToLinks ( node->children[0], clip );
+		node = node->children[0];
+		goto loc0;
+	}
 	if ( clip->boxmins[node->axis] < node->dist )
-		SV_ClipToLinks ( node->children[1], clip );
+	{
+		//SV_ClipToLinks ( node->children[1], clip );
+		node = node->children[1];
+		goto loc0;
+	}
+
 }
 
 
