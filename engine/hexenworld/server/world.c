@@ -919,16 +919,17 @@ loc0: // optimized recursion
 	if ( clip->boxmaxs[node->axis] > node->dist )
 	{
 		//SV_ClipToLinks ( node->children[0], clip );
+		if (clip->boxmins[node->axis] < node->dist)
+			SV_ClipToLinks(node->children[1], clip);
 		node = node->children[0];
 		goto loc0;
 	}
-	if ( clip->boxmins[node->axis] < node->dist )
+	else if ( clip->boxmins[node->axis] < node->dist )
 	{
 		//SV_ClipToLinks ( node->children[1], clip );
 		node = node->children[1];
 		goto loc0;
 	}
-
 }
 
 
