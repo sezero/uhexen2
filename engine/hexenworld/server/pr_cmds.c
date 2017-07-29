@@ -1009,18 +1009,18 @@ static void PF_break (void)
 //	PR_RunError ("break statement");
 }
 
-static void PR_SetTrace (trace_t trace)
+static void PR_SetTrace (trace_t *trace)
 {
-	*sv_globals.trace_allsolid = trace.allsolid;
-	*sv_globals.trace_startsolid = trace.startsolid;
-	*sv_globals.trace_fraction = trace.fraction;
-	*sv_globals.trace_inwater = trace.inwater;
-	*sv_globals.trace_inopen = trace.inopen;
-	VectorCopy (trace.endpos, *sv_globals.trace_endpos);
-	VectorCopy (trace.plane.normal, *sv_globals.trace_plane_normal);
-	*sv_globals.trace_plane_dist =  trace.plane.dist;
-	if (trace.ent)
-		*sv_globals.trace_ent = EDICT_TO_PROG(trace.ent);
+	*sv_globals.trace_allsolid = trace->allsolid;
+	*sv_globals.trace_startsolid = trace->startsolid;
+	*sv_globals.trace_fraction = trace->fraction;
+	*sv_globals.trace_inwater = trace->inwater;
+	*sv_globals.trace_inopen = trace->inopen;
+	VectorCopy (trace->endpos, *sv_globals.trace_endpos);
+	VectorCopy (trace->plane.normal, *sv_globals.trace_plane_normal);
+	*sv_globals.trace_plane_dist =  trace->plane.dist;
+	if (trace->ent)
+		*sv_globals.trace_ent = EDICT_TO_PROG(trace->ent);
 	else
 		*sv_globals.trace_ent = EDICT_TO_PROG(sv.edicts);
 }
@@ -1054,7 +1054,7 @@ static void PF_traceline (void)
 	trace = SV_Move (v1, vec3_origin, vec3_origin, v2, nomonsters, ent);
 	ent->v.hull = save_hull;
 
-	PR_SetTrace (trace);
+	PR_SetTrace (&trace);
 
 }
 
@@ -1072,7 +1072,7 @@ static void PF_TraceToss (void)
 
 	trace = SV_Trace_Toss (ent, ignore);
 
-	PR_SetTrace (trace);
+	PR_SetTrace (&trace);
 }
 #endif	/* QUAKE2 */
 
@@ -1107,7 +1107,7 @@ static void PF_tracearea (void)
 	trace = SV_Move (v1, mins, maxs, v2, nomonsters, ent);
 	ent->v.hull = save_hull;
 
-	PR_SetTrace (trace);
+	PR_SetTrace (&trace);
 }
 
 /*
