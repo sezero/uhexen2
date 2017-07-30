@@ -247,10 +247,13 @@ cross compiling on linux.  The source builds and runs with EMX/GCC too.
 Compiling for Amiga variants:
 ========================================
 
-For AROS and MorphOS, gcc is used.  For AROS, only ABIv0 is tested: we
-build against AROS snapshot from 2014-07-26 (i.e. the ABI_V0 branch at
-aros svn: https://trac.aros.org/trac/browser/AROS/branches/ABI_V0 , or
-https://gitorious.org/aros/aros.git).  For MorphOS, any SDK should work.
+For MorphOS, any SDK should work.
+
+For AROS, only ABIv0 is tested: we build against AROS snapshot from
+2014-07-26, i.e. the ABI_V0 branch at aros svn:
+https://trac.aros.org/trac/browser/AROS/branches/ABI_V0
+or https://gitorious.org/aros/aros.git
+
 For AmigaOS 3.x (m68k-amigaos), you can use gcc or vbcc:  vbcc-0.9e,
 vbcc-0.9f and gcc-2.95 were tested with the following cross-toolchains:
 https://github.com/cahirwpz/amigaos-cross-toolchain.git
