@@ -962,6 +962,10 @@ int main (int argc, char **argv)
 
 	Host_Init();
 
+	/* running from Workbench */
+	if (!isDedicated && argc == 0)
+		Cvar_SetQuick(&sys_nostdout, "1");
+
 	oldtime = Sys_DoubleTime ();
 
 	/* main window message loop */
