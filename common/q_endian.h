@@ -217,6 +217,9 @@
 
 #endif /* ! ENDIAN_RUNTIME_DETECT */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 extern int host_byteorder;
 extern int host_bigendian; /* bool */
@@ -284,4 +287,8 @@ float m68k_swap32f(__reg("fp0") float) =
 
 #endif /* runtime det */
 
-#endif   /* QENDIAN_H */
+#ifdef __cplusplus
+}
+#endif /* */
+
+#endif /* QENDIAN_H */

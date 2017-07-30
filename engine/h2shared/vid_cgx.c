@@ -81,13 +81,15 @@ static c2p_init_func c2p_init;
 static c2p_write_func c2p_write;
 #endif
 
+__ASM_FUNCS_BEGIN
 extern void c2p1x1_8_c5_030_smcinit(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d3, WORD scroffsy), REG(d5, LONG bplsize));
 extern void c2p1x1_8_c5_030(REG(a0, APTR c2pscreen), REG(a1, APTR bitplanes));
 extern void c2p1x1_8_c5_040_init(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d3, WORD scroffsy), REG(d5, LONG bplsize));
 extern void c2p1x1_8_c5_040(REG(a0, APTR c2pscreen), REG(a1, APTR bitplanes));
 extern void c2p1x1_8_c5_bm(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d2, WORD offsx), REG(d3, WORD offsy), REG(a0, APTR chunkyscreen), REG(a1, struct BitMap *bitmap));
 extern void c2p1x1_8_c5_bm_040(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d2, WORD offsx), REG(d3, WORD offsy), REG(a0, APTR chunkyscreen), REG(a1, struct BitMap *bitmap));
-#endif
+__ASM_FUNCS_END
+#endif /* USE_C2P */
 #endif
 
 /* ----------------------------------------- */

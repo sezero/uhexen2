@@ -98,11 +98,24 @@ void Sys_SendKeyEvents (void);
 char *Sys_GetClipboardData (void);
 
 
+/* x86 asm support */
 #if defined(USE_INTEL_ASM) && \
    (defined(__i386) || defined(__i386__) || defined(__386__) || defined(_M_IX86) || defined(__I386__))
-
 #	define	id386		1
-#	define	UNALIGNED_OK	1	/* set to 0 if unaligned accesses are not supported */
+#else	/* not i386 or no intel asm */
+#	define	id386		0
+#endif
+
+/* m68k asm support */
+#if defined(USE_M68K_ASM) && \
+   (defined(__mc68000__) || defined(__M68K__) || defined(__m68k__) || defined(__MC68K__))
+#	define	id68k		1
+#else /* !m68k or no m68k asm */
+#	define	id68k		0
+#endif
+
+/* asm linkage */
+#if id386
 #   if defined(__cplusplus)
 #	define	__ASM_FUNCS_BEGIN	extern "C" {
 #	define	__ASM_FUNCS_END			}
@@ -110,7 +123,22 @@ char *Sys_GetClipboardData (void);
 #	define	__ASM_FUNCS_BEGIN
 #	define	__ASM_FUNCS_END
 #   endif
-/* fpu stuff */
+
+#elif id68k
+#   if defined(__cplusplus)
+#	define	__ASM_FUNCS_BEGIN	extern "C" {
+#	define	__ASM_FUNCS_END			}
+#   else
+#	define	__ASM_FUNCS_BEGIN
+#	define	__ASM_FUNCS_END
+#   endif
+
+#else
+#	define	__ASM_FUNCS_BEGIN
+#	define	__ASM_FUNCS_END
+#endif
+
+#if id386 /* fpu stuff with x86 asm */
 __ASM_FUNCS_BEGIN
 void	MaskExceptions (void);
 void	Sys_SetFPCW (void);
@@ -119,27 +147,20 @@ void	Sys_HighFPPrecision (void);
 void	Sys_PopFPCW (void);
 void	Sys_PushFPCW_SetHigh (void);
 __ASM_FUNCS_END
-
-#else	/* not i386 or no intel asm */
-
-#	define	id386		0
-#	define	UNALIGNED_OK	0
-#	define	__ASM_FUNCS_BEGIN
-#	define	__ASM_FUNCS_END
-#	define	MaskExceptions()	do {} while (0)
-#	define	Sys_SetFPCW()		do {} while (0)
-#	define	Sys_LowFPPrecision()	do {} while (0)
-#	define	Sys_HighFPPrecision()	do {} while (0)
-#	define	Sys_PopFPCW()		do {} while (0)
-#	define	Sys_PushFPCW_SetHigh()	do {} while (0)
+#else
+#define MaskExceptions()	do {} while (0)
+#define Sys_SetFPCW()		do {} while (0)
+#define Sys_LowFPPrecision()	do {} while (0)
+#define Sys_HighFPPrecision()	do {} while (0)
+#define Sys_PopFPCW()		do {} while (0)
+#define Sys_PushFPCW_SetHigh()	do {} while (0)
 #endif
 
-#if defined(USE_M68K_ASM) && \
-   (defined(__mc68000__) || defined(__M68K__) || defined(__m68k__) || defined(__MC68K__))
-#	define	id68k		1
-
-#else /* !m68k or no m68k asm */
-#	define	id68k		0
+/* set UNALIGNED_OK 0 if unaligned accesses are not supported */
+#if defined(__i386) || defined(__i386__) || defined(__386__) || defined(_M_IX86) || defined(__I386__)
+#	define	UNALIGNED_OK	1
+#else
+#	define	UNALIGNED_OK	0
 #endif
 
 #endif	/* HX2_SYS_H */
