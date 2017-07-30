@@ -131,7 +131,8 @@ struct Global
 
 	ULONG lastclock;
 	//ULONG abstimeHI, abstimeLO;
-	uint64_t abstime;
+	//uint64_t abstime;
+	double abstime;
 
 	//struct DecTrack *pDTrack[MAXTRAX];
 	struct DecTrack dtrack[MAXTRAX];
@@ -361,7 +362,7 @@ qboolean MIDI_Init(void)
 
 	if (!MIDI_GetDeviceName(linkName, sizeof(linkName)))
 	{
-		Con_Printf ("No output device found\n");
+		Con_Printf ("No output MIDI device found\n");
 		MIDI_Cleanup();
 		return false;
 	}
@@ -701,7 +702,8 @@ static void CollectEvents(struct Global *glob)
 	glob->buftempo[mswitch] = nexttempo;
 
 	//AddAbsTime(&glob->abstimeLO, &glob->abstimeHI, glob->tempo, delta, glob->division);
-	glob->abstime += ((uint64_t)glob->tempo*delta)/glob->division;
+	//glob->abstime += ((uint64_t)glob->tempo*delta)/glob->division;
+	glob->abstime += ((double)glob->tempo*delta)/glob->division;
 	//glob->fillclock[mswitch] = CalcFillClock(glob->abstimeLO, glob->abstimeHI, 833);
 	glob->fillclock[mswitch] = (ULONG)(glob->abstime / 833);
 
