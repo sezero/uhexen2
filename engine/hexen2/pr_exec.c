@@ -524,11 +524,9 @@ void PR_ExecuteProgram (func_t fnum)
 	case OP_CALL4:
 	case OP_CALL3:
 	case OP_CALL2:	// Copy second arg to shared space
-		//VectorCopy(opc->vector, G_VECTOR(OFS_PARM1));
 		vecptr = G_VECTOR(OFS_PARM1);
 		VectorCopy(opc->vector, vecptr);
 	case OP_CALL1:	// Copy first arg to shared space
-		//VectorCopy(opb->vector, G_VECTOR(OFS_PARM0));
 		vecptr = G_VECTOR(OFS_PARM0);
 		VectorCopy(opb->vector, vecptr);
 	case OP_CALL0:
@@ -563,14 +561,9 @@ void PR_ExecuteProgram (func_t fnum)
 		pr_xfunction->profile += profile - startprofile;
 		startprofile = profile;
 		pr_xstatement = st - pr_statements;
-		/*
-		pr_globals[OFS_RETURN] = pr_globals[st->a];
-		pr_globals[OFS_RETURN + 1] = pr_globals[st->a + 1];
-		pr_globals[OFS_RETURN + 2] = pr_globals[st->a + 2];
-		*/
 		*retptr++ = *valptr++;
 		*retptr++ = *valptr++;
-		*retptr = *valptr;
+		*retptr   = *valptr;
 		st = &pr_statements[LeaveFunction()];
 		if (pr_depth == exitdepth)
 		{ // Done
