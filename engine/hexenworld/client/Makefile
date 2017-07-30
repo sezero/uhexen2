@@ -933,11 +933,11 @@ CFLAGS  += $(CRT_FLAGS) -m68060 -m68881
 LDFLAGS += $(CRT_FLAGS) -m68060 -m68881
 SYSLIBS += -lm
 
-# for C2P assembly:
+# for M68K assembly:
 AS=vasm
 ASFLAGS = -Faout -m68060 -phxass -quiet
 ifeq ($(USE_M68K_ASM),yes)
-CPPFLAGS+= -DUSE_C2P -Did68k=1
+CPPFLAGS+= -Did68k=1
 endif
 
 # for extra missing headers
@@ -1176,10 +1176,23 @@ SOUND_ASM = snd_mixa.o
 
 else
 
+# M68K asm objects
+ifeq ($(USE_M68K_ASM),yes)
+SOFT_ASM = \
+	amiga_d_68k.o \
+	amiga_d_polyse68k.o \
+	amiga_r_68k.o
+
+COMMON_ASM =
+SOUND_ASM =
+
+else
+
 SOFT_ASM =
 COMMON_ASM =
 SOUND_ASM =
 
+endif
 endif
 
 # Sound objects
@@ -1408,7 +1421,9 @@ SYSOBJ_INPUT := in_amiga.o
 SYSOBJ_GL_VID:= gl_vidamiga.o
 SYSOBJ_SOFT_VID:= vid_cgx.o
 ifeq ($(USE_M68K_ASM),yes)
-SYSOBJ_SOFT_VID+= c2p1x1_8_c5_bm.o c2p1x1_8_c5_bm_040.o amiga_d_68k.o amiga_d_polyse68k.o amiga_r_68k.o
+CPPFLAGS+= -DUSE_C2P
+SYSOBJ_SOFT_VID+= c2p1x1_8_c5_bm.o c2p1x1_8_c5_bm_040.o
+## c2p1x1_8_c5_030.o c2p1x1_8_c5_040.o
 endif
 endif
 SYSOBJ_SYS := sys_amiga.o
