@@ -22,6 +22,8 @@ This is a minor bug fix and maintenance release:
 
 - Software renderer: Reduced some 2D overdraw. Faster model lighting.
 
+- Recursion optimizations to server world query procedures.
+
 - Other minor fixes, tidy-ups, and protability tweaks.
 
 
