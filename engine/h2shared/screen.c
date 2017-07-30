@@ -816,7 +816,7 @@ static void SCR_DrawConsole (void)
 	if (scr_con_current)
 	{
 		if (m_state != m_none)
-			return; // don't draw the console behind full-screen menus
+			return; // don't draw the console behind full-screen menus.
 		scr_copyeverything = 1;
 		Con_DrawConsole (scr_con_current);
 		clearconsole = 0;
