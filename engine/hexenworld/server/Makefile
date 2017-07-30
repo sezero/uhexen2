@@ -63,7 +63,9 @@ CFLAGS += -g -Wall
 CFLAGS += $(CPUFLAGS)
 ifndef DEBUG
 # optimization flags
-CFLAGS += -O2 -DNDEBUG=1 -ffast-math -fomit-frame-pointer
+CFLAGS += -O2 -DNDEBUG=1 -ffast-math
+# NOTE: -fomit-frame-pointer is broken with ancient gcc versions!!
+CFLAGS += -fomit-frame-pointer
 endif
 
 CPPFLAGS=

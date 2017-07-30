@@ -1,4 +1,4 @@
-# Quick GNU Makefile for building a static timidity library using GCC.
+# GNU Makefile for building a static timidity library using GCC.
 # $Id$
 #
 # To cross-compile for Win32 on Unix: either pass the W32BUILD=1
@@ -41,7 +41,9 @@ CPUFLAGS=$(CPU_X86)
 CFLAGS += -g -Wall -DTIMIDITY_BUILD=1 -DTIMIDITY_STATIC=1
 CFLAGS += $(CPUFLAGS)
 ifndef DEBUG
-CFLAGS += -O2 -DNDEBUG=1 -ffast-math -fomit-frame-pointer
+CFLAGS += -O2 -DNDEBUG=1 -ffast-math
+# NOTE: -fomit-frame-pointer is broken with ancient gcc versions!!
+CFLAGS += -fomit-frame-pointer
 endif
 #CFLAGS += -DTIMIDITY_DEBUG
 INCLUDES = -I. -I$(UHEXEN2_SHARED)

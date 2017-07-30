@@ -1,4 +1,4 @@
-# GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
+# GNU Makefile for Hexen II dedicated server (h2ded) using GCC.
 # $Id$
 #
 # Remember to "make clean" between different types of builds or targets.
@@ -70,7 +70,9 @@ CFLAGS += -g -Wall
 CFLAGS += $(CPUFLAGS)
 ifndef DEBUG
 # optimization flags
-CFLAGS += -O2 -DNDEBUG=1 -ffast-math -fomit-frame-pointer
+CFLAGS += -O2 -DNDEBUG=1 -ffast-math
+# NOTE: -fomit-frame-pointer is broken with ancient gcc versions!!
+CFLAGS += -fomit-frame-pointer
 endif
 
 CPPFLAGS=
