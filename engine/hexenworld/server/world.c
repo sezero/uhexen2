@@ -665,7 +665,8 @@ loc0: // optimized recursion
 #endif
 
 // put the crosspoint DIST_EPSILON pixels on the near side
-	if (t1 < 0)
+	side = (t1 < 0);
+	if (side)
 		frac = (t1 + DIST_EPSILON)/(t1-t2);
 	else
 		frac = (t1 - DIST_EPSILON)/(t1-t2);
@@ -677,8 +678,6 @@ loc0: // optimized recursion
 	midf = p1f + (p2f - p1f)*frac;
 	for (i = 0; i < 3; i++)
 		mid[i] = p1[i] + frac*(p2[i] - p1[i]);
-
-	side = (t1 < 0);
 
 // move up to the node
 	if (!SV_RecursiveHullCheck (hull, node->children[side], p1f, midf, p1, mid, trace) )
@@ -692,15 +691,10 @@ loc0: // optimized recursion
 	}
 #endif
 
+	// LordHavoc: this recursion can not be optimized because mid would need to be duplicated on a stack
 	if (SV_HullPointContents (hull, node->children[side^1], mid) != CONTENTS_SOLID)
-	{
 		// go past the node
-		//return SV_RecursiveHullCheck (hull, node->children[side^1], midf, p2f, mid, p2, trace);
-		num = node->children[side^1];
-		p1f = midf;
-		VectorCopy(p1, mid);
-		goto loc0;
-	}
+		return SV_RecursiveHullCheck (hull, node->children[side^1], midf, p2f, mid, p2, trace);
 
 	if (trace->allsolid)
 		return false;		// never got out of the solid area
