@@ -287,6 +287,7 @@ static void SV_TouchLinks (edict_t *ent, areanode_t *node)
 	edict_t		*touch;
 	int			old_self, old_other;
 
+loc0:
 	// touch linked edicts
 	sv_link_next = &lnext;
 	for (l = node->trigger_edicts.next ; l != &node->trigger_edicts ; l = lnext)
@@ -330,10 +331,24 @@ static void SV_TouchLinks (edict_t *ent, areanode_t *node)
 	if (node->axis == -1)
 		return;
 
-	if ( ent->v.absmax[node->axis] > node->dist )
-		SV_TouchLinks ( ent, node->children[0] );
-	if ( ent->v.absmin[node->axis] < node->dist )
-		SV_TouchLinks ( ent, node->children[1] );
+	// LordHavoc: optimized recursion
+	//if (ent->v.absmax[node->axis] > node->dist) SV_TouchLinks (ent, node->children[0]);
+	//if (ent->v.absmin[node->axis] < node->dist) SV_TouchLinks (ent, node->children[1]);
+	if (ent->v.absmax[node->axis] > node->dist)
+	{
+		if (ent->v.absmin[node->axis] < node->dist)
+			SV_TouchLinks(ent, node->children[1]); // order reversed to reduce code
+		node = node->children[0];
+		goto loc0;
+	}
+	else
+	{
+		if (ent->v.absmin[node->axis] < node->dist)
+		{
+			node = node->children[1];
+			goto loc0;
+		}
+	}
 }
 
 
@@ -350,6 +365,7 @@ static void SV_FindTouchedLeafs (edict_t *ent, mnode_t *node)
 	int			sides;
 	int			leafnum;
 
+loc0:
 	if (node->contents == CONTENTS_SOLID)
 		return;
 
@@ -374,11 +390,23 @@ static void SV_FindTouchedLeafs (edict_t *ent, mnode_t *node)
 	sides = BOX_ON_PLANE_SIDE(ent->v.absmin, ent->v.absmax, splitplane);
 
 	// recurse down the contacted sides
-	if (sides & 1)
-		SV_FindTouchedLeafs (ent, node->children[0]);
-
-	if (sides & 2)
-		SV_FindTouchedLeafs (ent, node->children[1]);
+	// LordHavoc: optimized recursion
+	//if (sides & 1) SV_FindTouchedLeafs (ent, node->children[0]);
+	//if (sides & 2) SV_FindTouchedLeafs (ent, node->children[1]);
+	switch (sides)
+	{
+	case 1:
+		node = node->children[0];
+		goto loc0;
+	case 2:
+		node = node->children[1];
+		goto loc0;
+	default: // 3
+		if (node->children[0]->contents != CONTENTS_SOLID)
+			SV_FindTouchedLeafs (ent, node->children[0]);
+		node = node->children[1];
+		goto loc0;
+	}
 }
 
 /*
