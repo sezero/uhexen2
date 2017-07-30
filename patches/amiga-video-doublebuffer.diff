@@ -3,29 +3,32 @@ Initial implementation for Amiga CyberGraphx double buffered video
 
 - screenshot freezes the game.
 - enabling r_speeds or r_dspeeds freezes the game.
+- extensive re-testing needed in uhexen2-v1.5.9 .
 
 Index: engine/h2shared/vid_cgx.c
 ===================================================================
---- engine/h2shared/vid_cgx.c	(revision 5690)
+--- engine/h2shared/vid_cgx.c	(revision 5950)
 +++ engine/h2shared/vid_cgx.c	(working copy)
-@@ -59,6 +59,14 @@
- #ifdef PLATFORM_AMIGAOS3
- struct Library *CyberGfxBase = NULL;
+@@ -92,6 +92,16 @@
+ #endif /* USE_C2P */
  #endif
+ 
++/* CyberGraphx double buffer support */
 +static struct ScreenBuffer *screenbuffers[2] = {NULL, NULL};
 +static struct MsgPort *writeport = NULL;
 +static struct MsgPort *changeport = NULL;
 +static int currentbuffer = 0;
 +static qboolean safetochange = true;
 +static qboolean safetowrite = true;
-+static APTR handle = NULL;
 +static int lockcount;
- 
++static APTR lockhandle = NULL;
++
  /* ----------------------------------------- */
  
-@@ -427,6 +435,35 @@ static void VID_DestroyWindow (void)
- 		pointermem = NULL;
- 	}*/
+ static unsigned char	vid_curpal[256*3];	/* save for mode changes */
+@@ -530,6 +540,35 @@ static void VID_DestroyWindow (void)
+ 	}
+ #endif
  
 +	if (changeport && !safetochange)
 +		while (!GetMsg(changeport))
@@ -59,7 +62,7 @@ Index: engine/h2shared/vid_cgx.c
  	if (screen)
  	{
  		CloseScreen(screen);
-@@ -467,6 +504,8 @@ static qboolean VID_SetMode (int modenum
+@@ -570,6 +609,8 @@ static qboolean VID_SetMode (int modenum
  
  	flags = WFLG_ACTIVATE | WFLG_RMBTRAP;
  
@@ -68,12 +71,11 @@ Index: engine/h2shared/vid_cgx.c
  	if (vid_config_fscr.integer)
  	{
  		ULONG ModeID;
-@@ -484,6 +523,46 @@ static qboolean VID_SetMode (int modenum
- 			SA_Depth, 8,
+@@ -590,6 +631,46 @@ static qboolean VID_SetMode (int modenum
  			SA_Quiet, TRUE,
  			TAG_DONE);
-+
-+		if (screen &&
+ 
++		if (CyberGfxBase && screen &&
 +			GetCyberMapAttr(screen->RastPort.BitMap, CYBRMATTR_DEPTH) == 8 &&
 +			GetCyberMapAttr(screen->RastPort.BitMap, CYBRMATTR_ISLINEARMEM))
 +		{
@@ -112,16 +114,17 @@ Index: engine/h2shared/vid_cgx.c
 +				screenbuffers[0] = screenbuffers[1] = NULL;
 +			}
 +		}
- 	}
- 
- 	if (screen)
-@@ -513,12 +592,13 @@ static qboolean VID_SetMode (int modenum
++
+ #ifdef USE_C2P
+ 		currentBitMap = 0;
+ 		bm = screen->RastPort.BitMap;
+@@ -636,12 +717,13 @@ static qboolean VID_SetMode (int modenum
  		if (pointermem) {*/
  			vid.height = vid.conheight = modelist[modenum].height;
  			vid.rowbytes = vid.conrowbytes = vid.width = vid.conwidth = modelist[modenum].width;
--			buffer = (pixel_t *) AllocVec(vid.width * vid.height, MEMF_ANY);
+-			buffer = (pixel_t *) malloc(vid.width * vid.height);
 +			if (vid.numpages == 1)
-+				buffer = (pixel_t *) AllocVec(vid.width * vid.height, MEMF_ANY);
++				buffer = (pixel_t *) malloc(vid.width * vid.height);
  
 -			if (buffer)
 +			if (buffer || vid.numpages > 1)
@@ -132,7 +135,7 @@ Index: engine/h2shared/vid_cgx.c
  				vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
  
  				if (VID_AllocBuffers (vid.width, vid.height))
-@@ -607,10 +687,58 @@
+@@ -735,10 +817,58 @@
  
  void VID_LockBuffer(void)
  {
@@ -150,12 +153,12 @@ Index: engine/h2shared/vid_cgx.c
 +
 +	safetowrite = true;
 +
-+	handle = LockBitMapTags(screenbuffers[currentbuffer^1]->sb_BitMap,
++	lockhandle = LockBitMapTags(screenbuffers[currentbuffer^1]->sb_BitMap,
 +		LBMI_BYTESPERROW, (IPTR)&vid.rowbytes,
 +		LBMI_BASEADDRESS, (IPTR)&vid.buffer,
 +		TAG_DONE);
 +
-+	if (!handle)
++	if (!lockhandle)
 +		Sys_Error ("%s: failed LockBitMapTags()", __thisfunc__);
 +
 +	// Update surface pointer for linear access modes
@@ -186,15 +189,15 @@ Index: engine/h2shared/vid_cgx.c
 +	if (lockcount < 0)
 +		Sys_Error ("Unbalanced unlock");
 +
-+	UnLockBitMap(handle);
-+	handle = NULL;
++	UnLockBitMap(lockhandle);
++	lockhandle = NULL;
  }
  
  
-@@ -821,6 +949,20 @@
+@@ -1027,6 +1157,20 @@ static void FlipScreen (vrect_t *rects)
+ 	}
+ #endif
  
- static void FlipScreen (vrect_t *rects)
- {
 +	if (vid.numpages > 1)
 +	{
 +		if (!safetochange)
@@ -211,8 +214,8 @@ Index: engine/h2shared/vid_cgx.c
 +
  	while (rects)
  	{
- 		if (screen)
-@@ -909,7 +1051,22 @@ void D_EndDirectRect (int x, int y, int 
+ #ifdef PLATFORM_AMIGAOS3
+@@ -1128,7 +1272,22 @@ void D_EndDirectRect (int x, int y, int 
  
  	if (screen)
  	{
