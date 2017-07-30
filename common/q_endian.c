@@ -63,7 +63,7 @@ int DetectByteorder (void)
 	return -1;
 }
 
-#if ENDIAN_RUNTIME_DETECT || !(defined(__VBCC__) && defined(__M68K__))
+#if ENDIAN_RUNTIME_DETECT || !(defined(id68k) || (defined(__VBCC__) && defined(__M68K__)))
 __byteswap_func
 short ShortSwap (short l)
 {

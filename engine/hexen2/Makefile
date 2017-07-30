@@ -1227,7 +1227,7 @@ SOFT_ASM = \
 	amiga_d_polyse68k.o \
 	amiga_r_68k.o
 
-COMMON_ASM =
+COMMON_ASM = swap_68k.o
 SOUND_ASM =
 WORLD_ASM =
 
