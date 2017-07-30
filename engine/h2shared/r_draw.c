@@ -67,15 +67,14 @@ int		r_ceilv1;
 
 qboolean	r_lastvertvalid;
 
-#if !id386 && !defined id68k
+#if !id386 && !id68k
 static void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
 #endif
 
 
 //===========================================================================
 
-#if	!id386 && !defined id68k
-
+#if	!id386 && !id68k
 /*
 ================
 R_EmitEdge

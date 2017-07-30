@@ -199,7 +199,7 @@ LDFLAGS += $(SDL_LIBS)
 endif
 
 ifeq ($(USE_M68K_ASM),yes)
-CPPFLAGS+= -Did68k=1
+CPPFLAGS+= -DUSE_M68K_ASM
 endif
 
 

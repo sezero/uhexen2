@@ -134,4 +134,12 @@ __ASM_FUNCS_END
 #	define	Sys_PushFPCW_SetHigh()	do {} while (0)
 #endif
 
+#if defined(USE_M68K_ASM) && \
+   (defined(__mc68000__) || defined(__M68K__) || defined(__m68k__) || defined(__MC68K__))
+#	define	id68k		1
+
+#else /* !m68k or no m68k asm */
+#	define	id68k		0
+#endif
+
 #endif	/* HX2_SYS_H */

@@ -311,7 +311,7 @@ void R_TransformFrustum (void)
 }
 
 
-#if	!id386 && !defined id68k
+#if	!id386 && !id68k
 
 /*
 ================

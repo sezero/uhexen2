@@ -75,7 +75,7 @@ float	r_avertexnormals[NUMVERTEXNORMALS][3] =
 };
 
 
-#if !id386 && !defined id68k
+#if !id386 && !id68k
 static void R_AliasTransformAndProjectFinalVerts (finalvert_t *fv, stvert_t *pstverts);
 #endif
 static void R_AliasSetUpTransform (int trivial_accept);
@@ -584,7 +584,7 @@ static void R_AliasTransformFinalVert (finalvert_t *fv, auxvert_t *av, trivertx_
 }
 
 
-#if	!id386 && !defined id68k
+#if	!id386 && !id68k
 
 /*
 ================

@@ -92,13 +92,12 @@ void D_WarpScreen (void)
 
 
 #if	!id386
-
 /*
 =============
 D_DrawTurbulent8Span
 =============
 */
-#ifndef id68k
+#if !id68k
 static void D_DrawTurbulent8Span (void)
 {
 	int		sturb, tturb;
@@ -323,7 +322,7 @@ void Turbulent8 (surf_t *s)
 D_DrawSpans8
 =============
 */
-#ifndef id68k
+#if !id68k
 void D_DrawSpans8 (espan_t *pspan)
 {
 	int				count, spancount;
@@ -598,7 +597,7 @@ void D_DrawSpans8T (espan_t *pspan)
 D_DrawZSpans
 =============
 */
-#ifndef id68k
+#if !id68k
 void D_DrawZSpans (espan_t *pspan)
 {
 	int			count, doublecount, izistep;

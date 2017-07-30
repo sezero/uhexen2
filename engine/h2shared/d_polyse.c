@@ -89,7 +89,7 @@ byte	*skinstart;
 #if !id386
 static spanpackage_t	spans[DPS_MAXSPANS + 1 + ((CACHE_SIZE - 1) / sizeof(spanpackage_t)) + 1];
 						/* one extra because of cache line pretouching */
-#ifndef id68k
+#if !id68k
 static void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage);
 #endif
 static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage);
@@ -106,7 +106,7 @@ static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage);
 D_PolysetDrawFinalVerts
 ================
 */
-#ifndef id68k
+#if !id68k
 static inline void do_PolysetDrawFinalVerts (finalvert_t *pv)
 {
 	int		z;
@@ -256,7 +256,7 @@ static inline void do_PolysetDrawFinalVertsT5 (finalvert_t *pv)
 	}
 }
 
-#ifndef id68k
+#if !id68k
 void D_PolysetDrawFinalVerts (finalvert_t *pv1, finalvert_t *pv2, finalvert_t *pv3)
 {
 	do_PolysetDrawFinalVerts (pv1);
@@ -299,7 +299,7 @@ void D_PolysetDrawFinalVertsT5 (finalvert_t *pv1, finalvert_t *pv2, finalvert_t 
 D_PolysetRecursiveTriangle
 ================
 */
-#ifndef id68k
+#if !id68k
 static void D_PolysetRecursiveTriangle (int *lp1, int *lp2, int *lp3)
 {
 	int		*temp;
@@ -1129,7 +1129,6 @@ void D_PolysetDrawT5 (void)
 	}
 }
 
-
 #endif	/* !id386 */
 
 
@@ -1279,7 +1278,7 @@ static void D_PolysetSetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
 D_PolysetCalcGradients
 ================
 */
-#ifndef id68k
+#if !id68k
 static void D_PolysetCalcGradients (int skin_width)
 {
 	float	xstepdenominv, ystepdenominv, t0, t1;
@@ -1353,7 +1352,7 @@ void InitGel (byte *palette)
 D_PolysetDrawSpans8
 ================
 */
-#ifndef id68k
+#if !id68k
 static void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage)
 {
 	int		lcount;

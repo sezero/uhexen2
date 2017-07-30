@@ -231,6 +231,11 @@ ifneq ($(MACH_TYPE),x86)
 USE_X86_ASM=no
 endif
 
+# disable m68k assembly if it is not a m68k.
+ifneq ($(MACH_TYPE),m68k)
+USE_M68K_ASM=no
+endif
+
 ifdef DEMO
 CPPFLAGS+= -DDEMOBUILD
 endif
@@ -986,7 +991,7 @@ SYSLIBS += -lm
 AS=vasm
 ASFLAGS = -Faout -m68060 -phxass -quiet
 ifeq ($(USE_M68K_ASM),yes)
-CPPFLAGS+= -Did68k=1
+CPPFLAGS+= -DUSE_M68K_ASM
 endif
 
 # for extra missing headers

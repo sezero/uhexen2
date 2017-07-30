@@ -165,7 +165,8 @@ void D_PolysetScanLeftEdgeT3 (int height);
 void D_PolysetScanLeftEdgeT5 (int height);
 void D_DrawParticle1x1b (particle_t *pparticle);
 #endif
-#ifdef id68k
+
+#if id68k
 void D_PolysetCalcGradients (int skinwidth);
 void D_PolysetRecursiveTriangle (int *p1, int *p2, int *p3);
 #endif
