@@ -1371,7 +1371,7 @@ static void VID_PrepareModes (void)
 
 		if (handle)
 		{
-			if (!GetDisplayInfoData(handle, &diminfo, sizeof(diminfo), DTAG_DIMS, 0))
+			if (!GetDisplayInfoData(handle, (UBYTE *) &diminfo, sizeof(diminfo), DTAG_DIMS, 0))
 				continue;
 
 #ifdef __AROS__

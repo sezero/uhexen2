@@ -378,6 +378,8 @@ IN_Init
 */
 void IN_Init (void)
 {
+	static char handler_name[] = "Hexen II input handler";
+
 	/* mouse variables */
 	Cvar_RegisterVariable (&m_filter);
 	/* joystick variables */
@@ -396,16 +398,18 @@ void IN_Init (void)
 
 	imsglow = imsghigh = 0;
 
-	if ((inputport = CreateMsgPort()))
+	inputport = CreateMsgPort();
+	if (inputport)
 	{
-		//if ((inputreq = CreateIORequest(inputport, sizeof(*inputreq))))
-		if ((inputreq = CreateStdIO(inputport)))
+		//inputreq = (struct IOStdReq *) CreateIORequest(inputport, sizeof(*inputreq));
+		inputreq = CreateStdIO(inputport);
+		if (inputreq)
 		{
 			if (!OpenDevice("input.device", 0, (struct IORequest *)inputreq, 0))
 			{
 				InputHandler.is_Node.ln_Type = NT_INTERRUPT;
 				InputHandler.is_Node.ln_Pri = 100;
-				InputHandler.is_Node.ln_Name = "Hexen II input handler";
+				InputHandler.is_Node.ln_Name = handler_name;
 				InputHandler.is_Code = (void (*)())&IN_KeyboardHandler;
 				inputreq->io_Data = (void *)&InputHandler;
 				inputreq->io_Command = IND_ADDHANDLER;
