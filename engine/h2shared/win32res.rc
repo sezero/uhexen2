@@ -1,7 +1,5 @@
-// win32res.rc -- Win32 resource file for Hexen II
-// $Id$
+// win32res.rc -- Win32 resource file for Hexen II / HexenWorld
 
-#include <afxres.h>
 #include <winresrc.h>
 #include "resource.h"
 
@@ -45,4 +43,3 @@ STRINGTABLE DISCARDABLE
 BEGIN
 	IDS_STRING1 RES_STRING
 END
-

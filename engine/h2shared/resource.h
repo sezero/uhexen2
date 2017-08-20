@@ -1,8 +1,9 @@
 // resource.h -- Windows resource header
-// $Id: resource.h,v 1.7 2007-10-31 18:56:37 sezero Exp $
 
 #ifndef __HX2_RESOURCE_H
 #define __HX2_RESOURCE_H
+
+#define IDC_STATIC	(-1)
 
 #define IDS_STRING1	1
 #define IDI_ICON2	1
