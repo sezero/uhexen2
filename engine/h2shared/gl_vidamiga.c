@@ -1564,6 +1564,11 @@ void	VID_Init (const unsigned char *palette)
 		Sys_Error ("Couldn't initialize MiniGL");
 	}
 	mglChoosePixelDepth (16);/* set pixel depth to 16 */
+	mglChooseVertexBufferSize (3000); /* default 30 not enough */
+	if (COM_CheckParm("-guardband"))
+		mglChooseGuardBand (GL_TRUE);/* helps with Voodoo3 */
+	else
+		mglChooseGuardBand (GL_FALSE);
 #endif
 #if defined(REFGL_AMESA)
 	#ifdef __CLIB2__
