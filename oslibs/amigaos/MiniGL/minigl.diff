@@ -1,19 +1,22 @@
 diff -urNp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
 --- MiniGL~/Build_gcc/makefile	2002-11-30 08:14:20.000000000 +0200
-+++ MiniGL/Build_gcc/makefile	2016-07-01 07:11:00.000000000 +0300
-@@ -13,17 +13,29 @@
++++ MiniGL/Build_gcc/makefile	2017-08-20 03:11:00.000000000 +0300
+@@ -13,17 +13,32 @@
  #
  
  VPATH = ../src/ ../demos
 +
  INCLUDE = -I../include
 -CFLAGS = $(INCLUDE) -m68060 -D__M68K__ $(DEBUG) $(ADDFLAG) -ffast-math -fomit-frame-pointer
-+
- DEBUG = -DNDEBUG
+-DEBUG = -DNDEBUG
 -LIBNAME = ../lib/libmgl.a
  
 -DEMOS = GLTest varray warp mtex gears driverinfo
-+CFLAGS = -m68060 -D__M68K__ $(DEBUG) $(ADDFLAG) -ffast-math -fomit-frame-pointer
++CPPFLAGS = -DNDEBUG
++# -DMOUSE_SUPPORT
++# -DRUNLOOP_SUPPORT
++CFLAGS = -m68060 -m68881 -D__M68K__ $(CPPFLAGS) -ffast-math
++#-fomit-frame-pointer
 +CFLAGS+= -O3 -DINLINE=__inline
 +#CFLAGS+= -g
 +CFLAGS+= -noixemul
@@ -26,6 +29,7 @@ diff -urNp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
 +DEMOS = GLTest varray warp mtex gears driverinfo
 +DEBUGLIB= -ldebug
 +LDFLAGS = -noixemul
++LDFLAGS+= -m68060 -m68881
 +LDLIBS  = -L$(LIBDIR) -lmgl $(DEBUGLIB) -lm
  
 -AR = ar
@@ -36,7 +40,7 @@ diff -urNp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
  
  LIBOBJ = context.o vertexbuffer.o draw.o texture.o fog.o \
  	hclip.o init.o glu.o \
-@@ -31,79 +43,63 @@ LIBOBJ = context.o vertexbuffer.o draw.o
+@@ -31,79 +46,64 @@ LIBOBJ = context.o vertexbuffer.o draw.o
  	others.o matrix.o
  
  
@@ -45,7 +49,8 @@ diff -urNp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
 -EXEOBJ = GLTest.o
 -
 -all: $(LIBNAME) $(DEMOS)
-+all: $(LIBDIR) $(LIBNAME) $(DEMOS)
++all: $(LIBDIR) $(LIBNAME)
++# $(DEMOS)
  
  install:
 -		cp ../include/mgl/*.h /usr/os-include/mgl
@@ -141,108 +146,182 @@ diff -urNp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
 -		makedepend $(INCLUDE) src/*.c
 +	makedepend $(INCLUDE) src/*.c
  
-diff -urNp MiniGL~/makefile.vbcc68k MiniGL/makefile.vbcc68k
---- MiniGL~/makefile.vbcc68k	2002-11-30 08:15:32.000000000 +0200
-+++ MiniGL/makefile.vbcc68k	2016-08-08 05:55:00.000000000 +0300
-@@ -16,38 +16,45 @@
- #
- #
+diff -urNp MiniGL~/demos/addtest.c MiniGL/demos/addtest.c
+--- MiniGL~/demos/addtest.c	2002-11-30 08:14:54.000000000 +0200
++++ MiniGL/demos/addtest.c	2016-04-15 17:55:10.000000000 +0300
+@@ -6,6 +6,7 @@
+ #define M_PI 3.14159265
+ #endif
+ #include <stdio.h>
++#include <string.h>
  
--INCLUDE =
-+INCLUDE   = -Iinclude
-+# -IVBCC_INCLUDES/vincludem68k
- DEBUG =
+ GLint width=640; GLint height=480;
+ GLfloat startilt = 0.0;
+diff -urNp MiniGL~/demos/driverinfo.c MiniGL/demos/driverinfo.c
+--- MiniGL~/demos/driverinfo.c	2002-11-30 08:14:56.000000000 +0200
++++ MiniGL/demos/driverinfo.c	2016-04-15 17:55:10.000000000 +0300
+@@ -12,7 +12,7 @@
+ 
+ #include <Warp3D/Warp3D.h>
+ #ifdef __VBCC__
+-	#include <proto/warp3d.h>
++	#include <proto/Warp3D.h>
+ #else
+ 	#ifdef __GNUC__
+ 		#ifdef __PPC__
+@@ -23,6 +23,11 @@
+ 	#elif defined(__STORM__)
+ 		#include <clib/Warp3D_protos.h>
+ 	#endif
++	#ifdef __PPC__
++	extern struct Library *Warp3DPPCBase;
++	#else
++	extern struct Library *Warp3DBase;
++	#endif
+ #endif
+ #include <stdio.h>
+ #include <stdlib.h>
+diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
+--- MiniGL~/demos/gears.c	2002-11-30 08:14:58.000000000 +0200
++++ MiniGL/demos/gears.c	2016-04-15 17:55:10.000000000 +0300
+@@ -24,6 +24,7 @@
+ #define M_PI 3.14159265
+ #endif
+ #include <stdio.h>
++#include <string.h>
+ 
+ /* For portability... */
+ #undef fcos
+@@ -475,12 +476,12 @@ draw_outside(float w1, float w2, float r
+ }
+ 
+ Profile gear_profile[] =
+-{0.000, 0.0,
+-  0.300, 7.0,
+-  0.340, 0.4,
+-  0.550, 0.64,
+-  0.600, 0.4,
+-  0.950, 1.0
++{ {0.000, 0.0},
++  {0.300, 7.0},
++  {0.340, 0.4},
++  {0.550, 0.64},
++  {0.600, 0.4},
++  {0.950, 1.0}
+ };
+ 
+ float a1 = 27.0;
+diff -urNp MiniGL~/demos/gears_stats.c MiniGL/demos/gears_stats.c
+--- MiniGL~/demos/gears_stats.c	2002-11-30 08:14:58.000000000 +0200
++++ MiniGL/demos/gears_stats.c	2016-04-15 17:55:10.000000000 +0300
+@@ -570,12 +570,12 @@ draw_outside(float w1, float w2, float r
+ }
+ 
+ Profile gear_profile[] =
+-{0.000, 0.0,
+-  0.300, 7.0,
+-  0.340, 0.4,
+-  0.550, 0.64,
+-  0.600, 0.4,
+-  0.950, 1.0
++{ {0.000, 0.0},
++  {0.300, 7.0},
++  {0.340, 0.4},
++  {0.550, 0.64},
++  {0.600, 0.4},
++  {0.950, 1.0}
+ };
+ 
+ float a1 = 27.0;
+diff -urNp MiniGL~/demos/gravity.c MiniGL/demos/gravity.c
+--- MiniGL~/demos/gravity.c	2002-11-30 08:14:58.000000000 +0200
++++ MiniGL/demos/gravity.c	2016-04-15 17:55:10.000000000 +0300
+@@ -1,6 +1,7 @@
+ #include <mgl/gl.h>
+ 
+ #include <stdlib.h>
++#include <string.h>
+ 
+ 
+ GLint width=640; GLint height=480;
+@@ -214,18 +215,6 @@ void DoFrame(void)
+ 	mglSwitchDisplay();
+ }
+ 
+-#ifndef __VBCC__
+-void keys(unsigned char c)
+-{
 -
--CFLAGS = -O1 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(DEBUG)
--
-+CFLAGS    = -O1 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(DEBUG)
- OP_CFLAGS = -O2 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(DEBUG)
+-	switch (c)
+-	{
+-		case 0x1b:
+-			mglExit();
+-			break;
+-	}
+-}
+-#else
+ void keys(char c)
+ {
  
--
--LIBS = -lm040 -lmgl -lextra -lcgfx
--LIBNAME = vlibm68k:mgl.lib
-+LIBDIR = lib/vbcc
-+LIBS = -L$(LIBDIR) -lm040 -lmgl -lextra -lauto
-+# -lcgfx
-+LIBNAME = $(LIBDIR)/mgl.lib
- DIR = Build
- EXENAME = GLTest
--EXESRC = src/GLTest.c
-+EXESRC = src/GLTest.c src/kprintf.c
+@@ -236,13 +225,8 @@ void keys(char c)
+ 			break;
+ 	}
+ }
+-#endif
  
- DEMOS = GLTest warp varray gears mtex driverinfo
+-#ifdef __VBCC__
+ int
+-#else
+-void
+-#endif
+ main(int argc, char *argv[])
+ {
+ 	int i;
+@@ -283,7 +267,5 @@ main(int argc, char *argv[])
  
--CC=vc +m68kdb
--AR=join as
-+CC = vc
-+# +m68kdb
-+MKDIR = mkdir -p
-+#MKLIB = join $(LIBOBJ) as $(LIBNAME)
-+MKLIB = cat $(LIBOBJ) > $(LIBNAME)
- 
--LIBOBJ = $(DIR)/kprintf.o $(DIR)/init.o $(DIR)/glu.o \
-+LIBOBJ = $(DIR)/init.o $(DIR)/glu.o \
- $(DIR)/fog.o $(DIR)/others.o $(DIR)/texture.o \
- $(DIR)/context.o $(DIR)/matrix.o $(DIR)/vertexbuffer.o \
- $(DIR)/hclip.o $(DIR)/draw.o \
- $(DIR)/aclip.o $(DIR)/vertexarray.o $(DIR)/vertexelements.o
-+#moved kprintf.o to EXE objects
-+#$(DIR)/kprintf.o
- 
--all: $(LIBNAME) $(DEMOS)
-+all: $(LIBDIR) $(LIBNAME) $(DEMOS)
- 
- install:
- 	copy include/mgl/#?.h vinclude68k:mgl
- 
- clean:
--	delete force quiet $(DIR)/#?.o GLtest
-+	$(RM) $(DIR)/*.o
-+distclean: clean
-+	$(RM) $(LIBNAME) $(EXENAME) $(DEMOS)
- 
- lib: $(LIBNAME)
- 	@echo "Done"
-@@ -56,6 +63,13 @@ INCS = src/sysinc.h src/vertexarray.h in
-        include/mgl/context.h include/mgl/gl.h include/mgl/log.h \
-        include/mgl/matrix.h include/mgl/minigl.h include/mgl/vertexbuffer.h
- 
-+$(LIBNAME): $(LIBDIR) $(LIBOBJ)
-+	$(MKLIB)
-+$(LIBDIR):
-+	$(MKDIR) $(LIBDIR)
-+
-+$(EXENAME): $(EXESRC) $(LIBNAME)
-+	$(CC) $(CFLAGS) -o $@ $(EXESRC) $(LIBS)
- 
- driverinfo: demos/driverinfo.c $(LIBNAME)
- 	$(CC) $(CFLAGS) -o driverinfo demos/driverinfo.c $(LIBS)
-@@ -79,15 +93,6 @@ rasonly: demos/rasonly.c $(LIBNAME)
- 	$(CC) $(CFLAGS) -o rasonly demos/rasonly.c $(LIBS)
+ 	mglDeleteContext();
+ 	MGLTerm();
+-#ifdef __VBCC__
+ 	return 0;
+-#endif
+ }
+diff -urNp MiniGL~/demos/smtest.c MiniGL/demos/smtest.c
+--- MiniGL~/demos/smtest.c	2002-11-30 08:15:00.000000000 +0200
++++ MiniGL/demos/smtest.c	2016-04-15 17:55:10.000000000 +0300
+@@ -3,6 +3,7 @@
  
  
--
--$(LIBNAME): $(LIBOBJ)
--	$(AR) $(LIBNAME) $(LIBOBJ)
--
--$(EXENAME): $(EXESRC) $(LIBNAME)
--	$(CC) $(CFLAGS) -o $@ $(EXESRC) $(LIBS)
--
--
--
- $(DIR)/texture.o: src/texture.c $(INCS)
- 	$(CC) $(OP_CFLAGS) -c -o $@ src/texture.c
+ #include <stdio.h>
++#include <string.h>
+ #include <mgl/gl.h>
  
-@@ -97,7 +102,7 @@ $(DIR)/matrix.o: src/matrix.c $(INCS)
- $(DIR)/vertexbuffer.o: src/vertexbuffer.c $(INCS)
- 	$(CC) $(OP_CFLAGS) -c -o $@ src/vertexbuffer.c 
+ #include <proto/dos.h>          // For Delay()
+@@ -60,10 +61,10 @@ int main(int argc, char **argv)
+ 		Delay(100);
  
--
- # Implicit rule to build each module of MiniGL (when optimization level is default)
- $(DIR)/%.o : src/%.c $(INCS)
- 	$(CC) $(CFLAGS) -c -o $@ $<
-+
-
+ 
+-		printf("Display info:\nDimensions:%d×%d×%d\n", li.width, li.height, li.depth);
+-		printf("Pixel format: %d\n", li.pixel_format);
+-		printf("Base address: 0x%x\n", li.base_address);
+-		printf("Pitch: %d\n", li.pitch);
++		printf("Display info:\nDimensions:%lu×%lu×%lu\n", li.width, li.height, li.depth);
++		printf("Pixel format: %lu\n", li.pixel_format);
++		printf("Base address: 0x%x\n", (unsigned) li.base_address);
++		printf("Pitch: %lu\n", li.pitch);
+ 	}
+ 	else
+ 	{
+diff -urNp MiniGL~/demos/texsub.c MiniGL/demos/texsub.c
+--- MiniGL~/demos/texsub.c	2002-11-30 08:15:00.000000000 +0200
++++ MiniGL/demos/texsub.c	2016-04-15 17:55:10.000000000 +0300
+@@ -53,6 +53,7 @@
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
++#include <string.h>
+ #include <math.h>
+ 
+ /*  Create checkerboard textures  */
 diff -urNp MiniGL~/include/mgl/config.h MiniGL/include/mgl/config.h
 --- MiniGL~/include/mgl/config.h	2002-11-30 08:15:16.000000000 +0200
 +++ MiniGL/include/mgl/config.h	2016-04-15 17:55:20.000000000 +0300
@@ -536,23 +615,112 @@ diff -urNp MiniGL~/include/mgl/minigl.h MiniGL/include/mgl/minigl.h
 +MGLAPI void glClearStencil(GLint s) { }
 +
  #endif
-
-diff -urNp MiniGL~/src/sysinc.h MiniGL/src/sysinc.h
---- MiniGL~/src/sysinc.h	2002-11-30 08:15:44.000000000 +0200
-+++ MiniGL/src/sysinc.h	2016-07-01 07:01:10.000000000 +0300
-@@ -104,10 +104,10 @@ extern struct Library *Warp3DBase;
+diff -urNp MiniGL~/makefile.vbcc68k MiniGL/makefile.vbcc68k
+--- MiniGL~/makefile.vbcc68k	2002-11-30 08:15:32.000000000 +0200
++++ MiniGL/makefile.vbcc68k	2017-08-20 03:11:00.000000000 +0300
+@@ -16,38 +16,49 @@
+ #
+ #
  
- #pragma default-align
+-INCLUDE =
+-DEBUG =
++INCLUDE   = -Iinclude
++# -IVBCC_INCLUDES/vincludem68k
++CPPFLAGS  = -DNDEBUG
++# -DMOUSE_SUPPORT
++# -DRUNLOOP_SUPPORT
++CFLAGS    = -O1 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(CPPFLAGS)
++OP_CFLAGS = -O2 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(CPPFLAGS)
  
--    #include "/include/mgl/gl.h"
-+    #include "../include/mgl/gl.h"
+-CFLAGS = -O1 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(DEBUG)
  
- 	#ifndef inline
--	#define inline
-+	#define inline inline
- 	#endif
+-OP_CFLAGS = -O2 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(DEBUG)
+-
+-
+-LIBS = -lm040 -lmgl -lextra -lcgfx
+-LIBNAME = vlibm68k:mgl.lib
++LIBDIR = lib/vbcc
++LIBS = -L$(LIBDIR) -lm040 -lmgl -lextra -lauto
++# -lcgfx
++LIBNAME = $(LIBDIR)/mgl.lib
+ DIR = Build
+ EXENAME = GLTest
+-EXESRC = src/GLTest.c
++EXESRC = src/GLTest.c src/kprintf.c
  
-     #define INLINE inline
+ DEMOS = GLTest warp varray gears mtex driverinfo
+ 
+-CC=vc +m68kdb
+-AR=join as
++CC = vc
++# +m68kdb
++MKDIR = mkdir -p
++#MKLIB = join $(LIBOBJ) as $(LIBNAME)
++MKLIB = cat $(LIBOBJ) > $(LIBNAME)
+ 
+-LIBOBJ = $(DIR)/kprintf.o $(DIR)/init.o $(DIR)/glu.o \
++LIBOBJ = $(DIR)/init.o $(DIR)/glu.o \
+ $(DIR)/fog.o $(DIR)/others.o $(DIR)/texture.o \
+ $(DIR)/context.o $(DIR)/matrix.o $(DIR)/vertexbuffer.o \
+ $(DIR)/hclip.o $(DIR)/draw.o \
+ $(DIR)/aclip.o $(DIR)/vertexarray.o $(DIR)/vertexelements.o
++#moved kprintf.o to EXE objects
++#$(DIR)/kprintf.o
+ 
+-all: $(LIBNAME) $(DEMOS)
++all: $(LIBDIR) $(LIBNAME)
++# $(DEMOS)
+ 
+ install:
+ 	copy include/mgl/#?.h vinclude68k:mgl
+ 
+ clean:
+-	delete force quiet $(DIR)/#?.o GLtest
++	$(RM) $(DIR)/*.o
++distclean: clean
++	$(RM) $(LIBNAME) $(EXENAME) $(DEMOS)
+ 
+ lib: $(LIBNAME)
+ 	@echo "Done"
+@@ -56,6 +67,13 @@ INCS = src/sysinc.h src/vertexarray.h in
+        include/mgl/context.h include/mgl/gl.h include/mgl/log.h \
+        include/mgl/matrix.h include/mgl/minigl.h include/mgl/vertexbuffer.h
+ 
++$(LIBNAME): $(LIBDIR) $(LIBOBJ)
++	$(MKLIB)
++$(LIBDIR):
++	$(MKDIR) $(LIBDIR)
++
++$(EXENAME): $(EXESRC) $(LIBNAME)
++	$(CC) $(CFLAGS) -o $@ $(EXESRC) $(LIBS)
+ 
+ driverinfo: demos/driverinfo.c $(LIBNAME)
+ 	$(CC) $(CFLAGS) -o driverinfo demos/driverinfo.c $(LIBS)
+@@ -79,15 +97,6 @@ rasonly: demos/rasonly.c $(LIBNAME)
+ 	$(CC) $(CFLAGS) -o rasonly demos/rasonly.c $(LIBS)
+ 
+ 
+-
+-$(LIBNAME): $(LIBOBJ)
+-	$(AR) $(LIBNAME) $(LIBOBJ)
+-
+-$(EXENAME): $(EXESRC) $(LIBNAME)
+-	$(CC) $(CFLAGS) -o $@ $(EXESRC) $(LIBS)
+-
+-
+-
+ $(DIR)/texture.o: src/texture.c $(INCS)
+ 	$(CC) $(OP_CFLAGS) -c -o $@ src/texture.c
+ 
+@@ -97,7 +106,7 @@ $(DIR)/matrix.o: src/matrix.c $(INCS)
+ $(DIR)/vertexbuffer.o: src/vertexbuffer.c $(INCS)
+ 	$(CC) $(OP_CFLAGS) -c -o $@ src/vertexbuffer.c 
+ 
+-
+ # Implicit rule to build each module of MiniGL (when optimization level is default)
+ $(DIR)/%.o : src/%.c $(INCS)
+ 	$(CC) $(CFLAGS) -c -o $@ $<
++
 diff -urNp MiniGL~/src/aclip.c MiniGL/src/aclip.c
 --- MiniGL~/src/aclip.c	2002-11-30 08:15:34.000000000 +0200
 +++ MiniGL/src/aclip.c	2016-07-01 07:01:10.000000000 +0300
@@ -568,18 +736,58 @@ diff -urNp MiniGL~/src/aclip.c MiniGL/src/aclip.c
  #include "vertexarray.h"
 diff -urNp MiniGL~/src/context.c MiniGL/src/context.c
 --- MiniGL~/src/context.c	2002-11-30 08:15:36.000000000 +0200
-+++ MiniGL/src/context.c	2016-07-01 07:01:10.000000000 +0300
-@@ -19,7 +19,9 @@
++++ MiniGL/src/context.c	2017-08-20 03:11:00.000000000 +0300
+@@ -12,14 +12,15 @@
+  *
+  */
+ 
+-
+-#include "sysinc.h"
+-
+ #include <stdio.h>
  #include <stdlib.h>
  #include <string.h>
  
++#include "sysinc.h"
++
 +#if 0
  static char rcsid[] = "$Id: context.c,v 1.1.1.1 2000/04/07 19:44:51 hfrieden Exp $";
 +#endif
  
  
  extern void GLMatrixInit(GLcontext context);
-@@ -224,15 +226,15 @@ static GLboolean vid_ReopenDisplay(GLcon
+@@ -69,8 +70,6 @@ static GLboolean newGuardBand = GL_FALSE
+ 
+ static struct TagItem tags[7];
+ 
+-static UWORD *MousePointer = 0;
+-
+ static GLboolean sys_MaybeOpenVidLibs(void)
+ {
+ #ifdef __PPC__
+@@ -109,6 +108,13 @@ static GLboolean sys_MaybeOpenVidLibs(vo
+ 	return GL_TRUE;
+ }
+ 
++#ifndef MOUSE_SUPPORT
++#define vid_Pointer(x)       do {} while (0)
++#define vid_DeletePointer(x) do {} while (0)
++#else
++
++static UWORD *MousePointer = 0;
++
+ static void vid_Pointer(struct Window *window)
+ {
+ 	if (!MousePointer)
+@@ -133,6 +139,7 @@ static void vid_DeletePointer(struct Win
+ #endif
+ 	MousePointer = 0;
+ }
++#endif /* MOUSE_SUPPORT */
+ 
+ void GLScissor(GLcontext context, GLint x, GLint y, GLsizei width, GLsizei height)
+ {
+@@ -224,15 +231,15 @@ static GLboolean vid_ReopenDisplay(GLcon
  
  	struct TagItem OpenWinTags[] =
  	{
@@ -604,7 +812,7 @@ diff -urNp MiniGL~/src/context.c MiniGL/src/context.c
  	};
  
  	if (!context)
-@@ -1159,7 +1161,6 @@ void MGLSwitchDisplay(GLcontext context)
+@@ -1159,7 +1166,6 @@ void MGLSwitchDisplay(GLcontext context)
  }
  
  
@@ -612,7 +820,7 @@ diff -urNp MiniGL~/src/context.c MiniGL/src/context.c
  //Multitexture buffer:
  
  extern void FreeMtex();
-@@ -1175,16 +1176,14 @@ GLboolean MGLInitContext(GLcontext conte
+@@ -1175,16 +1181,14 @@ GLboolean MGLInitContext(GLcontext conte
  /*
  allocate w array that is large enough to cope with almost any texcoordstride - this array is used for all textured, unclipped primitives that go theough the vetexarray pipeline
  */
@@ -632,7 +840,7 @@ diff -urNp MiniGL~/src/context.c MiniGL/src/context.c
  
  	if (!context->ElementIndex)
  		return GL_FALSE;
-@@ -1204,14 +1203,12 @@ malloc(sizeof(UWORD)*(newVertexBufferSiz
+@@ -1204,14 +1208,12 @@ malloc(sizeof(UWORD)*(newVertexBufferSiz
  	if(!AllocMtex(newMTBufferSize))
  		return GL_FALSE;
  
@@ -647,7 +855,7 @@ diff -urNp MiniGL~/src/context.c MiniGL/src/context.c
  	context->TexBufferSize      = newTextureBufferSize;
  	context->w3dTexBuffer       = malloc(sizeof(W3D_Texture *) * newTextureBufferSize);
  	context->GeneratedTextures  = malloc(sizeof(GLubyte) * newTextureBufferSize);
-@@ -1219,7 +1216,6 @@ malloc(sizeof(UWORD)*(newVertexBufferSiz
+@@ -1219,7 +1221,6 @@ malloc(sizeof(UWORD)*(newVertexBufferSiz
  	if (!context->w3dTexBuffer || !context->GeneratedTextures)
  		return GL_FALSE;
  
@@ -655,7 +863,7 @@ diff -urNp MiniGL~/src/context.c MiniGL/src/context.c
  	context->w3dTexMemory       = malloc(sizeof(GLubyte *) * newTextureBufferSize);
  	if (!context->w3dTexMemory)
  		return GL_FALSE;
-@@ -1268,7 +1264,6 @@ malloc(sizeof(UWORD)*(newVertexBufferSiz
+@@ -1268,7 +1269,6 @@ malloc(sizeof(UWORD)*(newVertexBufferSiz
  	    context->TexEnv[i]		= GL_MODULATE;
  	}
  
@@ -663,7 +871,7 @@ diff -urNp MiniGL~/src/context.c MiniGL/src/context.c
  	context->CurTexEnv = 0;
  
  	context->MinFilter = GL_NEAREST;
-@@ -1364,17 +1359,16 @@ malloc(sizeof(UWORD)*(newVertexBufferSiz
+@@ -1364,17 +1364,16 @@ malloc(sizeof(UWORD)*(newVertexBufferSiz
          context->ArrayPointer.transformed = 0;
          context->ArrayPointer.state = 0; //pipeline state
  
@@ -684,7 +892,7 @@ diff -urNp MiniGL~/src/context.c MiniGL/src/context.c
  
  #if 0
  	context->DrawElementsHook   = 0;
-@@ -1491,9 +1485,8 @@ void MGLDeleteContext(GLcontext context)
+@@ -1491,9 +1490,8 @@ void MGLDeleteContext(GLcontext context)
  	free(context);
  }
  
@@ -695,7 +903,7 @@ diff -urNp MiniGL~/src/context.c MiniGL/src/context.c
  
  void MGLSetState(GLcontext context, const GLenum cap, const GLboolean flag)//surgeon: const
  {
-@@ -1510,7 +1503,7 @@ void MGLSetState(GLcontext context, cons
+@@ -1510,7 +1508,7 @@ void MGLSetState(GLcontext context, cons
  			context->AlphaTest_State = flag;
  			W3D_SetState(context->w3dContext, W3D_ALPHATEST, ED);
  			}
@@ -704,7 +912,7 @@ diff -urNp MiniGL~/src/context.c MiniGL/src/context.c
  		case GL_BLEND:
  			//surgeon: added state-check
  			if(context->Blend_State != flag)
-@@ -1518,17 +1511,14 @@ void MGLSetState(GLcontext context, cons
+@@ -1518,17 +1516,14 @@ void MGLSetState(GLcontext context, cons
  			context->Blend_State = flag;
  			W3D_SetState(context->w3dContext, W3D_BLENDING, ED);
  			}
@@ -724,7 +932,7 @@ diff -urNp MiniGL~/src/context.c MiniGL/src/context.c
  		case GL_TEXTURE_GEN_S:
  			context->TextureGenS_State = flag;
  			break;
-@@ -1543,19 +1533,17 @@ void MGLSetState(GLcontext context, cons
+@@ -1543,19 +1538,17 @@ void MGLSetState(GLcontext context, cons
  		case GL_SCISSOR_TEST:
  			context->Scissor_State = flag;
  			if(flag == GL_FALSE) //restore
@@ -747,7 +955,7 @@ diff -urNp MiniGL~/src/context.c MiniGL/src/context.c
  			W3D_SetState(context->w3dContext, W3D_ZBUFFER, ED);
  			if (flag == GL_TRUE)
  			{
-@@ -1566,7 +1554,6 @@ void MGLSetState(GLcontext context, cons
+@@ -1566,7 +1559,6 @@ void MGLSetState(GLcontext context, cons
  			{
  				W3D_SetState(context->w3dContext, W3D_ZBUFFERUPDATE, W3D_DISABLE);
  			}
@@ -757,14 +965,23 @@ diff -urNp MiniGL~/src/context.c MiniGL/src/context.c
  			context->Dither_State = flag;
 diff -urNp MiniGL~/src/draw.c MiniGL/src/draw.c
 --- MiniGL~/src/draw.c	2002-11-30 08:15:40.000000000 +0200
-+++ MiniGL/src/draw.c	2016-07-01 07:01:10.000000000 +0300
-@@ -31,15 +31,15 @@
++++ MiniGL/src/draw.c	2017-07-20 03:01:00.000000000 +0300
+@@ -25,21 +25,21 @@
+ #endif
+ 
+ 
+-#include "sysinc.h"
+-#include "vertexarray.h"
+-
  #include <math.h>
  
  #include <stdlib.h>
 -#ifdef __VBCC__
  #include <stdio.h>
 -#endif
++
++#include "sysinc.h"
++#include "vertexarray.h"
  
  #ifdef DISABLE_TRANSFORMATION
  #warning "Compiling without transformation pipeline. Only flat geometry supported"
@@ -880,9 +1097,85 @@ diff -urNp MiniGL~/src/fog.c MiniGL/src/fog.c
  {
  	context->FogDirty = GL_TRUE;
  
+diff -urNp MiniGL~/src/GLTest.c MiniGL/src/GLTest.c
+--- MiniGL~/src/GLTest.c	2002-11-30 08:15:40.000000000 +0200
++++ MiniGL/src/GLTest.c	2017-07-20 03:01:00.000000000 +0300
+@@ -12,21 +12,20 @@
+  *
+  */
+ 
+-#include "mgl/gl.h"
+-
+ #include <math.h>
+ 
+ #ifdef __VBCC__
+ #pragma amiga-align
+ #endif
+ 
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
+ #include <exec/exec.h>
+ #include <intuition/intuition.h>
+ #include <graphics/gfx.h>
+ #include <libraries/lowlevel.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>	//OF
+ #include <dos/dos.h>
+ 
+ #ifdef __VBCC__
+@@ -50,7 +49,6 @@
+ #endif
+ 
+ #ifdef __STORMC__
+-//#include <string.h>	//OF (made include string.h for all compilers)
+ #include <clib/powerpc_protos.h>
+ #ifndef __PPC__
+ #include <proto/exec.h>
+@@ -65,11 +63,8 @@
+ #include <clib/dos_protos.h>
+ #include <clib/graphics_protos.h>
+ #endif
+-
+-
+ #define M_PI 3.1415927
+ 
+-
+ int kprintf(char *format, ...)
+ {
+     return 0;
+@@ -96,6 +91,9 @@ int kprintf(char *format, ...)
+ 
+ #endif
+ 
++#include "mgl/gl.h"
++
++
+ static char rcsid[] = "$Id: GLTest.c,v 1.1.1.1 2000/04/07 19:44:51 hfrieden Exp $";
+ struct Library *LowLevelBase;
+ 
 diff -urNp MiniGL~/src/glu.c MiniGL/src/glu.c
 --- MiniGL~/src/glu.c	2002-11-30 08:15:40.000000000 +0200
-+++ MiniGL/src/glu.c	2016-07-01 07:01:10.000000000 +0300
++++ MiniGL/src/glu.c	2017-07-20 03:01:00.000000000 +0300
+@@ -11,13 +11,13 @@
+  * See the file Licence.txt for more details
+  *
+  */
+-#include "sysinc.h"
+ 
+-#include <mgl/gl.h>
+ #include <math.h>
++#include <stdio.h>
+ 
++#include "sysinc.h"
+ 
+-#include <stdio.h>
++#include <mgl/gl.h>
+ 
+ 
+ #define VEC_NORM(v)                                      \
 @@ -46,7 +46,9 @@
  #define VEC_PRINT(v)                                     \
      printf("<%f, %f, %f>\n", v[0], v[1], v[2]);
@@ -895,8 +1188,8 @@ diff -urNp MiniGL~/src/glu.c MiniGL/src/glu.c
  void GLULookAt(GLfloat ex, GLfloat ey, GLfloat ez, GLfloat cx, GLfloat cy, GLfloat cz, GLfloat ux, GLfloat uy, GLfloat uz)
 diff -urNp MiniGL~/src/hclip.c MiniGL/src/hclip.c
 --- MiniGL~/src/hclip.c	2002-11-30 08:15:42.000000000 +0200
-+++ MiniGL/src/hclip.c	2016-07-01 07:01:10.000000000 +0300
-@@ -12,7 +12,9 @@
++++ MiniGL/src/hclip.c	2017-07-20 03:01:00.000000000 +0300
+@@ -12,13 +12,15 @@
   *
   */
  
@@ -904,13 +1197,26 @@ diff -urNp MiniGL~/src/hclip.c MiniGL/src/hclip.c
  static char rcsid[] = "$Id: hclip.c,v 1.1.1.1 2000/04/07 19:44:51 hfrieden Exp $";
 +#endif
  
- #include "sysinc.h"
+-#include "sysinc.h"
  #include <math.h>
+-
+ #include <stdio.h> //remove this
+ 
++#include "sysinc.h"
++
+ #define CLIP_EPS (1e-7)
+ 
+ #define DUMP_VERTEX(vert) \
 diff -urNp MiniGL~/src/init.c MiniGL/src/init.c
 --- MiniGL~/src/init.c	2002-11-30 08:15:42.000000000 +0200
-+++ MiniGL/src/init.c	2016-08-08 05:55:00.000000000 +0300
-@@ -16,17 +16,15 @@
++++ MiniGL/src/init.c	2017-07-20 03:01:00.000000000 +0300
+@@ -12,21 +12,19 @@
+  *
+  */
+ 
+-#include "sysinc.h"
  #include <stdio.h>
++#include "sysinc.h"
  
  
 +#if 0
@@ -979,10 +1285,54 @@ diff -urNp MiniGL~/src/init.c MiniGL/src/init.c
 -	if (UtilityBase)        CloseLibrary(UtilityBase);
 -	UtilityBase = NULL;
  }
+diff -urNp MiniGL~/src/kprintf.c MiniGL/src/kprintf.c
+--- MiniGL~/src/kprintf.c	2002-11-30 08:15:42.000000000 +0200
++++ MiniGL/src/kprintf.c	2017-07-20 03:01:00.000000000 +0300
+@@ -4,7 +4,6 @@
+ ** to the serial connector (or Sushi, if it's installed).
+ */
+ 
+-#include "sysinc.h"
+ #include <stdarg.h>
+ #include <stdio.h>
+ 
+@@ -26,11 +25,13 @@
+ #endif
+ #endif
+ 
+-
+ #ifdef __VBCC__
+ #pragma default-align
+ #endif
+ 
++#include "sysinc.h"
++
++
+ int kprintf(char *format, ...)
+ {
+ #ifndef NDEBUG
 diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
 --- MiniGL~/src/matrix.c	2002-11-30 08:15:42.000000000 +0200
-+++ MiniGL/src/matrix.c	2016-11-01 11:01:00.000000000 +0300
-@@ -33,41 +33,43 @@
++++ MiniGL/src/matrix.c	2017-07-20 03:01:00.000000000 +0300
+@@ -12,15 +12,14 @@
+  *
+  */
+ 
+-
+-#include "sysinc.h"
+ #include <math.h>
+-
+ #include <stdlib.h>
+ #ifdef __VBCC__
+ #include <stdio.h>
+ #endif
+ 
++#include "sysinc.h"
++
+ #ifndef PI
+ 	#ifdef M_PI
+ 	#define PI M_PI
+@@ -33,41 +32,43 @@
  #warning "Compiling without transformation pipeline. Only flat geometry supported"
  #endif
  
@@ -1056,7 +1406,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  void m_CombineMatrices(GLcontext context);
  void GLMatrixInit(GLcontext context);
  
-@@ -87,7 +89,8 @@ void GLMatrixInit(GLcontext context);
+@@ -87,7 +88,8 @@ void GLMatrixInit(GLcontext context);
  ** Computes the determinant of the upper 3x3 submatrix block
  ** of the supplied matrix
  */
@@ -1066,7 +1416,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[CM_##x])
     float a0 = a(0);
-@@ -100,20 +103,19 @@ INLINE GLfloat m_Determinant(Matrix *pA)
+@@ -100,20 +102,19 @@ INLINE GLfloat m_Determinant(Matrix *pA)
     float a7 = a(7);
     float a8 = a(8);
  
@@ -1089,7 +1439,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
     #define a(x) (pA->v[CM_##x])
  
     float a0 = a(0);
-@@ -146,7 +148,7 @@ void m_DoInvert(Matrix *pA, int flags, G
+@@ -146,7 +147,7 @@ void m_DoInvert(Matrix *pA, int flags, G
     #undef a
  }
  
@@ -1098,7 +1448,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  
  void m_BuildInverted(GLcontext context)
  {
-@@ -162,14 +164,13 @@ void m_BuildInverted(GLcontext context)
+@@ -162,14 +163,13 @@ void m_BuildInverted(GLcontext context)
  ** Copy matrix B to matrix A
  ** A = B
  */
@@ -1114,7 +1464,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  	pA->v[i] = pB->v[i];
  	i++;
  	} while (i<16);
-@@ -182,7 +183,7 @@ INLINE void m_MatCopy(Matrix *pA, Matrix
+@@ -182,7 +182,7 @@ INLINE void m_MatCopy(Matrix *pA, Matrix
  ** General case: Matrix multiply
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1123,7 +1473,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -299,15 +300,15 @@ float a44 = a(44);
+@@ -299,15 +299,15 @@ float a44 = a(44);
  
     #undef a
     #undef b
@@ -1141,7 +1491,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     int i;
  
-@@ -323,7 +324,7 @@ INLINE void m_MatMultAIdent(float *pB, M
+@@ -323,7 +323,7 @@ INLINE void m_MatMultAIdent(float *pB, M
  ** Matrix A and matrix B are rotation matrices
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1150,7 +1500,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -362,6 +363,7 @@ INLINE void m_MatMultRotRot(Matrix *pA, 
+@@ -362,6 +362,7 @@ INLINE void m_MatMultRotRot(Matrix *pA, 
  
     #undef a
     #undef b
@@ -1158,7 +1508,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  }
  
  /*
-@@ -369,7 +371,7 @@ INLINE void m_MatMultRotRot(Matrix *pA, 
+@@ -369,7 +370,7 @@ INLINE void m_MatMultRotRot(Matrix *pA, 
  ** Matrix B has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1167,7 +1517,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -410,13 +412,14 @@ INLINE void m_MatMultAPerspB0001(Matrix 
+@@ -410,13 +411,14 @@ INLINE void m_MatMultAPerspB0001(Matrix 
  
     #undef a
     #undef b
@@ -1183,7 +1533,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -478,6 +481,7 @@ c(44) = a44; 
+@@ -478,6 +480,7 @@ c(44) = a44; 
  
     #undef a
     #undef b
@@ -1191,7 +1541,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  }
  
  // --> surgeon begin
-@@ -487,7 +491,7 @@ c(44) = a44; 
+@@ -487,7 +490,7 @@ c(44) = a44; 
  ** Matrix A has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1200,7 +1550,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -541,6 +545,7 @@ c(34) = a34; 
+@@ -541,6 +544,7 @@ c(34) = a34; 
  
     #undef a
     #undef b
@@ -1208,7 +1558,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  }
  
  /*
-@@ -548,7 +553,7 @@ c(34) = a34; 
+@@ -548,7 +552,7 @@ c(34) = a34; 
  ** Matrix A has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1217,7 +1567,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -589,6 +594,7 @@ INLINE void m_MatMultA0001_BRot001(Matri
+@@ -589,6 +593,7 @@ INLINE void m_MatMultA0001_BRot001(Matri
  
     #undef a
     #undef b
@@ -1225,7 +1575,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  }
  
  /*
-@@ -596,7 +602,7 @@ INLINE void m_MatMultA0001_BRot001(Matri
+@@ -596,7 +601,7 @@ INLINE void m_MatMultA0001_BRot001(Matri
  ** Matrix A has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1234,7 +1584,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -637,6 +643,7 @@ INLINE void m_MatMultA0001_BRot010(Matri
+@@ -637,6 +642,7 @@ INLINE void m_MatMultA0001_BRot010(Matri
  
     #undef a
     #undef b
@@ -1242,7 +1592,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  }
  
  /*
-@@ -644,7 +651,7 @@ INLINE void m_MatMultA0001_BRot010(Matri
+@@ -644,7 +650,7 @@ INLINE void m_MatMultA0001_BRot010(Matri
  ** Matrix A has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1251,7 +1601,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -686,13 +693,14 @@ INLINE void m_MatMultA0001_BRot100(Matri
+@@ -686,13 +692,14 @@ INLINE void m_MatMultA0001_BRot100(Matri
  
     #undef a
     #undef b
@@ -1267,7 +1617,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -737,13 +745,14 @@ INLINE void m_MatMultBRot001(Matrix *pA,
+@@ -737,13 +744,14 @@ INLINE void m_MatMultBRot001(Matrix *pA,
  
     #undef a
     #undef b
@@ -1283,7 +1633,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -788,13 +797,14 @@ INLINE void m_MatMultBRot010(Matrix *pA,
+@@ -788,13 +796,14 @@ INLINE void m_MatMultBRot010(Matrix *pA,
  
     #undef a
     #undef b
@@ -1299,7 +1649,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -840,6 +850,7 @@ INLINE void m_MatMultBRot100(Matrix *pA,
+@@ -840,6 +849,7 @@ INLINE void m_MatMultBRot100(Matrix *pA,
  
     #undef a
     #undef b
@@ -1307,7 +1657,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  }
  // <--surgeon end
  
-@@ -847,7 +858,7 @@ INLINE void m_MatMultBRot100(Matrix *pA,
+@@ -847,7 +857,7 @@ INLINE void m_MatMultBRot100(Matrix *pA,
  ** Matrix A has three rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1316,7 +1666,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -893,13 +904,14 @@ INLINE void m_MatMultA0001(Matrix *pA, f
+@@ -893,13 +903,14 @@ INLINE void m_MatMultA0001(Matrix *pA, f
  
     #undef a
     #undef b
@@ -1332,7 +1682,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -958,17 +970,16 @@ b34 += b44*a34;
+@@ -958,17 +969,16 @@ b34 += b44*a34;
     c(44) = b44;
     c(43) = b43;
  
@@ -1352,7 +1702,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1030,6 +1041,7 @@ c(44) = a44; 
+@@ -1030,6 +1040,7 @@ c(44) = a44; 
  
     #undef a
     #undef b
@@ -1360,7 +1710,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  }
  
  //surgeon: added scaling, ortho and perspective matrices
-@@ -1037,7 +1049,7 @@ c(44) = a44; 
+@@ -1037,7 +1048,7 @@ c(44) = a44; 
  ** Matrix B is a scaling matrix
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1369,7 +1719,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1084,12 +1096,14 @@ INLINE void m_MatMultBScale(Matrix *pA, 
+@@ -1084,12 +1095,14 @@ INLINE void m_MatMultBScale(Matrix *pA, 
  
     #undef a
     #undef b
@@ -1385,7 +1735,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1151,9 +1165,10 @@ c(44) = a44; 
+@@ -1151,9 +1164,10 @@ c(44) = a44; 
  
     #undef a
     #undef b
@@ -1397,7 +1747,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1212,9 +1227,9 @@ c(23) = a24; 
+@@ -1212,9 +1226,9 @@ c(23) = a24; 
  c(33) = a34; 
  c(43) = a44; 
  
@@ -1408,7 +1758,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  }
  
  //surgeon begin -->
-@@ -1223,7 +1238,7 @@ c(43) = a44; 
+@@ -1223,7 +1237,7 @@ c(43) = a44; 
  ** Matrix A has 3 rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1417,7 +1767,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1243,7 +1258,6 @@ INLINE void m_MatMultA0001_BTrans(Matrix
+@@ -1243,7 +1257,6 @@ INLINE void m_MatMultA0001_BTrans(Matrix
     float a34 = a(34),  b34 = b(34);
  
  
@@ -1425,7 +1775,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  a14 += b34*a13;
  a24 += b34*a23;
  a34 += b34*a33;
-@@ -1279,6 +1293,7 @@ c(44) = 1.f; 
+@@ -1279,6 +1292,7 @@ c(44) = 1.f; 
  
     #undef a
     #undef b
@@ -1433,7 +1783,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  }
  
  //surgeon: added scaling, ortho and perspective matrices
-@@ -1287,7 +1302,7 @@ c(44) = 1.f; 
+@@ -1287,7 +1301,7 @@ c(44) = 1.f; 
  ** Matrix A has 3 rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1442,7 +1792,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1329,6 +1344,7 @@ INLINE void m_MatMultA0001_BScale(Matrix
+@@ -1329,6 +1343,7 @@ INLINE void m_MatMultA0001_BScale(Matrix
  
     #undef a
     #undef b
@@ -1450,7 +1800,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  }
  
  /*
-@@ -1336,7 +1352,7 @@ INLINE void m_MatMultA0001_BScale(Matrix
+@@ -1336,7 +1351,7 @@ INLINE void m_MatMultA0001_BScale(Matrix
  ** Matrix A has 3 rows
  ** Multiply matrix A by float field, storing the result in matrix C
  */
@@ -1459,7 +1809,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1390,9 +1406,10 @@ c(44) = 1.f; 
+@@ -1390,9 +1405,10 @@ c(44) = 1.f; 
  
     #undef a
     #undef b
@@ -1471,7 +1821,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x])
     #define b(x) (pB[OF_##x])
-@@ -1410,10 +1427,12 @@ INLINE void m_MatMultA0001_BPersp(Matrix
+@@ -1410,10 +1426,12 @@ INLINE void m_MatMultA0001_BPersp(Matrix
     float a32 = a(32);
     float a33 = a(33),  b33 = b(33);
     float a34 = -a(34),  b34 = b(34);
@@ -1484,7 +1834,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  
     c(11) = b11*a11;
     c(21) = b11*a21;
-@@ -1447,14 +1466,14 @@ c(23) = a24; 
+@@ -1447,14 +1465,14 @@ c(23) = a24; 
  c(33) = a34; 
  c(43) = -1; 
  
@@ -1501,7 +1851,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x] = *v++)
  
-@@ -1470,7 +1489,7 @@ INLINE void m_LoadMatrixf(Matrix *pA, co
+@@ -1470,7 +1488,7 @@ INLINE void m_LoadMatrixf(Matrix *pA, co
     #undef a
  }
  
@@ -1510,7 +1860,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x] = (float)*v++)
  
-@@ -1488,7 +1507,7 @@ INLINE void m_LoadMatrixd(Matrix *pA, co
+@@ -1488,7 +1506,7 @@ INLINE void m_LoadMatrixd(Matrix *pA, co
  }
  
  
@@ -1519,7 +1869,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
     #define a(x) (pA->v[OF_##x] = 0.f)
     #define b(x) (pA->v[OF_##x] = 1.f)
-@@ -1510,7 +1529,7 @@ INLINE void m_LoadIdentity(Matrix *pA)
+@@ -1510,7 +1528,7 @@ INLINE void m_LoadIdentity(Matrix *pA)
  ** this routine may select an optimized matrix multiplication routine.
  */
  
@@ -1528,7 +1878,7 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
  {
  
  	if(pA->flags == MGLMAT_IDENTITY)
-@@ -1654,7 +1673,7 @@ void m_CombineMatrices(GLcontext context
+@@ -1654,7 +1672,7 @@ void m_CombineMatrices(GLcontext context
  }
  
  
@@ -1539,17 +1889,35 @@ diff -urNp MiniGL~/src/matrix.c MiniGL/src/matrix.c
     #define a(x) (pA->v[OF_##x])
 diff -urNp MiniGL~/src/others.c MiniGL/src/others.c
 --- MiniGL~/src/others.c	2002-11-30 08:15:44.000000000 +0200
-+++ MiniGL/src/others.c	2016-07-01 07:01:10.000000000 +0300
-@@ -17,7 +17,9 @@
++++ MiniGL/src/others.c	2017-08-20 03:11:00.000000000 +0300
+@@ -12,12 +12,14 @@
+  *
+  */
+ 
+-#include "sysinc.h"
+-
  #include <stdio.h>
  #include <stdlib.h>
  
++#include "sysinc.h"
++
 +#if 0
  static char rcsid[] = "$Id: others.c,v 1.1.1.1 2000/04/07 19:44:51 hfrieden Exp $";
 +#endif
  
  
  #ifndef __PPC__
+@@ -109,8 +111,8 @@ void GLBlendFunc(GLcontext context, GLen
+ {
+ 	ULONG src, dest;
+ 
+-   if((context->CurBlendSrc == sfactor) && (context->CurBlendDst == dfactor))
+-	return;
++	if((context->CurBlendSrc == sfactor) && (context->CurBlendDst == dfactor))
++		return;
+ 
+ 
+ 	context->CurBlendSrc = sfactor ;
 @@ -141,6 +143,8 @@ void GLBlendFunc(GLcontext context, GLen
  		BLD(ONE_MINUS_SRC_ALPHA);
  		BLD(DST_ALPHA);
@@ -1603,7 +1971,15 @@ diff -urNp MiniGL~/src/others.c MiniGL/src/others.c
  {
  	GLubyte *pixelline;
  	FILE *f;
-@@ -481,7 +490,7 @@ void MGLMainLoop(GLcontext context)
+@@ -439,6 +448,7 @@ void GLReadPixels(GLcontext context, GLi
+ 	free(pixelrect);
+ }
+ 
++#ifdef RUNLOOP_SUPPORT
+ void MGLKeyFunc(GLcontext context, KeyHandlerFn k)
+ {
+ 	context->KeyHandler = k;
+@@ -481,7 +491,7 @@ void MGLMainLoop(GLcontext context)
  
  	while (context->Running == GL_TRUE)
  	{
@@ -1612,14 +1988,46 @@ diff -urNp MiniGL~/src/others.c MiniGL/src/others.c
  		{
  			Class  = imsg->Class;
  			Code   = imsg->Code;
+@@ -522,5 +532,5 @@ void MGLMainLoop(GLcontext context)
+ 		}
+ 	} /* While running */
+ }
+-
++#endif /* RUNLOOP_SUPPORT */
+ 
+diff -urNp MiniGL~/src/sysinc.h MiniGL/src/sysinc.h
+--- MiniGL~/src/sysinc.h	2002-11-30 08:15:44.000000000 +0200
++++ MiniGL/src/sysinc.h	2016-07-01 07:01:10.000000000 +0300
+@@ -104,10 +104,10 @@ extern struct Library *Warp3DBase;
+ 
+ #pragma default-align
+ 
+-    #include "/include/mgl/gl.h"
++    #include "../include/mgl/gl.h"
+ 
+ 	#ifndef inline
+-	#define inline
++	#define inline inline
+ 	#endif
+ 
+     #define INLINE inline
 diff -urNp MiniGL~/src/texture.c MiniGL/src/texture.c
 --- MiniGL~/src/texture.c	2002-11-30 08:15:44.000000000 +0200
-+++ MiniGL/src/texture.c	2016-07-01 07:01:10.000000000 +0300
-@@ -20,8 +20,9 @@
++++ MiniGL/src/texture.c	2017-07-20 03:01:00.000000000 +0300
+@@ -12,16 +12,17 @@
+  *
+  */
+ 
+-#include "sysinc.h"
+-
+ #include <stdlib.h>
+ #include <stdio.h>
+ #ifdef __VBCC__
  #include <string.h> //inlined memcpy
  #endif
  
--
++#include "sysinc.h"
+ 
 +#if 0
  static char rcsid[] = "$Id: texture.c,v 1.1.1.1 2000/04/07 19:44:51 tfrieden Exp $";
 +#endif
@@ -2076,8 +2484,27 @@ diff -urNp MiniGL~/src/texture.c MiniGL/src/texture.c
  	GLFlagError(context, where == NULL, GL_INVALID_OPERATION);
 diff -urNp MiniGL~/src/vertexarray.c MiniGL/src/vertexarray.c
 --- MiniGL~/src/vertexarray.c	2002-11-30 08:15:46.000000000 +0200
-+++ MiniGL/src/vertexarray.c	2016-04-15 17:55:20.000000000 +0300
-@@ -2067,7 +2067,7 @@ void GLInterleavedArrays(GLcontext conte
++++ MiniGL/src/vertexarray.c	2017-07-20 03:01:00.000000000 +0300
+@@ -36,15 +36,14 @@
+ ** lower the general performance of glDrawArrays.
+ */
+ 
+-
+-#include "sysinc.h"
+-#include "vertexarray.h"
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <math.h>
+ 
++#include "sysinc.h"
++#include "vertexarray.h"
++
+ 
+ //Clipping (convert color and texcoords to vertexbuffer)
+ 
+@@ -2067,7 +2066,7 @@ void GLInterleavedArrays(GLcontext conte
                  }
          break;
          default:
@@ -2088,8 +2515,16 @@ diff -urNp MiniGL~/src/vertexarray.c MiniGL/src/vertexarray.c
     }
 diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
 --- MiniGL~/src/vertexbuffer.c	2002-11-30 08:15:46.000000000 +0200
-+++ MiniGL/src/vertexbuffer.c	2016-07-01 07:01:10.000000000 +0300
-@@ -37,7 +37,9 @@ This boolean is only set in the event of
++++ MiniGL/src/vertexbuffer.c	2017-07-20 03:01:00.000000000 +0300
+@@ -30,14 +30,16 @@ See include/mgl/mglmacros.h
+ This boolean is only set in the event of glTexCoord4f and cleared to GL_FALSE by glBegin
+ */
+ 
+-#include "sysinc.h"
+ #include <stdio.h>
++#include "sysinc.h"
+ 
+ #if defined (__VBCC__) && defined(__M68K__)
  	#include <inline/timer_protos.h>
  #endif
  
@@ -2099,7 +2534,17 @@ diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
  
  #ifdef __VBCC__
  extern void d_DrawPoints        (GLcontext context);
-@@ -354,7 +356,7 @@ void GLColor3f(GLcontext context, GLfloa
+@@ -122,8 +124,7 @@ void TMA_Start(LockTimeHandle *handle)
+ {
+ 	struct EClockVal eval;
+ 	extern struct ExecBase *SysBase;
+-	if (!TimerBase)
+-	{
++	if (!TimerBase) {
+ 		TimerBase = (struct Device *)FindName(&SysBase->DeviceList, "timer.device");
+ 	}
+ 
+@@ -354,7 +355,7 @@ void GLColor3f(GLcontext context, GLfloa
  	context->UpdateCurrentColor = GL_TRUE;
  }
  
@@ -2108,7 +2553,7 @@ diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
  {
  	//LOG(2, glColor4fv, "%f %f %f %f", v[0], v[1], v[2], v[3]);
  
-@@ -382,7 +384,7 @@ void GLColor4fv(GLcontext context, GLflo
+@@ -382,7 +383,7 @@ void GLColor4fv(GLcontext context, GLflo
  	context->UpdateCurrentColor = GL_TRUE;
  }
  
@@ -2117,7 +2562,7 @@ diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
  {
  	//LOG(2, glColor3fv, "%f %f %f", v[0], v[1], v[2]);
  
-@@ -436,7 +438,7 @@ void GLColor3ub(GLcontext context, GLuby
+@@ -436,7 +437,7 @@ void GLColor3ub(GLcontext context, GLuby
  	context->UpdateCurrentColor = GL_TRUE;
  }
  
@@ -2126,7 +2571,7 @@ diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
  {
  	register W3D_Float f = 1/255.0;
  
-@@ -450,7 +452,7 @@ void GLColor4ubv(GLcontext context, GLub
+@@ -450,7 +451,7 @@ void GLColor4ubv(GLcontext context, GLub
  	context->UpdateCurrentColor = GL_TRUE;
  }
  
@@ -2135,7 +2580,7 @@ diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
  {
  	register W3D_Float f = 1/255.0;
  	//LOG(2, glColor3ubv, "%f %f %f", v[0]*f, v[1]*f, v[2]*f);
-@@ -501,7 +503,7 @@ void GLMultiTexCoord2fARB(GLcontext cont
+@@ -501,7 +502,7 @@ void GLMultiTexCoord2fARB(GLcontext cont
  	}
  }
  
@@ -2144,7 +2589,7 @@ diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
  {
  	int u = unit - GL_TEXTURE0_ARB;
  
-@@ -532,7 +534,7 @@ void GLTexCoord2f(GLcontext context, GLf
+@@ -532,7 +533,7 @@ void GLTexCoord2f(GLcontext context, GLf
  	#undef thisvertex
  }
  
@@ -2153,7 +2598,7 @@ diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
  {
  	#define thisvertex context->VertexBuffer[context->VertexBufferPointer]
  
-@@ -557,7 +559,7 @@ void GLTexCoord4f(GLcontext context, GLf
+@@ -557,7 +558,7 @@ void GLTexCoord4f(GLcontext context, GLf
  	#undef thisvertex
  }
  
@@ -2162,7 +2607,7 @@ diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
  {
  	#define thisvertex context->VertexBuffer[context->VertexBufferPointer]
  
-@@ -596,7 +598,7 @@ void GLVertex4f(GLcontext context, GLflo
+@@ -596,7 +597,7 @@ void GLVertex4f(GLcontext context, GLflo
  	#undef thisvertex
  }
  
@@ -2171,7 +2616,7 @@ diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
  {
  	#define thisvertex context->VertexBuffer[context->VertexBufferPointer]
  
-@@ -619,7 +621,7 @@ void GLVertex4fv(GLcontext context, GLfl
+@@ -619,7 +620,7 @@ void GLVertex4fv(GLcontext context, GLfl
  	#undef thisvertex
  }
  
@@ -2180,7 +2625,7 @@ diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
  {
  	#define thisvertex context->VertexBuffer[context->VertexBufferPointer]
  
-@@ -667,7 +669,7 @@ void GLVertex2f(GLcontext context, GLflo
+@@ -667,7 +668,7 @@ void GLVertex2f(GLcontext context, GLflo
  	#undef thisvertex
  }
  
@@ -2189,7 +2634,7 @@ diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
  {
  	#define thisvertex context->VertexBuffer[context->VertexBufferPointer]
  
-@@ -769,7 +771,7 @@ void GLArrayElement(GLcontext context, G
+@@ -769,7 +770,7 @@ void GLArrayElement(GLcontext context, G
  {
  	context->ElementIndex[context->VertexBufferPointer++] = (UWORD)i;
  }
@@ -2200,7 +2645,22 @@ diff -urNp MiniGL~/src/vertexbuffer.c MiniGL/src/vertexbuffer.c
  {
 diff -urNp MiniGL~/src/vertexelements.c MiniGL/src/vertexelements.c
 --- MiniGL~/src/vertexelements.c	2002-11-30 08:15:48.000000000 +0200
-+++ MiniGL/src/vertexelements.c	2016-11-01 11:01:00.000000000 +0300
++++ MiniGL/src/vertexelements.c	2017-07-20 03:01:00.000000000 +0300
+@@ -1,11 +1,11 @@
+-#include "sysinc.h"
+-#include "vertexarray.h"
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <math.h>
+ 
++#include "sysinc.h"
++#include "vertexarray.h"
++
+ /*
+ ** glDrawElements pipeline by Christian 'Surgeon' Michael
+ ** Thanks to Olivier Fabre for bug-hunting
 @@ -31,23 +31,19 @@ extern int AE_ClipTriangle(GLcontext con
  extern Convfn Convert;
  
@@ -2338,180 +2798,3 @@ diff -urNp MiniGL~/src/vertexelements.c MiniGL/src/vertexelements.c
     }
     else
     {
-
-diff -urNp MiniGL~/demos/addtest.c MiniGL/demos/addtest.c
---- MiniGL~/demos/addtest.c	2002-11-30 08:14:54.000000000 +0200
-+++ MiniGL/demos/addtest.c	2016-04-15 17:55:10.000000000 +0300
-@@ -6,6 +6,7 @@
- #define M_PI 3.14159265
- #endif
- #include <stdio.h>
-+#include <string.h>
- 
- GLint width=640; GLint height=480;
- GLfloat startilt = 0.0;
-diff -urNp MiniGL~/demos/driverinfo.c MiniGL/demos/driverinfo.c
---- MiniGL~/demos/driverinfo.c	2002-11-30 08:14:56.000000000 +0200
-+++ MiniGL/demos/driverinfo.c	2016-04-15 17:55:10.000000000 +0300
-@@ -12,7 +12,7 @@
- 
- #include <Warp3D/Warp3D.h>
- #ifdef __VBCC__
--	#include <proto/warp3d.h>
-+	#include <proto/Warp3D.h>
- #else
- 	#ifdef __GNUC__
- 		#ifdef __PPC__
-@@ -23,6 +23,11 @@
- 	#elif defined(__STORM__)
- 		#include <clib/Warp3D_protos.h>
- 	#endif
-+	#ifdef __PPC__
-+	extern struct Library *Warp3DPPCBase;
-+	#else
-+	extern struct Library *Warp3DBase;
-+	#endif
- #endif
- #include <stdio.h>
- #include <stdlib.h>
-diff -urNp MiniGL~/demos/gears.c MiniGL/demos/gears.c
---- MiniGL~/demos/gears.c	2002-11-30 08:14:58.000000000 +0200
-+++ MiniGL/demos/gears.c	2016-04-15 17:55:10.000000000 +0300
-@@ -24,6 +24,7 @@
- #define M_PI 3.14159265
- #endif
- #include <stdio.h>
-+#include <string.h>
- 
- /* For portability... */
- #undef fcos
-@@ -475,12 +476,12 @@ draw_outside(float w1, float w2, float r
- }
- 
- Profile gear_profile[] =
--{0.000, 0.0,
--  0.300, 7.0,
--  0.340, 0.4,
--  0.550, 0.64,
--  0.600, 0.4,
--  0.950, 1.0
-+{ {0.000, 0.0},
-+  {0.300, 7.0},
-+  {0.340, 0.4},
-+  {0.550, 0.64},
-+  {0.600, 0.4},
-+  {0.950, 1.0}
- };
- 
- float a1 = 27.0;
-diff -urNp MiniGL~/demos/gears_stats.c MiniGL/demos/gears_stats.c
---- MiniGL~/demos/gears_stats.c	2002-11-30 08:14:58.000000000 +0200
-+++ MiniGL/demos/gears_stats.c	2016-04-15 17:55:10.000000000 +0300
-@@ -570,12 +570,12 @@ draw_outside(float w1, float w2, float r
- }
- 
- Profile gear_profile[] =
--{0.000, 0.0,
--  0.300, 7.0,
--  0.340, 0.4,
--  0.550, 0.64,
--  0.600, 0.4,
--  0.950, 1.0
-+{ {0.000, 0.0},
-+  {0.300, 7.0},
-+  {0.340, 0.4},
-+  {0.550, 0.64},
-+  {0.600, 0.4},
-+  {0.950, 1.0}
- };
- 
- float a1 = 27.0;
-diff -urNp MiniGL~/demos/gravity.c MiniGL/demos/gravity.c
---- MiniGL~/demos/gravity.c	2002-11-30 08:14:58.000000000 +0200
-+++ MiniGL/demos/gravity.c	2016-04-15 17:55:10.000000000 +0300
-@@ -1,6 +1,7 @@
- #include <mgl/gl.h>
- 
- #include <stdlib.h>
-+#include <string.h>
- 
- 
- GLint width=640; GLint height=480;
-@@ -214,18 +215,6 @@ void DoFrame(void)
- 	mglSwitchDisplay();
- }
- 
--#ifndef __VBCC__
--void keys(unsigned char c)
--{
--
--	switch (c)
--	{
--		case 0x1b:
--			mglExit();
--			break;
--	}
--}
--#else
- void keys(char c)
- {
- 
-@@ -236,13 +225,8 @@ void keys(char c)
- 			break;
- 	}
- }
--#endif
- 
--#ifdef __VBCC__
- int
--#else
--void
--#endif
- main(int argc, char *argv[])
- {
- 	int i;
-@@ -283,7 +267,5 @@ main(int argc, char *argv[])
- 
- 	mglDeleteContext();
- 	MGLTerm();
--#ifdef __VBCC__
- 	return 0;
--#endif
- }
-diff -urNp MiniGL~/demos/smtest.c MiniGL/demos/smtest.c
---- MiniGL~/demos/smtest.c	2002-11-30 08:15:00.000000000 +0200
-+++ MiniGL/demos/smtest.c	2016-04-15 17:55:10.000000000 +0300
-@@ -3,6 +3,7 @@
- 
- 
- #include <stdio.h>
-+#include <string.h>
- #include <mgl/gl.h>
- 
- #include <proto/dos.h>          // For Delay()
-@@ -60,10 +61,10 @@ int main(int argc, char **argv)
- 		Delay(100);
- 
- 
--		printf("Display info:\nDimensions:%d×%d×%d\n", li.width, li.height, li.depth);
--		printf("Pixel format: %d\n", li.pixel_format);
--		printf("Base address: 0x%x\n", li.base_address);
--		printf("Pitch: %d\n", li.pitch);
-+		printf("Display info:\nDimensions:%lu×%lu×%lu\n", li.width, li.height, li.depth);
-+		printf("Pixel format: %lu\n", li.pixel_format);
-+		printf("Base address: 0x%x\n", (unsigned) li.base_address);
-+		printf("Pitch: %lu\n", li.pitch);
- 	}
- 	else
- 	{
-diff -urNp MiniGL~/demos/texsub.c MiniGL/demos/texsub.c
---- MiniGL~/demos/texsub.c	2002-11-30 08:15:00.000000000 +0200
-+++ MiniGL/demos/texsub.c	2016-04-15 17:55:10.000000000 +0300
-@@ -53,6 +53,7 @@
- 
- #include <stdlib.h>
- #include <stdio.h>
-+#include <string.h>
- #include <math.h>
- 
- /*  Create checkerboard textures  */
