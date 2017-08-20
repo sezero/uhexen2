@@ -5,6 +5,22 @@ updates for gcc:
 - add -m68060 -m68881 to LDFLAGS
 - reorder includes for better compatibility with newer gcc
 
+updates for vbcc:
+
+- add -DNDEBUG to CFLAGS
+
+diff -urNp MiniGL~/makefile.vbcc68k MiniGL/makefile.vbcc68k
+--- MiniGL~/makefile.vbcc68k	2016-08-08 05:55:00.000000000 +0300
++++ MiniGL/makefile.vbcc68k	2017-07-20 03:01:00.000000000 +0300
+@@ -18,7 +18,7 @@
+ 
+ INCLUDE   = -Iinclude
+ # -IVBCC_INCLUDES/vincludem68k
+-DEBUG =
++DEBUG = -DNDEBUG
+ CFLAGS    = -O1 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(DEBUG)
+ OP_CFLAGS = -O2 -speed -c99 $(INCLUDE) -cpu=68060 -fpu=68060 $(DEBUG)
+ 
 diff -urNp MiniGL~/Build_gcc/makefile MiniGL/Build_gcc/makefile
 --- MiniGL~/Build_gcc/makefile	2016-07-01 07:11:00.000000000 +0300
 +++ MiniGL/Build_gcc/makefile	2017-07-20 03:01:00.000000000 +0300
