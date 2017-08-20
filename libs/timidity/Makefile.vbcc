@@ -14,7 +14,7 @@ MKLIB=cat $(OBJECTS) > timidity.lib
 
 CFLAGS += -D__AMIGA__
 CFLAGS += -DTIMIDITY_BUILD=1 -DTIMIDITY_STATIC=1
-CFLAGS += -O1 -speed -c99 -cpu=68060 -fpu=68060 -DNDEBUG=1
+CFLAGS += -O2 -speed -maxoptpasses=16 -c99 -cpu=68060 -fpu=68060 -DNDEBUG=1
 #CFLAGS += -DTIMIDITY_DEBUG
 INCLUDES = -I. -I$(UHEXEN2_SHARED)
 # for extra missing headers
