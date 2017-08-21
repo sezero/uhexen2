@@ -24,6 +24,9 @@ This is a minor bug fix and maintenance release:
 
 - Recursion optimizations to server world query procedures.
 
+- New 'viewpos' command to display client's position and angles (based
+  on FitzQuake version.)
+
 - Other minor fixes, tidy-ups, and protability tweaks.
 
 

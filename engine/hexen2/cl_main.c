@@ -288,6 +288,9 @@ static void CL_PrintEntities_f (void)
 	entity_t	*ent;
 	int	i;
 
+	if (cls.state != ca_connected)
+		return;
+
 	for (i = 0, ent = cl_entities; i < cl.num_entities; i++, ent++)
 	{
 		Con_Printf ("%3i:",i);
@@ -302,6 +305,37 @@ static void CL_PrintEntities_f (void)
 				ent->origin[2], ent->angles[0],
 				ent->angles[1], ent->angles[2]);
 	}
+}
+
+/*
+=============
+CL_Viewpos_f -- display client's position and angles
+		from FitzQuake
+=============
+*/
+void CL_Viewpos_f (void)
+{
+	if (cls.state != ca_connected)
+		return;
+#if 0
+	//camera position
+	Con_Printf ("Viewpos: (%i %i %i) %i %i %i\n",
+		(int)r_refdef.vieworg[0],
+		(int)r_refdef.vieworg[1],
+		(int)r_refdef.vieworg[2],
+		(int)r_refdef.viewangles[PITCH],
+		(int)r_refdef.viewangles[YAW],
+		(int)r_refdef.viewangles[ROLL]);
+#else
+	//player position
+	Con_Printf ("Viewpos: (%i %i %i) %i %i %i\n",
+		(int)cl_entities[cl.viewentity].origin[0],
+		(int)cl_entities[cl.viewentity].origin[1],
+		(int)cl_entities[cl.viewentity].origin[2],
+		(int)cl.viewangles[PITCH],
+		(int)cl.viewangles[YAW],
+		(int)cl.viewangles[ROLL]);
+#endif
 }
 
 
@@ -976,5 +1010,7 @@ void CL_Init (void)
 	Cmd_AddCommand ("playdemo", CL_PlayDemo_f);
 	Cmd_AddCommand ("timedemo", CL_TimeDemo_f);
 	Cmd_AddCommand ("sensitivity_save", CL_Sensitivity_save_f);
+
+	Cmd_AddCommand ("viewpos", CL_Viewpos_f);
 }
 
