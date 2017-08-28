@@ -71,7 +71,7 @@ typedef unsigned long long  uint64_t;
 #define HAVE_ALLOCA 1
 #define HAVE_GETENV 1
 #define HAVE_PUTENV 1
-#define HAVE_UNSETENV 1
+/* #undef HAVE_UNSETENV */
 #define HAVE_QSORT 1
 #define HAVE_ABS 1
 #define HAVE_BCOPY 1
@@ -113,15 +113,16 @@ typedef unsigned long long  uint64_t;
 #define HAVE_SNPRINTF 1
 #define HAVE_VSNPRINTF 1
 #define HAVE_SETJMP 1
-#define HAVE_CLOCK_GETTIME 1
-/*#define HAVE_ICONV 1*/
-/*#define HAVE_ICONV_H 1*/
+/* #undef HAVE_ICONV */
+/* #undef HAVE_ICONV_H */
 
 /* Enable various audio drivers */
-#define SDL_AUDIO_DRIVER_DARTALT	1
-/*#define SDL_AUDIO_DRIVER_DART	1*/
-/*#define SDL_AUDIO_DRIVER_DUMMY	1*/
+/*
+#define SDL_AUDIO_DRIVER_DART	1
 #define SDL_AUDIO_DRIVER_DISK	1
+#define SDL_AUDIO_DRIVER_DUMMY	1
+*/
+#define SDL_AUDIO_DRIVER_DARTALT	1
 
 /* Enable various cdrom drivers */
 #define SDL_CDROM_OS2	1
@@ -139,9 +140,11 @@ typedef unsigned long long  uint64_t;
 #define SDL_TIMER_OS2	1
 
 /* Enable various video drivers */
+/*
+#define SDL_VIDEO_DRIVER_DUMMY	1
+#define SDL_VIDEO_DRIVER_OS2FS	1
+*/
 #define SDL_VIDEO_DRIVER_OS2GROP	1
-/*#define SDL_VIDEO_DRIVER_DUMMY	1*/
-/*#define SDL_VIDEO_DRIVER_OS2FS	1*/
 
 /* Enable OpenGL support */
 /* Nothing here yet for OS/2... :( */
