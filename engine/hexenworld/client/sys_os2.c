@@ -61,15 +61,11 @@ FILE IO
 
 int Sys_mkdir (const char *path, qboolean crash)
 {
-	HDIR findhnd = HDIR_CREATE;
-	FILEFINDBUF3 findbuf = {0};
-	ULONG count = 1;
+	FILESTATUS3 fs;
 	APIRET rc = DosCreateDir(path, NULL);
-	if (rc == 0) return 0;
-	if (DosFindFirst(path, &findhnd, MUST_HAVE_DIRECTORY, &findbuf,
-			 sizeof(findbuf), &count, FIL_STANDARD) == NO_ERROR)
-	{
-		DosFindClose(findhnd);
+	if (rc == NO_ERROR) return 0;
+	if ((DosQueryPathInfo(path, FIL_STANDARD, &fs, sizeof(fs)) == NO_ERROR) &&
+						  (fs.attrFile & FILE_DIRECTORY)) {
 		return 0; /* dir exists */
 	}
 	if (crash)
@@ -97,30 +93,20 @@ int Sys_rename (const char *oldp, const char *newp)
 
 long Sys_filesize (const char *path)
 {
-	HDIR findhnd = HDIR_CREATE;
-	FILEFINDBUF3 findbuf = {0};
-	ULONG cnt = 1;
-	APIRET rc = DosFindFirst(path, &findhnd, FILE_NORMAL, &findbuf,
-				 sizeof(findbuf), &cnt, FIL_STANDARD);
-
+	FILESTATUS3 fs;
+	APIRET rc = DosQueryPathInfo(path, FIL_STANDARD, &fs, sizeof(fs));
 	if (rc != NO_ERROR) return -1;
-	DosFindClose(findhnd);
-	if (findbuf.attrFile & FILE_DIRECTORY)
+	if (fs.attrFile & FILE_DIRECTORY)
 		return -1;
-	return (long)findbuf.cbFile;
+	return (long)fs.cbFile;
 }
 
 int Sys_FileType (const char *path)
 {
-	HDIR findhnd = HDIR_CREATE;
-	FILEFINDBUF3 findbuf = {0};
-	ULONG cnt = 1;
-	APIRET rc = DosFindFirst(path, &findhnd, FILE_NORMAL, &findbuf,
-				 sizeof(findbuf), &cnt, FIL_STANDARD);
-
+	FILESTATUS3 fs;
+	APIRET rc = DosQueryPathInfo(path, FIL_STANDARD, &fs, sizeof(fs));
 	if (rc != NO_ERROR) return FS_ENT_NONE;
-	DosFindClose(findhnd);
-	if (findbuf.attrFile & FILE_DIRECTORY)
+	if (fs.attrFile & FILE_DIRECTORY)
 		return FS_ENT_DIRECTORY;
 	return FS_ENT_FILE;
 }

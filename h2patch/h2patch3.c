@@ -1,5 +1,5 @@
 /* h2patch3 -- hexen2 pak patch application using xdelta3
- * Copyright (C) 2007-2013  O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2007-2017  O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -338,30 +338,20 @@ int Sys_rename (const char *oldp, const char *newp)
 
 long Sys_filesize (const char *path)
 {
-	HDIR findhnd = HDIR_CREATE;
-	FILEFINDBUF3 findbuf = {0};
-	ULONG cnt = 1;
-	APIRET rc = DosFindFirst(path, &findhnd, FILE_NORMAL, &findbuf,
-				 sizeof(findbuf), &cnt, FIL_STANDARD);
-
+	FILESTATUS3 fs;
+	APIRET rc = DosQueryPathInfo(path, FIL_STANDARD, &fs, sizeof(fs));
 	if (rc != NO_ERROR) return -1;
-	DosFindClose(findhnd);
-	if (findbuf.attrFile & FILE_DIRECTORY)
+	if (fs.attrFile & FILE_DIRECTORY)
 		return -1;
-	return (long)findbuf.cbFile;
+	return (long)fs.cbFile;
 }
 
 int Sys_FileType (const char *path)
 {
-	HDIR findhnd = HDIR_CREATE;
-	FILEFINDBUF3 findbuf = {0};
-	ULONG cnt = 1;
-	APIRET rc = DosFindFirst(path, &findhnd, FILE_NORMAL, &findbuf,
-				 sizeof(findbuf), &cnt, FIL_STANDARD);
-
+	FILESTATUS3 fs;
+	APIRET rc = DosQueryPathInfo(path, FIL_STANDARD, &fs, sizeof(fs));
 	if (rc != NO_ERROR) return FS_ENT_NONE;
-	DosFindClose(findhnd);
-	if (findbuf.attrFile & FILE_DIRECTORY)
+	if (fs.attrFile & FILE_DIRECTORY)
 		return FS_ENT_DIRECTORY;
 	return FS_ENT_FILE;
 }
