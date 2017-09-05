@@ -151,16 +151,16 @@ static const char *pr_opnames[] =
 void PR_ExecuteProgram (func_t fnum)
 {
 	eval_t		*ptr, *opa, *opb, *opc;
+	float		*vecptr;
 	dstatement_t	*st;
 	dfunction_t	*f, *newf;
-	int profile, startprofile;
 	edict_t		*ed;
-	int		exitdepth;
 	int		jump_ofs;
+	int exitdepth;
+	int profile, startprofile;
 	/* switch/case support:  */
-	int		case_type = -1;
-	float	switch_float = 0; /* avoid 'maybe used unititialized' */
-	float	*vecptr;
+	int	case_type = -1;
+	float	switch_float = 0;
 
 	if (!fnum || fnum >= progs->numfunctions)
 	{
@@ -435,7 +435,8 @@ void PR_ExecuteProgram (func_t fnum)
 #ifdef PARANOID
 		NUM_FOR_EDICT(ed);	// Make sure it's in range
 #endif
-		opc->_int = ((eval_t *)((int *)&ed->v + opb->_int))->_int;
+		ptr = (eval_t *)((int *)&ed->v + opb->_int);
+		opc->_int = ptr->_int;
 		break;
 
 	case OP_LOAD_V:
@@ -459,7 +460,8 @@ void PR_ExecuteProgram (func_t fnum)
 			pr_xstatement = st - pr_statements;
 			PR_RunError("array index out of bounds: %d", i);
 		}
-		opc->_int = ((eval_t *)&pr_globals[st->a + i])->_int;
+		ptr = (eval_t *)&pr_globals[st->a + i];
+		opc->_int = ptr->_int;
 	  }	break;
 	case OP_FETCH_GBL_V:
 	  {	int i = (int)opb->_float;
@@ -725,27 +727,21 @@ void PR_ExecuteProgram (func_t fnum)
 	  {	float val;
 		float *retptr = &G_FLOAT(OFS_RETURN);
 		val = rand() * (1.0 / RAND_MAX);
-		//G_FLOAT(OFS_RETURN + 0) = val;
 		*retptr++ = val;
 		val = rand() * (1.0 / RAND_MAX);
-		//G_FLOAT(OFS_RETURN + 1) = val;
 		*retptr++ = val;
 		val = rand() * (1.0 / RAND_MAX);
-		//G_FLOAT(OFS_RETURN + 2) = val;
-		*retptr = val;
+		*retptr   = val;
 	  }	break;
 	case OP_RANDV1:
 	  {	float val;
 		float *retptr = &G_FLOAT(OFS_RETURN);
 		val = rand() * (1.0 / RAND_MAX) * opa->vector[0];
-		//G_FLOAT(OFS_RETURN + 0) = val;
 		*retptr++ = val;
 		val = rand() * (1.0 / RAND_MAX) * opa->vector[1];
-		//G_FLOAT(OFS_RETURN + 1) = val;
 		*retptr++ = val;
 		val = rand() * (1.0 / RAND_MAX) * opa->vector[2];
-		//G_FLOAT(OFS_RETURN + 2) = val;
-		*retptr = val;
+		*retptr   = val;
 	  }	break;
 	case OP_RANDV2:
 	  {	float val;
@@ -761,7 +757,6 @@ void PR_ExecuteProgram (func_t fnum)
 			{
 				val = opb->vector[i] + (rand() * (1.0 / RAND_MAX) * (opa->vector[i] - opb->vector[i]));
 			}
-			//G_FLOAT(OFS_RETURN + i) = val;
 			*retptr++ = val;
 		}
 	  }	break;
