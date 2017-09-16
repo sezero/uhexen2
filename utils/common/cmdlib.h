@@ -71,11 +71,11 @@ double	COM_GetTime (void);
 void	*SafeMalloc (size_t size);
 char	*SafeStrdup (const char *str);
 
+FUNC_NORETURN
+void	COM_Error (const char *error, ...) FUNC_PRINTF(1,2);
 #ifdef __WATCOMC__
 #pragma aux COM_Error aborts;
 #endif
-FUNC_NORETURN
-void	COM_Error (const char *error, ...) FUNC_PRINTF(1,2);
 
 int	CheckParm (const char *check);
 

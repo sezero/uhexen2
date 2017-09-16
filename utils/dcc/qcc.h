@@ -390,11 +390,11 @@ void	PR_Lex (void);	// reads the next token into pr_token and classifies its typ
 qboolean PR_Check (const char *string);
 void	PR_Expect (const char *string);
 
+FUNC_NORETURN
+void	PR_ParseError (const char *error, ...) FUNC_PRINTF(1,2);
 #ifdef __WATCOMC__
 #pragma aux PR_ParseError aborts;
 #endif
-FUNC_NORETURN
-void	PR_ParseError (const char *error, ...) FUNC_PRINTF(1,2);
 
 void	PR_NewLine (void);
 def_t	*PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocate);
