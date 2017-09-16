@@ -63,12 +63,12 @@ BOPS_Error
 Split out like this for ASM to call.
 ==================
 */
-__ASM_FUNCS_BEGIN	/* called from asm. */
+ASM_LINKAGE_BEGIN	/* called from asm. */
 FUNC_NORETURN void BOPS_Error (void);
 #if defined(__WATCOMC__)
 #pragma aux BOPS_Error aborts;
 #endif
-__ASM_FUNCS_END
+ASM_LINKAGE_END
 void BOPS_Error (void)
 {
 	Sys_Error ("BoxOnPlaneSide:  Bad signbits");

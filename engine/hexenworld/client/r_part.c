@@ -25,6 +25,7 @@
 #include "quakedef.h"
 #include "r_local.h"
 
+
 #define	MAX_PARTICLES		2048	// default max # of particles at one time
 #define	ABSOLUTE_MIN_PARTICLES	512	// no fewer than this no matter what's
 					// on the command line
@@ -237,8 +238,12 @@ R_EntityParticles
 ===============
 */
 
-#define NUMVERTEXNORMALS	162
-extern	float	r_avertexnormals[NUMVERTEXNORMALS][3];
+#if defined(GLQUAKE)  /* otherwise from r_alias.c (r_shared.h) */
+#define NUMVERTEXNORMALS 162
+static const float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
+#include "anorms.h"
+};
+#endif
 static	vec3_t	avelocities[NUMVERTEXNORMALS];
 static	float	beamlength = 16;
 
@@ -1018,8 +1023,7 @@ void R_RunQuakeEffect (vec3_t org, float distance)
 		p->vel[2] = 65*num + 80;
 
 		/*
-		for (j = 0; j < 2; j++)
-		{
+		for (j = 0; j < 2; j++) {
 			p->vel[j] = dmin[j] + ((dmax[j] - dmin[j]) * num);
 		}
 		*/

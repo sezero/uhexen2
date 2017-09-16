@@ -28,12 +28,14 @@
 #include "r_local.h"
 #include "d_local.h"
 
+ASM_LINKAGE_BEGIN
 int		r_p0[6], r_p1[6], r_p2[6];
 
 byte		*d_pcolormap;
 
 int		d_aflatcolor;
 int		d_xdenom;
+ASM_LINKAGE_END
 
 static edgetable_t	*pedgetable;
 
@@ -53,6 +55,7 @@ static edgetable_t	edgetables[12] =
 	{ 0, 1, r_p0, r_p2, NULL, 1, r_p0, r_p1, NULL }
 };
 
+ASM_LINKAGE_BEGIN
 // FIXME: some of these can become statics
 int		a_sstepxfrac, a_tstepxfrac, r_lstepx, a_ststepxwhole;
 int		r_sstepx, r_tstepx, r_lstepy, r_sstepy, r_tstepy;
@@ -61,7 +64,6 @@ int		d_aspancount, d_countextrastep;
 
 spanpackage_t	*a_spans;
 spanpackage_t	*d_pedgespanpackage;
-static int	ystart;
 byte		*d_pdest, *d_ptex;
 short		*d_pz;
 int		d_sfrac, d_tfrac, d_light, d_zi;
@@ -72,6 +74,13 @@ int		d_sfracbasestep, d_tfracbasestep;
 int		d_ziextrastep, d_zibasestep;
 int		d_pzextrastep, d_pzbasestep;
 
+byte	*skintable[MAX_SKIN_HEIGHT];
+ASM_LINKAGE_END
+int		skinwidth;
+byte	*skinstart;
+
+static int	ystart;
+
 typedef struct {
 	int		quotient;
 	int		remainder;
@@ -81,10 +90,6 @@ static adivtab_t	adivtab[32*32] =
 {
 #include "adivtab.h"
 };
-
-byte	*skintable[MAX_SKIN_HEIGHT];
-int		skinwidth;
-byte	*skinstart;
 
 #if !id386
 static spanpackage_t	spans[DPS_MAXSPANS + 1 + ((CACHE_SIZE - 1) / sizeof(spanpackage_t)) + 1];
@@ -129,7 +134,7 @@ static inline void do_PolysetDrawFinalVerts (finalvert_t *pv)
 		}
 	}
 }
-#endif
+#endif /* !id68k */
 
 static inline void do_PolysetDrawFinalVertsT (finalvert_t *pv)
 {
@@ -337,7 +342,7 @@ split3:
 		goto split;
 	}
 
-	return;			// entire tri is filled
+	return; // entire tri is filled
 
 split2:
 	temp = lp1;
@@ -375,7 +380,7 @@ nodraw:
 	D_PolysetRecursiveTriangle (lp3, lp1, new_p);
 	D_PolysetRecursiveTriangle (lp3, new_p, lp2);
 }
-#endif
+#endif /* !id68k */
 
 static void D_PolysetRecursiveTriangleT (int *lp1, int *lp2, int *lp3)
 {
@@ -415,7 +420,7 @@ split3:
 		goto split;
 	}
 
-	return;			// entire tri is filled
+	return; // entire tri is filled
 
 split2:
 	temp = lp1;
@@ -499,7 +504,7 @@ split3:
 		goto split;
 	}
 
-	return;			// entire tri is filled
+	return; // entire tri is filled
 
 split2:
 	temp = lp1;
@@ -591,7 +596,7 @@ split3:
 		goto split;
 	}
 
-	return;			// entire tri is filled
+	return; // entire tri is filled
 
 split2:
 	temp = lp1;
@@ -673,7 +678,7 @@ split3:
 		goto split;
 	}
 
-	return;			// entire tri is filled
+	return; // entire tri is filled
 
 split2:
 	temp = lp1;
@@ -1267,7 +1272,7 @@ static void D_PolysetSetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
 }
 
 
-#if	!id386
+#if	!id386 && !id68k
 
 #define D_PolysetCalcGradientsT		D_PolysetCalcGradients
 #define D_PolysetCalcGradientsT2	D_PolysetCalcGradients
@@ -1278,7 +1283,6 @@ static void D_PolysetSetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
 D_PolysetCalcGradients
 ================
 */
-#if !id68k
 static void D_PolysetCalcGradients (int skin_width)
 {
 	float	xstepdenominv, ystepdenominv, t0, t1;
@@ -1323,7 +1327,6 @@ static void D_PolysetCalcGradients (int skin_width)
 
 	a_ststepxwhole = skin_width * (r_tstepx >> 16) + (r_sstepx >> 16);
 }
-#endif
 
 #endif	/* !id386 */
 
@@ -1417,7 +1420,7 @@ static void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage)
 		pspanpackage++;
 	} while (pspanpackage->count != -999999);
 }
-#endif
+#endif /* !id68k */
 
 static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage)
 {

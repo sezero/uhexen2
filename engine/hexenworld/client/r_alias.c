@@ -33,27 +33,39 @@ mtriangle_t		*ptriangles;
 affinetridesc_t		r_affinetridesc;
 
 void			*acolormap;	// FIXME: should go away
+
+ASM_LINKAGE_BEGIN
 trivertx_t		*r_apverts;
 
 // TODO: these probably will go away with optimized rasterization
-newmdl_t		*pmdl;		//JFM: new model fmt
 vec3_t			r_plightvec;
 int			r_ambientlight;
 float			r_shadelight;
+ASM_LINKAGE_END
+
 aliashdr_t		*paliashdr;
 finalvert_t		*pfinalverts;
 auxvert_t		*pauxverts;
-static float		ziscale;
+
+newmdl_t		*pmdl;		//JFM: new model fmt
+
 static qmodel_t		*pmodel;
+static float		ziscale;
 
 static vec3_t		alias_forward, alias_right, alias_up;
 
 static maliasskindesc_t	*pskindesc;
 
 int			r_amodels_drawn;
+ASM_LINKAGE_BEGIN
 int			r_anumverts;
 
 float			aliastransform[3][4];
+
+float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
+#include "anorms.h"
+};
+ASM_LINKAGE_END
 
 typedef struct {
 	int	index0;
@@ -65,13 +77,6 @@ static aedge_t	aedges[12] =
 	{0, 1}, {1, 2}, {2, 3}, {3, 0},
 	{4, 5}, {5, 6}, {6, 7}, {7, 4},
 	{0, 5}, {1, 4}, {2, 7}, {3, 6}
-};
-
-#define NUMVERTEXNORMALS	162
-
-float	r_avertexnormals[NUMVERTEXNORMALS][3] =
-{
-#include "anorms.h"
 };
 
 

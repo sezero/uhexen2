@@ -1,6 +1,5 @@
 /*
  * d_iface.h -- interface header file for rasterization driver modules
- * $Id: d_iface.h,v 1.16 2008-03-30 12:25:16 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -21,8 +20,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __D_IFACE_H
-#define __D_IFACE_H
+#ifndef D_IFACE_H
+#define D_IFACE_H
 
 #define WARP_WIDTH		320
 #define WARP_HEIGHT		200
@@ -97,8 +96,10 @@ typedef struct
 
 extern cvar_t	r_drawflat;
 extern int		d_spanpixcount;
+ASM_LINKAGE_BEGIN
 extern int		r_framecount;	// sequence # of current frame since Quake
 					//  started
+ASM_LINKAGE_END
 extern qboolean	r_drawpolys;		// 1 if driver wants clipped polygons
 					//  rather than a span list
 extern qboolean	r_drawculledpolys;	// 1 if driver wants clipped polygons that
@@ -123,12 +124,14 @@ extern int	d_con_indirect;		// if 0, Quake will draw console directly
 					//  draw console via D_DrawRect. Must be
 					//  defined by the driver (vid_*.c)
 
+ASM_LINKAGE_BEGIN
 extern affinetridesc_t	r_affinetridesc;
 extern spritedesc_t	r_spritedesc;
 extern zpointdesc_t	r_zpointdesc;
 extern polydesc_t	r_polydesc;
 
 extern vec3_t	r_pright, r_pup, r_ppn;
+ASM_LINKAGE_END
 
 
 void D_DrawPoly (void);
@@ -136,7 +139,7 @@ void D_DrawSprite (void);
 void D_DrawSurfaces (qboolean Translucent);
 
 
-__ASM_FUNCS_BEGIN
+ASM_LINKAGE_BEGIN
 
 void D_PolysetDraw (void);
 void D_PolysetDrawT (void);
@@ -173,7 +176,7 @@ void D_PolysetRecursiveTriangle (int *p1, int *p2, int *p3);
 
 void D_DrawParticle (particle_t *pparticle);
 
-__ASM_FUNCS_END
+ASM_LINKAGE_END
 
 
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height);
@@ -206,7 +209,9 @@ extern byte				*r_skysource;
 // !!! must be kept the same as in quakeasm.h !!!
 #define TRANSPARENT_COLOR	0xFF
 
+ASM_LINKAGE_BEGIN
 extern void *acolormap;	// FIXME: should go away
+ASM_LINKAGE_END
 
 //=======================================================================//
 
@@ -251,5 +256,5 @@ extern vrect_t	scr_vrect;
 
 extern byte	*r_warpbuffer;
 
-#endif	/* __D_IFACE_H */
+#endif	/* D_IFACE_H */
 

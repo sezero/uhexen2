@@ -30,8 +30,6 @@
 #define FULLY_CLIPPED_CACHED	0x80000000
 #define FRAMECOUNT_MASK		0x7FFFFFFF
 
-unsigned int	cacheoffset;
-
 int		c_faceclip;	// number of faces clipped
 
 zpointdesc_t	r_zpointdesc;
@@ -42,14 +40,16 @@ clipplane_t	*entity_clipplanes;
 clipplane_t	view_clipplanes[4];
 clipplane_t	world_clipplanes[16];
 
-medge_t		*r_pedge;
-
-static qboolean	makeleftedge, makerightedge;
-qboolean	r_leftclipped, r_rightclipped;
-qboolean	r_nearzionly;
-
 int		sintable[SIN_BUFFER_SIZE];
 int		intsintable[SIN_BUFFER_SIZE];
+
+ASM_LINKAGE_BEGIN
+unsigned int	cacheoffset;
+
+medge_t		*r_pedge;
+
+qboolean	r_leftclipped, r_rightclipped;
+qboolean	r_nearzionly;
 
 mvertex_t	r_leftenter, r_leftexit;
 mvertex_t	r_rightenter, r_rightexit;
@@ -66,6 +66,7 @@ float		r_u1, r_v1, r_lzi1;
 int		r_ceilv1;
 
 qboolean	r_lastvertvalid;
+ASM_LINKAGE_END
 
 #if !id386 && !id68k
 static void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
@@ -377,6 +378,8 @@ static void R_EmitCachedEdge (void)
 	r_emitted = 1;
 }
 
+
+static qboolean makeleftedge, makerightedge;
 
 /*
 ================

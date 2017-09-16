@@ -1,6 +1,5 @@
 /*
  * refresh.h -- public interface to refresh functions
- * $Id: render.h,v 1.8 2008-04-22 13:06:10 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -21,8 +20,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __HX2_RENDER_H
-#define __HX2_RENDER_H
+#ifndef RENDER_H_
+#define RENDER_H_
 
 #define	TOP_RANGE	16			// soldier uniform colors
 #define	BOTTOM_RANGE	96
@@ -125,8 +124,10 @@ typedef struct
 //
 // refresh
 //
+ASM_LINKAGE_BEGIN
 extern	refdef_t	r_refdef;
 extern	vec3_t		r_origin, vpn, vright, vup;
+ASM_LINKAGE_END
 
 extern	struct texture_s	*r_notexture_mip;
 
@@ -164,5 +165,5 @@ void D_DeleteSurfaceCache (void);
 void D_InitCaches (void *buffer, int size);
 void R_SetVrect (vrect_t *pvrect, vrect_t *pvrectin, int lineadj);
 
-#endif	/* __HX2_RENDER_H */
+#endif	/* RENDER_H_ */
 

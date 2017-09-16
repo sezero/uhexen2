@@ -1,6 +1,5 @@
 /*
  * r_local.h -- private refresh defs
- * $Id: r_local.h,v 1.20 2009-06-22 14:00:22 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -21,8 +20,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __R_LOCAL_H
-#define __R_LOCAL_H
+#ifndef R_LOCAL_H
+#define R_LOCAL_H
 
 #ifndef GLQUAKE
 
@@ -119,7 +118,9 @@ void R_RenderWorld (void);
 
 extern	mplane_t	screenedge[4];
 
+ASM_LINKAGE_BEGIN
 extern	vec3_t	r_origin;
+ASM_LINKAGE_END
 
 extern	vec3_t	r_entorigin;
 
@@ -162,7 +163,7 @@ void R_BeginEdgeFrame (void);
 void R_ScanEdges (qboolean Translucent);
 
 
-__ASM_FUNCS_BEGIN
+ASM_LINKAGE_BEGIN
 
 #if id386
 void R_Surf8Patch (void);
@@ -212,7 +213,7 @@ void R_AliasTransformAndProjectFinalVerts (finalvert_t *fv, stvert_t *pstverts);
 void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
 #endif
 
-__ASM_FUNCS_END
+ASM_LINKAGE_END
 
 void R_AliasProjectFinalVert (finalvert_t *, auxvert_t *);
 
@@ -226,11 +227,14 @@ extern	int	*pfrustum_indexes[4];
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 #define	NEAR_CLIP	0.01
 
+ASM_LINKAGE_BEGIN
 extern	int	ubasestep, errorterm, erroradjustup, erroradjustdown;
 extern	int	vstartscan;
 
 extern	fixed16_t	sadjust, tadjust;
 extern	fixed16_t	bbextents, bbextentt;
+
+ASM_LINKAGE_END
 
 #define MAXBVERTINDEXES	1000	// new clipped vertices when clipping bmodels
 								//  to the world BSP
@@ -288,6 +292,7 @@ void R_ReadPointFile_f (void);
 extern	int	r_amodels_drawn;
 extern	edge_t	*auxedges;
 extern	int	r_numallocatededges;
+ASM_LINKAGE_BEGIN
 extern	edge_t	*r_edges, *edge_p, *edge_max;
 
 extern	edge_t	*newedges[MAXHEIGHT];
@@ -300,9 +305,13 @@ extern	edge_t	edge_head;
 extern	edge_t	edge_tail;
 extern	edge_t	edge_aftertail;
 extern	int	r_bmodelactive;
+ASM_LINKAGE_END
+
 extern	vrect_t	*pconupdate;
 
+ASM_LINKAGE_BEGIN
 extern	float	aliasxscale, aliasyscale, aliasxcenter, aliasycenter;
+ASM_LINKAGE_END
 extern	float	r_aliastransition, r_resfudge;
 
 extern	int	r_outofsurfaces;
@@ -332,8 +341,10 @@ extern	int	r_clipflags;
 extern	int	r_dlightframecount;
 extern	qboolean	r_fov_greater_than_90;
 
+ASM_LINKAGE_BEGIN
 extern	int	FoundTrans;
 extern	int	TransCount;
+ASM_LINKAGE_END
 
 void R_StoreEfrags (efrag_t **ppefrag);
 void R_TimeRefresh_f (void);
@@ -349,7 +360,7 @@ void R_cshift_f (void);
 void R_SplitEntityOnNode2 (mnode_t *node);
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
 
-#endif	/*  !GLQUAKE	*/
+#endif	/* !GLQUAKE	*/
 
-#endif	/* __R_LOCAL_H	*/
+#endif	/* R_LOCAL_H	*/
 

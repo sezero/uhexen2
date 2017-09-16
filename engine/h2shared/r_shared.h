@@ -22,8 +22,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __R_SHARED_H
-#define __R_SHARED_H
+#ifndef R_SHARED_H
+#define R_SHARED_H
 
 #ifndef GLQUAKE
 
@@ -49,13 +49,14 @@
 
 //=============================================================================
 
-
 extern void	R_DrawLine (polyvert_t *polyvert0, polyvert_t *polyvert1);
 
 
+ASM_LINKAGE_BEGIN
 extern	int	cachewidth;
 extern	pixel_t	*cacheblock;
 extern	int	screenwidth;
+ASM_LINKAGE_END
 
 extern	float	pixelAspect;
 
@@ -113,7 +114,9 @@ typedef struct surf_s
 	int		pad[2];		// to 64 bytes
 } surf_t;
 
+ASM_LINKAGE_BEGIN
 extern	surf_t	*surfaces, *surface_p, *surf_max;
+ASM_LINKAGE_END
 
 // surfaces are generated in back to front order by the bsp, so if a surf
 // pointer is greater than another one, it should be drawn in front
@@ -126,22 +129,26 @@ extern	surf_t	*surfaces, *surface_p, *surf_max;
 extern	vec3_t	sxformaxis[4];	// s axis transformed into viewspace
 extern	vec3_t	txformaxis[4];	// t axis transformed into viewspac
 
+ASM_LINKAGE_BEGIN
 extern	vec3_t	modelorg, base_modelorg;
 
 extern	float	xcenter, ycenter;
 extern	float	xscale, yscale;
 extern	float	xscaleinv, yscaleinv;
 extern	float	xscaleshrink, yscaleshrink;
+ASM_LINKAGE_END
 
 extern	int	d_lightstylevalue[256];	// 8.8 frac of base light value
 
+ASM_LINKAGE_BEGIN
 extern	int	ubasestep, errorterm, erroradjustup, erroradjustdown;
+ASM_LINKAGE_END
 
 extern	int	r_skymade;
 
-__ASM_FUNCS_BEGIN
+ASM_LINKAGE_BEGIN
 void TransformVector (vec3_t in, vec3_t out);
-__ASM_FUNCS_END
+ASM_LINKAGE_END
 
 void R_MakeSky (void);
 
@@ -169,12 +176,18 @@ typedef struct edge_s
 	medge_t		*owner;
 } edge_t;
 
+ASM_LINKAGE_BEGIN
 extern	byte	*mainTransTable;
 extern	byte	*transTable;	/* the particle table */
+
+#define NUMVERTEXNORMALS 162
+extern float	r_avertexnormals[NUMVERTEXNORMALS][3];
+ASM_LINKAGE_END
+
 extern	byte	*playerTranslation;
 extern	const int	color_offsets[MAX_PLAYER_CLASS];
 
-#endif	/*  !GLQUAKE	*/
+#endif	/* !GLQUAKE	*/
 
-#endif	/* __R_SHARED_H	*/
+#endif	/* R_SHARED_H	*/
 

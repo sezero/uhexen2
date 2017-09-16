@@ -167,12 +167,12 @@ wavinfo_t GetWavinfo (const char *name, byte *wav, size_t wavlength);
 
 void SND_InitScaletable (void);
 
-__ASM_FUNCS_BEGIN
+ASM_LINKAGE_BEGIN
 #if id386
 void Snd_WriteLinearBlastStereo16 (void);
 void SND_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int endtime);
 #endif
-__ASM_FUNCS_END
+ASM_LINKAGE_END
 
 #endif	/* __HX2_SOUND_H */
 

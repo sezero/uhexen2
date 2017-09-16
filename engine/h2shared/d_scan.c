@@ -26,12 +26,14 @@
 #include "r_local.h"
 #include "d_local.h"
 
+ASM_LINKAGE_BEGIN
 unsigned char	*r_turb_pbase, *r_turb_pdest;
 fixed16_t		r_turb_s, r_turb_t, r_turb_sstep, r_turb_tstep;
 int				*r_turb_turb;
 int				r_turb_spancount;
 byte			scanList[SCAN_SIZE];
 int				ZScanCount;
+ASM_LINKAGE_END
 
 
 /*
@@ -448,7 +450,7 @@ void D_DrawSpans8 (espan_t *pspan)
 
 	} while ((pspan = pspan->pnext) != NULL);
 }
-#endif
+#endif /* !id68k */
 
 void D_DrawSpans8T (espan_t *pspan)
 {
@@ -650,7 +652,7 @@ void D_DrawZSpans (espan_t *pspan)
 
 	} while ((pspan = pspan->pnext) != NULL);
 }
-#endif
+#endif /* !id68k */
 
 /*
 =============

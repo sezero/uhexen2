@@ -49,22 +49,24 @@ surf_t	*surfaces, *surface_p, *surf_max;
 edge_t	*newedges[MAXHEIGHT];
 edge_t	*removeedges[MAXHEIGHT];
 
-espan_t	*span_p, *max_span_p;
+ASM_LINKAGE_BEGIN
+espan_t *span_p;
 
-int	r_currentkey;
+float	fv;
 
 int	current_iv;
 
 int	edge_head_u_shift20, edge_tail_u_shift20;
+ASM_LINKAGE_END
 
 edge_t	edge_head;
 edge_t	edge_tail;
 edge_t	edge_aftertail;
 edge_t	edge_sentinel;
 
-float	fv;
-
 int		TransCount;
+
+int	r_currentkey;
 
 static void (*pdrawfunc)(void);
 static void (*pdrawTfunc)(void);
@@ -943,6 +945,7 @@ static void R_GenerateSpansBackward (void)
 }
 
 static qboolean TransList[SCAN_SIZE];
+static espan_t *max_span_p;
 
 /*
 ==============

@@ -251,8 +251,12 @@ R_EntityParticles
 ===============
 */
 
-#define NUMVERTEXNORMALS	162
-extern	float	r_avertexnormals[NUMVERTEXNORMALS][3];
+#if defined(GLQUAKE)  /* otherwise from r_alias.c (r_shared.h) */
+#define NUMVERTEXNORMALS 162
+static const float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
+#include "anorms.h"
+};
+#endif
 static	vec3_t	avelocities[NUMVERTEXNORMALS];
 static	float	beamlength = 16;
 

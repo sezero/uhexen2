@@ -507,13 +507,6 @@ ALIAS MODELS
 =============================================================
 */
 
-#define NUMVERTEXNORMALS	162
-/* needed in R_EntityParticles() */
-float	r_avertexnormals[NUMVERTEXNORMALS][3] =
-{
-#include "anorms.h"
-};
-
 static vec3_t	shadevector;
 static float	shadelight, ambientlight;
 

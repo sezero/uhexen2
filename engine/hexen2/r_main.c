@@ -30,9 +30,11 @@
 static vec3_t	viewlightvec;
 static alight_t	r_viewlighting = {128, 192, viewlightvec};
 
+ASM_LINKAGE_BEGIN
 #if id386
 void		*colormap;
 #endif
+ASM_LINKAGE_END
 
 float		r_time1;
 float		r_lasttime1 = 0;

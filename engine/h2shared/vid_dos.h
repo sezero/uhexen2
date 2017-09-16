@@ -54,8 +54,10 @@ typedef struct vmode_s
 extern int	numvidmodes;
 extern vmode_t	*pvidmodes;
 
+ASM_LINKAGE_BEGIN
 extern int	VGA_width, VGA_height, VGA_rowbytes, VGA_bufferrowbytes;
 extern byte	*VGA_pagebase;
+ASM_LINKAGE_END
 extern vmode_t	*VGA_pcurmode;
 
 extern cvar_t	vid_wait;
@@ -78,11 +80,11 @@ void VGA_BeginDirectRect (viddef_t *lvid, struct vmode_s *pcurrentmode, int x,
 void VGA_EndDirectRect (viddef_t *lvid, struct vmode_s *pcurrentmode, int x,
 					int y, int width, int height);
 
-__ASM_FUNCS_BEGIN
+ASM_LINKAGE_BEGIN
 void VGA_UpdatePlanarScreen (void *srcbuffer);
 void VGA_UpdateLinearScreen (void *srcptr, void *destptr, int width,
 					int height, int srcrowbytes, int destrowbytes);
-__ASM_FUNCS_END
+ASM_LINKAGE_END
 
 #endif	/* __VID_DOS_H */
 

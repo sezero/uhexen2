@@ -1,6 +1,5 @@
 /*
  * d_local.h -- private rasterization driver defs
- * $Id: d_local.h,v 1.18 2008-04-03 07:11:49 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -21,8 +20,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __D_LOCAL_H
-#define __D_LOCAL_H
+#ifndef D_LOCAL_H
+#define D_LOCAL_H
 
 #include "r_shared.h"
 
@@ -94,6 +93,8 @@ extern qboolean		d_roverwrapped;
 extern surfcache_t	*sc_rover;
 extern surfcache_t	*d_initial_rover;
 
+ASM_LINKAGE_BEGIN
+
 extern float	d_sdivzstepu, d_tdivzstepu, d_zistepu;
 extern float	d_sdivzstepv, d_tdivzstepv, d_zistepv;
 extern float	d_sdivzorigin, d_tdivzorigin, d_ziorigin;
@@ -101,10 +102,12 @@ extern float	d_sdivzorigin, d_tdivzorigin, d_ziorigin;
 extern fixed16_t	sadjust, tadjust;
 extern fixed16_t	bbextents, bbextentt;
 
+ASM_LINKAGE_END
+
 
 extern void (*d_drawspans) (espan_t *pspan);
 
-__ASM_FUNCS_BEGIN
+ASM_LINKAGE_BEGIN
 
 void D_DrawSpans8 (espan_t *pspans);
 void D_DrawSpans8T(espan_t *pspans);
@@ -170,7 +173,7 @@ void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage);
 void D_PolysetSetEdgeTable (void);
 void D_RasterizeAliasPolySmooth (void);
 
-__ASM_FUNCS_END
+ASM_LINKAGE_END
 
 
 void Turbulent8 (surf_t *s);
@@ -183,10 +186,11 @@ surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel);
 void D_Patch (void);
 
 
+ASM_LINKAGE_BEGIN
+
 extern short	*d_pzbuffer;
 extern int	d_zrowbytes, d_zwidth;
 
-extern int	*d_pscantable;
 extern int	d_scantable[MAXHEIGHT];
 
 extern int	d_vrectx, d_vrecty, d_vrectright_particle, d_vrectbottom_particle;
@@ -197,13 +201,17 @@ extern pixel_t	*d_viewbuffer;
 
 extern short	*zspantable[MAXHEIGHT];
 
-extern int	d_aflatcolor;
-extern int	d_minmip;
-extern float	d_scalemip[3];
-
 #define	SCAN_SIZE		2048
 
 extern byte	scanList[SCAN_SIZE];
+extern int	ZScanCount;
 
-#endif	/* __D_LOCAL_H */
+extern int	d_aflatcolor;
+
+ASM_LINKAGE_END
+
+extern int	d_minmip;
+extern float	d_scalemip[3];
+
+#endif	/* D_LOCAL_H */
 

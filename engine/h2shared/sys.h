@@ -114,39 +114,39 @@ char *Sys_GetClipboardData (void);
 #	define	id68k		0
 #endif
 
-/* asm linkage */
+/* C-linkage for C-ASM shared global vars and functions */
 #if id386
 #   if defined(__cplusplus)
-#	define	__ASM_FUNCS_BEGIN	extern "C" {
-#	define	__ASM_FUNCS_END			}
+#	define	ASM_LINKAGE_BEGIN	extern "C" {
+#	define	ASM_LINKAGE_END			}
 #   else
-#	define	__ASM_FUNCS_BEGIN
-#	define	__ASM_FUNCS_END
+#	define	ASM_LINKAGE_BEGIN
+#	define	ASM_LINKAGE_END
 #   endif
 
 #elif id68k
 #   if defined(__cplusplus)
-#	define	__ASM_FUNCS_BEGIN	extern "C" {
-#	define	__ASM_FUNCS_END			}
+#	define	ASM_LINKAGE_BEGIN	extern "C" {
+#	define	ASM_LINKAGE_END			}
 #   else
-#	define	__ASM_FUNCS_BEGIN
-#	define	__ASM_FUNCS_END
+#	define	ASM_LINKAGE_BEGIN
+#	define	ASM_LINKAGE_END
 #   endif
 
 #else
-#	define	__ASM_FUNCS_BEGIN
-#	define	__ASM_FUNCS_END
+#	define	ASM_LINKAGE_BEGIN
+#	define	ASM_LINKAGE_END
 #endif
 
 #if id386 /* fpu stuff with x86 asm */
-__ASM_FUNCS_BEGIN
+ASM_LINKAGE_BEGIN
 void	MaskExceptions (void);
 void	Sys_SetFPCW (void);
 void	Sys_LowFPPrecision (void);
 void	Sys_HighFPPrecision (void);
 void	Sys_PopFPCW (void);
 void	Sys_PushFPCW_SetHigh (void);
-__ASM_FUNCS_END
+ASM_LINKAGE_END
 #else
 #define MaskExceptions()	do {} while (0)
 #define Sys_SetFPCW()		do {} while (0)

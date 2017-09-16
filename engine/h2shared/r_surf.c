@@ -26,6 +26,7 @@
 
 drawsurf_t	r_drawsurf;
 
+ASM_LINKAGE_BEGIN
 int		lightleft, sourcesstep, blocksize, sourcetstep;
 int		lightdelta, lightdeltastep;
 int		lightright, lightleftstep, lightrightstep, blockdivshift;
@@ -38,6 +39,7 @@ int		r_stepback;
 int		r_lightwidth;
 int		r_numhblocks, r_numvblocks;
 unsigned char	*r_source, *r_sourcemax;
+ASM_LINKAGE_END
 
 static unsigned int	blocklights[18*18];
 

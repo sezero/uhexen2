@@ -147,9 +147,9 @@ void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
 float anglemod (float a);
 
 struct mplane_s;
-__ASM_FUNCS_BEGIN
+ASM_LINKAGE_BEGIN
 int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct mplane_s *plane);
-__ASM_FUNCS_END
+ASM_LINKAGE_END
 
 #define BOX_ON_PLANE_SIDE(emins, emaxs, p)				\
 	(((p)->type < 3) ?						\
@@ -158,9 +158,9 @@ __ASM_FUNCS_END
 		:							\
 			BoxOnPlaneSide((emins), (emaxs), (p)))
 
-__ASM_FUNCS_BEGIN
+ASM_LINKAGE_BEGIN
 fixed16_t Invert24To16 (fixed16_t val);
-__ASM_FUNCS_END
+ASM_LINKAGE_END
 
 #endif	/* __MATHLIB_H */
 
