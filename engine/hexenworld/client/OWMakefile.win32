@@ -282,7 +282,7 @@ BUILD_TARGET=$(SW_BINARY)
 !ifeq USE_MGL yes
 CPPFLAGS+= -DMGL_DLL
 INCLUDES+= -I$(OSLIBS)/windows/scitech/include
-LIBS+= $(OSLIBS)/windows/scitech/x86/mglfxi.lib
+LIBS+= $(OSLIBS)/windows/scitech/watcom/mglfxi.lib
 !endif
 !else
 CPPFLAGS+= $(GL_DEFS)
