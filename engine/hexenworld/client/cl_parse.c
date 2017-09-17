@@ -1095,7 +1095,7 @@ static void CL_NamePrint(void)
 
 	idx = MSG_ReadByte ();
 	if (idx >= 0 && idx < MAX_CLIENTS)
-		Con_Printf ("%s", (char *)&cl.players[idx].name);
+		Con_Printf ("%s", cl.players[idx].name);
 
 	con_ormask = 0;
 }

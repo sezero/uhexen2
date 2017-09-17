@@ -1,6 +1,4 @@
-/*
- * litfile.c
- * $Id: litfile.c,v 1.3 2008-01-29 12:03:13 sezero Exp $
+/* litfile.c
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +51,7 @@ void MakeLITFile (const char *filename)
 	litheader.version = LittleLong(LIT_VERSION);
 
 	fwrite (&litheader, sizeof(litheader), 1, litfile);
-	fwrite (&newdlightdata, newlightdatasize, 1, litfile);
+	fwrite (newdlightdata, newlightdatasize, 1, litfile);
 
 	fclose (litfile);
 	printf ("Wrote litfile: %s\n", litname);

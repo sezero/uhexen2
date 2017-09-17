@@ -50,7 +50,7 @@ static void SV_SetMaster_f (void)
 	char	data[2];
 	int		i;
 
-	memset (&master_adr, 0, sizeof(master_adr));
+	memset (master_adr, 0, sizeof(master_adr));
 
 	for (i = 1; i < Cmd_Argc(); i++)
 	{

@@ -451,7 +451,7 @@ static void PF_name_print (void)
 		client_t	*cl;
 		int			i;
 
-		Sys_Printf("%s", (char *)&svs.clients[idx - 1].name);
+		Sys_Printf("%s", svs.clients[idx - 1].name);
 
 		for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 		{
@@ -463,7 +463,7 @@ static void PF_name_print (void)
 				{//not fully in so won't know name yet, explicitly say the name
 					MSG_WriteByte (&cl->netchan.message, svc_print);
 					MSG_WriteByte (&cl->netchan.message, style);
-					MSG_WriteString (&cl->netchan.message, (char *)&svs.clients[idx - 1].name);
+					MSG_WriteString (&cl->netchan.message, svs.clients[idx - 1].name);
 				}
 				continue;
 			}

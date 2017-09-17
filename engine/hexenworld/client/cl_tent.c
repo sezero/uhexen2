@@ -198,6 +198,7 @@ static sfx_t		*cl_sfx_flameend;
 static sfx_t		*cl_sfx_teleport[5];
 static sfx_t		*cl_sfx_ravengo;
 
+// CODE --------------------------------------------------------------------
 
 /*
 =================
@@ -290,8 +291,8 @@ CL_ClearTEnts
 */
 void CL_ClearTEnts (void)
 {
-	memset (&cl_beams, 0, sizeof(cl_beams));
-	memset (&cl_explosions, 0, sizeof(cl_explosions));
+	memset (cl_beams, 0, sizeof(cl_beams));
+	memset (cl_explosions, 0, sizeof(cl_explosions));
 	memset (cl_Streams, 0, sizeof(cl_Streams));
 }
 
