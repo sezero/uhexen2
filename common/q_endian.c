@@ -22,6 +22,7 @@
  */
 
 #include "q_stdinc.h"
+#include "compiler.h"
 #include "q_endian.h"
 
 #if ENDIAN_RUNTIME_DETECT
@@ -33,14 +34,20 @@
 int host_byteorder;
 int host_bigendian; /* qboolean */
 
+FUNC_NOINLINE FUNC_NOCLONE
+volatile uint32_t get_0x12345678 (void) {
+	return 0x12345678;
+	/*       U N I X  */
+}
+
 int DetectByteorder (void)
 {
-	union
-	{
+	volatile union {
 		uint32_t i;
-		char c[4];
-	} bint = {0x12345678};
-		/*    U N I X */
+		uint8_t c[4];
+	} bint;
+
+	bint.i = get_0x12345678 ();
 
 	/*
 	BE_ORDER:  12 34 56 78
@@ -53,11 +60,11 @@ int DetectByteorder (void)
 		   N  U  X  I
 	*/
 
-	if ( bint.c[0] == 0x12 )
+	if (bint.c[0] == 0x12)
 		return BIG_ENDIAN;
-	else if ( bint.c[0] == 0x78 )
+	if (bint.c[0] == 0x78)
 		return LITTLE_ENDIAN;
-	else if ( bint.c[0] == 0x34 )
+	if (bint.c[0] == 0x34)
 		return PDP_ENDIAN;
 
 	return -1;
