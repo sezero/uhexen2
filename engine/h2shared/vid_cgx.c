@@ -90,7 +90,7 @@ extern void c2p1x1_8_c5_bm(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d2,
 extern void c2p1x1_8_c5_bm_040(REG(d0, WORD chunkyx), REG(d1, WORD chunkyy), REG(d2, WORD offsx), REG(d3, WORD offsy), REG(a0, APTR chunkyscreen), REG(a1, struct BitMap *bitmap));
 ASM_LINKAGE_END
 #endif /* USE_C2P */
-#endif
+#endif /* PLATFORM_AMIGAOS3 */
 
 /* ----------------------------------------- */
 
@@ -514,7 +514,7 @@ static void VID_DestroyWindow (void)
 		pointermem = NULL;
 	}*/
 
-#ifdef USE_C2P
+#if defined(PLATFORM_AMIGAOS3) && defined(USE_C2P)
 	use_c2p = false;
 
 	if (sbuf[0])
@@ -573,7 +573,9 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 	if (vid_config_fscr.integer)
 	{
 		ULONG ModeID;
+		#if defined(PLATFORM_AMIGAOS3) && defined(USE_C2P)
 		struct BitMap *bm;
+		#endif
 
 		/*ModeID = BestCModeIDTags(
 			CYBRBIDTG_Depth, 8,
@@ -590,7 +592,7 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 			SA_Quiet, TRUE,
 			TAG_DONE);
 
-#ifdef USE_C2P
+		#if defined(PLATFORM_AMIGAOS3) && defined(USE_C2P)
 		currentBitMap = 0;
 		bm = screen->RastPort.BitMap;
 
@@ -599,14 +601,14 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
 			if ((sbuf[0] = AllocScreenBuffer(screen, 0, SB_SCREEN_BITMAP)) && (sbuf[1] = AllocScreenBuffer(screen, 0, 0)))
 			{
 				use_c2p = true;
-#ifndef C2P_BITMAP
+				#ifndef C2P_BITMAP
 				c2p_init(modelist[modenum].width, modelist[modenum].height, 0, bm->BytesPerRow*bm->Rows);
-#endif
+				#endif
 				// this fixes some RTG modes which would otherwise display garbage on the 1st buffer swap
 				//VID_Update(NULL);
 			}
 		}
-#endif
+		#endif
 	}
 
 	if (screen)
