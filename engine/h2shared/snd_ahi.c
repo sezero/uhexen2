@@ -97,8 +97,10 @@ static qboolean S_AHI_Init(dma_t *dma)
 		return true;
 
 	ad = (struct AHIdata *) AllocVec(sizeof(*ad), MEMF_ANY);
-	if (!ad)
+	if (!ad) {
+		Con_Printf("AHI: AllocVec(%u) failed.\n", (unsigned) sizeof(*ad));
 		return false;
+	}
 
 	speed = desired_speed;
 	shm = dma;
@@ -130,6 +132,12 @@ static qboolean S_AHI_Init(dma_t *dma)
 								AHIDB_Bits, (IPTR) &bits,
 								TAG_END);
 
+					Con_DPrintf("AHI_GetAudioAttrs: %u bits, %u channels\n", (unsigned) bits, (unsigned) channels);
+					if (channels > desired_channels)
+						channels = desired_channels;
+					if (bits > desired_bits)
+						bits = desired_bits;
+
 					AHI_ControlAudio(ad->audioctrl,
 								AHIC_MixFreq_Query, (IPTR) &speed,
 								TAG_END);
@@ -137,10 +145,6 @@ static qboolean S_AHI_Init(dma_t *dma)
 					if (bits == 8 || bits == 16)
 					{
 						unsigned buffer_size;
-						if (channels > desired_channels)
-							channels = desired_channels;
-						if (bits > desired_bits)
-							bits = desired_bits;
 
 						/* pick a buffer size that is a power of 2 (by masking off low bits) */
 						buffer_size = r = (ULONG)(speed * 0.15f);
@@ -191,7 +195,7 @@ static qboolean S_AHI_Init(dma_t *dma)
 											AHIC_Play, TRUE,
 											TAG_END);
 
-								if (r == 0)
+								if (r == 0) /* SUCCESS, FINALLY. */
 								{
 									AHI_Play(ad->audioctrl,
 										AHIP_BeginChannel, 0,
@@ -213,20 +217,39 @@ static qboolean S_AHI_Init(dma_t *dma)
 									Con_Printf("AHI mode \"%s\", %u bytes buffer\n", modename, buffer_size);
 									return true;
 								}
+								else {
+									Con_Printf("AHI: LoadSound failed.\n");
+								}
 							}
+						}
+						else {
+							Con_Printf("AHI: AllocVec(%u) failed.\n", buffer_size);
 						}
 						FreeVec(ad->samplebuffer);
 					}
+					else {
+						Con_Printf("AHI: %u bit format not supported.\n", (unsigned) bits);
+					}
 					AHI_FreeAudio(ad->audioctrl);
 				}
-				else
-					Con_Printf("Failed to allocate AHI audio\n");
+				else {
+					Con_Printf("AHI: AllocAudio failed.\n");
+				}
 
 				CloseDevice((struct IORequest *)ad->ahireq);
 			}
+			else {
+				Con_Printf("AHI: OpenDevice failed.\n");
+			}
 			DeleteIORequest((struct IORequest *)ad->ahireq);
 		}
+		else {
+			Con_Printf("AHI: CreateIORequest failed.\n");
+		}
 		DeleteMsgPort(ad->msgport);
+	}
+	else {
+		Con_Printf("AHI: CreateMsgPort failed.\n");
 	}
 
 	shm->buffer = NULL;
