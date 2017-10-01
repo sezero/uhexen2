@@ -495,7 +495,7 @@ static void SV_NewChaseDir (edict_t *actor, edict_t *enemy, float dist)
 	}
 
 	// try other directions
-	if ( ((rand() & 3) & 1) || abs(deltay) > abs(deltax) )//If north/sounth diff is greater than east/west diff?!!
+	if ( ((rand() & 3) & 1) || abs((int)deltay) > abs((int)deltax) )//If north/sounth diff is greater than east/west diff?!!
 	{
 		tdir = d[1];
 		d[1] = d[2];

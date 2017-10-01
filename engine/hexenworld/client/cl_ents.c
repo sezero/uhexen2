@@ -775,8 +775,8 @@ static void CL_LinkPacketEntities (void)
 
 		for (i = 0; i < 3; i++)
 		{
-		//	if ( abs(old_origin[i] - ent->origin[i]) > 128)
-			if ( abs(old_origin[i] - ent->origin[i]) > 512)	// this is an issue for laggy situations...
+		//	if (abs((int)(old_origin[i] - ent->origin[i])) > 128)
+			if (abs((int)(old_origin[i] - ent->origin[i])) > 512)	// this is an issue for laggy situations...
 			{	// no trail if too far
 				VectorCopy (ent->origin, old_origin);
 				break;

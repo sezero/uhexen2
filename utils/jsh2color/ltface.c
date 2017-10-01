@@ -526,7 +526,7 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, const vec3_t faceo
 		lightcolorsamp[c][1] += add * light->lightcolor[1];
 		lightcolorsamp[c][2] += add * light->lightcolor[2];
 
-		if (abs(lightsamp[c]) > 1)	// ignore really tiny lights
+		if (abs((int) lightsamp[c]) > 1)	// ignore really tiny lights
 			hit = true;
 	}
 
