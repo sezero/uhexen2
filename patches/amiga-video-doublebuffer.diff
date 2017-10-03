@@ -7,11 +7,11 @@ Initial implementation for Amiga CyberGraphx double buffered video
 
 Index: engine/h2shared/vid_cgx.c
 ===================================================================
---- engine/h2shared/vid_cgx.c	(revision 5950)
+--- engine/h2shared/vid_cgx.c	(revision 5981)
 +++ engine/h2shared/vid_cgx.c	(working copy)
 @@ -92,6 +92,16 @@
  #endif /* USE_C2P */
- #endif
+ #endif /* PLATFORM_AMIGAOS3 */
  
 +/* CyberGraphx double buffer support */
 +static struct ScreenBuffer *screenbuffers[2] = {NULL, NULL};
@@ -71,7 +71,7 @@ Index: engine/h2shared/vid_cgx.c
  	if (vid_config_fscr.integer)
  	{
  		ULONG ModeID;
-@@ -590,6 +631,46 @@ static qboolean VID_SetMode (int modenum
+@@ -592,6 +633,46 @@ static qboolean VID_SetMode (int modenum
  			SA_Quiet, TRUE,
  			TAG_DONE);
  
@@ -91,7 +91,7 @@ Index: engine/h2shared/vid_cgx.c
 +					screenbuffers[0]->sb_DBufInfo->dbi_DispMessage.mn_ReplyPort = changeport;
 +					screenbuffers[1]->sb_DBufInfo->dbi_SafeMessage.mn_ReplyPort = writeport;
 +					screenbuffers[1]->sb_DBufInfo->dbi_DispMessage.mn_ReplyPort = changeport;
-+					// double buffering possible
++					/* double buffering possible */
 +					currentbuffer = 0;
 +					vid.numpages = 2;
 +					safetochange = true;
@@ -115,10 +115,10 @@ Index: engine/h2shared/vid_cgx.c
 +			}
 +		}
 +
- #ifdef USE_C2P
+ 		#if defined(PLATFORM_AMIGAOS3) && defined(USE_C2P)
  		currentBitMap = 0;
  		bm = screen->RastPort.BitMap;
-@@ -636,12 +717,13 @@ static qboolean VID_SetMode (int modenum
+@@ -638,12 +719,13 @@ static qboolean VID_SetMode (int modenum
  		if (pointermem) {*/
  			vid.height = vid.conheight = modelist[modenum].height;
  			vid.rowbytes = vid.conrowbytes = vid.width = vid.conwidth = modelist[modenum].width;
@@ -135,7 +135,7 @@ Index: engine/h2shared/vid_cgx.c
  				vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
  
  				if (VID_AllocBuffers (vid.width, vid.height))
-@@ -735,10 +817,58 @@
+@@ -737,10 +819,58 @@
  
  void VID_LockBuffer(void)
  {
@@ -194,7 +194,7 @@ Index: engine/h2shared/vid_cgx.c
  }
  
  
-@@ -1027,6 +1157,20 @@ static void FlipScreen (vrect_t *rects)
+@@ -1029,6 +1159,20 @@ static void FlipScreen (vrect_t *rects)
  	}
  #endif
  
@@ -215,7 +215,7 @@ Index: engine/h2shared/vid_cgx.c
  	while (rects)
  	{
  #ifdef PLATFORM_AMIGAOS3
-@@ -1128,7 +1272,22 @@ void D_EndDirectRect (int x, int y, int 
+@@ -1130,7 +1274,22 @@ void D_EndDirectRect (int x, int y, int 
  
  	if (screen)
  	{
@@ -239,4 +239,3 @@ Index: engine/h2shared/vid_cgx.c
  	}
  	else
  	{
-
