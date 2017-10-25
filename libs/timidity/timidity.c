@@ -48,7 +48,7 @@
 #include "output.h"
 #include "tables.h"
 
-#include "filenames.h"
+#include "ospaths.h"
 
 static MidToneBank *master_tonebank[128], *master_drumset[128];
 
@@ -441,7 +441,7 @@ static int init_begin_config(const char *cf)
   rcf_fp = (FILE **) timi_calloc(MAX_RCFCOUNT * sizeof(FILE*));
   if (!rcf_fp)
       return -2;
-  p = FIND_LAST_DIRSEP(cf);
+  p = get_last_dirsep(cf);
   if (p != NULL)
       return timi_add_pathlist(cf, p - cf + 1); /* including DIRSEP */
 

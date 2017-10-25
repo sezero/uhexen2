@@ -45,7 +45,7 @@
 
 #include "timidity_internal.h"
 #include "common.h"
-#include "filenames.h"
+#include "ospaths.h"
 
 /* The paths in this list will be tried by timi_openfile() */
 struct _PathList {
@@ -71,7 +71,7 @@ FILE *timi_openfile(const char *name)
   if ((fp = fopen(name, OPEN_MODE)) != NULL)
     return fp;
 
-  if (!IS_ABSOLUTE_PATH(name))
+  if (!is_abspath(name))
   {
     char current_filename[TIM_MAXPATH];
     PathList *plp = pathlist;
@@ -83,9 +83,9 @@ FILE *timi_openfile(const char *name)
 	if(l)
 	  {
 	    strcpy(current_filename, plp->path);
-	    if (!IS_DIR_SEPARATOR(current_filename[l - 1]))
+	    if (!is_dirsep(current_filename[l - 1]))
 	    {
-	      current_filename[l] = DIR_SEPARATOR_CHAR;
+	      current_filename[l] = CHAR_DIRSEP;
 	      current_filename[l + 1] = '\0';
 	    }
 	  }

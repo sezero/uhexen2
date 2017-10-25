@@ -8,6 +8,18 @@ uHexen2-specific changes:
 ------------------------------------------------------------------------
 
 
+Changes by libtimidity-0.2.5:
+-----------------------------
+
+* allow dual-licensing as LGPL / Artistic.
+
+
+Changes by libtimidity-0.2.4:
+-----------------------------
+
+* fixes to the pkg-config file.
+
+
 Changes by libtimidity-0.2.3:
 -----------------------------
 

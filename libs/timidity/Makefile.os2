@@ -1,8 +1,8 @@
 # Makefile for OS/2 using Watcom compiler.
 # wmake -f Makefile.os2
 
-INCLUDES=-I. -I$(UHEXEN2_SHARED)
-CPPFLAGS=-DTIMIDITY_BUILD
+INCLUDES=-I.
+CPPFLAGS=-DTIMIDITY_BUILD -DTIMIDITY_STATIC
 # to build a debug version :
 #CPPFLAGS+= -DTIMIDITY_DEBUG
 
@@ -28,17 +28,7 @@ $(LIBSTATIC): $(OBJ)
 .c.obj:
 	$(COMPILE) -fo=$^@ $<
 
-!ifndef __UNIX__
-UHEXEN2_SHARED=..\..\common
-distclean: clean .symbolic
-	@if exist $(LIBSTATIC) del $(LIBSTATIC)
-clean: .symbolic
-	@if exist *.obj del *.obj
-!else
-UHEXEN2_SHARED=../../common
 distclean: clean .symbolic
 	rm -f $(LIBSTATIC)
 clean: .symbolic
 	rm -f *.obj
-!endif
-

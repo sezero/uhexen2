@@ -46,7 +46,7 @@ CFLAGS += -O2 -DNDEBUG=1 -ffast-math
 CFLAGS += -fomit-frame-pointer
 endif
 #CFLAGS += -DTIMIDITY_DEBUG
-INCLUDES = -I. -I$(UHEXEN2_SHARED)
+INCLUDES = -I.
 
 ifeq ($(TARGET_OS),darwin)
 CPUFLAGS=
@@ -61,12 +61,11 @@ endif
 
 ifeq ($(TARGET_OS),win32)
 CFLAGS += -m32
-INCLUDES += -I$(OSLIBS)/windows/misc/include
+#INCLUDES += -I$(OSLIBS)/windows/misc/include
 endif
-
 ifeq ($(TARGET_OS),win64)
 CFLAGS += -m64
-INCLUDES += -I$(OSLIBS)/windows/misc/include
+#INCLUDES += -I$(OSLIBS)/windows/misc/include
 endif
 
 ifeq ($(TARGET_OS),morphos)
@@ -78,7 +77,7 @@ ifeq ($(TARGET_OS),aros)
 endif
 
 ifeq ($(TARGET_OS),amigaos)
-# crt: libnix or clib2:
+# crt: libnix or clib2
 USE_CLIB2=yes
 ifeq ($(USE_CLIB2),yes)
 CRT_FLAGS=-mcrt=clib2
@@ -129,11 +128,9 @@ all: $(TARGETS)
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
-#%.o: $(UHEXEN2_SHARED)/%.c
-#	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # object dependencies:
-common.o: common.c common.h timidity_internal.h
+common.o: common.c common.h ospaths.h timidity_internal.h
 instrum.o: instrum.c common.h instrum.h resample.h tables.h timidity_internal.h
 mix.o: mix.c instrum.h mix.h output.h playmidi.h resample.h tables.h timidity_internal.h
 output.o: output.c output.h timidity_internal.h
@@ -142,7 +139,7 @@ readmidi.o: readmidi.c common.h instrum.h playmidi.h timidity_internal.h
 resample.o: resample.c common.h instrum.h playmidi.h resample.h tables.h timidity_internal.h
 stream.o: stream.c common.h timidity_internal.h
 tables.o: tables.c tables.h timidity_internal.h
-timidity.o: timidity.c common.h instrum.h output.h playmidi.h readmidi.h tables.h timidity_internal.h
+timidity.o: timidity.c common.h instrum.h ospaths.h output.h playmidi.h readmidi.h tables.h timidity_internal.h
 timidity_internal.h: options.h timi_endian.h timidity.h
 
 # rule for target:
