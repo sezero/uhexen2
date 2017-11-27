@@ -336,8 +336,6 @@ typedef unsigned int xd3_rtype;
 
 #include "xdelta3-list.h"
 
-XD3_MAKELIST(xd3_rlist, xd3_rinst, link);
-
 /***********************************************************************/
 
 #define VCDIFF_MAGIC1  0xd6  /* 1st file byte */
