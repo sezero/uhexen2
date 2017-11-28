@@ -162,15 +162,16 @@ int Thread_GetNumCPUS (void)
 #if defined(PLATFORM_WINDOWS)
 
 #include <windows.h>
+#include <process.h>
 
 static int	numthreads;
 static size_t	stacksiz;
 static HANDLE		my_mutex;
 static threadfunc_t	workfunc;
 
-static DWORD WINAPI ThreadWorkerFunc (LPVOID threadnum)
+static unsigned __stdcall ThreadWorkerFunc (void *threadnum)
 {
-	workfunc ((void *)threadnum);
+	workfunc (threadnum);
 	return 0;
 }
 
@@ -217,7 +218,7 @@ RunThreadsOn
 */
 void RunThreadsOn (threadfunc_t func)
 {
-	DWORD	IDThread;
+	unsigned	IDThread;
 	HANDLE	work_threads[MAX_THREADS];
 	INT_PTR		i;
 
@@ -231,15 +232,15 @@ void RunThreadsOn (threadfunc_t func)
 
 	for (i = 0; i < numthreads; i++)
 	{
-		work_threads[i] = CreateThread(NULL,	/* no security attrib */
+		work_threads[i] = (HANDLE) _beginthreadex(NULL, /* no security attributes */
 			stacksiz,			/* stack size */
 			ThreadWorkerFunc,		/* thread function */
-			(LPVOID) i,			/* thread function arg */
-			0,				/* use default creation flags */
+			(void *) i,			/* thread function arg */
+			0,				/* run immediately */
 			&IDThread);
 
-		if (work_threads[i] == NULL)
-			COM_Error ("pthread_create failed");
+		if (!work_threads[i])
+			COM_Error ("_beginthreadex () failed");
 	}
 
 	for (i = 0; i < numthreads; i++)
