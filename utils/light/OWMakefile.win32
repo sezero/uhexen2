@@ -62,8 +62,9 @@ OBJ_LIGHT= threads.obj &
 
 all: $(LIGHT)
 
+# 1 MB stack size
 $(LIGHT): $(OBJ_COMMON) $(OBJ_LIGHT)
-	wlink N $@ SYS NT F {$(OBJ_COMMON) $(OBJ_LIGHT)}
+	wlink N $@ SYS NT OPTION STACK=0x100000 F {$(OBJ_COMMON) $(OBJ_LIGHT)}
 
 !ifdef __UNIX__
 INCLUDES+= -I$(OSLIBS)/windows/misc/include

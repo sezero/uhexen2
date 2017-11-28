@@ -60,8 +60,9 @@ OBJ_VIS= threads.obj &
 
 all: $(VIS)
 
+# 1 MB stack size
 $(VIS): $(OBJ_COMMON) $(OBJ_VIS)
-	wlink N $@ SYS OS2V2 F {$(OBJ_COMMON) $(OBJ_VIS)}
+	wlink N $@ SYS OS2V2 OPTION STACK=0x100000 F {$(OBJ_COMMON) $(OBJ_VIS)}
 
 !ifdef __UNIX__
 clean: .symbolic
