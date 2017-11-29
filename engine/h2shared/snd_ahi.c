@@ -137,6 +137,8 @@ static qboolean S_AHI_Init(dma_t *dma)
 						channels = desired_channels;
 					if (bits > desired_bits)
 						bits = desired_bits;
+					else if (bits == 14)
+						bits = 16; /* for 14-bit Paula modes */
 
 					AHI_ControlAudio(ad->audioctrl,
 								AHIC_MixFreq_Query, (IPTR) &speed,
