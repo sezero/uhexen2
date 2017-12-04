@@ -135,10 +135,10 @@ static qboolean S_AHI_Init(dma_t *dma)
 					Con_DPrintf("AHI_GetAudioAttrs: %u bits, %u channels\n", (unsigned) bits, (unsigned) channels);
 					if (channels > desired_channels)
 						channels = desired_channels;
+					if (bits == 14)
+						bits = 16; /* for 14-bit Paula modes */
 					if (bits > desired_bits)
 						bits = desired_bits;
-					else if (bits == 14)
-						bits = 16; /* for 14-bit Paula modes */
 
 					AHI_ControlAudio(ad->audioctrl,
 								AHIC_MixFreq_Query, (IPTR) &speed,
