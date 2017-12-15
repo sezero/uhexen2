@@ -30,7 +30,7 @@ binutils:	A GNU collection of binary utilities.
 
 NASM	:	Netwide Assembler. An x86 assembler.
 		Minimum version required is 0.98.38 or 0.98.39 from the
-		old series. Versions 2.09.10 or 2.12.01 from the new 2.x
+		old series. Versions 2.09.10 or 2.13.02 from the new 2.x
 		series are recommended.
 
 		YASM, a re-write of NASM, is also supported:  yasm-0.5.0
@@ -63,7 +63,7 @@ GCC	:	GNU C Compiler.
 
 CLANG	:	a C language family frontend for LLVM
 
-		As an alternative to gcc, clang versions 3.0 to 3.4 are
+		As an alternative to gcc, clang versions 3.0 to 4.0 are
 		tested to compile all uhexen2 sources correctly.
 
 
@@ -76,7 +76,7 @@ General Unix requirements:
 SDL	:	Simple DirectMedia Layer libraries.
 		Required for compiling hexen2 and hexenworld clients on
 		most unix platforms. Minimum version required is 1.2.4.
-		As of this writing, the latest version is 1.2.14, which
+		As of this writing, the latest version is 1.2.15, which
 		is recommended.
 
 Linux requirements	:
@@ -161,16 +161,16 @@ Note that "make" may be named "mingw32-make". In that case, you may want
 to try "mingw32-make" if "make" command itself fails to run. Remember to
 do a make clean between each different build.
 
-c. On Windows, using Visual Studio 2005/2008 or 2010/2012:
+c. On Windows, using Visual Studio 2005/2008 or 2010/2017:
 ----------------------------------------------------------
-MS Visual Studio versions 2005 through 2015 have been tested to compile
+MS Visual Studio versions 2005 through 2017 have been tested to compile
 all uhexen2 code successfully.  The VisualStudio2005.zip files contain
 the *.vcproj project files and *.sln solution files: unzipping them and
 double-clicking on them should start visual studio and you will be ready
 to go.  The VS2005 project files import perfectly into VS2008, therefore
 VS2008 owners can use the VS2005 project files.  For your convenience,
 VS2010 project files are provided for hexen2 and hexenworld, which work
-fine with vs2012 too.  All of the projects are adjusted for Win32 (x86)
+fine with vs2017 too.  All of the projects are adjusted for Win32 (x86)
 and x64 targets.  Note that older MSVC versions such as Visual Studio 6
 aren't supported: parts of our code make use of a few C99 features such
 as variadic macros which require Visual Studio 2005 or newer versions.
@@ -241,8 +241,9 @@ Compiling for OS/2:
 ========================================
 
 You need Open Watcom: The latest official release is 1.9.0 which is the
-version I used myself.  Newer snapshots or the unofficial V2 fork work
-just as well.  Change into the relevant directory and run:
+version I used myself.  Newer watcom snapshots or the unofficial V2 fork
+work just as well.  You also need nasm in order to build the x86 asm
+sources (yasm won't work.)  Change into the relevant directory and run:
 	wmake -f Makefile.os2
 
 The Watcom makefiles work both when using on OS/2 natively and also when
@@ -259,12 +260,13 @@ For AROS, only ABIv0 is tested: we build against AROS snapshot from
 https://trac.aros.org/trac/browser/AROS/branches/ABI_V0
 or https://gitorious.org/aros/aros.git
 
-For AmigaOS 3.x (m68k-amigaos), you can use gcc or vbcc:  vbcc-0.9e,
-vbcc-0.9f and gcc-2.95 were tested with the following cross-toolchains:
+For AmigaOS 3.x (m68k-amigaos), you can use gcc or vbcc.  We tested
+using the following cross-toolchains:
 https://github.com/cahirwpz/amigaos-cross-toolchain.git
 https://github.com/sezero/amigaos-cross-toolchain.git
-With gcc, builds against libnix were found to be broken (stdio issues):
-build against clib2, instead.
+- gcc:  gcc-2.95.3 and gcc-2.95.4 were tested.  Builds against libnix
+  were found to be broken (stdio issues): build against clib2, instead.
+- vbcc: vbcc 0.9f patch1, vasm 1.8a, and vlink 0.16a are tested.
 
 
 Links:
