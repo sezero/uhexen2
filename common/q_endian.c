@@ -35,7 +35,7 @@ int host_byteorder;
 int host_bigendian; /* qboolean */
 
 FUNC_NOINLINE FUNC_NOCLONE
-volatile uint32_t get_0x12345678 (void) {
+uint32_t get_0x12345678 (void) {
 	return 0x12345678;
 	/*       U N I X  */
 }
@@ -51,13 +51,13 @@ int DetectByteorder (void)
 
 	/*
 	BE_ORDER:  12 34 56 78
-		   U  N  I  X
+	           U  N  I  X
 
 	LE_ORDER:  78 56 34 12
-		   X  I  N  U
+	           X  I  N  U
 
 	PDP_ORDER: 34 12 78 56
-		   N  U  X  I
+	           N  U  X  I
 	*/
 
 	if (bint.c[0] == 0x12)
