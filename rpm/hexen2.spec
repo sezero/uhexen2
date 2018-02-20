@@ -50,7 +50,7 @@
 # all build options passed to makefile
 %define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{mp3_libraryopt} %{ogg_buildopt} %{opus_buildopt} %{flac_buildopt} %{mikmod_buildopt} %{umx_buildopt}
 
-%define gamecode_ver	1.29a
+%define gamecode_ver	1.29b
 
 Name:		hexen2
 License:	GPLv2
@@ -320,8 +320,9 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Fri Apr 07 2017 O.Sezer <sezero@users.sourceforge.net> 1.5.9-1
+* Tue Feb 20 2018 O.Sezer <sezero@users.sourceforge.net> 1.5.9-1
 - Version 1.5.9.
+- Bump gamecode version to 1.29b
 
 * Mon May 30 2016 O.Sezer <sezero@users.sourceforge.net> 1.5.8-1
 - Bump version to 1.5.8.

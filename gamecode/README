@@ -4,6 +4,12 @@ Hexen II: Hammer of Thyrion (uHexen2) - GAMECODE
 Changes
 -------
 
+2018-02-20 (1.29b):
+===================
+- soul.hc (necro_soul_touch): Necromancer soul devour no longer prints
+  a stray number (bug #65.)  Thanks to Raymond Martineau for reporting
+  the issue.
+
 2016-05-30 (1.29a):
 ===================
 - rider_death(), rider_pestilence(), rider_war():  set max_health along

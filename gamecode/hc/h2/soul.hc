@@ -1,6 +1,4 @@
-/*
- * h2/soul.hc
- */
+/* h2/soul.hc */
 
 void () crusader_soul_touch =
 {
@@ -79,7 +77,7 @@ void () necro_soul_touch =
 		if (pot_mult < 0)
 			pot_mult = 0;
 		if (other.health < other.max_health) {
-			sprint(other, ftos(self.lifetime));
+		//	sprint(other, ftos(self.lifetime));
 			other.health += 2.0 * pot_mult;
 			if (other.health > other.max_health)
 				other.health = other.max_health;

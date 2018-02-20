@@ -9,7 +9,7 @@ fi
 test -f scripts/mkrelease.sh || { echo "change into the svn snapshot directory before running this script"; exit 1; }
 
 # the current gamecode version
-GAMECODE_VER=1.29a
+GAMECODE_VER=1.29b
 
 # move the spec file to the root
 mv rpm/hexen2.spec .

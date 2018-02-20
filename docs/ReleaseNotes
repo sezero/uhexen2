@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.9: (Nov. 28, 2017.)
+Changes in v1.5.9: (Feb. 20, 2018.)
 ========================================================================
 
 This is a minor bug fix and maintenance release:
@@ -31,6 +31,9 @@ This is a minor bug fix and maintenance release:
   on FitzQuake version.)
 
 - Utils, windows:  Change threads creation to use _beginthreadex().
+
+- All platforms, gameplay:  Necromancer soul devour no longer prints a
+  stray number (bug #65.)
 
 - Other minor fixes, tidy-ups, and protability tweaks.
 
