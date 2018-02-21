@@ -192,6 +192,8 @@ void Sys_Error (const char *error, ...)
 	const char	text3[] = "\n";
 	DWORD		dummy;
 
+	host_parms->errstate++;
+
 	va_start (argptr, error);
 	q_vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
@@ -463,17 +465,18 @@ int main (int argc, char **argv)
 		}
 	}
 
-	memset (cwd, 0, sizeof(cwd));
-	if (Sys_GetBasedir(argv[0], cwd, sizeof(cwd)) != 0)
-		Sys_Error ("Couldn't determine current directory");
-
 	/* initialize the host params */
 	memset (&parms, 0, sizeof(parms));
 	parms.basedir = cwd;
 	parms.userdir = cwd;	/* no userdir on win32 */
 	parms.argc = argc;
 	parms.argv = argv;
+	parms.errstate = 0;
 	host_parms = &parms;
+
+	memset (cwd, 0, sizeof(cwd));
+	if (Sys_GetBasedir(argv[0], cwd, sizeof(cwd)) != 0)
+		Sys_Error ("Couldn't determine current directory");
 
 	LOG_Init (&parms);
 

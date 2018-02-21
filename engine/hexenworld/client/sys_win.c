@@ -311,6 +311,8 @@ void Sys_Error (const char *error, ...)
 	va_list		argptr;
 	char		text[MAX_PRINTMSG];
 
+	host_parms->errstate++;
+
 	va_start (argptr, error);
 	q_vsnprintf (text, sizeof (text), error, argptr);
 	va_end (argptr);
@@ -562,13 +564,15 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	if (lpBuffer.dwTotalPhys > 0x7FFFFFFF)
 		lpBuffer.dwTotalPhys = 0x7FFFFFFF;
 
-	memset (cwd, 0, sizeof(cwd));
-	if (Sys_GetBasedir(NULL, cwd, sizeof(cwd)) != 0)
-		Sys_Error ("Couldn't determine current directory");
-
 	memset (&parms, 0, sizeof(parms));
 	parms.basedir = cwd;
 	parms.userdir = cwd;	/* no userdir on win32 */
+	parms.errstate = 0;
+	host_parms = &parms;	/* initialize the host params */
+
+	memset (cwd, 0, sizeof(cwd));
+	if (Sys_GetBasedir(NULL, cwd, sizeof(cwd)) != 0)
+		Sys_Error ("Couldn't determine current directory");
 
 	parms.argc = 1;
 	argv[0] = prog;
@@ -598,7 +602,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	}
 
 	parms.argv = argv;
-	host_parms = &parms;	/* initialize the host params */
 
 	LOG_Init (&parms);
 

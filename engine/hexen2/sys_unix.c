@@ -329,6 +329,8 @@ void Sys_Error (const char *error, ...)
 	const char	text2[] = ERROR_PREFIX;
 	const unsigned char	*p;
 
+	host_parms->errstate++;
+
 	va_start (argptr, error);
 	q_vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
@@ -701,6 +703,15 @@ int main (int argc, char **argv)
 		}
 	}
 
+	/* initialize the host params */
+	memset (&parms, 0, sizeof(parms));
+	parms.basedir = cwd;
+	parms.userdir = cwd;
+	parms.argc = argc;
+	parms.argv = argv;
+	parms.errstate = 0;
+	host_parms = &parms;
+
 	memset (cwd, 0, sizeof(cwd));
 	if (Sys_GetBasedir(argv[0], cwd, sizeof(cwd)) != 0)
 		Sys_Error ("Couldn't determine current directory");
@@ -710,19 +721,8 @@ int main (int argc, char **argv)
 	if (Sys_GetUserdir(userdir, sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
 	Sys_mkdir(userdir, true);
-#endif
-
-	/* initialize the host params */
-	memset (&parms, 0, sizeof(parms));
-	parms.basedir = cwd;
-#if DO_USERDIRS
 	parms.userdir = userdir;
-#else
-	parms.userdir = cwd;
 #endif
-	parms.argc = argc;
-	parms.argv = argv;
-	host_parms = &parms;
 
 	LOG_Init (&parms);
 

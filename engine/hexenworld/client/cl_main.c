@@ -1213,7 +1213,7 @@ void Host_WriteConfiguration (const char *fname)
 {
 	FILE	*f;
 
-	if (host_initialized)
+	if (host_initialized && !host_parms->errstate)
 	{
 		f = fopen (FS_MakePath(FS_USERDIR,NULL,fname), "w");
 		if (!f)

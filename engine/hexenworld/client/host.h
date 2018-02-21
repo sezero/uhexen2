@@ -42,6 +42,7 @@ typedef struct quakeparms_s
 	char	**argv;
 	void	*membase;
 	int	memsize;
+	int	errstate;
 } quakeparms_t;
 
 

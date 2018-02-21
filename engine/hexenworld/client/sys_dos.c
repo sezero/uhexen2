@@ -673,6 +673,8 @@ void Sys_Error (const char *error, ...)
 	const char	text2[] = ERROR_PREFIX;
 	const unsigned char	*p;
 
+	host_parms->errstate++;
+
 	va_start (argptr, error);
 	q_vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
@@ -1054,17 +1056,18 @@ int main (int argc, char **argv)
 	if (fptest_temp >= 0.0)
 		fptest_temp += 0.1;
 
-	memset (cwd, 0, sizeof(cwd));
-	if (Sys_GetBasedir(argv[0], cwd, sizeof(cwd)) != 0)
-		Sys_Error ("Couldn't determine current directory");
-
 	/* initialize the host params */
 	memset (&quakeparms, 0, sizeof(quakeparms));
 	quakeparms.basedir = cwd;
 	quakeparms.userdir = cwd;
 	quakeparms.argc = argc;
 	quakeparms.argv = argv;
+	quakeparms.errstate = 0;
 	host_parms = &quakeparms;
+
+	memset (cwd, 0, sizeof(cwd));
+	if (Sys_GetBasedir(argv[0], cwd, sizeof(cwd)) != 0)
+		Sys_Error ("Couldn't determine current directory");
 
 	LOG_Init (&quakeparms);
 

@@ -409,7 +409,7 @@ static void Host_WriteConfiguration (const char *fname)
 
 // dedicated servers initialize the host but don't parse and set the
 // config.cfg cvars
-	if (host_initialized && !isDedicated)
+	if (host_initialized && !isDedicated && !host_parms->errstate)
 	{
 		f = fopen (FS_MakePath(FS_USERDIR,NULL,fname), "w");
 		if (!f)

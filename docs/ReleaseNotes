@@ -30,6 +30,8 @@ This is a minor bug fix and maintenance release:
 - New 'viewpos' command to display client's position and angles (based
   on FitzQuake version.)
 
+- config.cfg is no longer written in case of a Sys_Error.
+
 - Utils, windows:  Change threads creation to use _beginthreadex().
 
 - All platforms, gameplay:  Necromancer soul devour no longer prints a
