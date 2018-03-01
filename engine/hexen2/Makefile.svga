@@ -87,6 +87,8 @@ endif
 
 CPPFLAGS=
 LDFLAGS =
+# linkage may be sensitive to order: add SYSLIBS after all others.
+SYSLIBS =
 
 # compiler includes
 INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
@@ -119,8 +121,8 @@ endif
 # streaming music initial setup
 #############################################################
 ifneq ($(USE_SOUND),yes)
-USE_CODEC_FLAC=no
 USE_CODEC_WAVE=no
+USE_CODEC_FLAC=no
 USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_MIKMOD=no
@@ -148,7 +150,7 @@ endif
 #############################################################
 NASMFLAGS=-f elf -d_NO_PREFIX
 
-LDFLAGS += -lm -lvga
+SYSLIBS += -lvga -lm
 
 CPPFLAGS+= -DSVGAQUAKE
 
@@ -161,7 +163,7 @@ ifneq ($(USE_ALSA),yes)
 CPPFLAGS+= -DNO_ALSA_AUDIO
 else
 # snd_alsa uses dlopen() & co.
-LDFLAGS += -ldl
+SYSLIBS += -ldl
 endif
 ifneq ($(USE_OSS),yes)
 CPPFLAGS+= -DNO_OSS_AUDIO
@@ -206,11 +208,11 @@ ifeq ($(USE_CODEC_FLAC),yes)
 CPPFLAGS+= -DUSE_CODEC_FLAC
 LDFLAGS+=  -lFLAC
 endif
-ifeq ($(USE_CODEC_OPUS),yes)
-CPPFLAGS+= -DUSE_CODEC_OPUS
-endif
 ifeq ($(USE_CODEC_WAVE),yes)
 CPPFLAGS+= -DUSE_CODEC_WAVE
+endif
+ifeq ($(USE_CODEC_OPUS),yes)
+CPPFLAGS+= -DUSE_CODEC_OPUS
 endif
 ifeq ($(USE_CODEC_VORBIS),yes)
 CPPFLAGS+= -DUSE_CODEC_VORBIS $(cpp_vorbisdec)
@@ -234,7 +236,8 @@ endif
 ifeq ($(USE_CODEC_TIMIDITY),yes)
 CPPFLAGS+= -DUSE_CODEC_TIMIDITY
 LDFLAGS+= -L$(LIBS_DIR)/timidity -ltimidity
-TIMIDEPS=$(LIBS_DIR)/timidity/libtimidity.a
+LIBTIMIDITY=libtimidity.a
+TIMIDEPS=$(LIBS_DIR)/timidity/$(LIBTIMIDITY)
 else
 TIMIDEPS=
 endif
@@ -474,7 +477,7 @@ snd_timidity.o: $(COMMONDIR)/snd_timidity.c
 include $(LIBS_DIR)/timidity/_timi.mak
 
 $(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(TIMIDEPS)
-	$(LINKER) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) -o $@
+	$(LINKER) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SYSLIBS) -o $@
 
 localclean:
 	rm -f *.o *.res dos/*.o core
