@@ -1,8 +1,6 @@
 /*
  * lexi.c
  *
- * $Id: pr_lex.c,v 1.9 2008-12-27 16:54:56 sezero Exp $
- *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -579,7 +577,7 @@ static void LexPunctuation (void)
 		pr_tokenclass = TK_LT;
 		return;
 	case '.':
-		if (ASCIIToChrCode[*pr_file_p] == CHR_NUMBER)
+		if (ASCIIToChrCode[(unsigned char) *pr_file_p] == CHR_NUMBER)
 		{
 			pr_file_p--;
 			pr_token_type = tt_immediate;
@@ -618,7 +616,7 @@ static void LexPunctuation (void)
 			pr_tokenclass = TK_DEC;
 			return;
 		}
-		if (ASCIIToChrCode[*pr_file_p] == CHR_NUMBER)
+		if (ASCIIToChrCode[(unsigned char) *pr_file_p] == CHR_NUMBER)
 		{
 			pr_file_p--;
 			pr_token_type = tt_immediate;

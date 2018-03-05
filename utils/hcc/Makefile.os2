@@ -60,11 +60,6 @@ all: $(BINARY)
 $(BINARY): $(OBJECTS)
 	wlink N $@ SYS OS2V2 F {$(OBJECTS)}
 
-# relax the warning level to 3 to avoid
-# W400 warnings from pr_lex.c for now
-pr_lex.obj: pr_lex.c
-	wcc386 $(INCLUDES) $(CFLAGS) -w3 -fo=$^@ $<
-
 !ifdef __UNIX__
 clean: .symbolic
 	rm -f *.obj *.res

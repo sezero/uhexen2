@@ -44,8 +44,6 @@ CFLAGS += $(CPUFLAGS)
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
 endif
-# FIXME: avoid the compiler warnings in pr_lex.c for now.
-CFLAGS += -Wno-char-subscripts
 
 LDFLAGS =
 LDLIBS  =

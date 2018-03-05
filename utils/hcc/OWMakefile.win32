@@ -61,11 +61,6 @@ all: $(BINARY)
 $(BINARY): $(OBJECTS)
 	wlink N $@ SYS NT F {$(OBJECTS)}
 
-# relax the warning level to 3 to avoid
-# W400 warnings from pr_lex.c for now
-pr_lex.obj: pr_lex.c
-	wcc386 $(INCLUDES) $(CFLAGS) -w3 -fo=$^@ $<
-
 !ifdef __UNIX__
 INCLUDES+= -I$(OSLIBS)/windows/misc/include
 clean: .symbolic
