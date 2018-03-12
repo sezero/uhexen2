@@ -1,6 +1,5 @@
 /*
  * bsp2wal.c
- * $Id: bsp2wal.c,v 1.7 2009-05-05 16:02:52 sezero Exp $
  *
  * Copyright (C) 2007-2012 O.Sezer <sezero@users.sourceforge.net>
  *
@@ -58,8 +57,8 @@ static char *MakeWorkPath (char *infilename)
 		if (tmp - infilename > workpath_size)
 			COM_Error("%s: insufficient buffer size", __thisfunc__);
 		memcpy (workpath, infilename, tmp - infilename);
-		tmp = workpath + (tmp - infilename);
 		workpath_size -= (tmp - infilename);
+		tmp = workpath + (tmp - infilename);
 	}
 	if (workpath_size < (int)sizeof(WAL_EXT_DIRNAME) + 1)
 		COM_Error("%s: insufficient buffer size", __thisfunc__);
