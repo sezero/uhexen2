@@ -60,7 +60,7 @@ static void CDAudio_Eject(void)
 	if (!cd_handle || !enabled)
 		return;
 
-	if (SDL_CDEject(cd_handle) == -1)
+	if (SDL_CDEject(cd_handle) < 0)
 		Con_Printf ("Unable to eject CD-ROM: %s\n", SDL_GetError ());
 }
 
@@ -114,7 +114,7 @@ int CDAudio_Play(byte track, qboolean looping)
 		CDAudio_Stop();
 	}
 
-	if (SDL_CDPlay(cd_handle, cd_handle->track[track-1].offset, cd_handle->track[track-1].length) == -1)
+	if (SDL_CDPlay(cd_handle, cd_handle->track[track-1].offset, cd_handle->track[track-1].length) < 0)
 	{
 		Con_Printf ("%s: Unable to play track %d: %s\n", __thisfunc__, track, SDL_GetError ());
 		return -1;
@@ -148,7 +148,7 @@ void CDAudio_Stop(void)
 	if (!playing)
 		return;
 
-	if (SDL_CDStop(cd_handle) == -1)
+	if (SDL_CDStop(cd_handle) < 0)
 		Con_Printf ("%s: Unable to stop CD-ROM (%s)\n", __thisfunc__, SDL_GetError());
 
 	wasPlaying = false;
@@ -165,7 +165,7 @@ void CDAudio_Pause(void)
 	if (!playing)
 		return;
 
-	if (SDL_CDPause(cd_handle) == -1)
+	if (SDL_CDPause(cd_handle) < 0)
 		Con_Printf ("Unable to pause CD-ROM: %s\n", SDL_GetError());
 
 	wasPlaying = playing;
@@ -184,7 +184,7 @@ void CDAudio_Resume(void)
 	if (!wasPlaying)
 		return;
 
-	if (SDL_CDResume(cd_handle) == -1)
+	if (SDL_CDResume(cd_handle) < 0)
 		Con_Printf ("Unable to resume CD-ROM: %s\n", SDL_GetError());
 	playing = true;
 	endOfTrack += realtime - pausetime;
