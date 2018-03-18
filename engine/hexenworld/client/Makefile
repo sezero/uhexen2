@@ -802,7 +802,19 @@ USE_CODEC_MIKMOD=no
 USE_CODEC_XMP=no
 USE_CODEC_UMX=no
 
+ifeq ($(USE_CODEC_FLAC),yes)
+CODEC_INC = -I$(OSLIBS)/morphos/codecs/include
+CODEC_LINK= -L$(OSLIBS)/morphos/codecs/lib
+endif
+ifeq ($(USE_CODEC_VORBIS),yes)
+CODEC_INC = -I$(OSLIBS)/morphos/codecs/include
+CODEC_LINK= -L$(OSLIBS)/morphos/codecs/lib
+endif
 ifeq ($(USE_CODEC_MP3),yes)
+CODEC_INC = -I$(OSLIBS)/morphos/codecs/include
+CODEC_LINK= -L$(OSLIBS)/morphos/codecs/lib
+endif
+ifeq ($(USE_CODEC_OPUS),yes)
 CODEC_INC = -I$(OSLIBS)/morphos/codecs/include
 CODEC_LINK= -L$(OSLIBS)/morphos/codecs/lib
 endif
@@ -1022,9 +1034,7 @@ lib_mp3dec=-lmpg123
 endif
 ifeq ($(VORBISLIB),vorbis)
 cpp_vorbisdec=
-ifneq ($(TARGET_OS),morphos)
 lib_vorbisdec=-lvorbisfile -lvorbis -logg
-endif
 endif
 ifeq ($(VORBISLIB),tremor)
 cpp_vorbisdec=-DVORBIS_USE_TREMOR

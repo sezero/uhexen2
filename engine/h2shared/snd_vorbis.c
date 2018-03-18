@@ -35,9 +35,6 @@
 /* for Tremor / Vorbisfile api differences,
  * see doc/diff.html in the Tremor package. */
 #include <tremor/ivorbisfile.h>
-#elif defined(__MORPHOS__)
-#include <proto/exec.h>
-#include <proto/vorbisfile.h>
 #else
 #include <vorbis/vorbisfile.h>
 #endif
@@ -69,36 +66,15 @@ static ov_callbacks ovc_qfs =
 	(long (*)(void *))				FS_ftell
 };
 
-#if !defined(__MORPHOS__)
 #define OV_OPEN_CALLBACKS		ov_open_callbacks
-#else
-struct Library *VorbisFileBase;
-/* MorphOS vorbisfile.library has an ov_open_callbacks() api
- * change to accept an ov_callbacks pointer as its last parm */
-#define OV_OPEN_CALLBACKS(S,F,I,IB,CB)	ov_open_callbacks(S,F,I,IB,&CB)
-#endif	/* __MORPHOS__ */
 
 static qboolean S_VORBIS_CodecInitialize (void)
 {
-#if defined(__MORPHOS__)
-	VorbisFileBase = OpenLibrary("vorbisfile.library", 0);
-	if (!VorbisFileBase)
-		return false;
-	vorbis_codec.initialized = true;
-#endif	/* __MORPHOS__ */
 	return true;
 }
 
 static void S_VORBIS_CodecShutdown (void)
 {
-#if defined(__MORPHOS__)
-	if (VorbisFileBase)
-	{
-		CloseLibrary(VorbisFileBase);
-		VorbisFileBase = NULL;
-		vorbis_codec.initialized = false;
-	}
-#endif	/* __MORPHOS__ */
 }
 
 static qboolean S_VORBIS_CodecOpenStream (snd_stream_t *stream)
@@ -217,11 +193,7 @@ static int S_VORBIS_CodecRewindStream (snd_stream_t *stream)
 snd_codec_t vorbis_codec =
 {
 	CODECTYPE_VORBIS,
-#ifdef __MORPHOS__
-	false,
-#else
 	true,	/* always available. */
-#endif
 	"ogg",
 	S_VORBIS_CodecInitialize,
 	S_VORBIS_CodecShutdown,
