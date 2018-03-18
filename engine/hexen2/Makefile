@@ -933,11 +933,19 @@ USE_CODEC_UMX=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_TIMIDITY=yes
 
+ifeq ($(USE_CODEC_FLAC),yes)
+CODEC_INC = -I$(OSLIBS)/aros-$(MACH_TYPE)/codecs/include
+CODEC_LINK= -L$(OSLIBS)/aros-$(MACH_TYPE)/codecs/lib
+endif
 ifeq ($(USE_CODEC_MP3),yes)
 CODEC_INC = -I$(OSLIBS)/aros-$(MACH_TYPE)/codecs/include
 CODEC_LINK= -L$(OSLIBS)/aros-$(MACH_TYPE)/codecs/lib
 endif
 ifeq ($(USE_CODEC_VORBIS),yes)
+CODEC_INC = -I$(OSLIBS)/aros-$(MACH_TYPE)/codecs/include
+CODEC_LINK= -L$(OSLIBS)/aros-$(MACH_TYPE)/codecs/lib
+endif
+ifeq ($(USE_CODEC_OPUS),yes)
 CODEC_INC = -I$(OSLIBS)/aros-$(MACH_TYPE)/codecs/include
 CODEC_LINK= -L$(OSLIBS)/aros-$(MACH_TYPE)/codecs/lib
 endif
