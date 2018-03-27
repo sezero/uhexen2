@@ -248,8 +248,12 @@ ifeq ($(TARGET_OS),darwin)
 
 NASMFLAGS=-f macho
 CPUFLAGS=
+# @rpath can be used when targeting 10.5+
+USE_RPATH=no
 ifeq ($(MACH_TYPE),x86)
-# x86 requires 10.4. gcc adds the 10.4 flag by itself.
+# x86 requires 10.4.
+CFLAGS  +=-mmacosx-version-min=10.4
+LDFLAGS +=-mmacosx-version-min=10.4
 endif
 ifeq ($(MACH_TYPE),ppc)
 # require 10.2 for ppc builds (midi_osx.c requirement.)
@@ -260,12 +264,17 @@ ifeq ($(MACH_TYPE),ppc64)
 # require 10.5 for ppc64 (actually SDL doesn't support ppc64.)
 CFLAGS  +=-mmacosx-version-min=10.5
 LDFLAGS +=-mmacosx-version-min=10.5
+USE_RPATH=yes
 endif
 ifeq ($(MACH_TYPE),x86_64)
 # require 10.6 for amd64 builds (not 10.5: SDL's requirement.)
 # bundle1.o is needed for dyld_stub_binding_helper
 CFLAGS  +=-mmacosx-version-min=10.6
 LDFLAGS +=-mmacosx-version-min=10.6 -Wl,-lbundle1.o
+USE_RPATH=yes
+endif
+ifeq ($(USE_RPATH),yes)
+LDFLAGS +=-Wl,-rpath,@executable_path/../Frameworks
 endif
 
 ifeq ($(USE_SOUND),yes)
