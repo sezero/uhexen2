@@ -163,7 +163,7 @@ void IN_HideMouse (void)
 {
 	if (window && pointermem && window->Pointer != pointermem)
 	{
-		SetPointer(window, pointermem, 16, 16, 0, 0);
+		SetPointer(window, pointermem, 1, 1, 0, 0);
 		//Con_Printf("IN_HideMouseOK\n");
 	}
 }
@@ -391,7 +391,7 @@ void IN_Init (void)
 
 	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 
-	pointermem = (UWORD *) AllocVec(16 * 16, MEMF_CHIP | MEMF_CLEAR);
+	pointermem = (UWORD *) AllocVec(2 * 6, MEMF_CHIP | MEMF_CLEAR);
 
 	IN_StartupMouse ();
 	IN_StartupJoystick ();
