@@ -1624,8 +1624,8 @@ static LRESULT WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		// ignore when fullscreen
 		if (modestate == MS_FULLDIB)
 			break;
-		window_x = (int) LOWORD(lParam);
-		window_y = (int) HIWORD(lParam);
+		window_x = (short) LOWORD(lParam);
+		window_y = (short) HIWORD(lParam);
 		VID_UpdateWindowStatus ();
 		break;
 

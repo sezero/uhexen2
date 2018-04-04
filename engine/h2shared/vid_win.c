@@ -1987,8 +1987,8 @@ static LRESULT WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		break;
 
 	case WM_MOVE:
-		window_x = (int) LOWORD(lParam);
-		window_y = (int) HIWORD(lParam);
+		window_x = (short) LOWORD(lParam);
+		window_y = (short) HIWORD(lParam);
 		VID_UpdateWindowStatus ();
 		break;
 

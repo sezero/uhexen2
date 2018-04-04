@@ -3062,8 +3062,8 @@ static LRESULT WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
 		if (DDActive)
 			break;
-		window_x = (int) LOWORD(lParam);
-		window_y = (int) HIWORD(lParam);
+		window_x = (short) LOWORD(lParam);
+		window_y = (short) HIWORD(lParam);
 		VID_UpdateWindowStatus ();
 		break;
 
