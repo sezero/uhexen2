@@ -38,12 +38,14 @@ endif
 # Overrides for the default CPUFLAGS
 CPUFLAGS=$(CPU_X86)
 
-CFLAGS += -g -Wall -DTIMIDITY_BUILD=1 -DTIMIDITY_STATIC=1
+CFLAGS += -Wall -DTIMIDITY_BUILD=1 -DTIMIDITY_STATIC=1
 CFLAGS += $(CPUFLAGS)
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1 -ffast-math
 # NOTE: -fomit-frame-pointer is broken with ancient gcc versions!!
 CFLAGS += -fomit-frame-pointer
+else
+CFLAGS += -g
 endif
 #CFLAGS += -DTIMIDITY_DEBUG
 INCLUDES = -I.

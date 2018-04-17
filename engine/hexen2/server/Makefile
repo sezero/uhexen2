@@ -66,9 +66,11 @@ endif
 # Overrides for the default CPUFLAGS
 CPUFLAGS=$(CPU_X86)
 
-CFLAGS += -g -Wall
+CFLAGS += -Wall
 CFLAGS += $(CPUFLAGS)
-ifndef DEBUG
+ifdef DEBUG
+CFLAGS += -g
+else
 # optimization flags
 CFLAGS += -O2 -DNDEBUG=1 -ffast-math
 # NOTE: -fomit-frame-pointer is broken with ancient gcc versions!!

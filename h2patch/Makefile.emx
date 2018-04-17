@@ -17,12 +17,14 @@ endif
 LINKER = $(CC)
 
 CPUFLAGS=
-CFLAGS  = -g -Zmt -Wall
+CFLAGS  = -Zmt -Wall
 CFLAGS += $(CPUFLAGS)
 LDFLAGS = -Zmt
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
 LDFLAGS+= -s
+else
+CFLAGS += -g
 endif
 
 XDELTA_DIR:= $(LIBS_DIR)/xdelta3

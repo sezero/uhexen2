@@ -19,11 +19,13 @@ WINDRES ?= windres
 LINKER = $(CC)
 
 CPUFLAGS= -march=i586
-CFLAGS  = -m32 -g -Wall
+CFLAGS  = -m32 -Wall
 CFLAGS += $(CPUFLAGS)
 CFLAGS += -DWIN32_LEAN_AND_MEAN
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
+else
+CFLAGS += -g
 endif
 RC_DEFS = -DWIN32_LEAN_AND_MEAN
 RCFLAGS = --output-format=coff --target=pe-i386

@@ -18,10 +18,12 @@ endif
 LINKER = $(CC)
 
 CPUFLAGS=
-CFLAGS  = -g -Wall
+CFLAGS  = -Wall
 CFLAGS += $(CPUFLAGS)
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
+else
+CFLAGS += -g
 endif
 LDFLAGS =
 

@@ -39,10 +39,12 @@ CPU_X86=-march=i586
 endif
 CPUFLAGS=$(CPU_X86)
 
-CFLAGS += -g -Wall
+CFLAGS += -Wall
 CFLAGS += $(CPUFLAGS)
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG -ffast-math
+else
+CFLAGS += -g
 endif
 CFLAGS += -DDOUBLEVEC_T
 

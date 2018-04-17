@@ -19,11 +19,13 @@ WINDRES ?= windres
 LINKER = $(CC)
 
 CPUFLAGS=
-CFLAGS  = -m64 -g -Wall
+CFLAGS  = -m64 -Wall
 CFLAGS += $(CPUFLAGS)
 CFLAGS += -DWIN32_LEAN_AND_MEAN
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
+else
+CFLAGS += -g
 endif
 RC_DEFS = -DWIN32_LEAN_AND_MEAN
 RCFLAGS = --output-format=coff --target=pe-x86-64

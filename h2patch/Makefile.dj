@@ -18,10 +18,12 @@ endif
 LINKER = $(CC)
 
 CPUFLAGS= -march=i586
-CFLAGS  = -g -Wall
+CFLAGS  = -Wall
 CFLAGS += $(CPUFLAGS)
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
+else
+CFLAGS += -g
 endif
 LDFLAGS = $(OSLIBS)/dos/djtime/djtime.a -lc
 CFLAGS += -I$(UHEXEN2_TOP)/oslibs/dos
