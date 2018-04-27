@@ -3,7 +3,7 @@
  * Handles streaming music as raw sound samples and runs the midi driver
  *
  * Copyright (C) 1999-2005 Id Software, Inc.
- * Copyright (C) 2010-2012 O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2010-2018 O.Sezer <sezero@users.sourceforge.net>
  *
  * $Id$
  *
@@ -82,7 +82,7 @@ static music_handler_t *music_handlers = NULL;
 #define ANY_CODECTYPE	0xFFFFFFFF
 #define MIDI_TYPES	(CODECTYPE_MID | MIDIDRIVER_MID)
 #define MIDITYPE(x)	(((x) & MIDI_TYPES) != 0)
-#define CDRIP_TYPES	(CODECTYPE_VORBIS | CODECTYPE_MP3 | CODECTYPE_FLAC | CODECTYPE_WAV)
+#define CDRIP_TYPES	(CODECTYPE_VORBIS | CODECTYPE_MP3 | CODECTYPE_FLAC | CODECTYPE_WAV | CODECTYPE_OPUS)
 #define CDRIPTYPE(x)	(((x) & CDRIP_TYPES) != 0)
 
 typedef struct midi_handle_s
