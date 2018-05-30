@@ -1,12 +1,12 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.9: (Apr. 27, 2018.)
+Changes in v1.5.9: (May 30, 2018.)
 ========================================================================
 
 This is a minor bug fix and maintenance release:
 
-- OS/2 support using SDL.
+- OS/2 support using SDL (should work on eComStation and ArcaOS too.)
 
 - Updated third-party libraries (music codecs, SDL, etc.)
 
