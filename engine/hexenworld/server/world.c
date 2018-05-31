@@ -37,7 +37,6 @@ typedef struct
 	edict_t		*passedict;
 } moveclip_t;
 
-
 static int SV_HullPointContents (hull_t *hull, int num, vec3_t p);
 
 
@@ -547,7 +546,7 @@ static int SV_HullPointContents (hull_t *hull, int num, vec3_t p)
 		if (plane->type < 3)
 			d = p[plane->type] - plane->dist;
 		else
-			d = DotProduct (plane->normal, p) - plane->dist;
+			d = DotProductDBL(plane->normal, p) - plane->dist;
 		if (d < 0)
 			num = node->children[1];
 		else
@@ -668,8 +667,8 @@ loc0: // optimized recursion
 	}
 	else
 	{
-		t1 = DotProduct (plane->normal, p1) - plane->dist;
-		t2 = DotProduct (plane->normal, p2) - plane->dist;
+		t1 = DotProductDBL(plane->normal, p1) - plane->dist;
+		t2 = DotProductDBL(plane->normal, p2) - plane->dist;
 	}
 
 #if 1

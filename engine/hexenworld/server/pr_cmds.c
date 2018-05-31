@@ -631,12 +631,13 @@ static void PF_normalize (void)
 {
 	float	*value1;
 	vec3_t	newvalue;
-	float	new_temp;
+	double	new_temp;
 
 	value1 = G_VECTOR(OFS_PARM0);
 
-	new_temp = value1[0] * value1[0] + value1[1] * value1[1] + value1[2]*value1[2];
-	new_temp = sqrt (new_temp);
+	/* using double here so that 64 bit/sse2 builds' precision matches that
+	 * of x87 floating point.  from QuakeSpasm, patch by Eric Wasylishen.  */
+	new_temp = VectorLengthDBL(value1);
 
 	if (new_temp == 0)
 		newvalue[0] = newvalue[1] = newvalue[2] = 0;
@@ -661,12 +662,13 @@ scalar vlen(vector)
 static void PF_vlen (void)
 {
 	float	*value1;
-	float	new_temp;
+	double	new_temp;
 
 	value1 = G_VECTOR(OFS_PARM0);
 
-	new_temp = value1[0] * value1[0] + value1[1] * value1[1] + value1[2]*value1[2];
-	new_temp = sqrt(new_temp);
+	/* using double here so that 64 bit/sse2 builds' precision matches that
+	 * of x87 floating point.  from QuakeSpasm, patch by Eric Wasylishen.  */
+	new_temp = VectorLengthDBL(value1);
 
 	G_FLOAT(OFS_RETURN) = new_temp;
 }
@@ -681,11 +683,12 @@ scalar vhlen(vector)
 static void PF_vhlen (void)
 {
 	float	*value1;
-	float	new_temp;
+	double	new_temp;
 
 	value1 = G_VECTOR(OFS_PARM0);
 
-	new_temp = value1[0] * value1[0] + value1[1] * value1[1];
+	new_temp = (double)value1[0] * (double)value1[0] +
+		   (double)value1[1] * (double)value1[1];
 	new_temp = sqrt(new_temp);
 
 	G_FLOAT(OFS_RETURN) = new_temp;

@@ -47,6 +47,10 @@ extern vec3_t vec3_origin;
 #define VectorCompare(v1,v2)	(((v1)[0] == (v2)[0]) && ((v1)[1] == (v2)[1]) && ((v1)[2] == (v2)[2]))
 #define DotProduct(x,y)		((x)[0] * (y)[0] + (x)[1] * (y)[1] + (x)[2] * (y)[2])
 #define VectorLength(a)		sqrt(DotProduct((a),(a)))
+#define DotProductDBL(x,y)	((double)(x)[0] * (double)(y)[0] + \
+				 (double)(x)[1] * (double)(y)[1] + \
+				 (double)(x)[2] * (double)(y)[2])
+#define VectorLengthDBL(a)	sqrt(DotProductDBL((a), (a)))
 
 #define CrossProduct(v1,v2,cross)					\
 	do {								\

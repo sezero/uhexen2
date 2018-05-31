@@ -418,8 +418,11 @@ static int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 
 		tex = surf->texinfo;
 
-		s = DotProduct (mid, tex->vecs[0]) + tex->vecs[0][3];
-		t = DotProduct (mid, tex->vecs[1]) + tex->vecs[1][3];
+		/* added double casts so that 64 bit/sse2 builds' precision
+		 * matches that of x87 floating point. took from QuakeSpasm,
+		 * patch by Eric Wasylishen.  */
+		s = DotProductDBL(mid, tex->vecs[0]) + (double)tex->vecs[0][3];
+		t = DotProductDBL(mid, tex->vecs[1]) + (double)tex->vecs[1][3];
 
 		if (s < surf->texturemins[0] || t < surf->texturemins[1])
 			continue;
