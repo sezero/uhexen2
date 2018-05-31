@@ -883,7 +883,7 @@ void ED_Write (FILE *f, edict_t *ed)
 	RemoveBadReferences = true;
 
 	if (ed->v.classname)
-		strcpy (class_name, PR_GetString(ed->v.classname));
+		q_strlcpy (class_name, PR_GetString(ed->v.classname), sizeof(class_name));
 	else
 		class_name[0] = 0;
 
@@ -907,7 +907,7 @@ void ED_Write (FILE *f, edict_t *ed)
 		if (j == type_size[type])
 			continue;
 
-		strcpy(field_name, name);
+		q_strlcpy(field_name, name, sizeof(field_name));
 		fprintf (f, "\"%s\" ", name);
 		fprintf (f, "\"%s\"\n", PR_UglyValueString(d->type, (eval_t *)v));
 	}
@@ -1064,7 +1064,7 @@ void ED_ParseGlobals (const char *data)
 		if (!data)
 			Host_Error ("%s: EOF without closing brace", __thisfunc__);
 
-		strcpy (keyname, com_token);
+		q_strlcpy (keyname, com_token, sizeof(keyname));
 
 	// parse value
 		data = COM_Parse (data);
@@ -1151,7 +1151,7 @@ static qboolean	ED_ParseEpair (void *base, ddef_t *key, const char *s)
 		break;
 
 	case ev_vector:
-		strcpy (string, s);
+		q_strlcpy (string, s, sizeof(string));
 		v = string;
 		w = string;
 		for (i = 0; i < 3; i++)
@@ -1240,7 +1240,7 @@ const char *ED_ParseEdict (const char *data, edict_t *ent)
 		if (!strcmp(com_token, "light"))
 			strcpy (com_token, "light_lev");	// hack for single light def
 
-		strcpy (keyname, com_token);
+		q_strlcpy (keyname, com_token, sizeof(keyname));
 
 		// another hack to fix keynames with trailing spaces
 		n = strlen(keyname);
@@ -1267,7 +1267,7 @@ const char *ED_ParseEdict (const char *data, edict_t *ent)
 
 		if (q_strcasecmp(keyname,"MIDI") == 0)
 		{
-			strcpy(sv.midi_name, com_token);
+			q_strlcpy(sv.midi_name, com_token, sizeof(sv.midi_name));
 			continue;
 		}
 		else if (q_strcasecmp(keyname,"CD") == 0)
