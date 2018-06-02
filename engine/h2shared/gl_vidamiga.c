@@ -429,7 +429,7 @@ static qboolean VID_SetMode (int modenum)
 
 	if (screen)
 	{
-		flags |= WFLG_BORDERLESS;
+		flags |= WFLG_BACKDROP | WFLG_BORDERLESS;
 	}
 	else
 	{
