@@ -1,4 +1,4 @@
-# Makefile for OS/2 using Watcom compiler.
+# Makefile for OS/2 using Watcom compiler. builds a static timidity.lib:
 # wmake -f Makefile.os2
 
 INCLUDES=-I.
@@ -23,7 +23,7 @@ OBJ=common.obj instrum.obj mix.obj output.obj playmidi.obj readmidi.obj resample
 all: $(LIBSTATIC)
 
 $(LIBSTATIC): $(OBJ)
-	wlib -q -b -n $@ $(OBJ)
+	wlib -q -b -n -c -pa -s -t -zld -ii -io $@ $(OBJ)
 
 .c.obj:
 	$(COMPILE) -fo=$^@ $<

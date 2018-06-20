@@ -174,10 +174,15 @@ static void load_instrument(MidSong *song, const char *name,
 				   int strip_loop, int strip_envelope,
 				   int strip_tail)
 {
+#if (TIM_MAXPATH < 256)
+#define TMPSIZE 256
+#else
+#define TMPSIZE TIM_MAXPATH
+#endif
   MidInstrument *ip;
   MidSample *sp;
   FILE *fp;
-  char tmp[TIM_MAXPATH];
+  char tmp[TMPSIZE];
   int i,j;
   static const char *patch_ext[] = PATCH_EXT_LIST;
 
@@ -190,7 +195,7 @@ static void load_instrument(MidSong *song, const char *name,
       /* Try with various extensions */
       for (i=0; patch_ext[i]; i++)
 	{
-	  if (strlen(name)+strlen(patch_ext[i])<TIM_MAXPATH)
+	  if (strlen(name)+strlen(patch_ext[i])<sizeof(tmp))
 	    {
 	      strcpy(tmp, name);
 	      strcat(tmp, patch_ext[i]);
