@@ -188,7 +188,7 @@ static void CL_FreeEffect (int idx)
 
 	case CE_TELESMK1:
 		FreeEffectEntity(cl.Effects[idx].ef.Smoke.entity_index2);
-		/* no break wanted here */
+		/* FALLTHRU */
 	case CE_WHITE_SMOKE:
 	case CE_GREEN_SMOKE:
 	case CE_GREY_SMOKE:
@@ -286,7 +286,6 @@ static void CL_FreeEffect (int idx)
 		break;
 
 	case CE_TRIPMINESTILL:
-	//	Con_DPrintf("Ditching chain\n");
 		FreeEffectEntity(cl.Effects[idx].ef.Chain.ent1);
 		break;
 
@@ -297,7 +296,7 @@ static void CL_FreeEffect (int idx)
 
 	case CE_HWMISSILESTAR:
 		FreeEffectEntity(cl.Effects[idx].ef.Star.ent2);
-		/* no break wanted here */
+		/* FALLTHRU */
 	case CE_HWEIDOLONSTAR:
 		FreeEffectEntity(cl.Effects[idx].ef.Star.ent1);
 		FreeEffectEntity(cl.Effects[idx].ef.Star.entity_index);
@@ -522,6 +521,10 @@ void CL_ParseEffect (void)
 					ent->model = Mod_ForName("models/telesmk1.spr", true);
 					ent->drawflags = DRF_TRANSLUCENT;
 				}
+				else {
+					ImmediateFree = true;
+					FreeEffectEntity(cl.Effects[idx].ef.Smoke.entity_index);
+				}
 			}
 		}
 		else
@@ -737,6 +740,18 @@ void CL_ParseEffect (void)
 				ent->model = Mod_ForName("models/telesmk2.spr", true);
 				ent->drawflags = DRF_TRANSLUCENT;
 			}
+			else
+			{
+				ImmediateFree = true;
+				break;
+			}
+		}
+		if (ImmediateFree) {
+			for (i = 0 ; i < 8 ; ++i) {
+				if (cl.Effects[idx].ef.Teleporter.entity_index[i] == -1)
+					break;
+				FreeEffectEntity(cl.Effects[idx].ef.Teleporter.entity_index[i]);
+			}
 		}
 		break;
 
@@ -762,6 +777,10 @@ void CL_ParseEffect (void)
 			ent->drawflags = SCALE_TYPE_XYONLY | DRF_TRANSLUCENT;
 			ent->scale = 100;
 			ent->skinnum = skinnum;
+		}
+		else
+		{
+			ImmediateFree = true;
 		}
 		break;
 
@@ -878,6 +897,8 @@ void CL_ParseEffect (void)
 		VectorCopy(forward, cl.Effects[idx].ef.Xbow.velocity);
 	//	VectorScale(forward, 1000, cl.Effects[idx].ef.Xbow.velocity);
 
+		if (cl.Effects[idx].ef.Xbow.bolts > 5)
+			cl.Effects[idx].ef.Xbow.bolts = 5;
 		if (cl.Effects[idx].ef.Xbow.bolts == 3)
 		{
 			S_StartSound (TempSoundChannel(), 1, cl_fxsfx_xbowshoot, origin, 1, 1);
@@ -929,6 +950,15 @@ void CL_ParseEffect (void)
 				else
 					ent->model = Mod_ForName("models/arrow.mdl", true);
 			}
+			else {
+				ImmediateFree = true;
+			}
+		}
+		if (ImmediateFree) {
+			for (i = 0 ; i < cl.Effects[idx].ef.Xbow.bolts ; i++) {
+				if (cl.Effects[idx].ef.Xbow.ent[i] != -1)
+					FreeEffectEntity(cl.Effects[idx].ef.Xbow.ent[i]);
+			}
 		}
 
 		break;
@@ -955,7 +985,7 @@ void CL_ParseEffect (void)
 
 	//	S_StartSound (TempSoundChannel(), 1, cl_fxsfx_xbowshoot, origin, 1, 1);
 
-		for (i = 0 ; i < cl.Effects[idx].ef.Xbow.bolts ; i++)
+		for (i = 0 ; i < 5 ; i++)
 		{
 			cl.Effects[idx].ef.Xbow.gonetime[i] = 0;
 			cl.Effects[idx].ef.Xbow.state[i] = 0;
@@ -985,6 +1015,15 @@ void CL_ParseEffect (void)
 				VectorCopy(cl.Effects[idx].ef.Xbow.origin[i], ent->origin);
 				vectoangles(cl.Effects[idx].ef.Xbow.vel[i], ent->angles);
 				ent->model = Mod_ForName("models/polymrph.spr", true);
+			}
+			else {
+				ImmediateFree = true;
+			}
+		}
+		if (ImmediateFree) {
+			for (i = 0 ; i < 5 ; i++) {
+				if (cl.Effects[idx].ef.Xbow.ent[i] != -1)
+					FreeEffectEntity(cl.Effects[idx].ef.Xbow.ent[i]);
 			}
 		}
 
@@ -1119,6 +1158,7 @@ void CL_ParseEffect (void)
 		else
 		{
 			ImmediateFree = true;
+			break;
 		}
 
 		cl.Effects[idx].ef.Star.scaleDir = 1;
@@ -1145,6 +1185,12 @@ void CL_ParseEffect (void)
 								ent->origin, 1, 1);
 			}
 		}
+		else
+		{
+			FreeEffectEntity(cl.Effects[idx].ef.Star.entity_index);
+			ImmediateFree = true;
+			break;
+		}
 		if (cl.Effects[idx].type == CE_HWMISSILESTAR)
 		{
 			if ((cl.Effects[idx].ef.Star.ent2 = NewEffectEntity()) != -1)
@@ -1155,6 +1201,11 @@ void CL_ParseEffect (void)
 				ent->drawflags |= MLS_ABSLIGHT;
 				ent->abslight = 127;
 				ent->scale = 30;
+			}
+			else {
+				FreeEffectEntity(cl.Effects[idx].ef.Star.ent1);
+				FreeEffectEntity(cl.Effects[idx].ef.Star.entity_index);
+				ImmediateFree = true;
 			}
 		}
 		break;
@@ -2509,6 +2560,15 @@ void CL_ParseMultiEffect (void)
 				S_StartSound (TempSoundChannel(), 1, cl_fxsfx_ravengo,
 							cl.Effects[idx].ef.Missile.origin, 1, 1);
 			}
+			else {
+				cl.Effects[idx].type = CE_NONE;
+			}
+		}
+		if (cl.Effects[idx].type == CE_NONE) {
+			for (count = 0 ; count < 3 ; count++) {
+				if (cl.Effects[idx].ef.Missile.entity_index != -1)
+					FreeEffectEntity(cl.Effects[idx].ef.Missile.entity_index);
+			}
 		}
 		CreateRavenExplosions(orig);
 		break;
@@ -2563,10 +2623,7 @@ static void FreeEffectEntity (int idx)
 		/* still decrement counter; since value
 		   is -1, counter was incremented. */
 		EffectEntityCount--;
-	/* fixme: this should not be in final version */
 	//	Con_DPrintf("ERROR: Redeleting Effect Entity: %d!\n",idx);
 	}
-//	else	/* fixme: this should not be in final version */
-//		Con_DPrintf("ERROR: Deleting Invalid Effect Entity: %d!\n",idx);
 }
 

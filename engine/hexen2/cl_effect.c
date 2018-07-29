@@ -171,12 +171,8 @@ static void CL_FreeEffect (int idx)
 		break;
 
 	case CE_CHUNK:
-	//	Con_Printf("Freeing a chunk here\n");
 		for (i = 0 ; i < cl.Effects[idx].ef.Chunk.numChunks ; i++)
-		{
-			if (cl.Effects[idx].ef.Chunk.entity_index[i] != -1)
-				FreeEffectEntity(cl.Effects[idx].ef.Chunk.entity_index[i]);
-		}
+			FreeEffectEntity(cl.Effects[idx].ef.Chunk.entity_index[i]);
 		break;
 	}
 
@@ -566,6 +562,19 @@ void CL_ParseEffect (void)
 				ent->model = Mod_ForName("models/telesmk2.spr", true);
 				ent->drawflags = DRF_TRANSLUCENT;
 			}
+			else
+			{
+				ImmediateFree = true;
+				break;
+			}
+		}
+		if (ImmediateFree) {
+			for (i = 0 ; i < 8 ; ++i) {
+				if (cl.Effects[idx].ef.Teleporter.entity_index[i] == -1)
+					break;
+				FreeEffectEntity(cl.Effects[idx].ef.Teleporter.entity_index[i]);
+			}
+			break;
 		}
 		break;
 
@@ -591,6 +600,10 @@ void CL_ParseEffect (void)
 			ent->drawflags = SCALE_TYPE_XYONLY | DRF_TRANSLUCENT;
 			ent->scale = 100;
 			ent->skinnum = skinnum;
+		}
+		else
+		{
+			ImmediateFree = true;
 		}
 		break;
 
@@ -922,6 +935,19 @@ void CL_ParseEffect (void)
 					ent->skinnum = 0;
 				}
 			}
+			else
+			{
+				ImmediateFree = true;
+				break;
+			}
+		}
+		if (ImmediateFree) {
+			for (i = 0 ; i < cl.Effects[idx].ef.Chunk.numChunks ; i++) {
+				if (cl.Effects[idx].ef.Chunk.entity_index[i] == -1)
+					break;
+				FreeEffectEntity(cl.Effects[idx].ef.Chunk.entity_index[i]);
+			}
+			break;
 		}
 
 		for (i = 0 ; i < 3 ; i++)
