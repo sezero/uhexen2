@@ -950,15 +950,6 @@ void CL_ParseEffect (void)
 				else
 					ent->model = Mod_ForName("models/arrow.mdl", true);
 			}
-			else {
-				ImmediateFree = true;
-			}
-		}
-		if (ImmediateFree) {
-			for (i = 0 ; i < cl.Effects[idx].ef.Xbow.bolts ; i++) {
-				if (cl.Effects[idx].ef.Xbow.ent[i] != -1)
-					FreeEffectEntity(cl.Effects[idx].ef.Xbow.ent[i]);
-			}
 		}
 
 		break;
@@ -1015,15 +1006,6 @@ void CL_ParseEffect (void)
 				VectorCopy(cl.Effects[idx].ef.Xbow.origin[i], ent->origin);
 				vectoangles(cl.Effects[idx].ef.Xbow.vel[i], ent->angles);
 				ent->model = Mod_ForName("models/polymrph.spr", true);
-			}
-			else {
-				ImmediateFree = true;
-			}
-		}
-		if (ImmediateFree) {
-			for (i = 0 ; i < 5 ; i++) {
-				if (cl.Effects[idx].ef.Xbow.ent[i] != -1)
-					FreeEffectEntity(cl.Effects[idx].ef.Xbow.ent[i]);
 			}
 		}
 
@@ -1158,7 +1140,6 @@ void CL_ParseEffect (void)
 		else
 		{
 			ImmediateFree = true;
-			break;
 		}
 
 		cl.Effects[idx].ef.Star.scaleDir = 1;
@@ -1185,12 +1166,6 @@ void CL_ParseEffect (void)
 								ent->origin, 1, 1);
 			}
 		}
-		else
-		{
-			FreeEffectEntity(cl.Effects[idx].ef.Star.entity_index);
-			ImmediateFree = true;
-			break;
-		}
 		if (cl.Effects[idx].type == CE_HWMISSILESTAR)
 		{
 			if ((cl.Effects[idx].ef.Star.ent2 = NewEffectEntity()) != -1)
@@ -1201,11 +1176,6 @@ void CL_ParseEffect (void)
 				ent->drawflags |= MLS_ABSLIGHT;
 				ent->abslight = 127;
 				ent->scale = 30;
-			}
-			else {
-				FreeEffectEntity(cl.Effects[idx].ef.Star.ent1);
-				FreeEffectEntity(cl.Effects[idx].ef.Star.entity_index);
-				ImmediateFree = true;
 			}
 		}
 		break;
@@ -1230,18 +1200,12 @@ void CL_EndEffect (void)
 	switch (cl.Effects[idx].type)
 	{
 	case CE_HWRAVENPOWER:
-		if (cl.Effects[idx].ef.Missile.entity_index > -1)
-		{
-			ent = &EffectEntities[cl.Effects[idx].ef.Missile.entity_index];
-			CreateRavenDeath(ent->origin);
-		}
+		ent = &EffectEntities[cl.Effects[idx].ef.Missile.entity_index];
+		CreateRavenDeath(ent->origin);
 		break;
 	case CE_HWRAVENSTAFF:
-		if (cl.Effects[idx].ef.Missile.entity_index > -1)
-		{
-			ent = &EffectEntities[cl.Effects[idx].ef.Missile.entity_index];
-			CreateExplosionWithSound(ent->origin);
-		}
+		ent = &EffectEntities[cl.Effects[idx].ef.Missile.entity_index];
+		CreateExplosionWithSound(ent->origin);
 		break;
 	}
 	CL_FreeEffect(idx);
@@ -1550,46 +1514,24 @@ void CL_ReviseEffect(void)	/* be sure to read, in the switch statement, everythi
 			}
 			else	/* turn */
 			{
-				if (cl.Effects[idx].ef.Missile.entity_index != -1)
-				{
-					ent = &EffectEntities[cl.Effects[idx].ef.Missile.entity_index];
-					ent->angles[0] = MSG_ReadAngle();
-					if (ent->angles[0] < 0)
-						ent->angles[0] += 360;
-					ent->angles[0] *= -1;
-					ent->angles[1] = MSG_ReadAngle();
-					if (ent->angles[1] < 0)
-						ent->angles[1] += 360;
-					ent->angles[2] = 0;
+				ent = &EffectEntities[cl.Effects[idx].ef.Missile.entity_index];
+				ent->angles[0] = MSG_ReadAngle();
+				if (ent->angles[0] < 0)
+					ent->angles[0] += 360;
+				ent->angles[0] *= -1;
+				ent->angles[1] = MSG_ReadAngle();
+				if (ent->angles[1] < 0)
+					ent->angles[1] += 360;
+				ent->angles[2] = 0;
 
-					cl.Effects[idx].ef.Missile.origin[0] = MSG_ReadCoord();
-					cl.Effects[idx].ef.Missile.origin[1] = MSG_ReadCoord();
-					cl.Effects[idx].ef.Missile.origin[2] = MSG_ReadCoord();
+				cl.Effects[idx].ef.Missile.origin[0] = MSG_ReadCoord();
+				cl.Effects[idx].ef.Missile.origin[1] = MSG_ReadCoord();
+				cl.Effects[idx].ef.Missile.origin[2] = MSG_ReadCoord();
 
-					AngleVectors(ent->angles, forward, right, up);
-					speed = VectorLength(cl.Effects[idx].ef.Missile.velocity);
-					VectorScale(forward, speed, cl.Effects[idx].ef.Missile.velocity);
-					VectorCopy(cl.Effects[idx].ef.Missile.origin, ent->origin);
-				}
-				else
-				{
-					pos[0] = MSG_ReadAngle();
-					if (pos[0] < 0)
-						pos[0] += 360;
-					pos[0] *= -1;
-					pos[1] = MSG_ReadAngle();
-					if (pos[1] < 0)
-						pos[1] += 360;
-					pos[2] = 0;
-
-					cl.Effects[idx].ef.Missile.origin[0] = MSG_ReadCoord();
-					cl.Effects[idx].ef.Missile.origin[1] = MSG_ReadCoord();
-					cl.Effects[idx].ef.Missile.origin[2] = MSG_ReadCoord();
-
-					AngleVectors(pos, forward, right, up);
-					speed = VectorLength(cl.Effects[idx].ef.Missile.velocity);
-					VectorScale(forward, speed, cl.Effects[idx].ef.Missile.velocity);
-				}
+				AngleVectors(ent->angles, forward, right, up);
+				speed = VectorLength(cl.Effects[idx].ef.Missile.velocity);
+				VectorScale(forward, speed, cl.Effects[idx].ef.Missile.velocity);
+				VectorCopy(cl.Effects[idx].ef.Missile.origin, ent->origin);
 			}
 			break;
 		}
@@ -1714,24 +1656,18 @@ void CL_TurnEffect (void)
 	case CE_BONESHARD:
 	case CE_BONESHRAPNEL:
 	case CE_HWBONEBALL:
-		if (cl.Effects[idx].ef.Missile.entity_index > -1)
-		{
-			ent = &EffectEntities[cl.Effects[idx].ef.Missile.entity_index];
-			UpdateMissilePath(ent->origin, pos, vel, time);
-			VectorCopy(vel, cl.Effects[idx].ef.Missile.velocity);
-			vectoangles(cl.Effects[idx].ef.Missile.velocity,
-							cl.Effects[idx].ef.Missile.angle);
-		}
+		ent = &EffectEntities[cl.Effects[idx].ef.Missile.entity_index];
+		UpdateMissilePath(ent->origin, pos, vel, time);
+		VectorCopy(vel, cl.Effects[idx].ef.Missile.velocity);
+		vectoangles(cl.Effects[idx].ef.Missile.velocity,
+						cl.Effects[idx].ef.Missile.angle);
 		break;
 
 	case CE_HWMISSILESTAR:
 	case CE_HWEIDOLONSTAR:
-		if (cl.Effects[idx].ef.Star.entity_index > -1)
-		{
-			ent = &EffectEntities[cl.Effects[idx].ef.Star.entity_index];
-			UpdateMissilePath(ent->origin, pos, vel, time);
-			VectorCopy(vel, cl.Effects[idx].ef.Star.velocity);
-		}
+		ent = &EffectEntities[cl.Effects[idx].ef.Star.entity_index];
+		UpdateMissilePath(ent->origin, pos, vel, time);
+		VectorCopy(vel, cl.Effects[idx].ef.Star.velocity);
 		break;
 
 	case 0:
@@ -2564,12 +2500,6 @@ void CL_ParseMultiEffect (void)
 				cl.Effects[idx].type = CE_NONE;
 			}
 		}
-		if (cl.Effects[idx].type == CE_NONE) {
-			for (count = 0 ; count < 3 ; count++) {
-				if (cl.Effects[idx].ef.Missile.entity_index != -1)
-					FreeEffectEntity(cl.Effects[idx].ef.Missile.entity_index);
-			}
-		}
 		CreateRavenExplosions(orig);
 		break;
 
@@ -2613,17 +2543,18 @@ static int NewEffectEntity (void)
 
 static void FreeEffectEntity (int idx)
 {
-	if (idx != -1 && EntityUsed[idx])
+	if (idx == -1) return;
+	if (EntityUsed[idx])
 	{
 		EntityUsed[idx] = false;
 		EffectEntityCount--;
 	}
-	else if (idx != -1)
+	else /* FIXME: CAN THIS REALLY HAPPEN?? -- O.S. */
 	{
+	//	Con_DPrintf("ERROR: Redeleting Effect Entity: %d!\n",idx);
 		/* still decrement counter; since value
 		   is -1, counter was incremented. */
 		EffectEntityCount--;
-	//	Con_DPrintf("ERROR: Redeleting Effect Entity: %d!\n",idx);
 	}
 }
 
