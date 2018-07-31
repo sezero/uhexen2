@@ -1266,26 +1266,23 @@ void CL_ReviseEffect(void)	/* be sure to read, in the switch statement, everythi
 		case CE_SCARABCHAIN:
 			/* attach to new guy or retract if new guy is world */
 			curEnt = MSG_ReadShort();
-			if (cl.Effects[idx].type == type)
-			{
-				cl.Effects[idx].ef.Chain.material = curEnt>>12;
-				curEnt &= 0x0fff;
+			cl.Effects[idx].ef.Chain.material = curEnt>>12;
+			curEnt &= 0x0fff;
 
-				if (curEnt)
+			if (curEnt)
+			{
+				cl.Effects[idx].ef.Chain.state = 1;
+				cl.Effects[idx].ef.Chain.owner = curEnt;
+				es = FindState(cl.Effects[idx].ef.Chain.owner);
+				if (es)
 				{
-					cl.Effects[idx].ef.Chain.state = 1;
-					cl.Effects[idx].ef.Chain.owner = curEnt;
-					es = FindState(cl.Effects[idx].ef.Chain.owner);
-					if (es)
-					{
-						ent = &EffectEntities[cl.Effects[idx].ef.Chain.ent1];
-						XbowImpactPuff(ent->origin, cl.Effects[idx].ef.Chain.material);
-					}
+					ent = &EffectEntities[cl.Effects[idx].ef.Chain.ent1];
+					XbowImpactPuff(ent->origin, cl.Effects[idx].ef.Chain.material);
 				}
-				else
-				{
-					cl.Effects[idx].ef.Chain.state = 2;
-				}
+			}
+			else
+			{
+				cl.Effects[idx].ef.Chain.state = 2;
 			}
 			break;
 
