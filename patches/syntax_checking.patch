@@ -7,16 +7,16 @@ args parsed by COM_CheckParm() into one place for validation upon program
 startup.
 
 2. C code which parses the command line, attempting to identify faulty
-options, but also allowing for "+map e1m1" type args.
+options, but also allowing for "+map village1" type args.
 
 stevenaaus@yahoo.com
 
 
 Index: engine/hexen2/sys_unix.c
 ===================================================================
---- engine/hexen2/sys_unix.c	(revision 5341)
+--- engine/hexen2/sys_unix.c	(revision 6015)
 +++ engine/hexen2/sys_unix.c	(working copy)
-@@ -599,65 +599,268 @@ static void PrintVersion (void)
+@@ -601,65 +601,268 @@ static void PrintVersion (void)
  }
  
  #include "snd_sys.h"
@@ -315,7 +315,7 @@ Index: engine/hexen2/sys_unix.c
  }
  
  /*
-@@ -683,23 +886,7 @@ int main (int argc, char **argv)
+@@ -685,23 +888,7 @@ int main (int argc, char **argv)
  
  	PrintVersion();
  
@@ -338,6 +338,6 @@ Index: engine/hexen2/sys_unix.c
 -	}
 +	CheckArgs(argc, argv);
  
- 	memset (cwd, 0, sizeof(cwd));
- 	if (Sys_GetBasedir(argv[0], cwd, sizeof(cwd)) != 0)
+ 	/* initialize the host params */
+ 	memset (&parms, 0, sizeof(parms));
 

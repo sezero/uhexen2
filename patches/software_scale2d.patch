@@ -825,7 +825,7 @@ Index: engine/h2shared/vid_win.c
  // needed because we're not getting WM_MOVE messages fullscreen on NT
 Index: engine/h2shared/screen.c
 ===================================================================
---- engine/h2shared/screen.c	(revision 5951)
+--- engine/h2shared/screen.c	(revision 6000)
 +++ engine/h2shared/screen.c	(working copy)
 @@ -272,7 +272,7 @@ static void SCR_DrawCenterString (void)
  
@@ -905,7 +905,7 @@ Index: engine/h2shared/screen.c
  		if (scr_conlines < scr_con_current)
  			scr_con_current = scr_conlines;
  	}
-@@ -1066,7 +1066,7 @@ static void Plaque_Draw (const char *mes
+@@ -1064,7 +1064,7 @@ static void Plaque_Draw (const char *mes
  
  	FindTextBreaks(message, PLAQUE_WIDTH);
  
@@ -914,7 +914,7 @@ Index: engine/h2shared/screen.c
  	M_DrawTextBox (32, by - 16, PLAQUE_WIDTH + 4, lines + 2);
  
  	for (i = 0; i < lines; i++, by += 8)
-@@ -1102,7 +1102,7 @@ static void Info_Plaque_Draw (const char
+@@ -1100,7 +1100,7 @@ static void Info_Plaque_Draw (const char
  		lines = MAXLINES-1;
  	}
  
@@ -923,7 +923,7 @@ Index: engine/h2shared/screen.c
  	M_DrawTextBox (15, by - 16, PLAQUE_WIDTH + 4 + 4, lines + 2);
  
  	for (i = 0; i < lines; i++, by += 8)
-@@ -1128,7 +1128,7 @@ static void Bottom_Plaque_Draw (const ch
+@@ -1126,7 +1126,7 @@ static void Bottom_Plaque_Draw (const ch
  
  	FindTextBreaks(message, PLAQUE_WIDTH);
  
@@ -932,7 +932,7 @@ Index: engine/h2shared/screen.c
  	M_DrawTextBox (32, by - 16, PLAQUE_WIDTH + 4, lines + 2);
  
  	for (i = 0; i < lines; i++, by += 8)
-@@ -1149,10 +1149,10 @@ static void I_Print (int cx, int cy, con
+@@ -1147,10 +1147,10 @@ static void I_Print (int cx, int cy, con
  	int	num, x, y;
  	const char	*s;
  
@@ -945,7 +945,7 @@ Index: engine/h2shared/screen.c
  	s = str;
  
  	while (*s)
-@@ -1160,7 +1160,7 @@ static void I_Print (int cx, int cy, con
+@@ -1158,7 +1158,7 @@ static void I_Print (int cx, int cy, con
  		num = (unsigned char)(*s);
  		if (!(flags & INTERMISSION_PRINT_WHITE))
  			num += 256;
