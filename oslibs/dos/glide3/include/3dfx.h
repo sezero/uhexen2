@@ -16,9 +16,6 @@
 ** THE UNITED STATES.  
 ** 
 ** COPYRIGHT 3DFX INTERACTIVE, INC. 1999, ALL RIGHTS RESERVED
-**
-** $Revision: 1.3.4.5 $
-** $Date: 2005/08/13 21:07:03 $
 */
 #ifndef __3DFX_H__
 #define __3DFX_H__
@@ -30,7 +27,7 @@ typedef unsigned char   FxU8;
 typedef signed   char   FxI8;
 typedef unsigned short  FxU16;
 typedef signed   short  FxI16;
-#if defined(__DJGPP__)||defined(_WIN32)
+#if defined(__DOS__) || defined(__MSDOS__) || defined(_WIN32) || defined(macintosh)
 typedef signed   long   FxI32;
 typedef unsigned long   FxU32;
 #else
@@ -69,7 +66,7 @@ typedef struct { float r, g, b, a; } FxColor4;
 #    define FX_ENTRY 
 #    define FX_CALL
 #  else
-#    define FX_ENTRY __declspec( dllimport )
+#    define FX_ENTRY extern
 #    define FX_CALL  __stdcall
 #  endif
 #elif defined(__WATCOMC__)
