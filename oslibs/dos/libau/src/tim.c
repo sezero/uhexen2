@@ -1,4 +1,11 @@
 #include "libaudef.h"
+#ifdef __WATCOMC__
+#include <conio.h>
+#undef outb
+#define outb(reg,val) outp(reg,val)
+#undef inb
+#define inb(reg) inp(reg)
+#endif
 #include <time.h>
 
 void pds_delay_10us(unsigned int ticks) //each tick is 10us

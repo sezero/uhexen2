@@ -166,6 +166,7 @@ static void azx_init_pci(struct intelhd_card_s *card)
    break;
   case AZX_DRIVER_SCH:
   case AZX_DRIVER_PCH:
+  case AZX_DRIVER_SKL:
   case AZX_DRIVER_HDMI:
    tmp = pcibios_ReadConfig_Word(card->pci_dev, INTEL_SCH_HDA_DEVC);
    if(tmp&INTEL_SCH_HDA_DEVC_NOSNOOP)
@@ -943,19 +944,21 @@ static pci_device_s intelhda_devices[]={
  {"Intel PCH (Lynx Point-LP)",   0x8086, 0x9c20, AZX_DRIVER_PCH },
  {"Intel PCH (Lynx Point-LP)",   0x8086, 0x9c21, AZX_DRIVER_PCH },
  {"Intel PCH (Wildcat Point-LP)",0x8086, 0x9ca0, AZX_DRIVER_PCH },
- {"Intel PCH (Sunrise Point)",   0x8086, 0xa170, AZX_DRIVER_PCH },
- {"Intel PCH (Sunrise Point-LP)",0x8086, 0x9d70, AZX_DRIVER_PCH },
- {"Intel PCH (Kabylake)",        0x8086, 0xa171, AZX_DRIVER_PCH },
- {"Intel PCH (Kabylake-LP)",     0x8086, 0x9d71, AZX_DRIVER_PCH },
- {"Intel PCH (Kabylake-H)",      0x8086, 0xa2f0, AZX_DRIVER_PCH },
- {"Intel PCH (Broxton-P)",       0x8086, 0x5a98, AZX_DRIVER_PCH },
- {"Intel PCH (Broxton-T)",       0x8086, 0x1a98, AZX_DRIVER_PCH },
+ {"Intel SKL (Sunrise Point)",   0x8086, 0xa170, AZX_DRIVER_SKL },
+ {"Intel SKL (Sunrise Point-LP)",0x8086, 0x9d70, AZX_DRIVER_SKL },
+ {"Intel SKL (Kabylake)",        0x8086, 0xa171, AZX_DRIVER_SKL },
+ {"Intel SKL (Kabylake-LP)",     0x8086, 0x9d71, AZX_DRIVER_SKL },
+ {"Intel SKL (Kabylake-H)",      0x8086, 0xa2f0, AZX_DRIVER_SKL },
+ {"Intel SKL (Coffelake)",       0x8086, 0xa348, AZX_DRIVER_SKL },
+ {"Intel SKL (Cannonlake)",      0x8086, 0x9dc8, AZX_DRIVER_SKL },
+ {"Intel SKL (Broxton-P)",       0x8086, 0x5a98, AZX_DRIVER_SKL },
+ {"Intel SKL (Broxton-T)",       0x8086, 0x1a98, AZX_DRIVER_SKL },
+ {"Intel SKL (Gemini-Lake)",     0x8086, 0x3198, AZX_DRIVER_SKL },
  {"Intel HDMI (Haswell)",        0x8086, 0x0a0c, AZX_DRIVER_HDMI },
  {"Intel HDMI (Haswell)",        0x8086, 0x0c0c, AZX_DRIVER_HDMI },
  {"Intel HDMI (Haswell)",        0x8086, 0x0d0c, AZX_DRIVER_HDMI },
  {"Intel HDMI (Broadwell)",      0x8086, 0x160c, AZX_DRIVER_HDMI },
  {"Intel SCH (5 Series/3400)",   0x8086, 0x3b56, AZX_DRIVER_SCH },
- {"Intel SCH",                   0x8086, 0x3b57, AZX_DRIVER_SCH }, // ???
  {"Intel SCH (Poulsbo)",         0x8086, 0x811b, AZX_DRIVER_SCH },
  {"Intel SCH (Oaktrail)",        0x8086, 0x080a, AZX_DRIVER_SCH },
  {"Intel PCH (BayTrail)",        0x8086, 0x0f04, AZX_DRIVER_PCH },
@@ -971,9 +974,12 @@ static pci_device_s intelhda_devices[]={
  {"Intel ICH10",  0x8086, 0x3a6e, AZX_DRIVER_ICH },
  {"ATI SB450",    0x1002, 0x437b, AZX_DRIVER_ATI },
  {"ATI SB600",    0x1002, 0x4383, AZX_DRIVER_ATI },
- {"AMD Hudson",   0x1022, 0x780d, AZX_DRIVER_ATI }, // FIXME: AZX_DRIVER_GENERIC?
+ {"AMD Hudson",   0x1022, 0x780d, AZX_DRIVER_ATI }, // AZX_DRIVER_GENERIC? -> NO, because snoop type is ATI
+ {"AMD Raven",    0x1022, 0x15e3, AZX_DRIVER_ATI }, //
+ {"ATI HDNS",     0x1002, 0x0002, AZX_DRIVER_ATIHDMI_NS },
  {"ATI HDNS",     0x1002, 0x1308, AZX_DRIVER_ATIHDMI_NS },
  {"ATI HDNS",     0x1002, 0x157a, AZX_DRIVER_ATIHDMI_NS },
+ {"ATI HDNS",     0x1002, 0x15b3, AZX_DRIVER_ATIHDMI_NS },
  {"ATI RS600",    0x1002, 0x793b, AZX_DRIVER_ATIHDMI },
  {"ATI RS690",    0x1002, 0x7919, AZX_DRIVER_ATIHDMI },
  {"ATI RS780",    0x1002, 0x960f, AZX_DRIVER_ATIHDMI },
