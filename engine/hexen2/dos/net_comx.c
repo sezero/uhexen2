@@ -781,6 +781,7 @@ int TTY_Connect (int handle, const char *host)
 	/* discard any scraps in the input buffer */
 	while (! EMPTY (p->inputQueue))
 		DEQUEUE (p->inputQueue, b);
+	(void) b;	/* silence warnings */
 
 	CheckStatus (p);
 
