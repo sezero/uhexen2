@@ -295,7 +295,7 @@ void WriteEntitiesToString (void)
 
 		for (ep = entities[i].epairs ; ep ; ep = ep->next)
 		{
-			sprintf (line, "\"%s\" \"%s\"\n", ep->key, ep->value);
+			q_snprintf (line, sizeof(line), "\"%s\" \"%s\"\n", ep->key, ep->value);
 			strcat (end, line);
 			end += strlen(line);
 		}

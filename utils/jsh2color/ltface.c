@@ -667,7 +667,7 @@ void LightFaceLIT (int surfnum, const vec3_t faceoffset)
 
 	l.numlightstyles = 0;
 
-	sprintf (l.texname, "%s", miptex[texinfo[f->texinfo].miptex].name);
+	strcpy (l.texname, miptex[texinfo[f->texinfo].miptex].name);
 
 	for (i = 0 ; i < num_entities ; i++)
 	{
@@ -829,7 +829,7 @@ void TestLightFace (int surfnum, const vec3_t faceoffset)
 
 	memset (&l, 0, sizeof(l));
 
-	sprintf (l.texname, "%s", miptex[texinfo[f->texinfo].miptex].name);
+	strcpy (l.texname, miptex[texinfo[f->texinfo].miptex].name);
 
 // we can speed up the checking process by ignoring any textures
 // that give white light. this hasn't been done since version 0.2,

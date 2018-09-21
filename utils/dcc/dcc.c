@@ -299,7 +299,7 @@ static void DccStatement (dstatement_t *s)
 		}
 		else
 		{
-			sprintf(dsline, "(%s %s %s)", a1, pr_opcodes[s->op].name, a2);
+			q_snprintf(dsline, sizeof(dsline), "(%s %s %s)", a1, pr_opcodes[s->op].name, a2);
 			Make_Immediate(s->c, dsline);
 		}
 	}
@@ -321,7 +321,7 @@ static void DccStatement (dstatement_t *s)
 		}
 		else
 		{
-			sprintf(dsline, "%s.%s", a1, a2);
+			q_snprintf(dsline, sizeof(dsline), "%s.%s", a1, a2);
 		//	printf("%s.%s making immediate at %d\n",a1,a2,s->c);
 			Make_Immediate(s->c, dsline);
 		}
@@ -348,7 +348,7 @@ static void DccStatement (dstatement_t *s)
 		}
 		else
 		{
-			sprintf(dsline,"%s", a1);
+			q_snprintf(dsline, sizeof(dsline),"%s", a1);
 			Make_Immediate(s->b, dsline);
 		}
 	}
@@ -373,7 +373,7 @@ static void DccStatement (dstatement_t *s)
 	else if ((OP_NOT_F <= s->op) && (s->op <= OP_NOT_FNC))
 	{
 		arg1 = PR_PrintStringAtOfs(s->a, typ1);
-		sprintf(dsline, "!%s", arg1);
+		q_snprintf(dsline, sizeof(dsline), "!%s", arg1);
 		Make_Immediate(s->c, dsline);
 	}
 	else if ((OP_CALL0 <= s->op) && (s->op <= OP_CALL8))
@@ -390,8 +390,8 @@ static void DccStatement (dstatement_t *s)
 			strcpy(a2, arg2);
 
 		arg3 = PR_PrintStringAtOfs(s->c, typ3);
-		sprintf(dsline, "%s (", a1);
-		sprintf(funcname, "%s", a1);
+		q_snprintf(dsline, sizeof(dsline), "%s (", a1);
+		q_snprintf(funcname, sizeof(funcname), "%s", a1);
 		if (arg2)
 		{
 			strcat(dsline, " ");
@@ -583,7 +583,7 @@ static void DccStatement (dstatement_t *s)
 
 		arg2 = PR_PrintStringAtOfs(s->b, typ2);
 		if (arg2)
-			sprintf(dsline, "%s", arg2);
+			q_snprintf(dsline, sizeof(dsline), "%s", arg2);
 
 		PR_Indent();
 		PR_Print("%s %s %s;\n", arg2, pr_opcodes[s->op].name, a1);
@@ -609,7 +609,7 @@ static void DccStatement (dstatement_t *s)
 		}
 		else
 		{
-			sprintf(dsline, "(%s->%s)", a1, a2);
+			q_snprintf(dsline, sizeof(dsline), "(%s->%s)", a1, a2);
 			Make_Immediate(s->c, dsline);
 		}
 	}
@@ -635,7 +635,7 @@ static void DccStatement (dstatement_t *s)
 	}
 	else if (s->op == OP_RAND0)
 	{
-		sprintf(dsline,"random()");
+		strcpy(dsline,"random()");
 		Make_Immediate(OFS_RETURN, dsline);
 	}
 	else if (s->op == OP_RAND1)
@@ -644,7 +644,7 @@ static void DccStatement (dstatement_t *s)
 		if (arg1)
 			strcpy(a1, arg1);
 
-		sprintf(dsline, "random(%s)", a1);
+		q_snprintf(dsline, sizeof(dsline), "random(%s)", a1);
 		Make_Immediate(OFS_RETURN, dsline);
 	}
 	else if (s->op == OP_RAND2)
@@ -654,12 +654,12 @@ static void DccStatement (dstatement_t *s)
 			strcpy(a1, arg1);
 
 		arg2 = PR_PrintStringAtOfs(s->b, typ2);
-		sprintf(dsline, "random(%s,%s)", a1, arg2);
+		q_snprintf(dsline, sizeof(dsline), "random(%s,%s)", a1, arg2);
 		Make_Immediate(OFS_RETURN, dsline);
 	}
 	else if (s->op == OP_RANDV0)
 	{
-		sprintf(dsline,"random( )");
+		strcpy(dsline,"random( )");
 		Make_Immediate(OFS_RETURN, dsline);
 	}
 	else if (s->op == OP_RANDV1)
@@ -668,7 +668,7 @@ static void DccStatement (dstatement_t *s)
 		if (arg1)
 			strcpy(a1, arg1);
 
-		sprintf(dsline, "random(%s)", a1);
+		q_snprintf(dsline, sizeof(dsline), "random(%s)", a1);
 		Make_Immediate(OFS_RETURN, dsline);
 	}
 	else if (s->op == OP_RANDV2)
@@ -678,7 +678,7 @@ static void DccStatement (dstatement_t *s)
 			strcpy(a1, arg1);
 
 		arg2 = PR_PrintStringAtOfs(s->b, typ2);
-		sprintf(dsline, "random(%s,%s)", a1, arg2);
+		q_snprintf(dsline, sizeof(dsline), "random(%s,%s)", a1, arg2);
 		Make_Immediate(OFS_RETURN, dsline);
 	}
 	else
@@ -936,31 +936,31 @@ static void PR_FunctionHeader (dfunction_t *df)
 	switch (t1)
 	{
 	case ev_string:
-		sprintf(linetxt, "string ");
+		strcpy(linetxt, "string ");
 		break;
 	case ev_void:
-		sprintf(linetxt, "void ");
+		strcpy(linetxt, "void ");
 		break;
 	case ev_float:
-		sprintf(linetxt, "float ");
+		strcpy(linetxt, "float ");
 		break;
 	case ev_vector:
-		sprintf(linetxt, "vector ");
+		strcpy(linetxt, "vector ");
 		break;
 	case ev_entity:
-		sprintf(linetxt, "entity ");
+		strcpy(linetxt, "entity ");
 		break;
 	case ev_field:
-		sprintf(linetxt, "ev_field ");
+		strcpy(linetxt, "ev_field ");
 		break;
 	case ev_function:
-		sprintf(linetxt, "void() ");
+		strcpy(linetxt, "void() ");
 		break;
 	case ev_pointer:
-		sprintf(linetxt, "ev_pointer ");
+		strcpy(linetxt, "ev_pointer ");
 		break;
 	default:
-		sprintf(linetxt, "void ");
+		strcpy(linetxt, "void ");
 		break;
 	}
 
@@ -1007,7 +1007,7 @@ static void PR_FunctionHeader (dfunction_t *df)
 		}
 		else
 		{
-			sprintf(linetxt, "void unknown ");
+			strcpy(linetxt, "void unknown ");
 		}
 
 		if (j < (df->numparms - 1))
@@ -1298,8 +1298,8 @@ static void Dcc_Functions (void)
 		df = pr_functions + i;
 
 		if (FILE_NUM_FOR_NAME)
-			sprintf (fname, "%d.hc", df->s_file);
-		else	sprintf (fname, "%s", pr_strings + df->s_file);
+			q_snprintf (fname, sizeof(fname), "%d.hc", df->s_file);
+		else	q_snprintf (fname, sizeof(fname), "%s", pr_strings + df->s_file);
 		/* unixify the path, */
 		p = fname;
 		while (*p)
@@ -1720,7 +1720,7 @@ static void FindBuiltinParameters (int func)
 	/* find name */
 	memset (sname, 0, sizeof(sname));
 	arg1 = PR_PrintStringAtOfs(dsf->a, 0);
-	sprintf(sname, "%s", arg1);
+	q_snprintf(sname, sizeof(sname), "%s", arg1);
 
 	/* look for first two parms */
 	if (dsf->b == 1)
@@ -1794,7 +1794,7 @@ static void FindBuiltinParameters (int func)
 	memset (plist, 0, sizeof(plist));
 	if (type[8] & DEF_SAVEGLOBAL)
 	{
-		sprintf(plist,".");
+		strcpy(plist,".");
 		type[8] &= ~DEF_SAVEGLOBAL;
 	}
 
@@ -1871,12 +1871,12 @@ static void FindBuiltinParameters (int func)
 				strcat(plist, "ev_pointer ");
 				break;
 			default:
-				sprintf(parm, "unknown%d",type[i]);
+				q_snprintf(parm, sizeof(parm), "unknown%d",type[i]);
 				strcat(plist, parm);
 				break;
 			}
 
-			sprintf(parm, "%c", 'a'+i);
+			q_snprintf(parm, sizeof(parm), "%c", 'a'+i);
 			strcat(plist, parm);
 
 			if (i < j - 1)
@@ -2293,36 +2293,36 @@ static const char *PR_ValueString (etype_t type, void *val)
 	switch (type)
 	{
 	case ev_string:
-		sprintf (line, "%s", PR_String(pr_strings + *(int *)val));
+		q_snprintf (line, sizeof(line), "%s", PR_String(pr_strings + *(int *)val));
 		break;
 	case ev_entity:
-		sprintf (line, "entity %i", *(int *)val);
+		q_snprintf (line, sizeof(line), "entity %i", *(int *)val);
 		break;
 	case ev_function:
 		f = pr_functions + *(int *)val;
 		if (!f)
-			sprintf (line, "undefined function");
+			strcpy (line, "undefined function");
 		else
-			sprintf (line, "%s()", pr_strings + f->s_name);
+			q_snprintf (line, sizeof(line), "%s()", pr_strings + f->s_name);
 		break;
 	case ev_field:
 		def = PR_DefForFieldOfs ( *(int *)val );
-		sprintf (line, ".%s", def->name);
+		q_snprintf (line, sizeof(line), ".%s", def->name);
 		break;
 	case ev_void:
-		sprintf (line, "void");
+		strcpy (line, "void");
 		break;
 	case ev_float:
-		sprintf (line, "%5.1f", *(float *)val);
+		q_snprintf (line, sizeof(line), "%5.1f", *(float *)val);
 		break;
 	case ev_vector:
-		sprintf (line, "'%5.1f %5.1f %5.1f'", ((float *)val)[0], ((float *)val)[1], ((float *)val)[2]);
+		q_snprintf (line, sizeof(line), "'%5.1f %5.1f %5.1f'", ((float *)val)[0], ((float *)val)[1], ((float *)val)[2]);
 		break;
 	case ev_pointer:
-		sprintf (line, "pointer");
+		strcpy (line, "pointer");
 		break;
 	default:
-		sprintf (line, "bad type %i", type);
+		q_snprintf (line, sizeof(line), "bad type %i", type);
 		break;
 	}
 
@@ -2338,35 +2338,35 @@ static const char *DCC_ValueString (etype_t type, void *val)
 	switch (type)
 	{
 	case ev_string:
-		sprintf (vsline, "%s", PR_String(pr_strings + *(int *)val));
+		q_snprintf (vsline, sizeof(vsline), "%s", PR_String(pr_strings + *(int *)val));
 		break;
 	case ev_entity:
-		sprintf (vsline, "entity %i", *(int *)val);
+		q_snprintf (vsline, sizeof(vsline), "entity %i", *(int *)val);
 		break;
 	case ev_function:
 		f = pr_functions + *(int *)val;
 		if (!f)
-			sprintf (vsline, "undefined function");
-		else	sprintf (vsline, "%s()", pr_strings + f->s_name);
+			strcpy (vsline, "undefined function");
+		else	q_snprintf (vsline, sizeof(vsline), "%s()", pr_strings + f->s_name);
 		break;
 	case ev_field:
 		def = PR_DefForFieldOfs (*(int *)val);
-		sprintf (vsline, ".%s", def->name);
+		q_snprintf (vsline, sizeof(vsline), ".%s", def->name);
 		break;
 	case ev_void:
-		sprintf (vsline, "void");
+		strcpy (vsline, "void");
 		break;
 	case ev_float:
-		sprintf (vsline, "%.5f", *(float *)val);
+		q_snprintf (vsline, sizeof(vsline), "%.5f", *(float *)val);
 		break;
 	case ev_vector:
-		sprintf (vsline, "'%.5f %.5f %.5f'", ((float *)val)[0], ((float *)val)[1], ((float *)val)[2]);
+		q_snprintf (vsline, sizeof(vsline), "'%.5f %.5f %.5f'", ((float *)val)[0], ((float *)val)[1], ((float *)val)[2]);
 		break;
 	case ev_pointer:
-		sprintf (vsline, "pointer");
+		strcpy (vsline, "pointer");
 		break;
 	default:
-		sprintf (vsline, "bad type %i", type);
+		q_snprintf (vsline, sizeof(vsline), "bad type %i", type);
 		break;
 	}
 

@@ -93,7 +93,7 @@ static void WriteFiles (void)
 	int		i;
 	char	filename[1024];
 
-	sprintf (filename, "%sfiles.dat", sourcedir);
+	q_snprintf (filename, sizeof(filename), "%sfiles.dat", sourcedir);
 	f = fopen (filename, "w");
 	if (!f)
 		COM_Error ("Couldn't open %s", filename);
@@ -580,36 +580,36 @@ static const char *PR_ValueString (etype_t type, void *val)
 	switch (type)
 	{
 	case ev_string:
-		sprintf (line, "%s", PR_String(strings + *(int *)val));
+		q_snprintf (line, sizeof(line), "%s", PR_String(strings + *(int *)val));
 		break;
 	case ev_entity:
-		sprintf (line, "entity %i", *(int *)val);
+		q_snprintf (line, sizeof(line), "entity %i", *(int *)val);
 		break;
 	case ev_function:
 		f = functions + *(int *)val;
 		if (!f)
-			sprintf (line, "undefined function");
+			strcpy (line, "undefined function");
 		else
-			sprintf (line, "%s()", strings + f->s_name);
+			q_snprintf (line, sizeof(line), "%s()", strings + f->s_name);
 		break;
 	case ev_field:
 		def = PR_DefForFieldOfs ( *(int *)val );
-		sprintf (line, ".%s", def->name);
+		q_snprintf (line, sizeof(line), ".%s", def->name);
 		break;
 	case ev_void:
-		sprintf (line, "void");
+		strcpy (line, "void");
 		break;
 	case ev_float:
-		sprintf (line, "%5.1f", *(float *)val);
+		q_snprintf (line, sizeof(line), "%5.1f", *(float *)val);
 		break;
 	case ev_vector:
-		sprintf (line, "'%5.1f %5.1f %5.1f'", ((float *)val)[0], ((float *)val)[1], ((float *)val)[2]);
+		q_snprintf (line, sizeof(line), "'%5.1f %5.1f %5.1f'", ((float *)val)[0], ((float *)val)[1], ((float *)val)[2]);
 		break;
 	case ev_pointer:
-		sprintf (line, "pointer");
+		strcpy (line, "pointer");
 		break;
 	default:
-		sprintf (line, "bad type %i", type);
+		q_snprintf (line, sizeof(line), "bad type %i", type);
 		break;
 	}
 
@@ -633,9 +633,9 @@ static const char *PR_GlobalStringNoContents (gofs_t ofs)
 	def = pr_global_defs[ofs];
 	if (!def)
 	//	COM_Error ("%s: no def for %i", __thisfunc__, ofs);
-		sprintf (line, "%i(?)", ofs);
+		q_snprintf (line, sizeof(line), "%i(?)", ofs);
 	else
-		sprintf (line, "%i(%s)", ofs, def->name);
+		q_snprintf (line, sizeof(line), "%i(%s)", ofs, def->name);
 
 	i = strlen(line);
 	for ( ; i < 16; i++)
@@ -658,10 +658,10 @@ static const char *PR_GlobalString (gofs_t ofs)
 	if (def->initialized && def->type->type != ev_function)
 	{
 		s = PR_ValueString (def->type->type, &pr_globals[ofs]);
-		sprintf (line, "%i(%s)", ofs, s);
+		q_snprintf (line, sizeof(line), "%i(%s)", ofs, s);
 	}
 	else
-		sprintf (line, "%i(%s)", ofs, def->name);
+		q_snprintf (line, sizeof(line), "%i(%s)", ofs, def->name);
 
 	i = strlen(line);
 	for ( ; i < 16; i++)
@@ -1021,8 +1021,8 @@ int main (int argc, char **argv)
 
 	psrc = COM_Parse(psrc);
 	if (!psrc)
-		COM_Error("No destination filename. dhcc -help for info.\n");
-	sprintf(destfile, "%s%s", sourcedir, com_token);
+		COM_Error("No destination filename. dhcc -help for info.");
+	q_snprintf(destfile, sizeof(destfile), "%s%s", sourcedir, com_token);
 	printf("outputfile: %s\n", destfile);
 
 	hcc_OptimizeStringHeap = 1;
