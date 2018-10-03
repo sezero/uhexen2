@@ -48,6 +48,12 @@
 #	define	PLATFORM_WINDOWS	1
 #   endif
 
+#elif defined(__HAIKU__)
+
+#   if !defined(PLATFORM_HAIKU)
+#	define	PLATFORM_HAIKU		1
+#   endif
+
 #elif defined(__APPLE__) && defined(__MACH__)		/* Mac OS X */
 
 #   if !defined(PLATFORM_OSX)
@@ -85,7 +91,7 @@
     defined(__sun) || defined(sun)				|| \
     defined(__sgi) || defined(sgi) || defined(__sgi__)		|| \
     defined(__GNU__) /* GNU/Hurd */				|| \
-    defined(__QNX__) || defined(__QNXNTO__)
+    defined(__QNX__) || defined(__QNXNTO__) || defined(__HAIKU__)
 #   if !defined(PLATFORM_UNIX)
 #	define	PLATFORM_UNIX		1
 #   endif
@@ -145,6 +151,8 @@
 #	define	PLATFORM_STRING	"AmigaOS"
 #elif defined(__QNX__) || defined(__QNXNTO__)
 #	define	PLATFORM_STRING	"QNX"
+#elif defined(PLATFORM_HAIKU)
+#	define	PLATFORM_STRING	"Haiku"
 #elif defined(PLATFORM_OSX)
 #	define	PLATFORM_STRING	"MacOSX"
 #elif defined(PLATFORM_MAC)

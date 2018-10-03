@@ -50,7 +50,7 @@
 #endif	/* BSD, sockaddr */
 
 /* unix includes and compatibility macros */
-#if defined(PLATFORM_UNIX) || defined(PLATFORM_RISCOS)
+#if defined(PLATFORM_UNIX) || defined(PLATFORM_RISCOS) || defined(PLATFORM_HAIKU)
 
 #include <sys/param.h>
 #include <sys/ioctl.h>
