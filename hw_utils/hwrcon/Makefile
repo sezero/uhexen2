@@ -108,6 +108,9 @@ ifeq ($(TARGET_OS),unix)
 ifeq ($(HOST_OS),qnx)
 LDFLAGS += -lsocket
 endif
+ifeq ($(HOST_OS),haiku)
+SYSLIBS += -lnetwork
+endif
 ifeq ($(HOST_OS),sunos)
 LDFLAGS += -lsocket -lnsl -lresolv
 endif

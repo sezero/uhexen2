@@ -220,6 +220,9 @@ ifeq ($(TARGET_OS),unix)
 ifeq ($(HOST_OS),qnx)
 SYSLIBS += -lsocket
 endif
+ifeq ($(HOST_OS),haiku)
+SYSLIBS += -lnetwork
+endif
 ifeq ($(HOST_OS),sunos)
 SYSLIBS += -lsocket -lnsl -lresolv
 endif
