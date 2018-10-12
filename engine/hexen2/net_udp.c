@@ -55,6 +55,7 @@ struct Library	*SocketBase;
 
 static int udp_scan_iface (sys_socket_t socketfd)
 {
+#if defined(SIOCGIFCONF) && defined(SIOCGIFADDR)
 	struct ifconf	ifc;
 	struct ifreq	*ifr;
 	char		buf[8192];
@@ -93,6 +94,7 @@ static int udp_scan_iface (sys_socket_t socketfd)
 			return 0;
 		}
 	}
+#endif /**/
 
 	return -1;
 }
