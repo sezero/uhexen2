@@ -60,7 +60,6 @@ static sage_GetProcAddress_f sage_GetProcAddress_fp;
 #endif
 
 static sageContext *ctx;
-static qboolean firstRunHack = true;
 static void SAGE_Shutdown (void);
 
 static int SAGE_InitCtx (int *width, int *height, int *bpp)
@@ -91,15 +90,6 @@ static int SAGE_InitCtx (int *width, int *height, int *bpp)
 		sage_fini_fp ();
 		ctx = NULL;
 		return -1;
-	}
-
-	/* FS:  HACK HACK HACK:  For some reason SAGE has bad
-	 * performance unless it's loaded twice.  SLI or not. :( */
-	if (firstRunHack) {
-		firstRunHack = false;
-		Con_SafeDPrintf("Running SAGE performance hack\n");
-		SAGE_Shutdown();
-		return SAGE_InitCtx(width, height, bpp);
 	}
 
 	return 0;
