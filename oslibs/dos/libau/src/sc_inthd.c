@@ -932,7 +932,7 @@ static unsigned int snd_hda_calc_stream_format(struct mpxplay_audioout_info_s *a
 
 //-------------------------------------------------------------------------
 static pci_device_s intelhda_devices[]={
- {"Intel CPT6",   0x8086, 0x1c20, AZX_DRIVER_PCH },
+ {"Intel CPT6",                  0x8086, 0x1c20, AZX_DRIVER_PCH },
  {"Intel CPT7 (PBG)",            0x8086, 0x1d20, AZX_DRIVER_PCH },
  {"Intel PCH (Panther Point)",   0x8086, 0x1e20, AZX_DRIVER_PCH },
  {"Intel PCH (Lynx Point)",      0x8086, 0x8c20, AZX_DRIVER_PCH },
@@ -951,6 +951,7 @@ static pci_device_s intelhda_devices[]={
  {"Intel SKL (Kabylake-H)",      0x8086, 0xa2f0, AZX_DRIVER_SKL },
  {"Intel SKL (Coffelake)",       0x8086, 0xa348, AZX_DRIVER_SKL },
  {"Intel SKL (Cannonlake)",      0x8086, 0x9dc8, AZX_DRIVER_SKL },
+ {"Intel SKL (Icelake)",         0x8086, 0x34c8, AZX_DRIVER_SKL },
  {"Intel SKL (Broxton-P)",       0x8086, 0x5a98, AZX_DRIVER_SKL },
  {"Intel SKL (Broxton-T)",       0x8086, 0x1a98, AZX_DRIVER_SKL },
  {"Intel SKL (Gemini-Lake)",     0x8086, 0x3198, AZX_DRIVER_SKL },
@@ -975,6 +976,7 @@ static pci_device_s intelhda_devices[]={
  {"ATI SB450",    0x1002, 0x437b, AZX_DRIVER_ATI },
  {"ATI SB600",    0x1002, 0x4383, AZX_DRIVER_ATI },
  {"AMD Hudson",   0x1022, 0x780d, AZX_DRIVER_ATI }, // AZX_DRIVER_GENERIC? -> NO, because snoop type is ATI
+ {"AMD Stoney",   0x1022, 0x157a, AZX_DRIVER_ATI }, //
  {"AMD Raven",    0x1022, 0x15e3, AZX_DRIVER_ATI }, //
  {"ATI HDNS",     0x1002, 0x0002, AZX_DRIVER_ATIHDMI_NS },
  {"ATI HDNS",     0x1002, 0x1308, AZX_DRIVER_ATIHDMI_NS },
@@ -1049,7 +1051,8 @@ static pci_device_s intelhda_devices[]={
  {"NVidia MCP",   0x10de, 0x0d95, AZX_DRIVER_NVIDIA },
  {"NVidia MCP",   0x10de, 0x0d96, AZX_DRIVER_NVIDIA },
  {"NVidia MCP",   0x10de, 0x0d97, AZX_DRIVER_NVIDIA },
- //{"AMD Generic",  0x1002, 0x0000, AZX_DRIVER_GENERIC }, // ??? cannot define this
+ //{"AMD Generic",     0x1002, 0x0000, AZX_DRIVER_GENERIC }, // TODO: cannot define these
+ //{"NVidia Generic",  0x10de, 0x0000, AZX_DRIVER_GENERIC },
 
  {NULL,0,0,0}
 };
