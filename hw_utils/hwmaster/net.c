@@ -26,13 +26,6 @@
 
 #include "q_stdinc.h"
 #include "arch_def.h"
-#if defined(PLATFORM_UNIX) ||		\
-    defined(PLATFORM_OS2) ||		\
-    defined(PLATFORM_AMIGA) ||		\
-    defined(__DJGPP__) ||		\
-    defined(PLATFORM_RISCOS)
-#include <sys/time.h>	/* struct timeval */
-#endif
 #include "net_sys.h"
 #include "compiler.h"
 #include "defs.h"

@@ -36,13 +36,6 @@
 #include "arch_def.h"
 #include "compiler.h"
 
-#if defined(PLATFORM_UNIX) ||		\
-    defined(PLATFORM_OS2) ||		\
-    defined(PLATFORM_AMIGA) ||		\
-    defined(__DJGPP__) ||		\
-    defined(PLATFORM_RISCOS)
-#include <sys/time.h>	/* struct timeval */
-#endif
 #define	COMPILE_TIME_ASSERT(name, x)	\
 	typedef int dummy_ ## name[(x) * 2 - 1]
 #include "net_sys.h"
@@ -393,7 +386,6 @@ int main (int argc, char *argv[])
 		}
 	}
 
-/* never reached */
-	return 0;
+	return 0;/* never reached */
 }
 

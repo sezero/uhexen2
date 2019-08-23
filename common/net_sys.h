@@ -59,6 +59,7 @@
 #include <sys/filio.h>
 #include <sys/sockio.h>
 #endif	/* __sunos__ */
+#include <sys/time.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -99,6 +100,7 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
 #endif
 #include <sys/param.h>
 #include <sys/ioctl.h>
+#include <sys/time.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -147,6 +149,11 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
 #include <sys/param.h>
 #endif
 #include <sys/ioctl.h>
+#ifdef PLATFORM_AMIGAOS3
+#include <devices/timer.h> /* struct timeval */
+#else
+#include <sys/time.h>
+#endif
 #ifndef PLATFORM_AMIGAOS3
 #include <unistd.h>
 #endif
@@ -260,6 +267,7 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
  * It still doesn't define socklen_t or in_addr_t types. */
 #include <sys/param.h>
 #include <sys/ioctl.h>
+#include <sys/time.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
