@@ -143,9 +143,13 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
 /* amiga includes and compatibility macros */
 #if defined(PLATFORM_AMIGA) /* Amiga bsdsocket.library */
 
+#ifndef PLATFORM_AMIGAOS3
 #include <sys/param.h>
+#endif
 #include <sys/ioctl.h>
+#ifndef PLATFORM_AMIGAOS3
 #include <unistd.h>
+#endif
 #include <proto/exec.h>
 #include <proto/socket.h>
 #include <sys/socket.h>
@@ -157,10 +161,26 @@ typedef int	sys_socket_t;
 #define	INVALID_SOCKET	(-1)
 #define	SOCKET_ERROR	(-1)
 
-#if !(defined(__AROS__) || defined(__amigaos4__))
+#if defined(__AROS__) || defined(__amigaos4__)
+# define HAVE_SOCKLEN_T
+#elif defined(PLATFORM_AMIGAOS3) && defined(_SYS_NETINCLUDE_TYPES_H)
+/* Roadshow-SDK:  identified by sys/netinclude_types.h header guard */
+# define HAVE_SOCKLEN_T
+#endif
+
+#if defined(__amigaos4__)
+# define HAVE_IN_ADDR_T
+#elif defined(__AROS__) && defined(INET_ADDRSTRLEN)  /* AROS ABI_V2 */
+# define HAVE_IN_ADDR_T
+#elif defined(PLATFORM_AMIGAOS3) && defined(_SYS_NETINCLUDE_TYPES_H)
+/* Roadshow-SDK:  identified by sys/netinclude_types.h header guard */
+# define HAVE_IN_ADDR_T
+#endif
+
+#if !defined(HAVE_SOCKLEN_T)
 typedef LONG	socklen_t;	/* int32_t */
 #endif
-#if !defined(__amigaos4__)
+#if !defined(HAVE_IN_ADDR_T)
 #if (LONG_MAX <= 2147483647L)
 typedef unsigned long	in_addr_t;	/* u_int32_t */
 #else

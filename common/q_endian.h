@@ -61,6 +61,9 @@
 # elif defined(__amigaos__) && defined(__NEWLIB__)
 #  include <machine/endian.h>
 # elif defined(__amigaos__) && defined(__CLIB2__)
+#  if !defined(__amigaos4__)
+#  define __NO_NET_API /* have netinclude/ instead */
+#  endif
 #  include <unistd.h>
 # endif
 
