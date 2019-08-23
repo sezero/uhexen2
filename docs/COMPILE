@@ -258,15 +258,17 @@ For MorphOS, any SDK should work.
 For AROS, only ABIv0 is tested: we build against AROS snapshot from
 2014-07-26, i.e. the ABI_V0 branch at aros svn:
 https://trac.aros.org/trac/browser/AROS/branches/ABI_V0
-or https://gitorious.org/aros/aros.git
+or https://github.com/sezero/AROS-mirror.git
 
 For AmigaOS 3.x (m68k-amigaos), you can use gcc or vbcc.  We tested
 using the following cross-toolchains:
-https://github.com/cahirwpz/amigaos-cross-toolchain.git
+https://github.com/adtools/amigaos-cross-toolchain.git
 https://github.com/sezero/amigaos-cross-toolchain.git
-- gcc:  gcc-2.95.3 and gcc-2.95.4 were tested.  Builds against libnix
-  were found to be broken (stdio issues): build against clib2, instead.
-- vbcc: vbcc 0.9f patch1, vasm 1.8a, and vlink 0.16a are tested.
+- gcc:  gcc-2.95.3 and gcc-2.95.4 were tested.  Building against clib2
+  is recommended, which is the default. (libnix builds had experienced
+  stdio brokenness issues: might or might not be fixed in newer libnix
+  versions.)
+- vbcc: vbcc 0.9f patch1, vasm 1.8d, and vlink 0.16a are tested.
 
 
 Links:
