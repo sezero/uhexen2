@@ -65,7 +65,7 @@ all: $(BINARY)
 
 # FIXME: request 4 MB stack.
 $(BINARY): $(OBJECTS)
-	wlink N $@ SYS NT OPTION STACK=0x400000 F {$(OBJECTS)}
+	wlink N $@ SYS NT OPTION q OPTION STACK=0x400000 F {$(OBJECTS)}
 
 !ifdef __UNIX__
 INCLUDES+= -I$(OSLIBS)/windows/misc/include

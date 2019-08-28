@@ -58,7 +58,7 @@ OBJECTS = qsnprint.obj hwmquery.obj
 all: $(HWMQUERY)
 
 $(HWMQUERY): $(OBJECTS)
-	wlink N $@ SYS NT LIBR {$(LIBS)} F {$(OBJECTS)}
+	wlink N $@ SYS NT OP q LIBR {$(LIBS)} F {$(OBJECTS)}
 
 !ifdef __UNIX__
 INCLUDES+= -I$(OSLIBS)/windows/misc/include

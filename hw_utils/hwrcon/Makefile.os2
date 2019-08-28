@@ -1,5 +1,5 @@
 # makefile to build hwrcon and hwterm for OS/2 using Open Watcom:
-# wmake -f Makefile.os2
+#   wmake -f Makefile.os2
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -48,10 +48,10 @@ TERM_OBJS = hwterm.obj
 all: $(HWRCON) $(HWTERM)
 
 $(HWRCON) : $(COMMONOBJ) $(RCON_OBJS)
-	wlink N $@ SYS OS2V2 F {$(COMMONOBJ) $(RCON_OBJS)}
+	wlink N $@ SYS OS2V2 OP q F {$(COMMONOBJ) $(RCON_OBJS)}
 
 $(HWTERM) : $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)
-	wlink N $@ SYS OS2V2 F {$(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)}
+	wlink N $@ SYS OS2V2 OP q F {$(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)}
 
 !ifdef __UNIX__
 clean: .symbolic

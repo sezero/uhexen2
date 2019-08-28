@@ -1,7 +1,7 @@
 # makefile to build hw.exe for OS/2 using Open Watcom:
 #   wmake -f Makefile.os2
 #
-# to build the opengl version:
+# to build opengl version glhw.exe :
 #   wmake -f Makefile.os2 BUILDGL=1
 
 # PATH SETTINGS:
@@ -435,11 +435,11 @@ all: $(BUILD_TARGET)
 
 # 1 MB stack size.
 $(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS)
-	wlink N $@ SYS OS2V2 OPTION STACK=0x100000 LIBR {$(LIBS)} F {$(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS)}
+	wlink N $@ SYS OS2V2 OPTION q OPTION STACK=0x100000 LIBR {$(LIBS)} F {$(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS)}
 
 # 1 MB stack size.
 $(GL_BINARY): $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
-	wlink N $@ SYS OS2V2 OPTION STACK=0x100000 LIBR {$(LIBS) $(GL_LIBS)} F {$(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)}
+	wlink N $@ SYS OS2V2 OPTION q OPTION STACK=0x100000 LIBR {$(LIBS) $(GL_LIBS)} F {$(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)}
 
 !ifdef __UNIX__
 clean: .symbolic

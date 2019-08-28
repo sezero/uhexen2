@@ -71,7 +71,7 @@ all: $(QBSP)
 
 # 1 MB stack size
 $(QBSP): $(OBJ_COMMON) $(OBJ_QBSP)
-	wlink N $@ SYS OS2V2 OPTION STACK=0x100000 F {$(OBJ_COMMON) $(OBJ_QBSP)}
+	wlink N $@ SYS OS2V2 OPTION q OPTION STACK=0x100000 F {$(OBJ_COMMON) $(OBJ_QBSP)}
 
 !ifdef __UNIX__
 clean: .symbolic

@@ -44,7 +44,7 @@ OBJECTS = qsnprint.obj sizebuf.obj msg_io.obj cmds.obj common.obj net.obj master
 all: $(BINARY)
 
 $(BINARY): $(OBJECTS)
-	wlink N $@ SYS OS2V2 F {$(OBJECTS)}
+	wlink N $@ SYS OS2V2 OP q F {$(OBJECTS)}
 
 !ifdef __UNIX__
 clean: .symbolic

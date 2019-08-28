@@ -60,7 +60,7 @@ h2patch.res: h2patch3.rc
 	wrc -q -r $(RCFLAGS) $(RC_DEFS) -fo=$^@ $<
 
 h2patch.exe: $(OBJECTS) h2patch.res
-	wlink N $@ SYS NT F {$(OBJECTS)}
+	wlink N $@ SYS NT OP q F {$(OBJECTS)}
 	wrc -q $^*.res
 
 !ifdef __UNIX__

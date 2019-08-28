@@ -58,10 +58,10 @@ OBJ_PAKL= paklist.obj
 all: $(PAKX) $(PAKLIST)
 
 $(PAKX): $(OBJ_COMMON) $(OBJ_PAKX)
-	wlink N $@ SYS NT F {$(OBJ_COMMON) $(OBJ_PAKX)}
+	wlink N $@ SYS NT OP q F {$(OBJ_COMMON) $(OBJ_PAKX)}
 
 $(PAKLIST): $(OBJ_COMMON) $(OBJ_PAKL)
-	wlink N $@ SYS NT F {$(OBJ_COMMON) $(OBJ_PAKL)}
+	wlink N $@ SYS NT OP q F {$(OBJ_COMMON) $(OBJ_PAKL)}
 
 !ifdef __UNIX__
 INCLUDES+= -I$(OSLIBS)/windows/misc/include

@@ -1,7 +1,7 @@
 # makefile to build hwcl.exe for Windows using Open Watcom:
 #    wmake -f OWMakefile.win32
 #
-# to build the opengl version:
+# to build opengl version glhw.exe :
 #    wmake -f OWMakefile.win32 BUILDGL=1
 
 # PATH SETTINGS:
@@ -503,12 +503,12 @@ snd_timidity.obj: $(COMMONDIR)/snd_timidity.c
 
 # 1 MB stack size.
 $(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(SYSOBJ_RES)
-	wlink N $@ SYS NT_WIN OPTION STACK=0x100000 LIBR {$(LIBS)} F {$(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS)}
+	wlink N $@ SYS NT_WIN OPTION q OPTION STACK=0x100000 LIBR {$(LIBS)} F {$(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS)}
 	wrc -q $^*.res
 
 # 1 MB stack size.
 $(GL_BINARY): $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(SYSOBJ_RES)
-	wlink N $@ SYS NT_WIN OPTION STACK=0x100000 LIBR {$(LIBS) $(GL_LIBS)} F {$(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)}
+	wlink N $@ SYS NT_WIN OPTION q OPTION STACK=0x100000 LIBR {$(LIBS) $(GL_LIBS)} F {$(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)}
 	wrc -q $^*.res
 
 !ifdef __UNIX__

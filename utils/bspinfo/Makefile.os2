@@ -56,7 +56,7 @@ OBJECTS = qsnprint.obj &
 all: $(BSPINFO)
 
 $(BSPINFO): $(OBJECTS)
-	wlink N $@ SYS OS2V2 F {$(OBJECTS)}
+	wlink N $@ SYS OS2V2 OP q F {$(OBJECTS)}
 
 !ifdef __UNIX__
 clean: .symbolic

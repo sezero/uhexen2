@@ -63,7 +63,7 @@ all: $(VIS)
 
 # 1 MB stack size
 $(VIS): $(OBJ_COMMON) $(OBJ_VIS)
-	wlink N $@ SYS NT OPTION STACK=0x100000 F {$(OBJ_COMMON) $(OBJ_VIS)}
+	wlink N $@ SYS NT OPTION q OPTION STACK=0x100000 F {$(OBJ_COMMON) $(OBJ_VIS)}
 
 !ifdef __UNIX__
 INCLUDES+= -I$(OSLIBS)/windows/misc/include

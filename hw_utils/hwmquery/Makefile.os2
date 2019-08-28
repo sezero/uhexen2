@@ -1,5 +1,5 @@
-# makefile to build hwmquery for OS/2 using OpenWatcom:
-# wmake -f Makefile.os2
+# makefile to build hwmquery for OS/2 using Open Watcom:
+#   wmake -f Makefile.os2
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -44,7 +44,7 @@ OBJECTS = qsnprint.obj hwmquery.obj
 all: $(HWMQUERY)
 
 $(HWMQUERY): $(OBJECTS)
-	wlink N $@ SYS OS2V2 F {$(OBJECTS)}
+	wlink N $@ SYS OS2V2 OP q F {$(OBJECTS)}
 
 !ifdef __UNIX__
 clean: .symbolic

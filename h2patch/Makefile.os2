@@ -51,7 +51,7 @@ xdelta3.obj: $(XD3DEPS)
 	wcc386 $(CFLAGS) $(XDFLAGS) -fo=$^@ $(XDELTA_DIR)$(PATH_SEP)xdelta3.c
 
 h2patch.exe: $(OBJECTS)
-	wlink N $@ SYS OS2V2 F {$(OBJECTS)}
+	wlink N $@ SYS OS2V2 OP q F {$(OBJECTS)}
 
 !ifdef __UNIX__
 clean: .symbolic

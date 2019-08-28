@@ -57,10 +57,10 @@ OBJ_PAKL= paklist.obj
 all: $(PAKX) $(PAKLIST)
 
 $(PAKX): $(OBJ_COMMON) $(OBJ_PAKX)
-	wlink N $@ SYS OS2V2 F {$(OBJ_COMMON) $(OBJ_PAKX)}
+	wlink N $@ SYS OS2V2 OP q F {$(OBJ_COMMON) $(OBJ_PAKX)}
 
 $(PAKLIST): $(OBJ_COMMON) $(OBJ_PAKL)
-	wlink N $@ SYS OS2V2 F {$(OBJ_COMMON) $(OBJ_PAKL)}
+	wlink N $@ SYS OS2V2 OP q F {$(OBJ_COMMON) $(OBJ_PAKL)}
 
 !ifdef __UNIX__
 clean: .symbolic

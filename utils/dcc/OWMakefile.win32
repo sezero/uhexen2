@@ -58,7 +58,7 @@ OBJECTS = qsnprint.obj &
 all: $(BINARY)
 
 $(BINARY): $(OBJECTS)
-	wlink N $@ SYS NT F {$(OBJECTS)}
+	wlink N $@ SYS NT OP q F {$(OBJECTS)}
 
 !ifdef __UNIX__
 INCLUDES+= -I$(OSLIBS)/windows/misc/include

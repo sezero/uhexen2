@@ -54,7 +54,7 @@ OBJECTS= qsnprint.obj &
 all: $(BINARY)
 
 $(BINARY): $(OBJECTS)
-	wlink N $@ SYS OS2V2 F {$(OBJECTS)}
+	wlink N $@ SYS OS2V2 OP q F {$(OBJECTS)}
 
 !ifdef __UNIX__
 clean: .symbolic

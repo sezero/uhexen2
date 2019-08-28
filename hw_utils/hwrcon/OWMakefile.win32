@@ -1,5 +1,5 @@
 # makefile to build hwrcon and hwterm for Win32 using Open Watcom:
-# wmake -f OWMakefile.win32
+#   wmake -f OWMakefile.win32
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -62,10 +62,10 @@ TERM_OBJS = hwterm.obj
 all: $(HWRCON) $(HWTERM)
 
 $(HWRCON) : $(COMMONOBJ) $(RCON_OBJS)
-	wlink N $@ SYS NT LIBR {$(LIBS)} F {$(COMMONOBJ) $(RCON_OBJS)}
+	wlink N $@ SYS NT OP q LIBR {$(LIBS)} F {$(COMMONOBJ) $(RCON_OBJS)}
 
 $(HWTERM) : $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)
-	wlink N $@ SYS NT LIBR {$(LIBS)} F {$(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)}
+	wlink N $@ SYS NT OP q LIBR {$(LIBS)} F {$(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)}
 
 !ifdef __UNIX__
 INCLUDES+= -I$(OSLIBS)/windows/misc/include
