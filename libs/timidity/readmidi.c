@@ -302,7 +302,8 @@ static int read_track(MidIStream *stream, MidSong *song, int append)
 {
   MidEventList *meep;
   MidEventList *next, *newlist;
-  sint32 len, next_pos, pos;
+  sint32 len;
+  long next_pos, pos;
   char tmp[4];
 
   meep = song->evlist;
