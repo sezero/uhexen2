@@ -10,7 +10,7 @@
  */
 
 /*
- * Copyright (c) 1983, 1993
+ * Copyright (c) 1982, 1986, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,9 +41,62 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)inet.h	8.1 (Berkeley) 6/2/93
+ *	@(#)uio.h	8.5 (Berkeley) 2/22/94
  */
 
-#ifndef _ARPA_INET_H
-#define	_ARPA_INET_H
-#endif /* _ARPA_INET_H */
+#ifndef _SYS_UIO_H
+#define	_SYS_UIO_H
+
+/****************************************************************************/
+
+#ifndef _SYS_NETINCLUDE_TYPES_H
+#include <sys/netinclude_types.h>
+#endif /* _SYS_NETINCLUDE_TYPES_H */
+
+/****************************************************************************/
+
+#include <stddef.h>
+
+/****************************************************************************/
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+/****************************************************************************/
+
+#ifdef __GNUC__
+ #ifdef __PPC__
+  #pragma pack(2)
+ #endif
+#elif defined(__VBCC__)
+ #pragma amiga-align
+#endif
+
+/****************************************************************************/
+
+struct iovec
+{
+	__APTR	iov_base;	/* Base address. */
+	size_t	iov_len;	/* Length. */
+};
+
+/****************************************************************************/
+
+#ifdef __GNUC__
+ #ifdef __PPC__
+  #pragma pack()
+ #endif
+#elif defined(__VBCC__)
+ #pragma default-align
+#endif
+
+/****************************************************************************/
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+/****************************************************************************/
+
+#endif /* !_SYS_UIO_H */

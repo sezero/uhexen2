@@ -1,0 +1,13 @@
+Traditionally, the networking header files are completely separate from the
+operating system header files. This is because AmiTCP shipped an SDK which
+mimicked the layout of the SAS/C runtime library header files, and even
+had special support libraries which made porting Unix code to AmiTCP easier.
+If you copied the bunch on top of your existing header files, you actually
+damaged your standard 'C' compiler installation, and it would no longer work
+with AmiTCP either. Some of the files in the AmiTCP SDK replaced those in the
+'C' compiler installation, and some of them actually required that the
+original 'C' compiler installation would remain untouched.
+
+Keep the "netinclude" directory separate. To access the header files, add
+"-Inetinclude" (for GCC) or "idir=netinclude" (for SAS/C) to the compiler
+command line.

@@ -10,7 +10,7 @@
  */
 
 /*
- * Copyright (c) 1986, 1993
+ * Copyright (c) 1982, 1986, 1989, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,11 +41,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_arp.h	8.1 (Berkeley) 6/10/93
+ *	@(#)udp_var.h	8.1 (Berkeley) 6/10/93
  */
 
-#ifndef _NET_IF_ARP_H
-#define _NET_IF_ARP_H
+#ifndef _NETINET_UDP_VAR_H
+#define _NETINET_UDP_VAR_H
 
 /****************************************************************************/
 
@@ -53,9 +53,13 @@
 #include <sys/netinclude_types.h>
 #endif /* _SYS_NETINCLUDE_TYPES_H */
 
-#ifndef _SYS_SOCKET_H
-#include <sys/socket.h>
-#endif /* _SYS_SOCKET_H */
+#ifndef _NETINET_UDP_H
+#include <netinet/udp.h>
+#endif /* _NETINET_UDP_H */
+
+#ifndef _NETINET_IP_VAR_H
+#include <netinet/ip_var.h>
+#endif /* _NETINET_IP_VAR_H */
 
 /****************************************************************************/
 
@@ -76,55 +80,43 @@ extern "C" {
 /****************************************************************************/
 
 /*
- * Address Resolution Protocol.
- *
- * See RFC 826 for protocol description.  ARP packets are variable
- * in size; the arphdr structure defines the fixed-length portion.
- * Protocol type values are the same as those for 10 Mb/s Ethernet.
- * It is followed by the variable-sized fields ar_sha, arp_spa,
- * arp_tha and arp_tpa in that order, according to the lengths
- * specified.  Field names used correspond to RFC 826.
+ * UDP kernel structures and variables.
  */
-struct	arphdr {
-	__UWORD	ar_hrd;		/* format of hardware address */
-#define ARPHRD_ETHER 	1	/* ethernet hardware format */
-#define ARPHRD_FRELAY 	15	/* frame relay hardware format */
-	__UWORD	ar_pro;		/* format of protocol address */
-	__UBYTE	ar_hln;		/* length of hardware address */
-	__UBYTE	ar_pln;		/* length of protocol address */
-	__UWORD	ar_op;		/* one of: */
-#define	ARPOP_REQUEST	1	/* request to resolve address */
-#define	ARPOP_REPLY	2	/* response to previous request */
-#define	ARPOP_REVREQUEST 3	/* request protocol address given hardware */
-#define	ARPOP_REVREPLY	4	/* response giving protocol address */
-#define ARPOP_INVREQUEST 8 	/* request to identify peer */
-#define ARPOP_INVREPLY	9	/* response identifying peer */
-/*
- * The remaining fields are variable in size,
- * according to the sizes above.
- */
-#ifdef COMMENT_ONLY
-	__UBYTE	ar_sha[];	/* sender hardware address */
-	__UBYTE	ar_spa[];	/* sender protocol address */
-	__UBYTE	ar_tha[];	/* target hardware address */
-	__UBYTE	ar_tpa[];	/* target protocol address */
-#endif
+struct	udpiphdr {
+	struct 	ipovly ui_i;		/* overlaid ip structure */
+	struct	udphdr ui_u;		/* udp header */
+};
+#define	ui_next		ui_i.ih_next
+#define	ui_prev		ui_i.ih_prev
+#define	ui_x1		ui_i.ih_x1
+#define	ui_pr		ui_i.ih_pr
+#define	ui_len		ui_i.ih_len
+#define	ui_src		ui_i.ih_src
+#define	ui_dst		ui_i.ih_dst
+#define	ui_sport	ui_u.uh_sport
+#define	ui_dport	ui_u.uh_dport
+#define	ui_ulen		ui_u.uh_ulen
+#define	ui_sum		ui_u.uh_sum
+
+struct	udpstat {
+					/* input statistics: */
+	__ULONG	udps_ipackets;		/* total input packets */
+	__ULONG	udps_hdrops;		/* packet shorter than header */
+	__ULONG	udps_badsum;		/* checksum error */
+	__ULONG	udps_badlen;		/* data length larger than packet */
+	__ULONG	udps_noport;		/* no socket on port */
+	__ULONG	udps_noportbcast;	/* of above, arrived as broadcast */
+	__ULONG	udps_fullsock;		/* not delivered, input socket full */
+	__ULONG	udpps_pcbcachemiss;	/* input packets missing pcb cache */
+					/* output statistics: */
+	__ULONG	udps_opackets;		/* total output packets */
 };
 
 /*
- * ARP ioctl request
+ * Names for UDP sysctl objects
  */
-struct arpreq {
-	struct	sockaddr arp_pa;		/* protocol address */
-	struct	sockaddr arp_ha;		/* hardware address */
-	__LONG	arp_flags;			/* flags */
-};
-/*  arp_flags and at_flags field values */
-#define	ATF_INUSE	0x01	/* entry in use */
-#define ATF_COM		0x02	/* completed entry (enaddr valid) */
-#define	ATF_PERM	0x04	/* permanent entry */
-#define	ATF_PUBL	0x08	/* publish entry (respond for other host) */
-#define	ATF_USETRAILERS	0x10	/* has requested trailers */
+#define	UDPCTL_CHECKSUM		1	/* checksum UDP packets */
+#define UDPCTL_MAXID		2
 
 /****************************************************************************/
 
@@ -144,4 +136,4 @@ struct arpreq {
 
 /****************************************************************************/
 
-#endif /* _NET_IF_ARP_H */
+#endif /* _NETINET_UDP_VAR_H */

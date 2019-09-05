@@ -9,14 +9,9 @@
  * Freely Distributable
  */
 
-/*-
- * Copyright (c) 1982, 1986, 1990, 1993, 1994
+/*
+ * Copyright (c) 1982, 1986, 1993
  *	The Regents of the University of California.  All rights reserved.
- * (c) UNIX System Laboratories, Inc.
- * All or some portions of this file are derived from material licensed
- * to the University of California by American Telephone and Telegraph
- * Co. or Unix System Laboratories, Inc. and are reproduced herein with
- * the permission of UNIX System Laboratories, Inc.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -46,22 +41,85 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ioctl.h	8.6 (Berkeley) 3/28/94
+ *	@(#)icmp_var.h	8.1 (Berkeley) 6/10/93
  */
 
-#ifndef	_SYS_IOCTL_H
-#define	_SYS_IOCTL_H
+#ifndef _NETINET_ICMP_VAR_H
+#define _NETINET_ICMP_VAR_H
 
 /****************************************************************************/
 
-#ifndef	_SYS_FILIO_H
-#include <sys/filio.h>
-#endif /* !_SYS_FILIO_H */
+#ifndef _SYS_NETINCLUDE_TYPES_H
+#include <sys/netinclude_types.h>
+#endif /* _SYS_NETINCLUDE_TYPES_H */
 
-#ifndef	_SYS_SOCKIO_H
-#include <sys/sockio.h>
-#endif /* !_SYS_SOCKIO_H */
+#ifndef _NETINET_IN_H
+#include <netinet/in.h>
+#endif /* _NETINET_IN_H */
+
+#ifndef _NETINET_IP_ICMP_H
+#include <netinet/ip_icmp.h>
+#endif /* _NETINET_IP_ICMP_H */
 
 /****************************************************************************/
 
-#endif /* !_SYS_IOCTL_H */
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+/****************************************************************************/
+
+#ifdef __GNUC__
+ #ifdef __PPC__
+  #pragma pack(2)
+ #endif
+#elif defined(__VBCC__)
+ #pragma amiga-align
+#endif
+
+/****************************************************************************/
+
+/*
+ * Variables related to this implementation
+ * of the internet control message protocol.
+ */
+struct	icmpstat {
+/* statistics related to icmp packets generated */
+	__ULONG	icps_error;		/* # of calls to icmp_error */
+	__ULONG	icps_oldshort;		/* no error 'cuz old ip too short */
+	__ULONG	icps_oldicmp;		/* no error 'cuz old was icmp */
+	__ULONG	icps_outhist[ICMP_MAXTYPE + 1];
+/* statistics related to input messages processed */
+ 	__ULONG	icps_badcode;		/* icmp_code out of range */
+	__ULONG	icps_tooshort;		/* packet < ICMP_MINLEN */
+	__ULONG	icps_checksum;		/* bad checksum */
+	__ULONG	icps_badlen;		/* calculated bound mismatch */
+	__ULONG	icps_reflect;		/* number of responses */
+	__ULONG	icps_inhist[ICMP_MAXTYPE + 1];
+};
+
+/*
+ * Names for ICMP sysctl objects
+ */
+#define	ICMPCTL_MASKREPL	1	/* allow replies to netmask requests */
+#define ICMPCTL_MAXID		2
+
+/****************************************************************************/
+
+#ifdef __GNUC__
+ #ifdef __PPC__
+  #pragma pack()
+ #endif
+#elif defined(__VBCC__)
+ #pragma default-align
+#endif
+
+/****************************************************************************/
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+/****************************************************************************/
+
+#endif /* _NETINET_ICMP_VAR_H */

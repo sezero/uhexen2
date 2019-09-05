@@ -10,7 +10,7 @@
  */
 
 /*
- * Copyright (c) 1983, 1993
+ * Copyright (c) 1982, 1986, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,9 +41,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)inet.h	8.1 (Berkeley) 6/2/93
+ *	@(#)in_systm.h	8.1 (Berkeley) 6/10/93
  */
 
-#ifndef _ARPA_INET_H
-#define	_ARPA_INET_H
-#endif /* _ARPA_INET_H */
+#ifndef _IN_SYSTM_H
+#define _IN_SYSTM_H
+#endif /* _IN_SYSTM_H */

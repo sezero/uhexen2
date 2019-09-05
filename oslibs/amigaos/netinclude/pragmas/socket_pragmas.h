@@ -11,11 +11,11 @@
  * Freely Distributable
  */
 
-#ifndef PROTO_SOCKET_H
-#define PROTO_SOCKET_H 1
+#ifndef PRAGMAS_SOCKET_PRAGMAS_H
+#define PRAGMAS_SOCKET_PRAGMAS_H 1
 
-#ifndef PROTO_BSDSOCKET_H
-#include <proto/bsdsocket.h>
-#endif /* PROTO_BSDSOCKET_H */
+#ifndef PRAGMAS_BSDSOCKET_PRAGMAS_H
+#include <pragmas/bsdsocket_pragmas.h>
+#endif /* PRAGMAS_BSDSOCKET_PRAGMAS_H */
 
-#endif /* PROTO_SOCKET_H */
+#endif /* !PRAGMAS_SOCKET_PRAGMAS_H */

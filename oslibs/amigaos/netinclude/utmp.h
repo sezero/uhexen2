@@ -1,16 +1,20 @@
 /*
  * :ts=8
  *
- * 'Roadshow' -- Amiga TCP/IP stack
+ * 'Roadshow' -- Amiga TCP/IP stack; "usergroup.library" API
  * Copyright © 2001-2016 by Olaf Barthel.
  * All Rights Reserved.
  *
  * Amiga specific TCP/IP 'C' header files;
  * Freely Distributable
+ *
+ * WARNING: The "usergroup.library" API must be considered obsolete and
+ *          should not be used in new software. It is provided solely
+ *          for backwards compatibility and legacy application software.
  */
 
-/*-
- * Copyright (c) 1982, 1986, 1990, 1993, 1994
+/*
+ * Copyright (c) 1988, 1993
  *	The Regents of the University of California.  All rights reserved.
  * (c) UNIX System Laboratories, Inc.
  * All or some portions of this file are derived from material licensed
@@ -46,22 +50,80 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ioctl.h	8.6 (Berkeley) 3/28/94
+ *	@(#)utmp.h	8.2 (Berkeley) 1/21/94
  */
 
-#ifndef	_SYS_IOCTL_H
-#define	_SYS_IOCTL_H
+#ifndef	_UTMP_H
+#define	_UTMP_H
 
 /****************************************************************************/
 
-#ifndef	_SYS_FILIO_H
-#include <sys/filio.h>
-#endif /* !_SYS_FILIO_H */
-
-#ifndef	_SYS_SOCKIO_H
-#include <sys/sockio.h>
-#endif /* !_SYS_SOCKIO_H */
+#ifndef _SYS_NETINCLUDE_TYPES_H
+#include <sys/netinclude_types.h>
+#endif /* _SYS_NETINCLUDE_TYPES_H */
 
 /****************************************************************************/
 
-#endif /* !_SYS_IOCTL_H */
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+/****************************************************************************/
+
+#ifdef __GNUC__
+ #ifdef __PPC__
+  #pragma pack(2)
+ #endif
+#elif defined(__VBCC__)
+ #pragma amiga-align
+#endif
+
+/****************************************************************************/
+
+#define	UT_NAMESIZE	32
+#define	UT_LINESIZE	32
+#define	UT_HOSTSIZE	64
+
+/****************************************************************************/
+
+struct lastlog
+{
+	__LONG	ll_time;
+	__LONG	ll_uid;
+	__TEXT	ll_name[UT_NAMESIZE];
+	__TEXT	ll_host[UT_HOSTSIZE];
+};
+
+#define ll_line ll_host
+
+/****************************************************************************/
+
+struct utmp
+{
+	__LONG	ut_time;
+	__LONG	ut_sid;
+	__TEXT	ut_name[UT_NAMESIZE];
+	__TEXT	ut_host[UT_HOSTSIZE];
+};
+
+#define ut_line ut_host
+
+/****************************************************************************/
+
+#ifdef __GNUC__
+ #ifdef __PPC__
+  #pragma pack()
+ #endif
+#elif defined(__VBCC__)
+ #pragma default-align
+#endif
+
+/****************************************************************************/
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+/****************************************************************************/
+
+#endif /* !_UTMP_H */

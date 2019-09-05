@@ -10,7 +10,7 @@
  */
 
 /*
- * Copyright (c) 1986, 1993
+ * Copyright (c) 1982, 1986, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,11 +41,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_arp.h	8.1 (Berkeley) 6/10/93
+ *	@(#)if_ether.h	8.3 (Berkeley) 5/2/95
  */
 
-#ifndef _NET_IF_ARP_H
-#define _NET_IF_ARP_H
+#ifndef _NETINET_IF_ETHER_H
+#define _NETINET_IF_ETHER_H
 
 /****************************************************************************/
 
@@ -53,9 +53,13 @@
 #include <sys/netinclude_types.h>
 #endif /* _SYS_NETINCLUDE_TYPES_H */
 
-#ifndef _SYS_SOCKET_H
-#include <sys/socket.h>
-#endif /* _SYS_SOCKET_H */
+#ifndef _NET_IF_ARP_H
+#include <net/if_arp.h>
+#endif /* _NET_IF_ARP_H */
+
+#ifndef _NETINET_IN_H
+#include <netinet/in.h>
+#endif /* _NETINET_IN_H */
 
 /****************************************************************************/
 
@@ -76,55 +80,68 @@ extern "C" {
 /****************************************************************************/
 
 /*
- * Address Resolution Protocol.
- *
- * See RFC 826 for protocol description.  ARP packets are variable
- * in size; the arphdr structure defines the fixed-length portion.
- * Protocol type values are the same as those for 10 Mb/s Ethernet.
- * It is followed by the variable-sized fields ar_sha, arp_spa,
- * arp_tha and arp_tpa in that order, according to the lengths
- * specified.  Field names used correspond to RFC 826.
+ * Structure of a 10Mb/s Ethernet header.
  */
-struct	arphdr {
-	__UWORD	ar_hrd;		/* format of hardware address */
-#define ARPHRD_ETHER 	1	/* ethernet hardware format */
-#define ARPHRD_FRELAY 	15	/* frame relay hardware format */
-	__UWORD	ar_pro;		/* format of protocol address */
-	__UBYTE	ar_hln;		/* length of hardware address */
-	__UBYTE	ar_pln;		/* length of protocol address */
-	__UWORD	ar_op;		/* one of: */
-#define	ARPOP_REQUEST	1	/* request to resolve address */
-#define	ARPOP_REPLY	2	/* response to previous request */
-#define	ARPOP_REVREQUEST 3	/* request protocol address given hardware */
-#define	ARPOP_REVREPLY	4	/* response giving protocol address */
-#define ARPOP_INVREQUEST 8 	/* request to identify peer */
-#define ARPOP_INVREPLY	9	/* response identifying peer */
-/*
- * The remaining fields are variable in size,
- * according to the sizes above.
- */
-#ifdef COMMENT_ONLY
-	__UBYTE	ar_sha[];	/* sender hardware address */
-	__UBYTE	ar_spa[];	/* sender protocol address */
-	__UBYTE	ar_tha[];	/* target hardware address */
-	__UBYTE	ar_tpa[];	/* target protocol address */
-#endif
+struct ether_header {
+	__UBYTE	ether_dhost[6];
+	__UBYTE	ether_shost[6];
+	__UWORD	ether_type;
 };
 
+#define	ETHERTYPE_PUP		0x0200	/* PUP protocol */
+#define	ETHERTYPE_IP		0x0800	/* IP protocol */
+#define ETHERTYPE_ARP		0x0806	/* Addr. resolution protocol */
+#define ETHERTYPE_REVARP	0x8035	/* reverse Addr. resolution protocol */
+
 /*
- * ARP ioctl request
+ * The ETHERTYPE_NTRAILER packet types starting at ETHERTYPE_TRAIL have
+ * (type-ETHERTYPE_TRAIL)*512 bytes of data followed
+ * by an ETHER type (as given above) and then the (variable-length) header.
  */
-struct arpreq {
-	struct	sockaddr arp_pa;		/* protocol address */
-	struct	sockaddr arp_ha;		/* hardware address */
-	__LONG	arp_flags;			/* flags */
+#define	ETHERTYPE_TRAIL		0x1000		/* Trailer packet */
+#define	ETHERTYPE_NTRAILER	16
+
+#define	ETHERMTU	1500
+#define	ETHERMIN	(60-14)
+
+/*
+ * Ethernet Address Resolution Protocol.
+ *
+ * See RFC 826 for protocol description.  Structure below is adapted
+ * to resolving internet addresses.  Field names used correspond to 
+ * RFC 826.
+ */
+struct ether_arp {
+	struct arphdr	ea_hdr;		/* fixed-size header */
+	__UBYTE		arp_sha[6];	/* sender hardware address */
+	__UBYTE		arp_spa[4];	/* sender protocol address */
+	__UBYTE		arp_tha[6];	/* target hardware address */
+	__UBYTE		arp_tpa[4];	/* target protocol address */
 };
-/*  arp_flags and at_flags field values */
-#define	ATF_INUSE	0x01	/* entry in use */
-#define ATF_COM		0x02	/* completed entry (enaddr valid) */
-#define	ATF_PERM	0x04	/* permanent entry */
-#define	ATF_PUBL	0x08	/* publish entry (respond for other host) */
-#define	ATF_USETRAILERS	0x10	/* has requested trailers */
+
+#define	arp_hrd	ea_hdr.ar_hrd
+#define	arp_pro	ea_hdr.ar_pro
+#define	arp_hln	ea_hdr.ar_hln
+#define	arp_pln	ea_hdr.ar_pln
+#define	arp_op	ea_hdr.ar_op
+
+struct sockaddr_inarp {
+	__UBYTE		sin_len;
+	__UBYTE		sin_family;
+	__UWORD		sin_port;
+	struct in_addr	sin_addr;
+	struct in_addr	sin_srcaddr;
+	__UWORD		sin_tos;
+	__UWORD		sin_other;
+};
+
+#define SIN_PROXY 1
+
+/*
+ * IP and ethernet specific routing flags
+ */
+#define	RTF_USETRAILERS	RTF_PROTO1	/* use trailers */
+#define RTF_ANNOUNCE	RTF_PROTO2	/* announce new arp entry */
 
 /****************************************************************************/
 
@@ -144,4 +161,4 @@ struct arpreq {
 
 /****************************************************************************/
 
-#endif /* _NET_IF_ARP_H */
+#endif /* _NETINET_IF_ETHER_H */

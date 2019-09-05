@@ -46,22 +46,65 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ioctl.h	8.6 (Berkeley) 3/28/94
+ *	@(#)filio.h	8.1 (Berkeley) 3/28/94
  */
 
-#ifndef	_SYS_IOCTL_H
-#define	_SYS_IOCTL_H
-
-/****************************************************************************/
-
 #ifndef	_SYS_FILIO_H
-#include <sys/filio.h>
-#endif /* !_SYS_FILIO_H */
-
-#ifndef	_SYS_SOCKIO_H
-#include <sys/sockio.h>
-#endif /* !_SYS_SOCKIO_H */
+#define	_SYS_FILIO_H
 
 /****************************************************************************/
 
-#endif /* !_SYS_IOCTL_H */
+#ifndef _SYS_NETINCLUDE_TYPES_H
+#include <sys/netinclude_types.h>
+#endif /* _SYS_NETINCLUDE_TYPES_H */
+
+#ifndef	_SYS_IOCCOM_H
+#include <sys/ioccom.h>
+#endif /* !_SYS_IOCCOM_H */
+
+/****************************************************************************/
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+/****************************************************************************/
+
+#ifdef __GNUC__
+ #ifdef __PPC__
+  #pragma pack(2)
+ #endif
+#elif defined(__VBCC__)
+ #pragma amiga-align
+#endif
+
+/****************************************************************************/
+
+/* Generic file-descriptor ioctl's. */
+#define	FIOCLEX		 _IO('f', 1)		/* set close on exec on fd */
+#define	FIONCLEX	 _IO('f', 2)		/* remove close on exec */
+#define	FIONREAD	_IOR('f', 127, __LONG)	/* get # bytes to read */
+#define	FIONBIO		_IOW('f', 126, __LONG)	/* set/clear non-blocking i/o */
+#define	FIOASYNC	_IOW('f', 125, __LONG)	/* set/clear async i/o */
+#define	FIOSETOWN	_IOW('f', 124, __LONG)	/* set owner */
+#define	FIOGETOWN	_IOR('f', 123, __LONG)	/* get owner */
+
+/****************************************************************************/
+
+#ifdef __GNUC__
+ #ifdef __PPC__
+  #pragma pack()
+ #endif
+#elif defined(__VBCC__)
+ #pragma default-align
+#endif
+
+/****************************************************************************/
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+/****************************************************************************/
+
+#endif /* !_SYS_FILIO_H */

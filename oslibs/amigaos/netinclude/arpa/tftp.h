@@ -9,14 +9,9 @@
  * Freely Distributable
  */
 
-/*-
- * Copyright (c) 1982, 1986, 1990, 1993, 1994
+/*
+ * Copyright (c) 1983, 1993
  *	The Regents of the University of California.  All rights reserved.
- * (c) UNIX System Laboratories, Inc.
- * All or some portions of this file are derived from material licensed
- * to the University of California by American Telephone and Telegraph
- * Co. or Unix System Laboratories, Inc. and are reproduced herein with
- * the permission of UNIX System Laboratories, Inc.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -46,22 +41,95 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ioctl.h	8.6 (Berkeley) 3/28/94
+ *	@(#)tftp.h	8.1 (Berkeley) 6/2/93
  */
 
-#ifndef	_SYS_IOCTL_H
-#define	_SYS_IOCTL_H
+#ifndef _ARPA_TFTP_H
+#define	_ARPA_TFTP_H
 
 /****************************************************************************/
 
-#ifndef	_SYS_FILIO_H
-#include <sys/filio.h>
-#endif /* !_SYS_FILIO_H */
-
-#ifndef	_SYS_SOCKIO_H
-#include <sys/sockio.h>
-#endif /* !_SYS_SOCKIO_H */
+#ifndef _SYS_NETINCLUDE_TYPES_H
+#include <sys/netinclude_types.h>
+#endif /* _SYS_NETINCLUDE_TYPES_H */
 
 /****************************************************************************/
 
-#endif /* !_SYS_IOCTL_H */
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+/****************************************************************************/
+
+#ifdef __GNUC__
+ #ifdef __PPC__
+  #pragma pack(2)
+ #endif
+#elif defined(__VBCC__)
+ #pragma amiga-align
+#endif
+
+/****************************************************************************/
+
+/*
+ * Trivial File Transfer Protocol (IEN-133)
+ */
+#define	SEGSIZE		512		/* data segment size */
+
+/*
+ * Packet types.
+ */
+#define	RRQ	01			/* read request */
+#define	WRQ	02			/* write request */
+#define	DATA	03			/* data packet */
+#define	ACK	04			/* acknowledgement */
+#ifndef _ARPA_FTP_H
+#define	ERROR	05			/* error code */
+#endif /* _ARPA_FTP_H */
+
+struct	tftphdr {
+	__WORD	th_opcode;		/* packet type */
+	union {
+		__WORD	tu_block;	/* block # */
+		__WORD	tu_code;	/* error code */
+		__BYTE	tu_stuff[1];	/* request packet stuff */
+	} th_u;
+	__BYTE	th_data[1];		/* data or error string */
+};
+
+#define	th_block	th_u.tu_block
+#define	th_code		th_u.tu_code
+#define	th_stuff	th_u.tu_stuff
+#define	th_msg		th_data
+
+/*
+ * Error codes.
+ */
+#define	EUNDEF		0		/* not defined */
+#define	ENOTFOUND	1		/* file not found */
+#define	EACCESS		2		/* access violation */
+#define	ENOSPACE	3		/* disk full or allocation exceeded */
+#define	EBADOP		4		/* illegal TFTP operation */
+#define	EBADID		5		/* unknown transfer ID */
+#define	EEXISTS		6		/* file already exists */
+#define	ENOUSER		7		/* no such user */
+
+/****************************************************************************/
+
+#ifdef __GNUC__
+ #ifdef __PPC__
+  #pragma pack()
+ #endif
+#elif defined(__VBCC__)
+ #pragma default-align
+#endif
+
+/****************************************************************************/
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+/****************************************************************************/
+
+#endif /* _ARPA_TFTP_H */

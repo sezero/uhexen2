@@ -11,19 +11,15 @@
  * Freely Distributable
  */
 
-#ifndef CLIB_SOCKET_PROTOS_H
-#define CLIB_SOCKET_PROTOS_H 1
+#ifndef BSDSOCKET_SOCKETBASETAGS_H
+#define BSDSOCKET_SOCKETBASETAGS_H
 
 /****************************************************************************/
 
-#ifndef CLIB_BSDSOCKET_PROTOS_H
-#include <clib/bsdsocket_protos.h>
-#endif /* CLIB_BSDSOCKET_PROTOS_H */
+#ifndef _LIBRARIES_BSDSOCKET_H
+#include <libraries/bsdsocket.h>
+#endif /* _LIBRARIES_BSDSOCKET_H */
 
 /****************************************************************************/
 
-#define SOCKETNAME "bsdsocket.library"
-
-/****************************************************************************/
-
-#endif /* !CLIB_SOCKET_PROTOS_H */
+#endif /* BSDSOCKET_SOCKETBASETAGS_H */

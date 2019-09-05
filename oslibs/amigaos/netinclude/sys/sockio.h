@@ -9,8 +9,8 @@
  * Freely Distributable
  */
 
-/*
- * Copyright (c) 1986, 1993
+/*-
+ * Copyright (c) 1982, 1986, 1990, 1993, 1994
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,11 +41,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_arp.h	8.1 (Berkeley) 6/10/93
+ *	@(#)sockio.h	8.1 (Berkeley) 3/28/94
  */
 
-#ifndef _NET_IF_ARP_H
-#define _NET_IF_ARP_H
+#ifndef	_SYS_SOCKIO_H
+#define	_SYS_SOCKIO_H
 
 /****************************************************************************/
 
@@ -53,9 +53,17 @@
 #include <sys/netinclude_types.h>
 #endif /* _SYS_NETINCLUDE_TYPES_H */
 
-#ifndef _SYS_SOCKET_H
-#include <sys/socket.h>
-#endif /* _SYS_SOCKET_H */
+#ifndef	_SYS_IOCCOM_H
+#include <sys/ioccom.h>
+#endif /* !_SYS_IOCCOM_H */
+
+#ifndef _NET_IF_H
+#include <net/if.h>
+#endif /* _NET_IF_H */
+
+#ifndef _NET_ROUTE_H
+#include <net/route.h>
+#endif /* _NET_ROUTE_H */
 
 /****************************************************************************/
 
@@ -75,56 +83,41 @@ extern "C" {
 
 /****************************************************************************/
 
-/*
- * Address Resolution Protocol.
- *
- * See RFC 826 for protocol description.  ARP packets are variable
- * in size; the arphdr structure defines the fixed-length portion.
- * Protocol type values are the same as those for 10 Mb/s Ethernet.
- * It is followed by the variable-sized fields ar_sha, arp_spa,
- * arp_tha and arp_tpa in that order, according to the lengths
- * specified.  Field names used correspond to RFC 826.
- */
-struct	arphdr {
-	__UWORD	ar_hrd;		/* format of hardware address */
-#define ARPHRD_ETHER 	1	/* ethernet hardware format */
-#define ARPHRD_FRELAY 	15	/* frame relay hardware format */
-	__UWORD	ar_pro;		/* format of protocol address */
-	__UBYTE	ar_hln;		/* length of hardware address */
-	__UBYTE	ar_pln;		/* length of protocol address */
-	__UWORD	ar_op;		/* one of: */
-#define	ARPOP_REQUEST	1	/* request to resolve address */
-#define	ARPOP_REPLY	2	/* response to previous request */
-#define	ARPOP_REVREQUEST 3	/* request protocol address given hardware */
-#define	ARPOP_REVREPLY	4	/* response giving protocol address */
-#define ARPOP_INVREQUEST 8 	/* request to identify peer */
-#define ARPOP_INVREPLY	9	/* response identifying peer */
-/*
- * The remaining fields are variable in size,
- * according to the sizes above.
- */
-#ifdef COMMENT_ONLY
-	__UBYTE	ar_sha[];	/* sender hardware address */
-	__UBYTE	ar_spa[];	/* sender protocol address */
-	__UBYTE	ar_tha[];	/* target hardware address */
-	__UBYTE	ar_tpa[];	/* target protocol address */
-#endif
-};
+/* Socket ioctl's. */
+#define	SIOCSHIWAT	 _IOW('s',  0, __LONG)		/* set high watermark */
+#define	SIOCGHIWAT	 _IOR('s',  1, __LONG)		/* get high watermark */
+#define	SIOCSLOWAT	 _IOW('s',  2, __LONG)		/* set low watermark */
+#define	SIOCGLOWAT	 _IOR('s',  3, __LONG)		/* get low watermark */
+#define	SIOCATMARK	 _IOR('s',  7, __LONG)		/* at oob mark? */
+#define	SIOCSPGRP	 _IOW('s',  8, __LONG)		/* set process group */
+#define	SIOCGPGRP	 _IOR('s',  9, __LONG)		/* get process group */
 
-/*
- * ARP ioctl request
- */
-struct arpreq {
-	struct	sockaddr arp_pa;		/* protocol address */
-	struct	sockaddr arp_ha;		/* hardware address */
-	__LONG	arp_flags;			/* flags */
-};
-/*  arp_flags and at_flags field values */
-#define	ATF_INUSE	0x01	/* entry in use */
-#define ATF_COM		0x02	/* completed entry (enaddr valid) */
-#define	ATF_PERM	0x04	/* permanent entry */
-#define	ATF_PUBL	0x08	/* publish entry (respond for other host) */
-#define	ATF_USETRAILERS	0x10	/* has requested trailers */
+#define	SIOCADDRT	 _IOW('r', 10, struct ortentry)	/* add route */
+#define	SIOCDELRT	 _IOW('r', 11, struct ortentry)	/* delete route */
+
+#define	SIOCSIFADDR	 _IOW('i', 12, struct ifreq)	/* set ifnet address */
+#define	OSIOCGIFADDR	_IOWR('i', 13, struct ifreq)	/* get ifnet address */
+#define	SIOCGIFADDR	_IOWR('i', 33, struct ifreq)	/* get ifnet address */
+#define	SIOCSIFDSTADDR	 _IOW('i', 14, struct ifreq)	/* set p-p address */
+#define	OSIOCGIFDSTADDR	_IOWR('i', 15, struct ifreq)	/* get p-p address */
+#define	SIOCGIFDSTADDR	_IOWR('i', 34, struct ifreq)	/* get p-p address */
+#define	SIOCSIFFLAGS	 _IOW('i', 16, struct ifreq)	/* set ifnet flags */
+#define	SIOCGIFFLAGS	_IOWR('i', 17, struct ifreq)	/* get ifnet flags */
+#define	OSIOCGIFBRDADDR	_IOWR('i', 18, struct ifreq)	/* get broadcast addr */
+#define	SIOCGIFBRDADDR	_IOWR('i', 35, struct ifreq)	/* get broadcast addr */
+#define	SIOCSIFBRDADDR	 _IOW('i', 19, struct ifreq)	/* set broadcast addr */
+#define	OSIOCGIFCONF	_IOWR('i', 20, struct ifconf)	/* get ifnet list */
+#define	SIOCGIFCONF	_IOWR('i', 36, struct ifconf)	/* get ifnet list */
+#define	OSIOCGIFNETMASK	_IOWR('i', 21, struct ifreq)	/* get net addr mask */
+#define	SIOCGIFNETMASK	_IOWR('i', 37, struct ifreq)	/* get net addr mask */
+#define	SIOCSIFNETMASK	 _IOW('i', 22, struct ifreq)	/* set net addr mask */
+#define	SIOCGIFMETRIC	_IOWR('i', 23, struct ifreq)	/* get IF metric */
+#define	SIOCSIFMETRIC	 _IOW('i', 24, struct ifreq)	/* set IF metric */
+#define	SIOCDIFADDR	 _IOW('i', 25, struct ifreq)	/* delete IF addr */
+#define	SIOCAIFADDR	 _IOW('i', 26, struct ifaliasreq)/* add/chg IF alias */
+
+#define	SIOCADDMULTI	 _IOW('i', 49, struct ifreq)	/* add m'cast addr */
+#define	SIOCDELMULTI	 _IOW('i', 50, struct ifreq)	/* del m'cast addr */
 
 /****************************************************************************/
 
@@ -144,4 +137,4 @@ struct arpreq {
 
 /****************************************************************************/
 
-#endif /* _NET_IF_ARP_H */
+#endif /* !_SYS_SOCKIO_H_ */

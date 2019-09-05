@@ -10,7 +10,7 @@
  */
 
 /*
- * Copyright (c) 1986, 1993
+ * Copyright (c) 1982, 1986, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,21 +41,17 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_arp.h	8.1 (Berkeley) 6/10/93
+ *	@(#)tcp.h	8.1 (Berkeley) 6/10/93
  */
 
-#ifndef _NET_IF_ARP_H
-#define _NET_IF_ARP_H
+#ifndef _NETINET_TCP_H
+#define _NETINET_TCP_H
 
 /****************************************************************************/
 
 #ifndef _SYS_NETINCLUDE_TYPES_H
 #include <sys/netinclude_types.h>
 #endif /* _SYS_NETINCLUDE_TYPES_H */
-
-#ifndef _SYS_SOCKET_H
-#include <sys/socket.h>
-#endif /* _SYS_SOCKET_H */
 
 /****************************************************************************/
 
@@ -75,56 +71,65 @@ extern "C" {
 
 /****************************************************************************/
 
-/*
- * Address Resolution Protocol.
- *
- * See RFC 826 for protocol description.  ARP packets are variable
- * in size; the arphdr structure defines the fixed-length portion.
- * Protocol type values are the same as those for 10 Mb/s Ethernet.
- * It is followed by the variable-sized fields ar_sha, arp_spa,
- * arp_tha and arp_tpa in that order, according to the lengths
- * specified.  Field names used correspond to RFC 826.
- */
-struct	arphdr {
-	__UWORD	ar_hrd;		/* format of hardware address */
-#define ARPHRD_ETHER 	1	/* ethernet hardware format */
-#define ARPHRD_FRELAY 	15	/* frame relay hardware format */
-	__UWORD	ar_pro;		/* format of protocol address */
-	__UBYTE	ar_hln;		/* length of hardware address */
-	__UBYTE	ar_pln;		/* length of protocol address */
-	__UWORD	ar_op;		/* one of: */
-#define	ARPOP_REQUEST	1	/* request to resolve address */
-#define	ARPOP_REPLY	2	/* response to previous request */
-#define	ARPOP_REVREQUEST 3	/* request protocol address given hardware */
-#define	ARPOP_REVREPLY	4	/* response giving protocol address */
-#define ARPOP_INVREQUEST 8 	/* request to identify peer */
-#define ARPOP_INVREPLY	9	/* response identifying peer */
-/*
- * The remaining fields are variable in size,
- * according to the sizes above.
- */
-#ifdef COMMENT_ONLY
-	__UBYTE	ar_sha[];	/* sender hardware address */
-	__UBYTE	ar_spa[];	/* sender protocol address */
-	__UBYTE	ar_tha[];	/* target hardware address */
-	__UBYTE	ar_tpa[];	/* target protocol address */
-#endif
-};
+typedef	unsigned long tcp_seq;
 
 /*
- * ARP ioctl request
+ * TCP header.
+ * Per RFC 793, September, 1981.
  */
-struct arpreq {
-	struct	sockaddr arp_pa;		/* protocol address */
-	struct	sockaddr arp_ha;		/* hardware address */
-	__LONG	arp_flags;			/* flags */
+struct tcphdr {
+	__UWORD	th_sport;		/* source port */
+	__UWORD	th_dport;		/* destination port */
+	tcp_seq	th_seq;			/* sequence number */
+	tcp_seq	th_ack;			/* acknowledgement number */
+	unsigned int
+		th_off:4,		/* data offset */
+		th_x2:4;		/* (unused) */
+	__UBYTE	th_flags;
+#define	TH_FIN	0x01
+#define	TH_SYN	0x02
+#define	TH_RST	0x04
+#define	TH_PUSH	0x08
+#define	TH_ACK	0x10
+#define	TH_URG	0x20
+	__UWORD	th_win;			/* window */
+	__UWORD	th_sum;			/* checksum */
+	__UWORD	th_urp;			/* urgent pointer */
 };
-/*  arp_flags and at_flags field values */
-#define	ATF_INUSE	0x01	/* entry in use */
-#define ATF_COM		0x02	/* completed entry (enaddr valid) */
-#define	ATF_PERM	0x04	/* permanent entry */
-#define	ATF_PUBL	0x08	/* publish entry (respond for other host) */
-#define	ATF_USETRAILERS	0x10	/* has requested trailers */
+
+#define	TCPOPT_EOL		0
+#define	TCPOPT_NOP		1
+#define	TCPOPT_MAXSEG		2
+#define    TCPOLEN_MAXSEG		4
+#define TCPOPT_WINDOW		3
+#define    TCPOLEN_WINDOW		3
+#define TCPOPT_SACK_PERMITTED	4		/* Experimental */
+#define    TCPOLEN_SACK_PERMITTED	2
+#define TCPOPT_SACK		5		/* Experimental */
+#define TCPOPT_TIMESTAMP	8
+#define    TCPOLEN_TIMESTAMP		10
+#define    TCPOLEN_TSTAMP_APPA		(TCPOLEN_TIMESTAMP+2) /* appendix A */
+
+#define TCPOPT_TSTAMP_HDR	\
+    (TCPOPT_NOP<<24|TCPOPT_NOP<<16|TCPOPT_TIMESTAMP<<8|TCPOLEN_TIMESTAMP)
+
+/*
+ * Default maximum segment size for TCP.
+ * With an IP MSS of 576, this is 536,
+ * but 512 is probably more convenient.
+ * This should be defined as MIN(512, IP_MSS - sizeof (struct tcpiphdr)).
+ */
+#define	TCP_MSS	512
+
+#define	TCP_MAXWIN	65535	/* largest value for (unscaled) window */
+
+#define TCP_MAX_WINSHIFT	14	/* maximum window shift */
+
+/*
+ * User-settable options (used with setsockopt).
+ */
+#define	TCP_NODELAY	0x01	/* don't delay send to coalesce packets */
+#define	TCP_MAXSEG	0x02	/* set maximum segment size */
 
 /****************************************************************************/
 
@@ -144,4 +149,4 @@ struct arpreq {
 
 /****************************************************************************/
 
-#endif /* _NET_IF_ARP_H */
+#endif /* _NETINET_TCP_H */

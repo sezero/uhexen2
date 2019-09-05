@@ -1,16 +1,20 @@
 /*
  * :ts=8
  *
- * 'Roadshow' -- Amiga TCP/IP stack
+ * 'Roadshow' -- Amiga TCP/IP stack; "usergroup.library" API
  * Copyright © 2001-2016 by Olaf Barthel.
  * All Rights Reserved.
  *
  * Amiga specific TCP/IP 'C' header files;
  * Freely Distributable
+ *
+ * WARNING: The "usergroup.library" API must be considered obsolete and
+ *          should not be used in new software. It is provided solely
+ *          for backwards compatibility and legacy application software.
  */
 
 /*
- * Copyright (c) 1986, 1993
+ * Copyright (c) 1989, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,21 +45,29 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_arp.h	8.1 (Berkeley) 6/10/93
+ *	@(#)ucred.h	8.4 (Berkeley) 1/9/95
  */
 
-#ifndef _NET_IF_ARP_H
-#define _NET_IF_ARP_H
+#ifndef LIBRARIES_USERGROUP_H
+#define LIBRARIES_USERGROUP_H
 
 /****************************************************************************/
 
-#ifndef _SYS_NETINCLUDE_TYPES_H
-#include <sys/netinclude_types.h>
-#endif /* _SYS_NETINCLUDE_TYPES_H */
+#ifndef EXEC_TYPES_H
+#include <exec/types.h>
+#endif /* EXEC_TYPES_H */
 
-#ifndef _SYS_SOCKET_H
-#include <sys/socket.h>
-#endif /* _SYS_SOCKET_H */
+#ifndef _PWD_H
+#include <pwd.h>
+#endif /* _PWD_H */
+
+#ifndef _GRP_H
+#include <grp.h>
+#endif /* _GRP_H */
+
+#ifndef _UTMP_H
+#include <utmp.h>
+#endif /* _UTMP_H */
 
 /****************************************************************************/
 
@@ -75,56 +87,60 @@ extern "C" {
 
 /****************************************************************************/
 
-/*
- * Address Resolution Protocol.
- *
- * See RFC 826 for protocol description.  ARP packets are variable
- * in size; the arphdr structure defines the fixed-length portion.
- * Protocol type values are the same as those for 10 Mb/s Ethernet.
- * It is followed by the variable-sized fields ar_sha, arp_spa,
- * arp_tha and arp_tpa in that order, according to the lengths
- * specified.  Field names used correspond to RFC 826.
- */
-struct	arphdr {
-	__UWORD	ar_hrd;		/* format of hardware address */
-#define ARPHRD_ETHER 	1	/* ethernet hardware format */
-#define ARPHRD_FRELAY 	15	/* frame relay hardware format */
-	__UWORD	ar_pro;		/* format of protocol address */
-	__UBYTE	ar_hln;		/* length of hardware address */
-	__UBYTE	ar_pln;		/* length of protocol address */
-	__UWORD	ar_op;		/* one of: */
-#define	ARPOP_REQUEST	1	/* request to resolve address */
-#define	ARPOP_REPLY	2	/* response to previous request */
-#define	ARPOP_REVREQUEST 3	/* request protocol address given hardware */
-#define	ARPOP_REVREPLY	4	/* response giving protocol address */
-#define ARPOP_INVREQUEST 8 	/* request to identify peer */
-#define ARPOP_INVREPLY	9	/* response identifying peer */
-/*
- * The remaining fields are variable in size,
- * according to the sizes above.
- */
-#ifdef COMMENT_ONLY
-	__UBYTE	ar_sha[];	/* sender hardware address */
-	__UBYTE	ar_spa[];	/* sender protocol address */
-	__UBYTE	ar_tha[];	/* target hardware address */
-	__UBYTE	ar_tpa[];	/* target protocol address */
-#endif
-};
+#define USERGROUPNAME "usergroup.library"
+
+/****************************************************************************/
+
+#define	_PASSWORD_EFMT1	'_'	/* extended encryption format */
+#define	_PASSWORD_LEN	128	/* max length, not counting NULL */
+
+/****************************************************************************/
+
+#define	NGROUPS		32	/* max number groups */
+
+/****************************************************************************/
+
+#define MAXLOGNAME      32	/* max length of login name */
+
+/****************************************************************************/
 
 /*
- * ARP ioctl request
+ * Credentials.
  */
-struct arpreq {
-	struct	sockaddr arp_pa;		/* protocol address */
-	struct	sockaddr arp_ha;		/* hardware address */
-	__LONG	arp_flags;			/* flags */
+struct UserGroupCredentials
+{
+	LONG	cr_ruid;
+	LONG	cr_rgid;
+	UWORD	cr_umask;
+	LONG	cr_euid;
+	WORD	cr_ngroups;
+	LONG	cr_groups[NGROUPS];
+	LONG	cr_session;
+	TEXT	cr_login[MAXLOGNAME];
 };
-/*  arp_flags and at_flags field values */
-#define	ATF_INUSE	0x01	/* entry in use */
-#define ATF_COM		0x02	/* completed entry (enaddr valid) */
-#define	ATF_PERM	0x04	/* permanent entry */
-#define	ATF_PUBL	0x08	/* publish entry (respond for other host) */
-#define	ATF_USETRAILERS	0x10	/* has requested trailers */
+
+/****************************************************************************/
+
+/*
+ * ID conversion
+ */
+#define UG2MU(id) ((id) == 0 ? 65535 : (id) == -2 ? 0 : (id))
+#define MU2UG(id) ((id) == 65535 ? 0L : (id) == 0 ? -2 : (id))
+
+/****************************************************************************/
+
+/*
+ * Context tags
+ */
+#define UGT_ERRNOBPTR 0x80000001
+#define UGT_ERRNOWPTR 0x80000002
+#define UGT_ERRNOLPTR 0x80000004
+#define UGT_ERRNOPTR(size) \
+	((size == sizeof(long))		? UGT_ERRNOLPTR : \
+	 (size == sizeof(short))	? UGT_ERRNOWPTR : \
+	 (size == sizeof(char))		? UGT_ERRNOBPTR : 1)
+#define UGT_OWNER     0x80000011
+#define UGT_INTRMASK  0x80000010
 
 /****************************************************************************/
 
@@ -144,4 +160,4 @@ struct arpreq {
 
 /****************************************************************************/
 
-#endif /* _NET_IF_ARP_H */
+#endif /* LIBRARIES_USERGROUP_H */

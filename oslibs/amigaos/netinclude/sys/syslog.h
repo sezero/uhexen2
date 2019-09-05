@@ -10,7 +10,7 @@
  */
 
 /*
- * Copyright (c) 1983, 1993
+ * Copyright (c) 1982, 1986, 1988, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,9 +41,32 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)inet.h	8.1 (Berkeley) 6/2/93
+ *	@(#)syslog.h	8.1 (Berkeley) 6/2/93
  */
 
-#ifndef _ARPA_INET_H
-#define	_ARPA_INET_H
-#endif /* _ARPA_INET_H */
+#ifndef	_SYS_SYSLOG_H
+#define	_SYS_SYSLOG_H
+
+/****************************************************************************/
+
+/*
+ * priorities/facilities are encoded into a single 32-bit quantity, where the
+ * bottom 3 bits are the priority (0-7) and the top 28 bits are the facility
+ * (0-big number).  Both the priorities and the facilities map roughly
+ * one-to-one to strings in the syslogd(8) source code.  This mapping is
+ * included in this file.
+ *
+ * priorities (these are ordered)
+ */
+#define	LOG_EMERG	0	/* system is unusable */
+#define	LOG_ALERT	1	/* action must be taken immediately */
+#define	LOG_CRIT	2	/* critical conditions */
+#define	LOG_ERR		3	/* error conditions */
+#define	LOG_WARNING	4	/* warning conditions */
+#define	LOG_NOTICE	5	/* normal but significant condition */
+#define	LOG_INFO	6	/* informational */
+#define	LOG_DEBUG	7	/* debug-level messages */
+
+/****************************************************************************/
+
+#endif /* !_SYS_SYSLOG_H */

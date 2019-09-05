@@ -10,7 +10,7 @@
  */
 
 /*
- * Copyright (c) 1986, 1993
+ * Copyright (c) 1988, 1989, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,21 +41,17 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)if_arp.h	8.1 (Berkeley) 6/10/93
+ *	@(#)radix.h	8.2 (Berkeley) 10/31/94
  */
 
-#ifndef _NET_IF_ARP_H
-#define _NET_IF_ARP_H
+#ifndef _NET_RADIX_H
+#define	_NET_RADIX_H
 
 /****************************************************************************/
 
 #ifndef _SYS_NETINCLUDE_TYPES_H
 #include <sys/netinclude_types.h>
 #endif /* _SYS_NETINCLUDE_TYPES_H */
-
-#ifndef _SYS_SOCKET_H
-#include <sys/socket.h>
-#endif /* _SYS_SOCKET_H */
 
 /****************************************************************************/
 
@@ -76,55 +72,72 @@ extern "C" {
 /****************************************************************************/
 
 /*
- * Address Resolution Protocol.
- *
- * See RFC 826 for protocol description.  ARP packets are variable
- * in size; the arphdr structure defines the fixed-length portion.
- * Protocol type values are the same as those for 10 Mb/s Ethernet.
- * It is followed by the variable-sized fields ar_sha, arp_spa,
- * arp_tha and arp_tpa in that order, according to the lengths
- * specified.  Field names used correspond to RFC 826.
+ * Radix search tree node layout.
  */
-struct	arphdr {
-	__UWORD	ar_hrd;		/* format of hardware address */
-#define ARPHRD_ETHER 	1	/* ethernet hardware format */
-#define ARPHRD_FRELAY 	15	/* frame relay hardware format */
-	__UWORD	ar_pro;		/* format of protocol address */
-	__UBYTE	ar_hln;		/* length of hardware address */
-	__UBYTE	ar_pln;		/* length of protocol address */
-	__UWORD	ar_op;		/* one of: */
-#define	ARPOP_REQUEST	1	/* request to resolve address */
-#define	ARPOP_REPLY	2	/* response to previous request */
-#define	ARPOP_REVREQUEST 3	/* request protocol address given hardware */
-#define	ARPOP_REVREPLY	4	/* response giving protocol address */
-#define ARPOP_INVREQUEST 8 	/* request to identify peer */
-#define ARPOP_INVREPLY	9	/* response identifying peer */
-/*
- * The remaining fields are variable in size,
- * according to the sizes above.
- */
-#ifdef COMMENT_ONLY
-	__UBYTE	ar_sha[];	/* sender hardware address */
-	__UBYTE	ar_spa[];	/* sender protocol address */
-	__UBYTE	ar_tha[];	/* target hardware address */
-	__UBYTE	ar_tpa[];	/* target protocol address */
-#endif
+
+struct radix_node {
+	struct	radix_mask *rn_mklist;	/* list of masks contained in subtree */
+	struct	radix_node *rn_p;	/* parent */
+	__WORD	rn_b;			/* bit offset; -1-index(netmask) */
+	__UBYTE	rn_bmask;		/* node: mask for bit test*/
+	__UBYTE	rn_flags;		/* enumerated next */
+#define RNF_NORMAL	1		/* leaf contains normal route */
+#define RNF_ROOT	2		/* leaf is root leaf for tree */
+#define RNF_ACTIVE	4		/* This node is alive (for rtfree) */
+	union {
+		struct {			/* leaf only data: */
+			__APTR	rn_Key;		/* object of search */
+			__APTR	rn_Mask;	/* netmask, if present */
+			struct	radix_node *rn_Dupedkey;
+		} rn_leaf;
+		struct {			/* node only data: */
+			__LONG	rn_Off;		/* where to start compare */
+			struct	radix_node *rn_L;/* progeny */
+			struct	radix_node *rn_R;/* progeny */
+		} rn_node;
+	} rn_u;
 };
 
+#define rn_dupedkey rn_u.rn_leaf.rn_Dupedkey
+#define rn_key rn_u.rn_leaf.rn_Key
+#define rn_mask rn_u.rn_leaf.rn_Mask
+#define rn_off rn_u.rn_node.rn_Off
+#define rn_l rn_u.rn_node.rn_L
+#define rn_r rn_u.rn_node.rn_R
+
 /*
- * ARP ioctl request
+ * Annotations to tree concerning potential routes applying to subtrees.
  */
-struct arpreq {
-	struct	sockaddr arp_pa;		/* protocol address */
-	struct	sockaddr arp_ha;		/* hardware address */
-	__LONG	arp_flags;			/* flags */
+
+struct radix_mask {
+	__WORD	rm_b;			/* bit offset; -1-index(netmask) */
+	__UBYTE	rm_unused;		/* cf. rn_bmask */
+	__UBYTE	rm_flags;		/* cf. rn_flags */
+	struct	radix_mask *rm_mklist;	/* more masks to try */
+	union	{
+		__APTR	rmu_mask;		/* the mask */
+		struct	radix_node *rmu_leaf;	/* for normal routes */
+	} rm_rmu;
+	__LONG	rm_refs;		/* # of references to this struct */
 };
-/*  arp_flags and at_flags field values */
-#define	ATF_INUSE	0x01	/* entry in use */
-#define ATF_COM		0x02	/* completed entry (enaddr valid) */
-#define	ATF_PERM	0x04	/* permanent entry */
-#define	ATF_PUBL	0x08	/* publish entry (respond for other host) */
-#define	ATF_USETRAILERS	0x10	/* has requested trailers */
+
+#define rm_mask rm_rmu.rmu_mask
+#define rm_leaf rm_rmu.rmu_leaf		/* extra field would make 32 bytes */
+
+struct radix_node_head {
+	struct	radix_node *rnh_treetop;
+	__LONG	rnh_addrsize;			/* permit, but not require fixed keys */
+	__LONG	rnh_pktsize;			/* permit, but not require fixed keys */
+	__APTR	rnh_addaddr;			/* add based on sockaddr */
+	__APTR	rnh_addpkt;			/* add based on packet hdr */
+	__APTR	rnh_deladdr;			/* remove based on sockaddr */
+	__APTR	rnh_delpkt;			/* remove based on packet hdr */
+	__APTR	rnh_matchaddr;			/* locate based on sockaddr */
+	__APTR	rnh_lookup;			/* locate based on sockaddr */
+	__APTR	rnh_matchpkt;			/* locate based on packet hdr */
+	__APTR	rnh_walktree;			/* traverse tree */
+	struct	radix_node rnh_nodes[3];	/* empty tree for common case */
+};
 
 /****************************************************************************/
 
@@ -144,4 +157,4 @@ struct arpreq {
 
 /****************************************************************************/
 
-#endif /* _NET_IF_ARP_H */
+#endif /* _NET_RADIX_H */
