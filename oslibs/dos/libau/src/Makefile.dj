@@ -1,7 +1,7 @@
 CC = gcc
 # NOTE: -O2, -O3 and -Os are borked
 CFLAGS = -O1 -Wall
-CPPFLAGS =
+CPPFLAGS = -DHAVE_STDINT_H
 #CPPFLAGS+= -DZDM
 AR = ar
 OBJS = au.o ac97_def.o dpmi_c.o mdma.o pcibios.o sc_cmi.o sc_e1371.o sc_ich.o sc_inthd.o sc_sbl24.o sc_sbliv.o sc_sbxfi.o sc_via82.o tim.o

@@ -4,11 +4,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <conio.h>
-#include <io.h>
 #include <dos.h>
+#include <io.h>
 #include <fcntl.h>
+
+#ifdef __WATCOMC__
+#include <conio.h>
+#endif
+
 #ifdef __DJGPP__
+#include <pc.h>
 #ifndef ZDM
 #include <sys/nearptr.h>
 #else
@@ -26,8 +31,6 @@ struct dosmem_t{
  char *linearptr;
 };
 
-#define NEWFUNC_ASM
-
 typedef long long		mpxp_int64_t;
 typedef unsigned long long	mpxp_uint64_t;
 typedef long			mpxp_int32_t;
@@ -42,13 +45,8 @@ typedef char                    mpxp_char_t;
 typedef long                    mpxp_filesize_t;
 typedef unsigned long           mpxp_ptrsize_t; // !!! on 32 bits
 
+#define NEWFUNC_ASM
 #if defined(NEWFUNC_ASM) && defined(__WATCOMC__)
- typedef char mpxp_float80_t[10];
- void pds_float80_put(mpxp_float80_t *ptr,double val);
- #pragma aux pds_float80_put parm[esi][8087] = "fstp tbyte ptr [esi]"
- float pds_float80_get(mpxp_float80_t *ptr);
- #pragma aux pds_float80_get parm[esi] value[8087] = "fld tbyte ptr [esi]"
-
 #define ENTER_CRITICAL IRQ_PUSH_OFF()
  void IRQ_PUSH_OFF (void);
 #pragma aux IRQ_PUSH_OFF = \
@@ -62,18 +60,18 @@ typedef unsigned long           mpxp_ptrsize_t; // !!! on 32 bits
 		"popfd" \
 		"sti"   \
 		modify [esp];
-
-#else
- typedef long double mpxp_float80_t; // !!! double (64bit) in WATCOMC
- #define pds_float80_put(p,v) *(p)=(v)
- #define pds_float80_get(p)   (*(p))
 #endif
 
-#ifndef __WATCOMC__
+#ifdef __WATCOMC__
+ #define outb(reg,val) outp(reg,val)
+ #define outw(reg,val) outpw(reg,val)
+ #define outl(reg,val) outpd(reg,val)
+ #define inb(reg) inp(reg)
+ #define inw(reg) inpw(reg)
+ #define inl(reg) inpd(reg)
+#endif
 
- #ifndef min
- #define min(a,b) (((a) < (b))? (a) : (b))
- #endif
+#ifdef __DJGPP__
  #define outb(reg,val) outportb(reg,val)
  #define outw(reg,val) outportw(reg,val)
  #define outl(reg,val) outportl(reg,val)
@@ -82,35 +80,11 @@ typedef unsigned long           mpxp_ptrsize_t; // !!! on 32 bits
  #define inl(reg) inportl(reg)
 
  #define ENTER_CRITICAL _disable()
- #define LEAVE_CRITICAL _enable()
-
+ #define LEAVE_CRITICAL  _enable()
 #endif
 
-#if defined(NEWFUNC_ASM) && defined(__WATCOMC__)
- /*void pds_ftoi(mpxp_double_t,mpxp_int32_t *); // rather use -zro option at wcc386
- #pragma aux pds_ftoi parm [8087][esi] = "fistp dword ptr [esi]"
- void pds_fto64i(mpxp_double_t,mpxp_int64_t *);
- #pragma aux pds_fto64i parm [8087][esi] = "fistp qword ptr [esi]"*/
-
- #define pds_ftoi(ff,ii)   (*(ii)=(mpxp_int32_t)(ff))
- #define pds_fto64i(ff,ii) (*(ii)=(mpxp_int64_t)(ff))
- mpxp_uint32_t pds_bswap16(mpxp_uint32_t);
- #pragma aux pds_bswap16 parm [eax] value [eax] = "xchg al,ah"
- mpxp_uint32_t pds_bswap32(mpxp_uint32_t);
- #if (_CPU_ >= 486) || (_M_IX86>=400)
-  #pragma aux pds_bswap32 parm [eax] value [eax] = "bswap eax"
- #else
-  #pragma aux pds_bswap32 parm [eax] value [eax] = "xchg al,ah" "rol eax,16" "xchg al,ah"
- #endif
- void pds_cpu_hlt(void);
- #pragma aux pds_cpu_hlt ="hlt"
-
-#else
- #define pds_ftoi(ff,ii)   (*ii=(mpxp_int32_t)ff)
- #define pds_fto64i(ff,ii) (*ii=(mpxp_int64_t)ff)
- #define pds_bswap16(a) (((a&0xff)<<8)|((a&0xff00)>>8))
- #define pds_bswap32(a) ((a<<24)|((a&0xff00)<<8)|((a&0xff0000)>>8)|((a>>24)&0xff))
- #define pds_cpu_hlt
+#ifndef min
+#define min(a,b) (((a) < (b))? (a) : (b))
 #endif
 
 // note LE: lowest byte first, highest byte last

@@ -419,7 +419,7 @@ static void snd_es1371_prepare_playback(struct ensoniq_card_s *card,struct mpxpl
 
 //-------------------------------------------------------------------------
 static pci_device_s ensoniq_devices[]={
-//{"ES1370",0x1274,0x5000, 0}, // not supported/implemented
+ //{"ES1370",0x1274,0x5000, 0}, // not supported/implemented
  {"ES1371",0x1274,0x1371, 0},
  {"ES1373",0x1274,0x5880, 0}, // CT5880
  {"EV1938",0x1102,0x8938, 0}, // Ectiva
