@@ -4,9 +4,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <dos.h>
 #include <io.h>
 #include <fcntl.h>
+
+#include <dos.h>
 
 #ifdef __WATCOMC__
 #include <conio.h>
@@ -42,8 +43,7 @@ typedef unsigned char           mpxp_uint8_t;
 typedef float                   mpxp_float_t;
 typedef double                  mpxp_double_t;
 typedef char                    mpxp_char_t;
-typedef long                    mpxp_filesize_t;
-typedef unsigned long           mpxp_ptrsize_t; // !!! on 32 bits
+typedef long                    mpxp_ptrsize_t;
 
 #define NEWFUNC_ASM
 #if defined(NEWFUNC_ASM) && defined(__WATCOMC__)
@@ -92,18 +92,11 @@ typedef unsigned long           mpxp_ptrsize_t; // !!! on 32 bits
 #define PDS_GETB_8U(p)    *((mpxp_uint8_t *)p)              // unsigned 8 bit (1 byte)
 #define PDS_GETB_LE16(p)  *((mpxp_int16_t *)p)              // 2bytes LE to short
 #define PDS_GETB_LEU16(p) *((mpxp_uint16_t *)p)             // 2bytes LE to unsigned short
-#define PDS_GETB_BE16(p) pds_bswap16(*((mpxp_uint16_t *)p))// 2bytes BE to unsigned short
 #define PDS_GETB_LE32(p)  *((mpxp_int32_t *)p)              // 4bytes LE to long
-#define PDS_GETB_BE32(p) pds_bswap32(*((mpxp_uint32_t *)p))// 4bytes BE to unsigned long
 #define PDS_GETB_LE24(p) ((PDS_GETB_LE32(p))&0x00ffffff)
-#define PDS_GETB_BE24(p) ((PDS_GETB_BE32(p))&0x00ffffff)
-#define PDS_GETB_LE64(p)  *((mpxp_int64_t *)p)              // 8bytes LE to int64
-#define PDS_GET4C_LE32(a,b,c,d) ((mpxp_uint32_t)a | ((mpxp_uint32_t)b << 8) | ((mpxp_uint32_t)c << 16) | ((mpxp_uint32_t)d << 24))
 
 #define PDS_PUTB_LE16(p,v) *((mpxp_int16_t *)p)=v              //
-#define PDS_PUTB_BE16(p,v) *((mpxp_int16_t *)p)=pds_bswap16(v) //
 #define PDS_PUTB_LE32(p,v) *((mpxp_int32_t *)p)=v              // long to 4bytes LE
-#define PDS_PUTB_BE32(p,v) *((mpxp_int32_t *)p)=pds_bswap32(v) // long to 4bytes BE
 
 #define funcbit_test(var,bit)       ((var)&(bit))
 #define funcbit_enable(var,bit)     ((var)|=(bit))
