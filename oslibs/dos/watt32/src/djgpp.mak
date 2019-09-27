@@ -1,9 +1,7 @@
-#
-# NB! THIS MAKEFILE WAS AUTOMATICALLY GENERATED FROM MAKEFILE.ALL.
-#     DO NOT EDIT.
-#
 # Makefile for Waterloo TCP/IP kernel
-#
+# HAND-EDITED TO TARGET DJGPP
+# To cross-compile on Linux:
+#  make -f djgpp.mak CROSS=1
 
 ASM_SOURCE = asmpkt.asm chksum0.asm cpumodel.asm
 
@@ -118,10 +116,29 @@ PKT_STUB = pkt_stub.h
 ########################################################################
 
 
-CC     = i586-pc-msdosdjgpp-gcc
-CFLAGS = -O2 -I. -I../inc -W -Wall -ffast-math -fomit-frame-pointer
+ifeq ($(CROSS),)
+TOOLCHAIN_PREFIX=
+else
+TOOLCHAIN_PREFIX=i586-pc-msdosdjgpp-
+endif
 
-AS     = i586-pc-msdosdjgpp-as
+BIN2C = ./bin2c.exe
+HOSTCC = gcc
+CC = $(TOOLCHAIN_PREFIX)gcc
+AS = $(TOOLCHAIN_PREFIX)as
+AR = $(TOOLCHAIN_PREFIX)ar
+RANLIB = $(TOOLCHAIN_PREFIX)ranlib
+CPP = $(CC) -E
+
+CFLAGS = -O2 -I. -I../inc -W -Wall -ffast-math -fomit-frame-pointer
+# -g -gcoff
+# -fno-strength-reduce -ffunction-sections
+
+ASFLAGS =
+# --gdwarf2
+
+ARFLAGS = rs
+
 TARGET = ../lib/libwatt.a
 OBJDIR = djgpp
 
@@ -133,8 +150,9 @@ ZLIB_OBJS := $(subst .obj,.o,$(ZLIB_OBJS))
 
 all: $(PKT_STUB) $(TARGET)
 
+#$(TARGET): $(OBJS) $(ZLIB_OBJS)
 $(TARGET): $(OBJS)
-	i586-pc-msdosdjgpp-ar rs $@ $?
+	$(AR) $(ARFLAGS) $@ $?
 
 $(ZLIB_OBJS):
 	$(MAKE) -f djgpp.mak -C zlib
@@ -143,8 +161,8 @@ $(OBJDIR)/%.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 $(OBJDIR)/%.o: %.S
-	$(CC) -E $< > $(OBJDIR)/$*.iS
-	$(AS) $(OBJDIR)/$*.iS -o $@
+	$(CPP) $< > $(OBJDIR)/$*.iS
+	$(AS) $(ASFLAGS) $(OBJDIR)/$*.iS -o $@
 
 $(OBJDIR)/chksum0.o:  chksum0.S
 $(OBJDIR)/cpumodel.o: cpumodel.S
@@ -153,21 +171,16 @@ language.c: language.l
 	flex -8 -o$@ $<
 
 clean:
-	rm -f $(TARGET) $(OBJDIR)/*.o $(OBJDIR)/*.iS $(PKT_STUB) asmpkt.lst asmpkt.bin ../util/bin2c
+	rm -f $(TARGET) $(OBJDIR)/*.o $(OBJDIR)/*.iS $(PKT_STUB) asmpkt.lst asmpkt.bin ./bin2c.exe
 	@echo Cleaning done
 
 -include djgpp/watt32.dep
 
-
-doxygen:
-	doxygen doxyfile
-
-
 $(OBJDIR)/pcpkt.o: asmpkt.nas
 
-$(PKT_STUB): asmpkt.nas
-	nasm -f bin -l asmpkt.lst -o asmpkt.bin asmpkt.nas
-	gcc -Wall -W ../util/bin2c.c -o ../util/bin2c
-	../util/bin2c asmpkt.bin > $@
+$(PKT_STUB): asmpkt.nas $(BIN2C)
+	nasm -O0 -f bin -l asmpkt.lst -o asmpkt.bin asmpkt.nas
+	$(BIN2C) asmpkt.bin > $@
 
-
+$(BIN2C): ../util/bin2c.c
+	$(HOSTCC) -Wall -W ../util/bin2c.c -o $@

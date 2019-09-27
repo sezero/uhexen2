@@ -118,11 +118,11 @@ PKT_STUB = pkt_stub.h
 ########################################################################
 
 
-CC     = i586-pc-msdosdjgpp-gcc
+CC     = gcc
 CFLAGS = -O2 -g -gcoff -I. -I../inc -W -Wall -fno-strength-reduce \
          -ffast-math #-ffunction-sections -fomit-frame-pointer
 
-AS     = i586-pc-msdosdjgpp-as --gdwarf2
+AS     = as --gdwarf2
 TARGET = ../lib/libwatt.a
 OBJDIR = djgpp
 
@@ -135,7 +135,7 @@ ZLIB_OBJS := $(subst .obj,.o,$(ZLIB_OBJS))
 all: $(PKT_STUB) $(TARGET)
 
 $(TARGET): $(OBJS) $(ZLIB_OBJS)
-	i586-pc-msdosdjgpp-ar rs $@ $?
+	ar rs $@ $?
 
 $(ZLIB_OBJS):
 	$(MAKE) -f djgpp.mak -C zlib
@@ -154,11 +154,19 @@ language.c: language.l
 	flex -8 -o$@ $<
 
 clean:
-	rm -f $(TARGET) $(OBJDIR)/*.o $(OBJDIR)/*.iS $(PKT_STUB) asmpkt.lst asmpkt.bin ../util/bin2c
+	rm -f $(TARGET) $(OBJDIR)/*.o $(OBJDIR)/*.iS $(PKT_STUB)
 	@echo Cleaning done
 
 -include djgpp/watt32.dep
 
+
+########################################################################
+
+
+########################################################################
+
+
+########################################################################
 
 doxygen:
 	doxygen doxyfile
@@ -167,8 +175,7 @@ doxygen:
 $(OBJDIR)/pcpkt.o: asmpkt.nas
 
 $(PKT_STUB): asmpkt.nas
-	nasm -f bin -l asmpkt.lst -o asmpkt.bin asmpkt.nas
-	gcc -Wall -W ../util/bin2c.c -o ../util/bin2c
+	../util/nasm32 -f bin -l asmpkt.lst -o asmpkt.bin asmpkt.nas
 	../util/bin2c asmpkt.bin > $@
 
 
