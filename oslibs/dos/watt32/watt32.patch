@@ -33,7 +33,7 @@
 
 diff -u watt_src.orig/inc/sys/cdefs.h watt_src/inc/sys/cdefs.h
 --- watt_src.orig/inc/sys/cdefs.h	2005-12-30 00:14:10.000000000 +0200
-+++ watt_src/inc/sys/cdefs.h	2015-05-01 05:55:00.000000000 +0300
++++ watt_src/inc/sys/cdefs.h	2019-08-30 08:11:10.000000000 +0300
 @@ -44,9 +44,8 @@
  #ifndef __SYS_CDEFS_H
  #define __SYS_CDEFS_H
@@ -46,7 +46,25 @@ diff -u watt_src.orig/inc/sys/cdefs.h watt_src/inc/sys/cdefs.h
  #endif
  
  #ifdef __cplusplus
-@@ -188,6 +187,16 @@ struct mbuf {
+@@ -129,7 +128,7 @@
+ 
+   #define __const         const         /* define reserved names to standard */
+   #define __signed        signed
+-  #define __volatile      volatile
++/*#define __volatile      volatile */
+   #if defined(__cplusplus)
+     #define __inline      inline        /* convert to C++ keyword */
+   #elif !defined(__GNUC__) && !defined(_MSC_VER) && !defined(__WATCOMC__)
+@@ -148,7 +147,7 @@
+   #if !defined(__GNUC__)
+     #define __const                     /* delete pseudo-ANSI C keywords */
+     #define __signed
+-    #define __volatile
++ /* #define __volatile */
+ 
+     /*
+      * In non-ANSI C environments, new programs will want ANSI-only C keywords
+@@ -188,6 +187,16 @@
    #endif
  #endif
  
@@ -1211,6 +1229,71 @@ diff -up watt_src.orig/src/get_ai.c watt_src/src/get_ai.c
  
    for (i = 0; hp->h_addr_list[i]; i++)
    {
+diff -up watt_src.orig/0/src/get_ip.c watt_src/0/src/get_ip.c
+--- watt_src.orig/0/src/get_ip.c	2004-08-24 11:18:36.000000000 +0300
++++ watt_src/src/get_ip.c	2014-01-03 12:10:10.000000000 +0200
+@@ -23,7 +23,7 @@
+ /* $Id: getipnode.c,v 1.30 2001/07/18 02:37:08 mayer Exp $ */
+ 
+ /* Originally from ISC's BIND 9.21; lightweigth resolver library (lwres).
+- * Rewritten an simplified for Watt-32 by <giva@bgnett.no>  Nov-2003.
++ * Rewritten an simplified for Watt-32 by <gvanem@yahoo.no>  Nov-2003.
+  */
+ 
+ #include "socket.h"
+@@ -73,6 +73,14 @@ getipnodebyname (const char *name, int a
+ 
+   SOCK_DEBUGF (("\ngetipnodebyname: %s ", name));
+ 
++#if !defined(USE_IPV6)
++  if (af == AF_INET6)
++  {
++    *error = HOST_NOT_FOUND;
++    return (NULL);
++  }
++#endif
++
+   /* If we care about active interfaces then check.
+    */
+   if (flags & AI_ADDRCONFIG)
+@@ -152,7 +160,7 @@ getipnodebyname (const char *name, int a
+ struct hostent * W32_CALL
+ getipnodebyaddr (const void *src, size_t len, int af, int *error)
+ {
+-  struct hostent *he1, *he2;
++  struct hostent *he1, *he2 = NULL;
+   const  BYTE *cp = (const BYTE*) src;
+ 
+   SOCK_DEBUGF (("\ngetipnodebyaddr: "));
+@@ -202,6 +210,7 @@ getipnodebyaddr (const void *src, size_t
+     if (af == AF_INET)
+        goto ret_copy;
+ 
++#if defined(USE_IPV6)
+     /* Convert from AF_INET to AF_INET6.
+      */
+     he2 = copyandmerge (he1, NULL, af, error);
+@@ -212,6 +221,7 @@ getipnodebyaddr (const void *src, size_t
+                     inet_ntoa(*(struct in_addr*)&he2->h_addr) :
+                     _inet6_ntoa(he2->h_addr)));
+     }
++#endif
+     return (he2);
+   }
+ 
+@@ -258,6 +268,12 @@ static struct hostent *copyandmerge (con
+   int    names = 1;          /* NULL terminator */
+   char **cpp, **npp;
+ 
++#if !defined(USE_IPV6)
++  BYTE in6addr_mapped[12];
++
++  WATT_ASSERT (af != AF_INET6);
++#endif
++
+   /* Work out array sizes.
+    */
+   if (he1)
 diff -up watt_src.orig/src/gethost.c watt_src/src/gethost.c
 --- watt_src.orig/src/gethost.c	2005-11-30 23:33:30.000000000 +0200
 +++ watt_src/src/gethost.c	2014-05-20 20:02:00.000000000 +0300
@@ -1975,7 +2058,7 @@ diff -u watt_src.orig/src/winpcap.c watt_src/src/winpcap.c
  #error This file must be compiled for threads
 diff -u watt_src.orig/src/makefile.all watt_src/src/makefile.all
 --- watt_src.orig/src/makefile.all	2006-01-15 03:53:46.000000000 +0200
-+++ watt_src/src/makefile.all	2019-08-30 08:10:00.000000000 +0300
++++ watt_src/src/makefile.all	2019-08-30 08:11:00.000000000 +0300
 @@ -1123,7 +1123,7 @@
  $(OBJDIR)/pcpkt.o: asmpkt.nas
  
@@ -1994,6 +2077,15 @@ diff -u watt_src.orig/src/makefile.all watt_src/src/makefile.all
          ..\util\bin2c asmpkt.bin > $@
  
  @endif
+@@ -1145,7 +1145,7 @@
+ 	rc -DDEBUG=1 -Fo visualc\debug\watt-32.res watt-32.rc
+ 
+ watcom\win32\watt-32.res: watt-32.rc
+-	wrc -dDEBUG=0 -q -r -zm -fo=watcom\win32\watt-32.res watt-32.rc
++	wrc -dDEBUG=0 -q -bt=nt -r -zm -fo=watcom\win32\watt-32.res watt-32.rc
+ 
+ digmars\win32\watt-32.res: watt-32.rc
+ 	rcc -DDEBUG=0 -32 -r -odigmars\win32\watt-32.res watt-32.rc
 diff -up watt_src.orig/src/tests/fsext.c watt_src/src/tests/fsext.c
 --- watt_src.orig/src/tests/fsext.c	2003-02-18 05:09:10.000000000 +0200
 +++ watt_src/src/tests/fsext.c	2019-07-07 23:55:50.000000000 +0300

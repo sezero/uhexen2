@@ -128,7 +128,7 @@ struct mbuf {
 
   #define __const         const         /* define reserved names to standard */
   #define __signed        signed
-  #define __volatile      volatile
+/*#define __volatile      volatile */
   #if defined(__cplusplus)
     #define __inline      inline        /* convert to C++ keyword */
   #elif !defined(__GNUC__) && !defined(_MSC_VER) && !defined(__WATCOMC__)
@@ -147,7 +147,7 @@ struct mbuf {
   #if !defined(__GNUC__)
     #define __const                     /* delete pseudo-ANSI C keywords */
     #define __signed
-    #define __volatile
+ /* #define __volatile */
 
     /*
      * In non-ANSI C environments, new programs will want ANSI-only C keywords
