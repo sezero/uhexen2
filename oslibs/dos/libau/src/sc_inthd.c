@@ -951,7 +951,10 @@ static pci_device_s intelhda_devices[]={
  {"Intel SKL (Kabylake-H)",      0x8086, 0xa2f0, AZX_DRIVER_SKL },
  {"Intel SKL (Coffelake)",       0x8086, 0xa348, AZX_DRIVER_SKL },
  {"Intel SKL (Cannonlake)",      0x8086, 0x9dc8, AZX_DRIVER_SKL },
+ {"Intel SKL (CometLake-LP)",    0x8086, 0x02C8, AZX_DRIVER_SKL },
+ {"Intel SKL (CometLake-H)",     0x8086, 0x06C8, AZX_DRIVER_SKL },
  {"Intel SKL (Icelake)",         0x8086, 0x34c8, AZX_DRIVER_SKL },
+ {"Intel SKL (Elkhart Lake)",    0x8086, 0x4b55, AZX_DRIVER_SKL },
  {"Intel SKL (Broxton-P)",       0x8086, 0x5a98, AZX_DRIVER_SKL },
  {"Intel SKL (Broxton-T)",       0x8086, 0x1a98, AZX_DRIVER_SKL },
  {"Intel SKL (Gemini-Lake)",     0x8086, 0x3198, AZX_DRIVER_SKL },
@@ -975,7 +978,9 @@ static pci_device_s intelhda_devices[]={
  {"Intel ICH10",  0x8086, 0x3a6e, AZX_DRIVER_ICH },
  {"ATI SB450",    0x1002, 0x437b, AZX_DRIVER_ATI },
  {"ATI SB600",    0x1002, 0x4383, AZX_DRIVER_ATI },
- {"AMD Hudson",   0x1022, 0x780d, AZX_DRIVER_ATI }, // AZX_DRIVER_GENERIC? -> NO, because snoop type is ATI
+ {"AMD Hudson",   0x1022, 0x780d, AZX_DRIVER_ATI }, // snoop type is ATI
+ {"AMD X370 & co",0x1022, 0x1457, AZX_DRIVER_ATI }, //
+ {"AMD X570 & co",0x1022, 0x1487, AZX_DRIVER_ATI }, //
  {"AMD Stoney",   0x1022, 0x157a, AZX_DRIVER_ATI }, //
  {"AMD Raven",    0x1022, 0x15e3, AZX_DRIVER_ATI }, //
  {"ATI HDNS",     0x1002, 0x0002, AZX_DRIVER_ATIHDMI_NS },
@@ -1028,6 +1033,7 @@ static pci_device_s intelhda_devices[]={
  {"CMedia",       0x13f6, 0x5011, AZX_DRIVER_CMEDIA },
  {"Vortex86MX",   0x17f3, 0x3010, AZX_DRIVER_GENERIC },
  {"VMwareHD",     0x15ad, 0x1977, AZX_DRIVER_GENERIC },
+ {"Zhaoxin",      0x1d17, 0x3288, AZX_DRIVER_ZHAOXIN },
 
  {"NVidia MCP51", 0x10de, 0x026c, AZX_DRIVER_NVIDIA },
  {"NVidia MCP55", 0x10de, 0x0371, AZX_DRIVER_NVIDIA },
@@ -1070,6 +1076,7 @@ static struct codec_vendor_list_s codecvendorlist[]={
  {0x111d,"IDT"},
  {0x11c1,"LSI"},
  {0x11d4,"Analog Devices"},
+ {0x1d17,"Zhaoxin"},
  {0x13f6,"C-Media"},
  {0x14f1,"Conexant"},
  {0x17e8,"Chrontel"},
