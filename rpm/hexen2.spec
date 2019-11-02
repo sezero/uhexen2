@@ -55,7 +55,7 @@
 Name:		hexen2
 License:	GPLv2
 Group:		Amusements/Games
-Version:	1.5.9
+Version:	1.5.10
 Release:	1
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
@@ -320,6 +320,9 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Fri Nov 01 2019 O.Sezer <sezero@users.sourceforge.net> 1.5.10-1
+- Version 1.5.10.
+
 * Tue Feb 20 2018 O.Sezer <sezero@users.sourceforge.net> 1.5.9-1
 - Version 1.5.9.
 - Bump gamecode version to 1.29b

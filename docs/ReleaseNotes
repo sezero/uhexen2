@@ -1,6 +1,18 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
+Changes in v1.5.10: (Nov. 01, 2019.)
+========================================================================
+
+This is a minor bug fix and maintenance release:
+
+- Fixed possible crash in effects code (thanks to Jonathan Bergeron).
+
+- Updated third-party libraries (music codecs, SDL, etc.) Other minor
+  fixes, tidy-ups, and protability tweaks.
+
+
+========================================================================
 Changes in v1.5.9: (May 31, 2018.)
 ========================================================================
 
