@@ -539,7 +539,7 @@ static void Test_Poll (void *unused)
 			break;
 
 		if (MSG_ReadByte() != CCREP_PLAYER_INFO)
-			Sys_Error("Unexpected repsonse to Player Info request\n");
+			Sys_Error("Unexpected response to Player Info request\n");
 
 		MSG_ReadByte(); /* playerNumber */
 		strcpy(name, MSG_ReadString());
@@ -689,7 +689,7 @@ Reschedule:
 	return;
 
 Error:
-	Con_Printf("Unexpected repsonse to Rule Info request\n");
+	Con_Printf("Unexpected response to Rule Info request\n");
 Done:
 	dfunc.Close_Socket(test2Socket);
 	test2InProgress = false;

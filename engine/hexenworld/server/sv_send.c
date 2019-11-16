@@ -311,9 +311,9 @@ void SV_Multicast (vec3_t origin, int to)
 			leafnum = leaf - sv.worldmodel->leafs - 1;
 			if ( !(mask[leafnum>>3] & (1 << (leafnum & 7)) ))
 			{
-			//	Con_Printf ("supressed multicast\n");
+			//	Con_Printf ("suppressed multicast\n");
 				if (mask == sv.pvs)
-					Sys_Printf("supressed multicast to all!!!\n");
+					Sys_Printf("suppressed multicast to all!!!\n");
 				continue;
 			}
 		}
