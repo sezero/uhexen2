@@ -102,9 +102,6 @@ static int mp3_startread(snd_stream_t *stream)
 	mp3_priv_t *p = (mp3_priv_t *) stream->priv;
 	size_t ReadSize;
 
-	if (mp3_skiptags(stream) < 0)
-		return -1;
-
 	mad_stream_init(&p->Stream);
 	mad_frame_init(&p->Frame);
 	mad_synth_init(&p->Synth);
@@ -217,10 +214,10 @@ static int mp3_decode(snd_stream_t *stream, byte *buf, int len)
 #elif (BYTE_ORDER == BIG_ENDIAN)
 				*buf++ = (sample >> 8) & 0xFF;
 				*buf++ = sample & 0xFF;
-#else /* LITTLE_ENDIAN */
+#else
 				*buf++ = sample & 0xFF;
 				*buf++ = (sample >> 8) & 0xFF;
-#endif	/* BYTE_ORDER */
+#endif
 				i++;
 			}
 			p->cursamp++;
@@ -401,6 +398,12 @@ static void S_MP3_CodecShutdown (void)
 static qboolean S_MP3_CodecOpenStream (snd_stream_t *stream)
 {
 	int err;
+
+	if (mp3_skiptags(stream) < 0)
+	{
+		Con_Printf("Corrupt mp3 file (bad tags.)\n");
+		return false;
+	}
 
 #if defined(CODECS_USE_ZONE)
 	stream->priv = Z_Malloc(sizeof(mp3_priv_t), Z_SECZONE);
