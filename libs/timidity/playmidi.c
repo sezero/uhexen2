@@ -47,7 +47,7 @@
 
 static void adjust_amplification(MidSong *song)
 {
-  song->master_volume = (float)(song->amplification) / (float)100.0;
+  song->master_volume = (float)(song->amplification) / 100.0f;
 }
 
 static void reset_voices(MidSong *song)
@@ -82,7 +82,7 @@ static void reset_midi(MidSong *song)
   reset_voices(song);
 }
 
-static void select_sample(MidSong *song, int v, MidInstrument *ip, int vel)
+static void select_sample(MidSong *song, int v, MidInstrument *ip)
 {
   sint32 f, cdiff, diff;
   int s,i;
@@ -282,7 +282,7 @@ static void start_note(MidSong *song, MidEvent *e, int i)
 	song->voice[i].orig_frequency = freq_table[(int)(ip->sample->note_to_use)];
       else
 	song->voice[i].orig_frequency = freq_table[e->a & 0x7F];
-      select_sample(song, i, ip, e->b);
+      select_sample(song, i, ip);
     }
 
   song->voice[i].status = VOICE_ON;
@@ -762,7 +762,7 @@ size_t mid_song_read_wave(MidSong *song, sint8 *ptr, size_t size)
 	case ME_EOT:
 	  /* Give the last notes a couple of seconds to decay  */
 	  DEBUG_MSG("Playing time: ~%d seconds\n",
-		  song->current_sample/song->rate+2);
+		     song->current_sample/song->rate+2);
 	  DEBUG_MSG("Notes cut: %d\n", song->cut_notes);
 	  DEBUG_MSG("Notes lost totally: %d\n", song->lost_notes);
 	  song->playing = 0;
