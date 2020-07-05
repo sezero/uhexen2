@@ -1832,6 +1832,17 @@ diff -u watt_src.orig/src/pcpkt2.c watt_src/src/pcpkt2.c
  
    rx_seg = _pkt_inf->rm_seg;
    rx_ofs = PktReceiver;
+diff -u watt_src.orig/src/pcstat.c watt_src/src/pcstat.c
+--- watt_src.orig/src/pcstat.c	2004-10-13 01:53:28.000000000 +0300
++++ watt_src/src/pcstat.c	2020-07-04 23:01:02.000000000 +0300
+@@ -465,6 +465,7 @@ void print_tcp_stats (void)
+   show_stat ("ACK nosent:",   tcpstats.tcps_rcvacktoomuch);
+   show_stat ("dup ACK:",     tcpstats.tcps_rcvduppack);
+   show_stat ("dup bytes:",   tcpstats.tcps_rcvdupbyte);
++  show_stat ("Outside win:", tcpstats.tcps_rcvpackafterwin);
+   show_stat ("pers-drop:",   tcpstats.tcps_persistdrop);
+ 
+   (*_printf) ("TCP   output stats:\n");
 Only in watt_src.orig/src: pkt_stub.h
 diff -up watt_src.orig/src/ppp.c watt_src/src/ppp.c
 --- watt_src.orig/src/ppp.c	2004-11-17 21:59:54.000000000 +0200
@@ -1979,17 +1990,22 @@ diff -up watt_src.orig/src/split.c watt_src/src/split.c
    }
 diff -up watt_src.orig/src/src/tcp_fsm.c watt_src/src/tcp_fsm.c
 --- watt_src.orig/src/tcp_fsm.c	2005-10-21 01:04:18.000000000 +0300
-+++ watt_src/src/tcp_fsm.c	2015-07-15 17:11:10.000000000 +0300
-@@ -1060,7 +1060,7 @@ static int tcp_process_data (_tcp_Socket
++++ watt_src/src/tcp_fsm.c	2020-07-04 23:01:02.000000000 +0300
+@@ -1060,10 +1060,12 @@ static int tcp_process_data (_tcp_Socket
     * If it's before recv_next, we've seen it all before; if it's after
     * then the peer (or someone else) sent more than we said we could take.
     */
 -  if ((unsigned)len - ldiff > s->adv_win)
-+  if ((unsigned)len - ldiff > s->max_rx_data - s->rx_datalen)
++  if ( ((unsigned)len - ldiff > s->max_rx_data - s->rx_datalen) ||
++       (ldiff > len) /* https://github.com/gvanem/Watt-32/issues/2 */ )
    {
      TCP_TRACE (("tcp_ProcessData (%u): packet ends outside %lu/%lu\n",
                  __LINE__, s->recv_next, s->recv_next + s->adv_win));
-@@ -1210,7 +1210,7 @@ static int tcp_reassemble (_tcp_Socket *
++    STAT (tcpstats.tcps_rcvpackafterwin++);
+     return (0);
+   }
+ 
+@@ -1210,7 +1212,7 @@ static int tcp_reassemble (_tcp_Socket *
    }
  
    left_edge  = s->recv_next - s->rx_datalen;
