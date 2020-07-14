@@ -99,7 +99,7 @@ __farbss	equ	_aliastransform-$f0
 		XREF	_r_numvblocks
 		XREF	_r_sourcemax
 
-		SECTION	"Render",CODE
+		SECTION	CODE,CODE
 
 ; void R_AliasTransformAndProjectFinalVerts (finalvert_t *fv, stvert_t *pstverts)
 

@@ -40,7 +40,7 @@
 		XREF	_r_turb_pdest
 		XREF	_r_turb_turb
 
-		SECTION	"Span",CODE
+		SECTION	CODE,CODE
 
 ; void D_DrawTurbulent8Span (void);
 

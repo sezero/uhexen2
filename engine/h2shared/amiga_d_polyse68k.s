@@ -47,7 +47,7 @@
 		XREF	_r_zistepy
 		XREF	_r_lstepy
 
-		SECTION	"Poly",CODE
+		SECTION	CODE,CODE
 
 ; void D_PolysetDrawFinalVerts (finalvert_t *fv, int numverts);
 
