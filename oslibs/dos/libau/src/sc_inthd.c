@@ -665,7 +665,7 @@ static unsigned long snd_hda_get_max_freq(struct intelhd_card_s *card)
 {
  unsigned long i,freq=0;
  for(i=0; rate_bits[i].hz; i++)
-  if(card->supported_formats&(1<<i) && (rate_bits[i].hz<0xffffffff))
+  if((card->supported_formats&(1<<i)) && (rate_bits[i].hz<0xffffffff))
    freq=rate_bits[i].hz;
  return freq;
 }
@@ -953,8 +953,15 @@ static pci_device_s intelhda_devices[]={
  {"Intel SKL (Cannonlake)",      0x8086, 0x9dc8, AZX_DRIVER_SKL },
  {"Intel SKL (CometLake-LP)",    0x8086, 0x02C8, AZX_DRIVER_SKL },
  {"Intel SKL (CometLake-H)",     0x8086, 0x06C8, AZX_DRIVER_SKL },
+ {"Intel SKL (CometLake-S)",     0x8086, 0xa3f0, AZX_DRIVER_SKL },
  {"Intel SKL (Icelake)",         0x8086, 0x34c8, AZX_DRIVER_SKL },
+ {"Intel SKL (Icelake-H)",       0x8086, 0x3dc8, AZX_DRIVER_SKL },
+ {"Intel SKL (Jasperlake)",      0x8086, 0x38c8, AZX_DRIVER_SKL },
+ {"Intel SKL (Jasperlake)",      0x8086, 0x4dc8, AZX_DRIVER_SKL },
+ {"Intel SKL (Tigerlake)",       0x8086, 0xa0c8, AZX_DRIVER_SKL },
+ {"Intel SKL (Tigerlake-H)",     0x8086, 0x43c8, AZX_DRIVER_SKL },
  {"Intel SKL (Elkhart Lake)",    0x8086, 0x4b55, AZX_DRIVER_SKL },
+ {"Intel SKL (Elkhart Lake)",    0x8086, 0x4b58, AZX_DRIVER_SKL },
  {"Intel SKL (Broxton-P)",       0x8086, 0x5a98, AZX_DRIVER_SKL },
  {"Intel SKL (Broxton-T)",       0x8086, 0x1a98, AZX_DRIVER_SKL },
  {"Intel SKL (Gemini-Lake)",     0x8086, 0x3198, AZX_DRIVER_SKL },
@@ -1017,9 +1024,17 @@ static pci_device_s intelhda_devices[]={
  {"ATI HDNS",     0x1002, 0xaac0, AZX_DRIVER_ATIHDMI_NS },
  {"ATI HDNS",     0x1002, 0xaac8, AZX_DRIVER_ATIHDMI_NS },
  {"ATI HDNS",     0x1002, 0xaad8, AZX_DRIVER_ATIHDMI_NS },
- {"ATI HDNS",     0x1002, 0xaae8, AZX_DRIVER_ATIHDMI_NS },
  {"ATI HDNS",     0x1002, 0xaae0, AZX_DRIVER_ATIHDMI_NS },
+ {"ATI HDNS",     0x1002, 0xaae8, AZX_DRIVER_ATIHDMI_NS },
  {"ATI HDNS",     0x1002, 0xaaf0, AZX_DRIVER_ATIHDMI_NS },
+ {"ATI HDNS",     0x1002, 0xaaf8, AZX_DRIVER_ATIHDMI_NS },
+ {"ATI HDNS",     0x1002, 0xab00, AZX_DRIVER_ATIHDMI_NS },
+ {"ATI HDNS",     0x1002, 0xab08, AZX_DRIVER_ATIHDMI_NS },
+ {"ATI HDNS",     0x1002, 0xab10, AZX_DRIVER_ATIHDMI_NS },
+ {"ATI HDNS",     0x1002, 0xab18, AZX_DRIVER_ATIHDMI_NS },
+ {"ATI HDNS",     0x1002, 0xab20, AZX_DRIVER_ATIHDMI_NS },
+ {"ATI HDNS",     0x1002, 0xab28, AZX_DRIVER_ATIHDMI_NS },
+ {"ATI HDNS",     0x1002, 0xab38, AZX_DRIVER_ATIHDMI_NS },
  {"VIA 82xx",     0x1106, 0x3288, AZX_DRIVER_VIA },
  {"VIA 7122",     0x1106, 0x9170, AZX_DRIVER_GENERIC },
  {"VIA 6122",     0x1106, 0x9140, AZX_DRIVER_GENERIC },
