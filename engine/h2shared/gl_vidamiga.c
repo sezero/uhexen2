@@ -1444,7 +1444,7 @@ static void VID_PrepareModes (void)
 		// as the highest reported one.
 		Con_SafePrintf ("WARNING: 640x480 not found in fullscreen modes\n"
 				"Using the largest reported dimension as default\n");
-		vid_default = num_fmodes;
+		vid_default = num_fmodes-1;
 	}
 
 	// limit the windowed (standart) modes list to desktop dimensions
