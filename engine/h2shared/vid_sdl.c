@@ -141,7 +141,19 @@ static void VID_MenuKey (int key);
 #	define WM_ICON_TEXT	"HEXEN2"
 #endif
 
+
 //====================================
+
+qboolean VID_HasMouseOrInputFocus (void)
+{
+	return (SDL_GetAppState() & (SDL_APPMOUSEFOCUS | SDL_APPINPUTFOCUS)) != 0;
+}
+
+qboolean VID_IsMinimized (void)
+{
+	return !(SDL_GetAppState() & SDL_APPACTIVE);
+}
+
 
 /*
 ================

@@ -250,6 +250,7 @@ void Sys_Error (const char *error, ...)
 		putc (*p, stderr);
 	putc ('\n', stderr);
 	putc ('\n', stderr);
+
 #if 0
 	WinMessageBox (HWND_DESKTOP, HWND_DESKTOP, text, ENGINE_NAME " Error", 0, MB_OK | MB_MOVEABLE | MB_ERROR);
 #endif
@@ -459,9 +460,6 @@ MAIN
 */
 static quakeparms_t	parms;
 static char	cwd[MAX_OSPATH];
-#if defined(SDLQUAKE)
-static Uint8		appState;
-#endif
 
 int main (int argc, char **argv)
 {
@@ -546,20 +544,15 @@ int main (int argc, char **argv)
 	while (1)
 	{
 #if defined(SDLQUAKE)
-		appState = SDL_GetAppState();
 		/* If we have no input focus at all, sleep a bit */
-		if ( !(appState & (SDL_APPMOUSEFOCUS | SDL_APPINPUTFOCUS)) || cl.paused)
-		{
+		if (!VID_HasMouseOrInputFocus() || cl.paused) {
 			DosSleep (16);
 		}
 		/* If we're minimised, sleep a bit more */
-		if ( !(appState & SDL_APPACTIVE))
-		{
+		if (VID_IsMinimized()) {
 			scr_skipupdate = 1;
 			DosSleep (32);
-		}
-		else
-		{
+		} else {
 			scr_skipupdate = 0;
 		}
 #endif	/* SDLQUAKE */

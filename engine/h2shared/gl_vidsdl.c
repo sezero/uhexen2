@@ -275,6 +275,16 @@ void VID_HandlePause (qboolean paused)
 	}
 }
 
+qboolean VID_HasMouseOrInputFocus (void)
+{
+	return (SDL_GetAppState() & (SDL_APPMOUSEFOCUS | SDL_APPINPUTFOCUS)) != 0;
+}
+
+qboolean VID_IsMinimized (void)
+{
+	return !(SDL_GetAppState() & SDL_APPACTIVE);
+}
+
 
 //====================================
 

@@ -433,7 +433,7 @@ void IN_Move (usercmd_t *cmd)
 		return;
 	}
 
-	app_active = ((SDL_GetAppState() & SDL_APPACTIVE) != 0);
+	app_active = !VID_IsMinimized();
 	x = 0;
 	y = 0;
 

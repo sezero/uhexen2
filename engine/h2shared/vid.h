@@ -132,6 +132,10 @@ extern void (*vid_menudrawfn)(void);
 extern void (*vid_menukeyfn)(int key);
 // video menu function pointers
 
+#if defined(SDLQUAKE)
+qboolean VID_HasMouseOrInputFocus (void);
+qboolean VID_IsMinimized (void);
+#endif
 #if !defined(PLATFORM_WINDOWS)
 #define	msg_suppress_1		false
 #else

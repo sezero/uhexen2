@@ -674,9 +674,6 @@ static char	cwd[MAX_OSPATH];
 #if DO_USERDIRS
 static char	userdir[MAX_OSPATH];
 #endif
-#if defined(SDLQUAKE)
-static Uint8		appState;
-#endif
 
 int main (int argc, char **argv)
 {
@@ -792,20 +789,15 @@ int main (int argc, char **argv)
 	    else
 	    {
 #if defined(SDLQUAKE)
-		appState = SDL_GetAppState();
 		/* If we have no input focus at all, sleep a bit */
-		if ( !(appState & (SDL_APPMOUSEFOCUS | SDL_APPINPUTFOCUS)) || cl.paused)
-		{
+		if (!VID_HasMouseOrInputFocus() || cl.paused) {
 			usleep (16000);
 		}
 		/* If we're minimised, sleep a bit more */
-		if ( !(appState & SDL_APPACTIVE))
-		{
+		if (VID_IsMinimized()) {
 			scr_skipupdate = 1;
 			usleep (32000);
-		}
-		else
-		{
+		} else {
 			scr_skipupdate = 0;
 		}
 #endif	/* SDLQUAKE */
