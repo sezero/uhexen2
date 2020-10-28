@@ -778,9 +778,9 @@ Index: engine/h2shared/draw.c
  /*
 Index: engine/h2shared/vid_sdl.c
 ===================================================================
---- engine/h2shared/vid_sdl.c	(revision 5676)
+--- engine/h2shared/vid_sdl.c	(revision 6140)
 +++ engine/h2shared/vid_sdl.c	(working copy)
-@@ -513,8 +513,10 @@ static qboolean VID_SetMode (int modenum
+@@ -525,8 +525,10 @@ static qboolean VID_SetMode (int modenum
  		return false;
  
  	// initial success. adjust vid vars.

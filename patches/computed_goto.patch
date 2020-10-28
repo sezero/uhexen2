@@ -1,0 +1,848 @@
+Change PR_ExecuteProgram() to use computed GOTOs - by Szilard Biro.
+
+Gives a slight performance increase.
+Requires: GCC or compatibles, like clang.
+
+Index: engine/hexen2/pr_exec.c
+===================================================================
+--- engine/hexen2/pr_exec.c	(revision 6039)
++++ engine/hexen2/pr_exec.c	(working copy)
+@@ -149,6 +149,17 @@ static const char *pr_opnames[] =
+ #define OPC ((eval_t *)&pr_globals[st->c])
+ #endif
+ 
++#define USE_COMPUTED_GOTO
++#ifdef USE_COMPUTED_GOTO
++#define vmdispatch(o)	goto *opcode_labels[o];
++#define vmcase(l)	label_##l:
++#define vmbreak		st++; a = OPA; b = OPB; c = OPC; vmdispatch(st->op)
++#else
++#define vmdispatch(o)	switch(o)
++#define vmcase(l)	case l:
++#define vmbreak		break
++#endif
++
+ void PR_ExecuteProgram (func_t fnum)
+ {
+ 	eval_t		*ptr, *a, *b, *c;
+@@ -162,6 +173,138 @@ void PR_ExecuteProgram (func_t fnum)
+ 	/* switch/case support:  */
+ 	int	case_type = -1;
+ 	float	switch_float = 0;
++#ifdef USE_COMPUTED_GOTO
++	#define LABEL(l) [l] = &&label_##l
++	static void * const opcode_labels[] =
++	{
++		LABEL(OP_DONE),
++		LABEL(OP_MUL_F),
++		LABEL(OP_MUL_V),
++		LABEL(OP_MUL_FV),
++		LABEL(OP_MUL_VF),
++		LABEL(OP_DIV_F),
++		LABEL(OP_ADD_F),
++		LABEL(OP_ADD_V),
++		LABEL(OP_SUB_F),
++		LABEL(OP_SUB_V),
++
++		LABEL(OP_EQ_F),
++		LABEL(OP_EQ_V),
++		LABEL(OP_EQ_S),
++		LABEL(OP_EQ_E),
++		LABEL(OP_EQ_FNC),
++
++		LABEL(OP_NE_F),
++		LABEL(OP_NE_V),
++		LABEL(OP_NE_S),
++		LABEL(OP_NE_E),
++		LABEL(OP_NE_FNC),
++
++		LABEL(OP_LE),
++		LABEL(OP_GE),
++		LABEL(OP_LT),
++		LABEL(OP_GT),
++
++		LABEL(OP_LOAD_F),
++		LABEL(OP_LOAD_V),
++		LABEL(OP_LOAD_S),
++		LABEL(OP_LOAD_ENT),
++		LABEL(OP_LOAD_FLD),
++		LABEL(OP_LOAD_FNC),
++
++		LABEL(OP_ADDRESS),
++
++		LABEL(OP_STORE_F),
++		LABEL(OP_STORE_V),
++		LABEL(OP_STORE_S),
++		LABEL(OP_STORE_ENT),
++		LABEL(OP_STORE_FLD),
++		LABEL(OP_STORE_FNC),
++
++		LABEL(OP_STOREP_F),
++		LABEL(OP_STOREP_V),
++		LABEL(OP_STOREP_S),
++		LABEL(OP_STOREP_ENT),
++		LABEL(OP_STOREP_FLD),
++		LABEL(OP_STOREP_FNC),
++
++		LABEL(OP_RETURN),
++		LABEL(OP_NOT_F),
++		LABEL(OP_NOT_V),
++		LABEL(OP_NOT_S),
++		LABEL(OP_NOT_ENT),
++		LABEL(OP_NOT_FNC),
++		LABEL(OP_IF),
++		LABEL(OP_IFNOT),
++		LABEL(OP_CALL0),
++		LABEL(OP_CALL1),
++		LABEL(OP_CALL2),
++		LABEL(OP_CALL3),
++		LABEL(OP_CALL4),
++		LABEL(OP_CALL5),
++		LABEL(OP_CALL6),
++		LABEL(OP_CALL7),
++		LABEL(OP_CALL8),
++		LABEL(OP_STATE),
++		LABEL(OP_GOTO),
++		LABEL(OP_AND),
++		LABEL(OP_OR),
++
++		LABEL(OP_BITAND),
++		LABEL(OP_BITOR),
++
++		LABEL(OP_MULSTORE_F),
++		LABEL(OP_MULSTORE_V),
++		LABEL(OP_MULSTOREP_F),
++		LABEL(OP_MULSTOREP_V),
++
++		LABEL(OP_DIVSTORE_F),
++		LABEL(OP_DIVSTOREP_F),
++
++		LABEL(OP_ADDSTORE_F),
++		LABEL(OP_ADDSTORE_V),
++		LABEL(OP_ADDSTOREP_F),
++		LABEL(OP_ADDSTOREP_V),
++
++		LABEL(OP_SUBSTORE_F),
++		LABEL(OP_SUBSTORE_V),
++		LABEL(OP_SUBSTOREP_F),
++		LABEL(OP_SUBSTOREP_V),
++
++		LABEL(OP_FETCH_GBL_F),
++		LABEL(OP_FETCH_GBL_V),
++		LABEL(OP_FETCH_GBL_S),
++		LABEL(OP_FETCH_GBL_E),
++		LABEL(OP_FETCH_GBL_FNC),
++
++		LABEL(OP_CSTATE),
++		LABEL(OP_CWSTATE),
++
++		LABEL(OP_THINKTIME),
++
++		LABEL(OP_BITSET),
++		LABEL(OP_BITSETP),
++		LABEL(OP_BITCLR),
++		LABEL(OP_BITCLRP),
++
++		LABEL(OP_RAND0),
++		LABEL(OP_RAND1),
++		LABEL(OP_RAND2),
++		LABEL(OP_RANDV0),
++		LABEL(OP_RANDV1),
++		LABEL(OP_RANDV2),
++
++		LABEL(OP_SWITCH_F),
++		LABEL(OP_SWITCH_V),
++		LABEL(OP_SWITCH_S),
++		LABEL(OP_SWITCH_E),
++		LABEL(OP_SWITCH_FNC),
++
++		LABEL(OP_CASE),
++		LABEL(OP_CASERANGE)
++	};
++	#undef LABEL
++#endif
+ 
+ 	if (!fnum || fnum >= progs->numfunctions)
+ 	{
+@@ -199,222 +342,222 @@ void PR_ExecuteProgram (func_t fnum)
+ 		PrintStatement(st);
+ 	}
+ 
+-	switch (st->op)
++	vmdispatch (st->op)
+ 	{
+-	case OP_ADD_F:
++	vmcase (OP_ADD_F)
+ 		c->_float = a->_float + b->_float;
+-		break;
+-	case OP_ADD_V:
++		vmbreak;
++	vmcase (OP_ADD_V)
+ 		c->vector[0] = a->vector[0] + b->vector[0];
+ 		c->vector[1] = a->vector[1] + b->vector[1];
+ 		c->vector[2] = a->vector[2] + b->vector[2];
+-		break;
++		vmbreak;
+ 
+-	case OP_SUB_F:
++	vmcase (OP_SUB_F)
+ 		c->_float = a->_float - b->_float;
+-		break;
+-	case OP_SUB_V:
++		vmbreak;
++	vmcase (OP_SUB_V)
+ 		c->vector[0] = a->vector[0] - b->vector[0];
+ 		c->vector[1] = a->vector[1] - b->vector[1];
+ 		c->vector[2] = a->vector[2] - b->vector[2];
+-		break;
++		vmbreak;
+ 
+-	case OP_MUL_F:
++	vmcase (OP_MUL_F)
+ 		c->_float = a->_float * b->_float;
+-		break;
+-	case OP_MUL_V:
++		vmbreak;
++	vmcase (OP_MUL_V)
+ 		c->_float = a->vector[0] * b->vector[0] +
+ 			    a->vector[1] * b->vector[1] +
+ 			    a->vector[2] * b->vector[2];
+-		break;
+-	case OP_MUL_FV:
++		vmbreak;
++	vmcase (OP_MUL_FV)
+ 		c->vector[0] = a->_float * b->vector[0];
+ 		c->vector[1] = a->_float * b->vector[1];
+ 		c->vector[2] = a->_float * b->vector[2];
+-		break;
+-	case OP_MUL_VF:
++		vmbreak;
++	vmcase (OP_MUL_VF)
+ 		c->vector[0] = b->_float * a->vector[0];
+ 		c->vector[1] = b->_float * a->vector[1];
+ 		c->vector[2] = b->_float * a->vector[2];
+-		break;
++		vmbreak;
+ 
+-	case OP_DIV_F:
++	vmcase (OP_DIV_F)
+ 		c->_float = a->_float / b->_float;
+-		break;
++		vmbreak;
+ 
+-	case OP_BITAND:
++	vmcase (OP_BITAND)
+ 		c->_float = (int)a->_float & (int)b->_float;
+-		break;
++		vmbreak;
+ 
+-	case OP_BITOR:
++	vmcase (OP_BITOR)
+ 		c->_float = (int)a->_float | (int)b->_float;
+-		break;
++		vmbreak;
+ 
+-	case OP_GE:
++	vmcase (OP_GE)
+ 		c->_float = a->_float >= b->_float;
+-		break;
+-	case OP_LE:
++		vmbreak;
++	vmcase (OP_LE)
+ 		c->_float = a->_float <= b->_float;
+-		break;
+-	case OP_GT:
++		vmbreak;
++	vmcase (OP_GT)
+ 		c->_float = a->_float > b->_float;
+-		break;
+-	case OP_LT:
++		vmbreak;
++	vmcase (OP_LT)
+ 		c->_float = a->_float < b->_float;
+-		break;
+-	case OP_AND:
++		vmbreak;
++	vmcase (OP_AND)
+ 		c->_float = a->_float && b->_float;
+-		break;
+-	case OP_OR:
++		vmbreak;
++	vmcase (OP_OR)
+ 		c->_float = a->_float || b->_float;
+-		break;
++		vmbreak;
+ 
+-	case OP_NOT_F:
++	vmcase (OP_NOT_F)
+ 		c->_float = !a->_float;
+-		break;
+-	case OP_NOT_V:
++		vmbreak;
++	vmcase (OP_NOT_V)
+ 		c->_float = !a->vector[0] && !a->vector[1] && !a->vector[2];
+-		break;
+-	case OP_NOT_S:
++		vmbreak;
++	vmcase (OP_NOT_S)
+ 		c->_float = !a->string || !*PR_GetString(a->string);
+-		break;
+-	case OP_NOT_FNC:
++		vmbreak;
++	vmcase (OP_NOT_FNC)
+ 		c->_float = !a->function;
+-		break;
+-	case OP_NOT_ENT:
++		vmbreak;
++	vmcase (OP_NOT_ENT)
+ 		c->_float = (PROG_TO_EDICT(a->edict) == sv.edicts);
+-		break;
++		vmbreak;
+ 
+-	case OP_EQ_F:
++	vmcase (OP_EQ_F)
+ 		c->_float = a->_float == b->_float;
+-		break;
+-	case OP_EQ_V:
++		vmbreak;
++	vmcase (OP_EQ_V)
+ 		c->_float = (a->vector[0] == b->vector[0]) &&
+ 			    (a->vector[1] == b->vector[1]) &&
+ 			    (a->vector[2] == b->vector[2]);
+-		break;
+-	case OP_EQ_S:
++		vmbreak;
++	vmcase (OP_EQ_S)
+ 		c->_float = !strcmp(PR_GetString(a->string), PR_GetString(b->string));
+-		break;
+-	case OP_EQ_E:
++		vmbreak;
++	vmcase (OP_EQ_E)
+ 		c->_float = a->_int == b->_int;
+-		break;
+-	case OP_EQ_FNC:
++		vmbreak;
++	vmcase (OP_EQ_FNC)
+ 		c->_float = a->function == b->function;
+-		break;
++		vmbreak;
+ 
+-	case OP_NE_F:
++	vmcase (OP_NE_F)
+ 		c->_float = a->_float != b->_float;
+-		break;
+-	case OP_NE_V:
++		vmbreak;
++	vmcase (OP_NE_V)
+ 		c->_float = (a->vector[0] != b->vector[0]) ||
+ 			    (a->vector[1] != b->vector[1]) ||
+ 			    (a->vector[2] != b->vector[2]);
+-		break;
+-	case OP_NE_S:
++		vmbreak;
++	vmcase (OP_NE_S)
+ 		c->_float = strcmp(PR_GetString(a->string), PR_GetString(b->string));
+-		break;
+-	case OP_NE_E:
++		vmbreak;
++	vmcase (OP_NE_E)
+ 		c->_float = a->_int != b->_int;
+-		break;
+-	case OP_NE_FNC:
++		vmbreak;
++	vmcase (OP_NE_FNC)
+ 		c->_float = a->function != b->function;
+-		break;
++		vmbreak;
+ 
+-	case OP_STORE_F:
+-	case OP_STORE_ENT:
+-	case OP_STORE_FLD:	// integers
+-	case OP_STORE_S:
+-	case OP_STORE_FNC:	// pointers
++	vmcase (OP_STORE_F)
++	vmcase (OP_STORE_ENT)
++	vmcase (OP_STORE_FLD)	// integers
++	vmcase (OP_STORE_S)
++	vmcase (OP_STORE_FNC)	// pointers
+ 		b->_int = a->_int;
+-		break;
+-	case OP_STORE_V:
++		vmbreak;
++	vmcase (OP_STORE_V)
+ 		b->vector[0] = a->vector[0];
+ 		b->vector[1] = a->vector[1];
+ 		b->vector[2] = a->vector[2];
+-		break;
++		vmbreak;
+ 
+-	case OP_STOREP_F:
+-	case OP_STOREP_ENT:
+-	case OP_STOREP_FLD:	// integers
+-	case OP_STOREP_S:
+-	case OP_STOREP_FNC:	// pointers
++	vmcase (OP_STOREP_F)
++	vmcase (OP_STOREP_ENT)
++	vmcase (OP_STOREP_FLD)	// integers
++	vmcase (OP_STOREP_S)
++	vmcase (OP_STOREP_FNC)	// pointers
+ 		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
+ 		ptr->_int = a->_int;
+-		break;
+-	case OP_STOREP_V:
++		vmbreak;
++	vmcase (OP_STOREP_V)
+ 		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
+ 		ptr->vector[0] = a->vector[0];
+ 		ptr->vector[1] = a->vector[1];
+ 		ptr->vector[2] = a->vector[2];
+-		break;
++		vmbreak;
+ 
+-	case OP_MULSTORE_F:	// f *= f
++	vmcase (OP_MULSTORE_F)	// f *= f
+ 		b->_float *= a->_float;
+-		break;
+-	case OP_MULSTORE_V:	// v *= f
++		vmbreak;
++	vmcase (OP_MULSTORE_V)	// v *= f
+ 		b->vector[0] *= a->_float;
+ 		b->vector[1] *= a->_float;
+ 		b->vector[2] *= a->_float;
+-		break;
+-	case OP_MULSTOREP_F:	// e.f *= f
++		vmbreak;
++	vmcase (OP_MULSTOREP_F)	// e.f *= f
+ 		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
+ 		c->_float = (ptr->_float *= a->_float);
+-		break;
+-	case OP_MULSTOREP_V:	// e.v *= f
++		vmbreak;
++	vmcase (OP_MULSTOREP_V)	// e.v *= f
+ 		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
+ 		c->vector[0] = (ptr->vector[0] *= a->_float);
+ 		c->vector[0] = (ptr->vector[1] *= a->_float);
+ 		c->vector[0] = (ptr->vector[2] *= a->_float);
+-		break;
++		vmbreak;
+ 
+-	case OP_DIVSTORE_F:	// f /= f
++	vmcase (OP_DIVSTORE_F)	// f /= f
+ 		b->_float /= a->_float;
+-		break;
+-	case OP_DIVSTOREP_F:	// e.f /= f
++		vmbreak;
++	vmcase (OP_DIVSTOREP_F)	// e.f /= f
+ 		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
+ 		c->_float = (ptr->_float /= a->_float);
+-		break;
++		vmbreak;
+ 
+-	case OP_ADDSTORE_F:	// f += f
++	vmcase (OP_ADDSTORE_F)	// f += f
+ 		b->_float += a->_float;
+-		break;
+-	case OP_ADDSTORE_V:	// v += v
++		vmbreak;
++	vmcase (OP_ADDSTORE_V)	// v += v
+ 		b->vector[0] += a->vector[0];
+ 		b->vector[1] += a->vector[1];
+ 		b->vector[2] += a->vector[2];
+-		break;
+-	case OP_ADDSTOREP_F:	// e.f += f
++		vmbreak;
++	vmcase (OP_ADDSTOREP_F)	// e.f += f
+ 		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
+ 		c->_float = (ptr->_float += a->_float);
+-		break;
+-	case OP_ADDSTOREP_V:	// e.v += v
++		vmbreak;
++	vmcase (OP_ADDSTOREP_V)	// e.v += v
+ 		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
+ 		c->vector[0] = (ptr->vector[0] += a->vector[0]);
+ 		c->vector[1] = (ptr->vector[1] += a->vector[1]);
+ 		c->vector[2] = (ptr->vector[2] += a->vector[2]);
+-		break;
++		vmbreak;
+ 
+-	case OP_SUBSTORE_F:	// f -= f
++	vmcase (OP_SUBSTORE_F)	// f -= f
+ 		b->_float -= a->_float;
+-		break;
+-	case OP_SUBSTORE_V:	// v -= v
++		vmbreak;
++	vmcase (OP_SUBSTORE_V)	// v -= v
+ 		b->vector[0] -= a->vector[0];
+ 		b->vector[1] -= a->vector[1];
+ 		b->vector[2] -= a->vector[2];
+-		break;
+-	case OP_SUBSTOREP_F:	// e.f -= f
++		vmbreak;
++	vmcase (OP_SUBSTOREP_F)	// e.f -= f
+ 		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
+ 		c->_float = (ptr->_float -= a->_float);
+-		break;
+-	case OP_SUBSTOREP_V:	// e.v -= v
++		vmbreak;
++	vmcase (OP_SUBSTOREP_V)	// e.v -= v
+ 		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
+ 		c->vector[0] = (ptr->vector[0] -= a->vector[0]);
+ 		c->vector[1] = (ptr->vector[1] -= a->vector[1]);
+ 		c->vector[2] = (ptr->vector[2] -= a->vector[2]);
+-		break;
++		vmbreak;
+ 
+-	case OP_ADDRESS:
++	vmcase (OP_ADDRESS)
+ 		ed = PROG_TO_EDICT(a->edict);
+ #ifdef PARANOID
+ 		NUM_FOR_EDICT(ed);	// Make sure it's in range
+@@ -425,22 +568,22 @@ void PR_ExecuteProgram (func_t fnum)
+ 			PR_RunError("assignment to world entity");
+ 		}
+ 		c->_int = (byte *)((int *)&ed->v + b->_int) - (byte *)sv.edicts;
+-		break;
++		vmbreak;
+ 
+-	case OP_LOAD_F:
+-	case OP_LOAD_FLD:
+-	case OP_LOAD_ENT:
+-	case OP_LOAD_S:
+-	case OP_LOAD_FNC:
++	vmcase (OP_LOAD_F)
++	vmcase (OP_LOAD_FLD)
++	vmcase (OP_LOAD_ENT)
++	vmcase (OP_LOAD_S)
++	vmcase (OP_LOAD_FNC)
+ 		ed = PROG_TO_EDICT(a->edict);
+ #ifdef PARANOID
+ 		NUM_FOR_EDICT(ed);	// Make sure it's in range
+ #endif
+ 		ptr = (eval_t *)((int *)&ed->v + b->_int);
+ 		c->_int = ptr->_int;
+-		break;
++		vmbreak;
+ 
+-	case OP_LOAD_V:
++	vmcase (OP_LOAD_V)
+ 		ed = PROG_TO_EDICT(a->edict);
+ #ifdef PARANOID
+ 		NUM_FOR_EDICT(ed);	// Make sure it's in range
+@@ -449,12 +592,12 @@ void PR_ExecuteProgram (func_t fnum)
+ 		c->vector[0] = ptr->vector[0];
+ 		c->vector[1] = ptr->vector[1];
+ 		c->vector[2] = ptr->vector[2];
+-		break;
++		vmbreak;
+ 
+-	case OP_FETCH_GBL_F:
+-	case OP_FETCH_GBL_S:
+-	case OP_FETCH_GBL_E:
+-	case OP_FETCH_GBL_FNC:
++	vmcase (OP_FETCH_GBL_F)
++	vmcase (OP_FETCH_GBL_S)
++	vmcase (OP_FETCH_GBL_E)
++	vmcase (OP_FETCH_GBL_FNC)
+ 	  {	int i = (int)b->_float;
+ 		if (i < 0 || i > G_INT(st->a - 1))
+ 		{
+@@ -463,8 +606,8 @@ void PR_ExecuteProgram (func_t fnum)
+ 		}
+ 		ptr = (eval_t *)&pr_globals[st->a + i];
+ 		c->_int = ptr->_int;
+-	  }	break;
+-	case OP_FETCH_GBL_V:
++	  }	vmbreak;
++	vmcase (OP_FETCH_GBL_V)
+ 	  {	int i = (int)b->_float;
+ 		if (i < 0 || i > G_INT(st->a - 1))
+ 		{
+@@ -475,9 +618,9 @@ void PR_ExecuteProgram (func_t fnum)
+ 		c->vector[0] = ptr->vector[0];
+ 		c->vector[1] = ptr->vector[1];
+ 		c->vector[2] = ptr->vector[2];
+-	  }	break;
++	  }	vmbreak;
+ 
+-	case OP_IFNOT:
++	vmcase (OP_IFNOT)
+ 		if (!a->_int)
+ 		{
+ 		/* Pa3PyX: a, b, and c used to be signed shorts for progs v6,
+@@ -503,36 +646,36 @@ void PR_ExecuteProgram (func_t fnum)
+ 			if (is_progs_v6) jump_ofs = (signed short)jump_ofs;
+ 			st += jump_ofs - 1;	/* -1 to offset the st++ */
+ 		}
+-		break;
++		vmbreak;
+ 
+-	case OP_IF:
++	vmcase (OP_IF)
+ 		if (a->_int)
+ 		{
+ 			jump_ofs = st->b;
+ 			if (is_progs_v6) jump_ofs = (signed short)jump_ofs;
+ 			st += jump_ofs - 1;	/* -1 to offset the st++ */
+ 		}
+-		break;
++		vmbreak;
+ 
+-	case OP_GOTO:
++	vmcase (OP_GOTO)
+ 		jump_ofs = st->a;
+ 		if (is_progs_v6) jump_ofs = (signed short)jump_ofs;
+ 		st += jump_ofs - 1;	/* -1 to offset the st++ */
+-		break;
+-
+-	case OP_CALL8:
+-	case OP_CALL7:
+-	case OP_CALL6:
+-	case OP_CALL5:
+-	case OP_CALL4:
+-	case OP_CALL3:
+-	case OP_CALL2:	// Copy second arg to shared space
++		vmbreak;
++
++	vmcase (OP_CALL8)
++	vmcase (OP_CALL7)
++	vmcase (OP_CALL6)
++	vmcase (OP_CALL5)
++	vmcase (OP_CALL4)
++	vmcase (OP_CALL3)
++	vmcase (OP_CALL2)	// Copy second arg to shared space
+ 		vecptr = G_VECTOR(OFS_PARM1);
+ 		VectorCopy(c->vector, vecptr);
+-	case OP_CALL1:	// Copy first arg to shared space
++	vmcase (OP_CALL1)	// Copy first arg to shared space
+ 		vecptr = G_VECTOR(OFS_PARM0);
+ 		VectorCopy(b->vector, vecptr);
+-	case OP_CALL0:
++	vmcase (OP_CALL0)
+ 		pr_xfunction->profile += profile - startprofile;
+ 		startprofile = profile;
+ 		pr_xstatement = st - pr_statements;
+@@ -550,14 +693,14 @@ void PR_ExecuteProgram (func_t fnum)
+ 				PR_RunError("Bad builtin call number %d", i);
+ 			}
+ 			pr_builtins[i]();
+-			break;
++			vmbreak;
+ 		}
+ 		// Normal function
+ 		st = &pr_statements[EnterFunction(newf)];
+-		break;
++		vmbreak;
+ 
+-	case OP_DONE:
+-	case OP_RETURN:
++	vmcase (OP_DONE)
++	vmcase (OP_RETURN)
+ 	  {
+ 		float *retptr = &pr_globals[OFS_RETURN];
+ 		float *valptr = &pr_globals[st->a];
+@@ -572,9 +715,9 @@ void PR_ExecuteProgram (func_t fnum)
+ 		{ // Done
+ 			return;
+ 		}
+-	  }	break;
++	  }	vmbreak;
+ 
+-	case OP_STATE:
++	vmcase (OP_STATE)
+ 		ed = PROG_TO_EDICT(*sv_globals.self);
+ /* Id 1.07 changes
+ #ifdef FPS_20
+@@ -586,9 +729,9 @@ void PR_ExecuteProgram (func_t fnum)
+ 		ed->v.nextthink = *sv_globals.time + HX_FRAME_TIME;
+ 		ed->v.frame = a->_float;
+ 		ed->v.think = b->function;
+-		break;
++		vmbreak;
+ 
+-	case OP_CSTATE:	// Cycle state
++	vmcase (OP_CSTATE)	// Cycle state
+ 	  {	int startFrame, endFrame;
+ 		ed = PROG_TO_EDICT(*sv_globals.self);
+ 		ed->v.nextthink = *sv_globals.time + HX_FRAME_TIME;
+@@ -628,9 +771,9 @@ void PR_ExecuteProgram (func_t fnum)
+ 				}
+ 			}
+ 		}
+-	  }	break;
++	  }	vmbreak;
+ 
+-	case OP_CWSTATE:	// Cycle weapon state
++	vmcase (OP_CWSTATE)	// Cycle weapon state
+ 	  {	int startFrame, endFrame;
+ 		ed = PROG_TO_EDICT(*sv_globals.self);
+ 		ed->v.nextthink = *sv_globals.time + HX_FRAME_TIME;
+@@ -672,9 +815,9 @@ void PR_ExecuteProgram (func_t fnum)
+ 				}
+ 			}
+ 		}
+-	  }	break;
++	  }	vmbreak;
+ 
+-	case OP_THINKTIME:
++	vmcase (OP_THINKTIME)
+ 		ed = PROG_TO_EDICT(a->edict);
+ #ifdef PARANOID
+ 		NUM_FOR_EDICT(ed);	// Make sure it's in range
+@@ -685,34 +828,34 @@ void PR_ExecuteProgram (func_t fnum)
+ 			PR_RunError("assignment to world entity");
+ 		}
+ 		ed->v.nextthink = *sv_globals.time + b->_float;
+-		break;
++		vmbreak;
+ 
+-	case OP_BITSET:		// f (+) f
++	vmcase (OP_BITSET)		// f (+) f
+ 		b->_float = (int)b->_float | (int)a->_float;
+-		break;
+-	case OP_BITSETP:	// e.f (+) f
++		vmbreak;
++	vmcase (OP_BITSETP)	// e.f (+) f
+ 		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
+ 		ptr->_float = (int)ptr->_float | (int)a->_float;
+-		break;
+-	case OP_BITCLR:		// f (-) f
++		vmbreak;
++	vmcase (OP_BITCLR)		// f (-) f
+ 		b->_float = (int)b->_float & ~((int)a->_float);
+-		break;
+-	case OP_BITCLRP:	// e.f (-) f
++		vmbreak;
++	vmcase (OP_BITCLRP)	// e.f (-) f
+ 		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
+ 		ptr->_float = (int)ptr->_float & ~((int)a->_float);
+-		break;
++		vmbreak;
+ 
+-	case OP_RAND0:
++	vmcase (OP_RAND0)
+ 	  {	float val;
+ 		val = rand() * (1.0 / RAND_MAX);
+ 		G_FLOAT(OFS_RETURN) = val;
+-	  }	break;
+-	case OP_RAND1:
++	  }	vmbreak;
++	vmcase (OP_RAND1)
+ 	  {	float val;
+ 		val = rand() * (1.0 / RAND_MAX) * a->_float;
+ 		G_FLOAT(OFS_RETURN) = val;
+-	  }	break;
+-	case OP_RAND2:
++	  }	vmbreak;
++	vmcase (OP_RAND2)
+ 	  {	float val;
+ 		if (a->_float < b->_float)
+ 		{
+@@ -723,8 +866,8 @@ void PR_ExecuteProgram (func_t fnum)
+ 			val = b->_float + (rand() * (1.0 / RAND_MAX) * (a->_float - b->_float));
+ 		}
+ 		G_FLOAT(OFS_RETURN) = val;
+-	  }	break;
+-	case OP_RANDV0:
++	  }	vmbreak;
++	vmcase (OP_RANDV0)
+ 	  {	float val;
+ 		float *retptr = &G_FLOAT(OFS_RETURN);
+ 		val = rand() * (1.0 / RAND_MAX);
+@@ -733,8 +876,8 @@ void PR_ExecuteProgram (func_t fnum)
+ 		*retptr++ = val;
+ 		val = rand() * (1.0 / RAND_MAX);
+ 		*retptr   = val;
+-	  }	break;
+-	case OP_RANDV1:
++	  }	vmbreak;
++	vmcase (OP_RANDV1)
+ 	  {	float val;
+ 		float *retptr = &G_FLOAT(OFS_RETURN);
+ 		val = rand() * (1.0 / RAND_MAX) * a->vector[0];
+@@ -743,8 +886,8 @@ void PR_ExecuteProgram (func_t fnum)
+ 		*retptr++ = val;
+ 		val = rand() * (1.0 / RAND_MAX) * a->vector[2];
+ 		*retptr   = val;
+-	  }	break;
+-	case OP_RANDV2:
++	  }	vmbreak;
++	vmcase (OP_RANDV2)
+ 	  {	float val;
+ 		int	i;
+ 		float *retptr = &G_FLOAT(OFS_RETURN);
+@@ -760,23 +903,23 @@ void PR_ExecuteProgram (func_t fnum)
+ 			}
+ 			*retptr++ = val;
+ 		}
+-	  }	break;
+-	case OP_SWITCH_F:
++	  }	vmbreak;
++	vmcase (OP_SWITCH_F)
+ 		case_type = SWITCH_F;
+ 		switch_float = a->_float;
+ 		jump_ofs = st->b;
+ 		if (is_progs_v6) jump_ofs = (signed short)jump_ofs;
+ 		st += jump_ofs - 1;	/* -1 to offset the st++ */
+-		break;
+-	case OP_SWITCH_V:
+-	case OP_SWITCH_S:
+-	case OP_SWITCH_E:
+-	case OP_SWITCH_FNC:
++		vmbreak;
++	vmcase (OP_SWITCH_V)
++	vmcase (OP_SWITCH_S)
++	vmcase (OP_SWITCH_E)
++	vmcase (OP_SWITCH_FNC)
+ 		pr_xstatement = st - pr_statements;
+ 		PR_RunError("%s not done yet!", pr_opnames[st->op]);
+-		break;
++		vmbreak;
+ 
+-	case OP_CASERANGE:
++	vmcase (OP_CASERANGE)
+ 		if (case_type != SWITCH_F)
+ 		{
+ 			pr_xstatement = st - pr_statements;
+@@ -788,8 +931,8 @@ void PR_ExecuteProgram (func_t fnum)
+ 			if (is_progs_v6) jump_ofs = (signed short)jump_ofs;
+ 			st += jump_ofs - 1;	/* -1 to offset the st++ */
+ 		}
+-		break;
+-	case OP_CASE:
++		vmbreak;
++	vmcase (OP_CASE)
+ 		switch (case_type)
+ 		{
+ 		case SWITCH_F:
+@@ -799,7 +942,7 @@ void PR_ExecuteProgram (func_t fnum)
+ 				if (is_progs_v6) jump_ofs = (signed short)jump_ofs;
+ 				st += jump_ofs - 1;	/* -1 to offset the st++ */
+ 			}
+-			break;
++			vmbreak;
+ 		case SWITCH_V:
+ 		case SWITCH_S:
+ 		case SWITCH_E:
+@@ -807,16 +950,20 @@ void PR_ExecuteProgram (func_t fnum)
+ 			pr_xstatement = st - pr_statements;
+ 			PR_RunError("OP_CASE for %s not done yet!",
+ 					pr_opnames[case_type + OP_SWITCH_F - SWITCH_F]);
+-			break;
++			vmbreak;
++#ifndef USE_COMPUTED_GOTO
+ 		default:
+ 			pr_xstatement = st - pr_statements;
+ 			PR_RunError("fucked case!");
++#endif
+ 		}
+-		break;
++		vmbreak;
+ 
++#ifndef USE_COMPUTED_GOTO
+ 	default:
+ 		pr_xstatement = st - pr_statements;
+ 		PR_RunError("Bad opcode %i", st->op);
++#endif
+ 	}
+     }	/* end of while(1) loop */
+ }
