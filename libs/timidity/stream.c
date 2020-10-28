@@ -38,10 +38,10 @@
 
 struct _MidIStream
 {
-  MidIStreamReadFunc read;
-  MidIStreamSeekFunc seek;
-  MidIStreamTellFunc tell;
-  MidIStreamCloseFunc close;
+  MidIStreamReadFunc read_fn;
+  MidIStreamSeekFunc seek_fn;
+  MidIStreamTellFunc tell_fn;
+  MidIStreamCloseFunc close_fn;
   void *ctx;
 };
 
@@ -169,10 +169,10 @@ mid_istream_open_fp (FILE * fp, int autoclose)
   ctx->autoclose = autoclose;
 
   stream->ctx = ctx;
-  stream->read = stdio_istream_read;
-  stream->seek = stdio_istream_seek;
-  stream->tell = stdio_istream_tell;
-  stream->close = stdio_istream_close;
+  stream->read_fn = stdio_istream_read;
+  stream->seek_fn = stdio_istream_seek;
+  stream->tell_fn = stdio_istream_tell;
+  stream->close_fn = stdio_istream_close;
 
   return stream;
 }
@@ -210,19 +210,19 @@ mid_istream_open_mem (void *mem, size_t size)
   ctx->end = ((sint8 *) mem) + size;
 
   stream->ctx = ctx;
-  stream->read = mem_istream_read;
-  stream->seek = mem_istream_seek;
-  stream->tell = mem_istream_tell;
-  stream->close = mem_istream_close;
+  stream->read_fn = mem_istream_read;
+  stream->seek_fn = mem_istream_seek;
+  stream->tell_fn = mem_istream_tell;
+  stream->close_fn = mem_istream_close;
 
   return stream;
 }
 
 MidIStream *
-mid_istream_open_callbacks (MidIStreamReadFunc read,
-			    MidIStreamSeekFunc seek,
-			    MidIStreamTellFunc tell,
-			    MidIStreamCloseFunc close, void *context)
+mid_istream_open_callbacks (MidIStreamReadFunc readfn,
+			    MidIStreamSeekFunc seekfn,
+			    MidIStreamTellFunc tellfn,
+			    MidIStreamCloseFunc closefn, void *context)
 {
   MidIStream *stream;
 
@@ -231,10 +231,10 @@ mid_istream_open_callbacks (MidIStreamReadFunc read,
     return NULL;
 
   stream->ctx = context;
-  stream->read = read;
-  stream->seek = seek;
-  stream->tell = tell;
-  stream->close = close;
+  stream->read_fn = readfn;
+  stream->seek_fn = seekfn;
+  stream->tell_fn = tellfn;
+  stream->close_fn = closefn;
 
   return stream;
 }
@@ -242,25 +242,25 @@ mid_istream_open_callbacks (MidIStreamReadFunc read,
 size_t
 mid_istream_read (MidIStream * stream, void *ptr, size_t size, size_t nmemb)
 {
-  return stream->read (stream->ctx, ptr, size, nmemb);
+  return stream->read_fn (stream->ctx, ptr, size, nmemb);
 }
 
 int
 mid_istream_seek (MidIStream * stream, long offset, int whence)
 {
-  return stream->seek (stream->ctx, offset, whence);
+  return stream->seek_fn (stream->ctx, offset, whence);
 }
 
 long
 mid_istream_tell (MidIStream * stream)
 {
-  return stream->tell (stream->ctx);
+  return stream->tell_fn (stream->ctx);
 }
 
 int
 mid_istream_skip (MidIStream * stream, long len)
 {
-  if (stream->seek (stream->ctx, len, SEEK_CUR) < 0)
+  if (stream->seek_fn (stream->ctx, len, SEEK_CUR) < 0)
     return -1;
   return 0;
 }
@@ -268,7 +268,7 @@ mid_istream_skip (MidIStream * stream, long len)
 int
 mid_istream_close (MidIStream * stream)
 {
-  int ret = stream->close (stream->ctx);
+  int ret = stream->close_fn (stream->ctx);
   timi_free (stream);
   return ret;
 }

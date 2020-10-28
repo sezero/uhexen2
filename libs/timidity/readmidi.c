@@ -583,6 +583,7 @@ MidEvent *read_midi_file(MidIStream *stream, MidSong *song, sint32 *count, sint3
       return NULL;
     }
 
+  format=tracks=divisions_tmp = -1;
   mid_istream_read(stream, &format, 2, 1);
   mid_istream_read(stream, &tracks, 2, 1);
   mid_istream_read(stream, &divisions_tmp, 2, 1);
