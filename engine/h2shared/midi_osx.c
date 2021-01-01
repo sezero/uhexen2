@@ -323,9 +323,9 @@ static void *MIDI_Play (const char *filename)
 	MusicPlayerPreroll(song->player);
 
 	GetSequenceAudioUnit(song->sequence, &song->audiounit);
-	if (currentsong->audiounit)
+	if (song->audiounit)
 	{
-		AudioUnitSetParameter(currentsong->audiounit, kHALOutputParam_Volume,
+		AudioUnitSetParameter(song->audiounit, kHALOutputParam_Volume,
 				      kAudioUnitScope_Global, 0, bgmvolume.value, 0);
 	}
 
