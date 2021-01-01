@@ -98,12 +98,9 @@
 #define HAVE_SETJMP 1
 
 /* Enable various audio drivers */
-/*
 #define SDL_AUDIO_DRIVER_DART	1
 #define SDL_AUDIO_DRIVER_DISK	1
 #define SDL_AUDIO_DRIVER_DUMMY	1
-*/
-#define SDL_AUDIO_DRIVER_DARTALT	1
 
 /* Enable various cdrom drivers */
 #define SDL_CDROM_OS2	1
@@ -121,14 +118,11 @@
 #define SDL_TIMER_OS2	1
 
 /* Enable various video drivers */
-/*
 #define SDL_VIDEO_DRIVER_DUMMY	1
 #define SDL_VIDEO_DRIVER_OS2FS	1
-*/
-#define SDL_VIDEO_DRIVER_OS2GROP	1
 
 /* Enable OpenGL support */
-/* Nothing yet for OS/2. */
+/* #undef SDL_VIDEO_OPENGL */				/* Nothing yet */
 
 /* Enable assembly routines where available */
 #define SDL_ASSEMBLY_ROUTINES	1
