@@ -321,11 +321,6 @@ static void *MIDI_Play (const char *filename)
 		goto fail;
 
 	MusicPlayerPreroll(song->player);
-	MusicPlayerSetTime(song->player, 0);
-	MusicPlayerStart(song->player);
-
-	currentsong = song;
-	midi_paused = false;
 
 	GetSequenceAudioUnit(song->sequence, &song->audiounit);
 	if (currentsong->audiounit)
@@ -333,6 +328,12 @@ static void *MIDI_Play (const char *filename)
 		AudioUnitSetParameter(currentsong->audiounit, kHALOutputParam_Volume,
 				      kAudioUnitScope_Global, 0, bgmvolume.value, 0);
 	}
+
+	MusicPlayerSetTime(song->player, 0);
+	MusicPlayerStart(song->player);
+
+	currentsong = song;
+	midi_paused = false;
 
 	return song;
 
