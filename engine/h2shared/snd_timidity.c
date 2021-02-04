@@ -262,6 +262,7 @@ snd_codec_t timidity_codec =
 	S_TIMIDITY_CodecOpenStream,
 	S_TIMIDITY_CodecReadStream,
 	S_TIMIDITY_CodecRewindStream,
+	NULL, /* jump */
 	S_TIMIDITY_CodecCloseStream,
 	NULL
 };

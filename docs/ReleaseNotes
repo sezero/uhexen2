@@ -10,6 +10,9 @@ This is a minor bug fix and maintenance release:
 
 - Improvements to mp3 tag detection / skipping.
 
+- New console command music_jump: Jump to given order in music,
+  like Unreal's music change.  Only for module (tracker) music.
+
 - Updated third-party libraries (music codecs, SDL, etc.) Other minor
   fixes, tidy-ups, and protability tweaks.
 

@@ -128,6 +128,9 @@ New console commands:
 - music_loop 0
   Makes the background music to play once and then stop
 
+- music_jump
+  Jump to a given order in  music (only for module (tracker) music)
+
 Removed console commands:
 -------------------------
 midi_play, midi_stop, midi_pause and midi_loop commands of the original

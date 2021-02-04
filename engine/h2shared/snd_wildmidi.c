@@ -275,6 +275,7 @@ snd_codec_t wildmidi_codec =
 	S_WILDMIDI_CodecOpenStream,
 	S_WILDMIDI_CodecReadStream,
 	S_WILDMIDI_CodecRewindStream,
+	NULL, /* jump */
 	S_WILDMIDI_CodecCloseStream,
 	NULL
 };
