@@ -2,23 +2,7 @@
 # commented out code not needed in uhexen2 (see diffs below for details)
 # replaced malloc, calloc and free calls by Z_Malloc and ZFree (below)
 # configured like:
-./configure --host=i586-pc-msdosdjgpp --prefix=/djgpp --disable-debugging
-
-# In the generated Makefile, changed optimization to -O2 and removed all
-# other flags except for -fomit-frame-pointer, then compiled as usual.
-# compiler and assembler versions:
-
-$ i586-pc-msdosdjgpp-djgcc -v
-Reading specs from /usr/local/cross-djgpp/lib/gcc/i586-pc-msdosdjgpp/3.4.6/specs
-Configured with: ../gcc-3.46/configure --prefix=/usr/local/cross-djgpp --target=i586-pc-msdosdjgpp --with-headers=/usr/local/cross-djgpp/i586-pc-msdosdjgpp/include --enable-languages=c,c++ --disable-libgcj --disable-libada --disable-nls
-Thread model: single
-gcc version 3.4.6
-
-$ i586-pc-msdosdjgpp-as -v
-GNU assembler version 2.24 (i586-pc-msdosdjgpp) using BFD version (GNU Binutils) 2.24
-
-# djgpp header/libary version: 2.03 (modified, with many fixes/changes
-# backported from djgpp-v2.05)
+./configure --host=i586-pc-msdosdjgpp --disable-debugging
 
 --- frame.c.orig
 +++ frame.c

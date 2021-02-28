@@ -24,13 +24,8 @@
 extern "C" {
 #endif
 
-# define FPM_INTEL /* for x86 only */
-# define SIZEOF_LONG 4
-
-
-#define SIZEOF_INT 4
-#define SIZEOF_LONG_LONG 8
-
+/* configuration for OS/2 (i386) */
+#define FPM_INTEL
 
 /* Id: version.h,v 1.26 2004/01/23 09:41:33 rob Exp */
 
@@ -66,7 +61,9 @@ extern char const mad_build[];
 # ifndef LIBMAD_FIXED_H
 # define LIBMAD_FIXED_H
 
-# if SIZEOF_INT >= 4
+#  include <limits.h>
+
+# if INT_MAX >= 2147483647
 typedef   signed int mad_fixed_t;
 
 typedef   signed int mad_fixed64hi_t;
@@ -77,6 +74,8 @@ typedef   signed long mad_fixed_t;
 typedef   signed long mad_fixed64hi_t;
 typedef unsigned long mad_fixed64lo_t;
 # endif
+/* compile-time assert: */
+typedef int _mad_check_fixed_t[2*(sizeof(mad_fixed_t)>=4) - 1];
 
 # if defined(_MSC_VER)
 #  define mad_fixed64_t  signed __int64
@@ -995,6 +994,6 @@ int mad_decoder_message(struct mad_decoder *, void *, unsigned int *);
 
 # endif
 
-# ifdef __cplusplus
+#ifdef __cplusplus
 }
-# endif
+#endif

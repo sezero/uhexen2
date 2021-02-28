@@ -1,8 +1,7 @@
 # libmad-0.15.1b compiled for morphos port of Hammer of Thyrion (uhexen2):
 # commented out unneeded code (see diffs below), and configured with
-# --host=ppc-morphos --prefix=/gg --disable-debugging
-# In the generated Makefile, replaced -O with -O2 and added -noixemul to
-# the CFLAGS, compiled using gcc-4.4.5.
+# --host=ppc-morphos --disable-debugging
+# added -noixemul to the CFLAGS, compiled using gcc-4.4.5.
 
 --- timer.c.orig
 +++ timer.c
