@@ -8,6 +8,8 @@ This is a minor bug fix and maintenance release:
 
 - Fixed possible crash in effects code (thanks to Jonathan Bergeron).
 
+- OpenGL: Fixed graphical artifacts with scaled UI (sf.net bug 59.)
+
 - Improvements to mp3 tag detection / skipping.
 
 - New console command music_jump: Jump to given order in music,

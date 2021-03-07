@@ -1882,6 +1882,6 @@ GL_LoadPicTexture
 */
 GLuint GL_LoadPicTexture (qpic_t *pic)
 {
-	return GL_LoadTexture ("", pic->data, pic->width, pic->height, TEX_ALPHA|TEX_LINEAR);
+	return GL_LoadTexture ("", pic->data, pic->width, pic->height, TEX_ALPHA|TEX_NEAREST);
 }
 
