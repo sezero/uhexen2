@@ -3,11 +3,11 @@ Change PR_ExecuteProgram() to use computed GOTOs - by Szilard Biro.
 Gives a slight performance increase.
 Requires: GCC or compatibles, like clang.
 
-Index: engine/hexen2/pr_exec.c
-===================================================================
---- engine/hexen2/pr_exec.c	(revision 6039)
-+++ engine/hexen2/pr_exec.c	(working copy)
-@@ -149,6 +149,17 @@ static const char *pr_opnames[] =
+diff --git a/engine/hexen2/pr_exec.c b/engine/hexen2/pr_exec.c
+index 7e1dbe2..18e9807 100644
+--- a/engine/hexen2/pr_exec.c
++++ b/engine/hexen2/pr_exec.c
+@@ -147,6 +147,17 @@ static const char *pr_opnames[] =
  #define OPC ((eval_t *)&pr_globals[st->c])
  #endif
  
@@ -25,7 +25,7 @@ Index: engine/hexen2/pr_exec.c
  void PR_ExecuteProgram (func_t fnum)
  {
  	eval_t		*ptr, *a, *b, *c;
-@@ -162,6 +173,138 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -160,6 +171,138 @@ void PR_ExecuteProgram (func_t fnum)
  	/* switch/case support:  */
  	int	case_type = -1;
  	float	switch_float = 0;
@@ -164,7 +164,7 @@ Index: engine/hexen2/pr_exec.c
  
  	if (!fnum || fnum >= progs->numfunctions)
  	{
-@@ -199,222 +342,222 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -197,222 +340,222 @@ void PR_ExecuteProgram (func_t fnum)
  		PrintStatement(st);
  	}
  
@@ -497,7 +497,7 @@ Index: engine/hexen2/pr_exec.c
  		ed = PROG_TO_EDICT(a->edict);
  #ifdef PARANOID
  		NUM_FOR_EDICT(ed);	// Make sure it's in range
-@@ -425,22 +568,22 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -423,22 +566,22 @@ void PR_ExecuteProgram (func_t fnum)
  			PR_RunError("assignment to world entity");
  		}
  		c->_int = (byte *)((int *)&ed->v + b->_int) - (byte *)sv.edicts;
@@ -528,7 +528,7 @@ Index: engine/hexen2/pr_exec.c
  		ed = PROG_TO_EDICT(a->edict);
  #ifdef PARANOID
  		NUM_FOR_EDICT(ed);	// Make sure it's in range
-@@ -449,12 +592,12 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -447,12 +590,12 @@ void PR_ExecuteProgram (func_t fnum)
  		c->vector[0] = ptr->vector[0];
  		c->vector[1] = ptr->vector[1];
  		c->vector[2] = ptr->vector[2];
@@ -546,7 +546,7 @@ Index: engine/hexen2/pr_exec.c
  	  {	int i = (int)b->_float;
  		if (i < 0 || i > G_INT(st->a - 1))
  		{
-@@ -463,8 +606,8 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -461,8 +604,8 @@ void PR_ExecuteProgram (func_t fnum)
  		}
  		ptr = (eval_t *)&pr_globals[st->a + i];
  		c->_int = ptr->_int;
@@ -557,7 +557,7 @@ Index: engine/hexen2/pr_exec.c
  	  {	int i = (int)b->_float;
  		if (i < 0 || i > G_INT(st->a - 1))
  		{
-@@ -475,9 +618,9 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -473,9 +616,9 @@ void PR_ExecuteProgram (func_t fnum)
  		c->vector[0] = ptr->vector[0];
  		c->vector[1] = ptr->vector[1];
  		c->vector[2] = ptr->vector[2];
@@ -569,7 +569,7 @@ Index: engine/hexen2/pr_exec.c
  		if (!a->_int)
  		{
  		/* Pa3PyX: a, b, and c used to be signed shorts for progs v6,
-@@ -503,36 +646,36 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -501,36 +644,36 @@ void PR_ExecuteProgram (func_t fnum)
  			if (is_progs_v6) jump_ofs = (signed short)jump_ofs;
  			st += jump_ofs - 1;	/* -1 to offset the st++ */
  		}
@@ -621,7 +621,7 @@ Index: engine/hexen2/pr_exec.c
  		pr_xfunction->profile += profile - startprofile;
  		startprofile = profile;
  		pr_xstatement = st - pr_statements;
-@@ -550,14 +693,14 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -548,14 +691,14 @@ void PR_ExecuteProgram (func_t fnum)
  				PR_RunError("Bad builtin call number %d", i);
  			}
  			pr_builtins[i]();
@@ -640,7 +640,7 @@ Index: engine/hexen2/pr_exec.c
  	  {
  		float *retptr = &pr_globals[OFS_RETURN];
  		float *valptr = &pr_globals[st->a];
-@@ -572,9 +715,9 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -570,9 +713,9 @@ void PR_ExecuteProgram (func_t fnum)
  		{ // Done
  			return;
  		}
@@ -652,7 +652,7 @@ Index: engine/hexen2/pr_exec.c
  		ed = PROG_TO_EDICT(*sv_globals.self);
  /* Id 1.07 changes
  #ifdef FPS_20
-@@ -586,9 +729,9 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -584,9 +727,9 @@ void PR_ExecuteProgram (func_t fnum)
  		ed->v.nextthink = *sv_globals.time + HX_FRAME_TIME;
  		ed->v.frame = a->_float;
  		ed->v.think = b->function;
@@ -664,7 +664,7 @@ Index: engine/hexen2/pr_exec.c
  	  {	int startFrame, endFrame;
  		ed = PROG_TO_EDICT(*sv_globals.self);
  		ed->v.nextthink = *sv_globals.time + HX_FRAME_TIME;
-@@ -628,9 +771,9 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -626,9 +769,9 @@ void PR_ExecuteProgram (func_t fnum)
  				}
  			}
  		}
@@ -676,7 +676,7 @@ Index: engine/hexen2/pr_exec.c
  	  {	int startFrame, endFrame;
  		ed = PROG_TO_EDICT(*sv_globals.self);
  		ed->v.nextthink = *sv_globals.time + HX_FRAME_TIME;
-@@ -672,9 +815,9 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -670,9 +813,9 @@ void PR_ExecuteProgram (func_t fnum)
  				}
  			}
  		}
@@ -688,7 +688,7 @@ Index: engine/hexen2/pr_exec.c
  		ed = PROG_TO_EDICT(a->edict);
  #ifdef PARANOID
  		NUM_FOR_EDICT(ed);	// Make sure it's in range
-@@ -685,34 +828,34 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -683,34 +826,34 @@ void PR_ExecuteProgram (func_t fnum)
  			PR_RunError("assignment to world entity");
  		}
  		ed->v.nextthink = *sv_globals.time + b->_float;
@@ -737,7 +737,7 @@ Index: engine/hexen2/pr_exec.c
  	  {	float val;
  		if (a->_float < b->_float)
  		{
-@@ -723,8 +866,8 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -721,8 +864,8 @@ void PR_ExecuteProgram (func_t fnum)
  			val = b->_float + (rand() * (1.0 / RAND_MAX) * (a->_float - b->_float));
  		}
  		G_FLOAT(OFS_RETURN) = val;
@@ -748,7 +748,7 @@ Index: engine/hexen2/pr_exec.c
  	  {	float val;
  		float *retptr = &G_FLOAT(OFS_RETURN);
  		val = rand() * (1.0 / RAND_MAX);
-@@ -733,8 +876,8 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -731,8 +874,8 @@ void PR_ExecuteProgram (func_t fnum)
  		*retptr++ = val;
  		val = rand() * (1.0 / RAND_MAX);
  		*retptr   = val;
@@ -759,7 +759,7 @@ Index: engine/hexen2/pr_exec.c
  	  {	float val;
  		float *retptr = &G_FLOAT(OFS_RETURN);
  		val = rand() * (1.0 / RAND_MAX) * a->vector[0];
-@@ -743,8 +886,8 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -741,8 +884,8 @@ void PR_ExecuteProgram (func_t fnum)
  		*retptr++ = val;
  		val = rand() * (1.0 / RAND_MAX) * a->vector[2];
  		*retptr   = val;
@@ -770,7 +770,7 @@ Index: engine/hexen2/pr_exec.c
  	  {	float val;
  		int	i;
  		float *retptr = &G_FLOAT(OFS_RETURN);
-@@ -760,23 +903,23 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -758,23 +901,23 @@ void PR_ExecuteProgram (func_t fnum)
  			}
  			*retptr++ = val;
  		}
@@ -803,7 +803,7 @@ Index: engine/hexen2/pr_exec.c
  		if (case_type != SWITCH_F)
  		{
  			pr_xstatement = st - pr_statements;
-@@ -788,8 +931,8 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -786,8 +929,8 @@ void PR_ExecuteProgram (func_t fnum)
  			if (is_progs_v6) jump_ofs = (signed short)jump_ofs;
  			st += jump_ofs - 1;	/* -1 to offset the st++ */
  		}
@@ -814,7 +814,7 @@ Index: engine/hexen2/pr_exec.c
  		switch (case_type)
  		{
  		case SWITCH_F:
-@@ -799,7 +942,7 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -797,7 +940,7 @@ void PR_ExecuteProgram (func_t fnum)
  				if (is_progs_v6) jump_ofs = (signed short)jump_ofs;
  				st += jump_ofs - 1;	/* -1 to offset the st++ */
  			}
@@ -823,7 +823,7 @@ Index: engine/hexen2/pr_exec.c
  		case SWITCH_V:
  		case SWITCH_S:
  		case SWITCH_E:
-@@ -807,16 +950,20 @@ void PR_ExecuteProgram (func_t fnum)
+@@ -805,16 +948,20 @@ void PR_ExecuteProgram (func_t fnum)
  			pr_xstatement = st - pr_statements;
  			PR_RunError("OP_CASE for %s not done yet!",
  					pr_opnames[case_type + OP_SWITCH_F - SWITCH_F]);
@@ -846,3 +846,7 @@ Index: engine/hexen2/pr_exec.c
  	}
      }	/* end of while(1) loop */
  }
+
+-- 
+1.7.1
+

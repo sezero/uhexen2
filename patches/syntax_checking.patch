@@ -12,11 +12,11 @@ options, but also allowing for "+map village1" type args.
 stevenaaus@yahoo.com
 
 
-Index: engine/hexen2/sys_unix.c
-===================================================================
---- engine/hexen2/sys_unix.c	(revision 6140)
-+++ engine/hexen2/sys_unix.c	(working copy)
-@@ -601,65 +601,268 @@ static void PrintVersion (void)
+diff --git a/engine/hexen2/sys_unix.c b/engine/hexen2/sys_unix.c
+index b5b3da1..8c305ac 100644
+--- a/engine/hexen2/sys_unix.c
++++ b/engine/hexen2/sys_unix.c
+@@ -599,65 +599,268 @@ static void PrintVersion (void)
  }
  
  #include "snd_sys.h"
@@ -197,12 +197,12 @@ Index: engine/hexen2/sys_unix.c
 +			break;
 +	}
 +	num_avail_options = i;
++
++	if (argc <= 1)
++		return;
  
 -	Sys_Printf ("Usage: %s [options]\n", name);
 -	while (help_strings[i])
-+	if (argc <= 1)
-+		return;
-+
 +	skip = 0;
 +
 +	for (i = 1; i < argc; i++)
@@ -315,7 +315,7 @@ Index: engine/hexen2/sys_unix.c
  }
  
  /*
-@@ -682,23 +885,7 @@ int main (int argc, char **argv)
+@@ -680,23 +883,7 @@ int main (int argc, char **argv)
  
  	PrintVersion();
  
@@ -341,3 +341,5 @@ Index: engine/hexen2/sys_unix.c
  	/* initialize the host params */
  	memset (&parms, 0, sizeof(parms));
 
+-- 
+1.7.1

@@ -5,10 +5,10 @@ things do seem to work but needs some polishing
 and tidy-up before making it mainstream.
 
 diff --git a/engine/h2shared/gl_vidsdl.c b/engine/h2shared/gl_vidsdl.c
-index ae29dd0..7b35469 100644
+index 82d9e2b..0338e81 100644
 --- a/engine/h2shared/gl_vidsdl.c
 +++ b/engine/h2shared/gl_vidsdl.c
-@@ -116,8 +116,13 @@ typedef struct {
+@@ -115,8 +115,13 @@ typedef struct {
  } attributes_t;
  static attributes_t	vid_attribs;
  
@@ -22,7 +22,7 @@ index ae29dd0..7b35469 100644
  static qboolean	vid_menu_fs;
  static qboolean	fs_toggle_works = true;
  
-@@ -277,12 +282,20 @@ void VID_HandlePause (qboolean paused)
+@@ -276,12 +281,20 @@ void VID_HandlePause (qboolean paused)
  
  qboolean VID_HasMouseOrInputFocus (void)
  {
@@ -43,7 +43,7 @@ index ae29dd0..7b35469 100644
  }
  
  
-@@ -307,16 +320,28 @@ static void VID_SetIcon (void)
+@@ -306,16 +319,28 @@ static void VID_SetIcon (void)
  	if (icon == NULL)
  		return;
  
@@ -72,7 +72,7 @@ index ae29dd0..7b35469 100644
  
  	ptr = (Uint8 *)icon->pixels;
  	/* one bit represents a pixel, black or white:  each
-@@ -330,8 +355,13 @@ static void VID_SetIcon (void)
+@@ -329,8 +354,13 @@ static void VID_SetIcon (void)
  		}
  	}
  
@@ -86,7 +86,7 @@ index ae29dd0..7b35469 100644
  #endif /* !OSX */
  }
  
-@@ -413,14 +443,14 @@ static qboolean VID_SetMode (int modenum)
+@@ -412,14 +442,14 @@ static qboolean VID_SetMode (int modenum)
  {
  	Uint32	flags;
  	int	i, is_fullscreen;
@@ -106,7 +106,7 @@ index ae29dd0..7b35469 100644
  	// setup the attributes
  	if (bpp >= 32)
  	{
-@@ -453,6 +483,81 @@ static qboolean VID_SetMode (int modenum)
+@@ -452,6 +482,81 @@ static qboolean VID_SetMode (int modenum)
  
  	Con_SafePrintf ("Requested mode %d: %dx%dx%d\n", modenum, modelist[modenum].width, modelist[modenum].height, bpp);
  
@@ -188,7 +188,7 @@ index ae29dd0..7b35469 100644
  	VID_SetIcon();
  
  	screen = SDL_SetVideoMode (modelist[modenum].width, modelist[modenum].height, bpp, flags);
-@@ -474,9 +579,13 @@ static qboolean VID_SetMode (int modenum)
+@@ -473,9 +578,13 @@ static qboolean VID_SetMode (int modenum)
  		}
  	}
  
@@ -203,7 +203,7 @@ index ae29dd0..7b35469 100644
  	modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
  	Cvar_SetValueQuick (&vid_config_glx, modelist[vid_modenum].width);
  	Cvar_SetValueQuick (&vid_config_gly, modelist[vid_modenum].height);
-@@ -496,8 +605,6 @@ static qboolean VID_SetMode (int modenum)
+@@ -495,8 +604,6 @@ static qboolean VID_SetMode (int modenum)
  	}
  	Cvar_SetValueQuick (&vid_config_fsaa, multisample);
  
@@ -212,7 +212,7 @@ index ae29dd0..7b35469 100644
  	IN_HideMouse ();
  
  	in_mode_set = false;
-@@ -670,6 +777,7 @@ static void VID_InitGamma (void)
+@@ -669,6 +776,7 @@ static void VID_InitGamma (void)
  		fx_gamma = VID_Check3dfxGamma();
  	if (!fx_gamma)
  	{
@@ -220,7 +220,7 @@ index ae29dd0..7b35469 100644
  #if USE_GAMMA_RAMPS
  		gammaworks	= (SDL_GetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]) == 0);
  		if (gammaworks)
-@@ -677,6 +785,7 @@ static void VID_InitGamma (void)
+@@ -676,6 +784,7 @@ static void VID_InitGamma (void)
  #else
  		gammaworks	= (SDL_SetGamma(1, 1, 1) == 0);
  #endif
@@ -228,7 +228,7 @@ index ae29dd0..7b35469 100644
  	}
  
  	if (!gammaworks && !fx_gamma)
-@@ -691,11 +800,13 @@ static void VID_ShutdownGamma (void)
+@@ -690,11 +799,13 @@ static void VID_ShutdownGamma (void)
  /*	if (fx_gamma) do3dfxGammaCtrl(1);*/
  #endif
  	Shutdown_3dfxGamma();
@@ -242,7 +242,7 @@ index ae29dd0..7b35469 100644
  }
  
  static void VID_SetGamma (void)
-@@ -709,11 +820,13 @@ static void VID_SetGamma (void)
+@@ -708,11 +819,13 @@ static void VID_SetGamma (void)
  #else
  	if (fx_gamma) do3dfxGammaCtrl(value);
  #endif
@@ -256,7 +256,7 @@ index ae29dd0..7b35469 100644
  }
  
  void VID_ShiftPalette (const unsigned char *palette)
-@@ -1040,7 +1153,12 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height)
+@@ -1039,7 +1152,12 @@ void GL_BeginRendering (int *x, int *y, int *width, int *height)
  void GL_EndRendering (void)
  {
  	if (!scr_skipupdate)
@@ -269,7 +269,7 @@ index ae29dd0..7b35469 100644
  
  // handle the mouse state when windowed if that's changed
  	if (_enable_mouse.integer != enable_mouse /*&& modestate == MS_WINDOWED*/)
-@@ -1254,8 +1372,13 @@ static void VID_ChangeVideoMode (int newmode)
+@@ -1253,8 +1371,13 @@ static void VID_ChangeVideoMode (int newmode)
  {
  	int	temp;
  
@@ -283,7 +283,7 @@ index ae29dd0..7b35469 100644
  
  	temp = scr_disabled_for_loading;
  	scr_disabled_for_loading = true;
-@@ -1281,7 +1404,12 @@ static void VID_ChangeVideoMode (int newmode)
+@@ -1280,7 +1403,12 @@ static void VID_ChangeVideoMode (int newmode)
  	IN_ShowMouse ();
  
  	// Kill device and rendering contexts
@@ -296,7 +296,7 @@ index ae29dd0..7b35469 100644
  	SDL_QuitSubSystem(SDL_INIT_VIDEO);	// also unloads the opengl driver
  
  	// re-init sdl_video, set the mode and re-init opengl
-@@ -1293,7 +1421,9 @@ static void VID_ChangeVideoMode (int newmode)
+@@ -1292,7 +1420,9 @@ static void VID_ChangeVideoMode (int newmode)
  #endif
  	VID_SetMode (newmode);
  	// re-get the video info since we re-inited sdl_video
@@ -306,7 +306,7 @@ index ae29dd0..7b35469 100644
  
  	// Reload graphics wad file (Draw_PicFromWad writes glpic_t data (sizes,
  	// texnums) right on top of the original pic data, so the pic data will
-@@ -1364,10 +1494,68 @@ static int sort_modes (const void *arg1, const void *arg2)
+@@ -1363,10 +1493,68 @@ static int sort_modes (const void *arg1, const void *arg2)
  	return a1->width - a2->width;
  }
  
@@ -376,7 +376,7 @@ index ae29dd0..7b35469 100644
  
  	num_fmodes = 0;
  	num_wmodes = 0;
-@@ -1553,9 +1741,10 @@ void	VID_Init (const unsigned char *palette)
+@@ -1552,9 +1740,10 @@ void	VID_Init (const unsigned char *palette)
  	static char fxmesa_env_multitex[32] = "FX_DONT_FAKE_MULTITEX=1";
  	static char fxglide_env_nosplash[32] = "FX_GLIDE_NO_SPLASH=1";
  #endif
@@ -389,7 +389,7 @@ index ae29dd0..7b35469 100644
  	const char	*read_vars[] = {
  				"vid_config_fscr",
  				"vid_config_gl8bit",
-@@ -1591,9 +1780,13 @@ void	VID_Init (const unsigned char *palette)
+@@ -1590,9 +1779,13 @@ void	VID_Init (const unsigned char *palette)
  	vid.numpages = 2;
  
  	// see if the SDL version we linked to is multisampling-capable
@@ -403,7 +403,7 @@ index ae29dd0..7b35469 100644
  
  #ifndef __MORPHOS__
  	// enable vsync for nvidia geforce or newer - S.A
-@@ -1636,10 +1829,9 @@ void	VID_Init (const unsigned char *palette)
+@@ -1635,10 +1828,9 @@ void	VID_Init (const unsigned char *palette)
  
  	// this will contain the "best bpp" for the current display
  	// make sure to re-retrieve it if you ever re-init sdl_video
@@ -416,7 +416,7 @@ index ae29dd0..7b35469 100644
  
  	i = COM_CheckParm("-bpp");
  	if (i && i < com_argc-1)
-@@ -1648,7 +1840,7 @@ void	VID_Init (const unsigned char *palette)
+@@ -1647,7 +1839,7 @@ void	VID_Init (const unsigned char *palette)
  	}
  
  	// prepare the modelists, find the actual modenum for vid_default
@@ -425,7 +425,7 @@ index ae29dd0..7b35469 100644
  
  	// set vid_mode to our safe default first
  	Cvar_SetValueQuick (&vid_mode, vid_default);
-@@ -1784,6 +1976,14 @@ void	VID_Init (const unsigned char *palette)
+@@ -1783,6 +1975,14 @@ void	VID_Init (const unsigned char *palette)
  void	VID_Shutdown (void)
  {
  	VID_ShutdownGamma();
@@ -440,7 +440,7 @@ index ae29dd0..7b35469 100644
  	SDL_QuitSubSystem(SDL_INIT_VIDEO);
  }
  
-@@ -1799,21 +1999,63 @@ extern qboolean menu_disabled_mouse;
+@@ -1798,21 +1998,63 @@ extern qboolean menu_disabled_mouse;
  void VID_ToggleFullscreen (void)
  {
  	int	is_fullscreen;
@@ -504,7 +504,7 @@ index ae29dd0..7b35469 100644
  		Cvar_SetValueQuick(&vid_config_fscr, is_fullscreen);
  		modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
  		if (is_fullscreen)
-@@ -1837,7 +2079,11 @@ void VID_ToggleFullscreen (void)
+@@ -1836,7 +2078,11 @@ void VID_ToggleFullscreen (void)
  	else
  	{
  		fs_toggle_works = false;
@@ -517,10 +517,10 @@ index ae29dd0..7b35469 100644
  }
  
 diff --git a/engine/h2shared/in_sdl.c b/engine/h2shared/in_sdl.c
-index f1b3c62..ce81489 100644
+index 801e6a1..ceeafab 100644
 --- a/engine/h2shared/in_sdl.c
 +++ b/engine/h2shared/in_sdl.c
-@@ -44,8 +44,10 @@ static int buttonremap[] =
+@@ -42,8 +42,10 @@ static int buttonremap[] =
  	K_MOUSE1,
  	K_MOUSE3,	/* right button		*/
  	K_MOUSE2,	/* middle button	*/
@@ -531,7 +531,7 @@ index f1b3c62..ce81489 100644
  	K_MOUSE4,
  	K_MOUSE5
  };
-@@ -190,7 +192,11 @@ void IN_ActivateMouse (void)
+@@ -188,7 +190,11 @@ void IN_ActivateMouse (void)
  		{
  			mouseactivatetoggle = true;
  			mouseactive = true;
@@ -543,7 +543,7 @@ index f1b3c62..ce81489 100644
  		}
  	    }
  	}
-@@ -215,7 +221,11 @@ void IN_DeactivateMouse (void)
+@@ -213,7 +219,11 @@ void IN_DeactivateMouse (void)
  	    if (mouseactivatetoggle) {
  		mouseactivatetoggle = false;
  		mouseactive = false;
@@ -555,7 +555,7 @@ index f1b3c62..ce81489 100644
  	    }
  	}
  
-@@ -232,7 +242,11 @@ static void IN_StartupMouse (void)
+@@ -230,7 +240,11 @@ static void IN_StartupMouse (void)
  /*	IN_HideMouse ();*/
  	if (safemode || COM_CheckParm ("-nomouse"))
  	{
@@ -567,7 +567,7 @@ index f1b3c62..ce81489 100644
  		return;
  	}
  
-@@ -242,7 +256,11 @@ static void IN_StartupMouse (void)
+@@ -240,7 +254,11 @@ static void IN_StartupMouse (void)
  	{
  		mouseactivatetoggle = true;
  		mouseactive = true;
@@ -579,7 +579,7 @@ index f1b3c62..ce81489 100644
  		SDL_GetRelativeMouseState (NULL, NULL);
  	}
  }
-@@ -298,8 +316,10 @@ void IN_Init (void)
+@@ -296,8 +314,10 @@ void IN_Init (void)
  	IN_StartupJoystick ();
  
  	prev_gamekey = Key_IsGameKey();
@@ -590,7 +590,7 @@ index f1b3c62..ce81489 100644
  }
  
  /*
-@@ -331,8 +351,10 @@ void IN_ReInit (void)
+@@ -329,8 +349,10 @@ void IN_ReInit (void)
  	IN_StartupMouse ();
  
  	prev_gamekey = Key_IsGameKey();
@@ -601,7 +601,7 @@ index f1b3c62..ce81489 100644
  
  	/* no need for joystick to reinit */
  }
-@@ -478,7 +500,11 @@ static void IN_StartupJoystick (void)
+@@ -476,7 +498,11 @@ static void IN_StartupJoystick (void)
  	Con_Printf ("SDL_Joystick: %d devices are reported:\n", joy_available);
  	for (i = 0; i < joy_available; i++)
  	{
@@ -613,7 +613,7 @@ index f1b3c62..ce81489 100644
  	}
  
  	trackballactive = true;
-@@ -528,7 +554,11 @@ static void IN_Callback_JoyIndex (cvar_t *var)
+@@ -526,7 +552,11 @@ static void IN_Callback_JoyIndex (cvar_t *var)
  		{
  			int numaxes, numbtns, numballs, numhats;
  			Con_Printf("joystick open ");
@@ -625,7 +625,7 @@ index f1b3c62..ce81489 100644
  			numaxes = SDL_JoystickNumAxes(joy_id);
  			numbtns = SDL_JoystickNumButtons(joy_id);
  			numballs= SDL_JoystickNumBalls(joy_id);
-@@ -819,13 +849,28 @@ void IN_SendKeyEvents (void)
+@@ -817,13 +847,28 @@ void IN_SendKeyEvents (void)
  	if ((gamekey = Key_IsGameKey()) != prev_gamekey)
  	{
  		prev_gamekey = gamekey;
@@ -654,7 +654,7 @@ index f1b3c62..ce81489 100644
  		case SDL_ACTIVEEVENT:
  			if (event.active.state & (SDL_APPINPUTFOCUS|SDL_APPACTIVE))
  			{
-@@ -834,6 +879,7 @@ void IN_SendKeyEvents (void)
+@@ -832,6 +877,7 @@ void IN_SendKeyEvents (void)
  				else	S_BlockSound();
  			}
  			break;
@@ -662,7 +662,7 @@ index f1b3c62..ce81489 100644
  
  		case SDL_KEYDOWN:
  			if ((event.key.keysym.sym == SDLK_RETURN) &&
-@@ -851,8 +897,12 @@ void IN_SendKeyEvents (void)
+@@ -849,8 +895,12 @@ void IN_SendKeyEvents (void)
  			if ((event.key.keysym.sym == SDLK_g) &&
  			    (event.key.keysym.mod & KMOD_CTRL))
  			{
@@ -675,7 +675,7 @@ index f1b3c62..ce81489 100644
  				break;
  			}
  		/* fallthrough */
-@@ -861,6 +911,7 @@ void IN_SendKeyEvents (void)
+@@ -859,6 +909,7 @@ void IN_SendKeyEvents (void)
  			state = event.key.state;
  			modstate = SDL_GetModState();
  
@@ -683,7 +683,7 @@ index f1b3c62..ce81489 100644
  			if (event.key.keysym.unicode != 0)
  			{
  				if ((event.key.keysym.unicode & 0xFF80) == 0)
-@@ -888,6 +939,7 @@ void IN_SendKeyEvents (void)
+@@ -886,6 +937,7 @@ void IN_SendKeyEvents (void)
  				/* else: it's an international character */
  			}
  			/*printf("You pressed %s (%d) (%c)\n", SDL_GetKeyName(sym), sym, sym);*/
@@ -691,7 +691,7 @@ index f1b3c62..ce81489 100644
  
  			switch (sym)
  			{
-@@ -933,7 +985,9 @@ void IN_SendKeyEvents (void)
+@@ -931,7 +983,9 @@ void IN_SendKeyEvents (void)
  			case SDLK_F12:
  				sym = K_F12;
  				break;
@@ -701,7 +701,7 @@ index f1b3c62..ce81489 100644
  			case SDLK_PAUSE:
  				sym = K_PAUSE;
  				break;
-@@ -976,61 +1030,110 @@ void IN_SendKeyEvents (void)
+@@ -974,61 +1028,110 @@ void IN_SendKeyEvents (void)
  			case SDLK_LALT:
  				sym = K_ALT;
  				break;
@@ -812,7 +812,7 @@ index f1b3c62..ce81489 100644
  				if (gamekey)
  					sym = K_KP_PGUP;
  				else	sym = (modstate & KMOD_NUM) ? SDLK_9 : K_PGUP;
-@@ -1070,15 +1173,19 @@ void IN_SendKeyEvents (void)
+@@ -1068,15 +1171,19 @@ void IN_SendKeyEvents (void)
  					sym = 0;
  				else	sym = SDLK_EQUALS;
  				break;
@@ -833,7 +833,7 @@ index f1b3c62..ce81489 100644
  					sym = 0;
  				break;
  			}
-@@ -1100,6 +1207,15 @@ void IN_SendKeyEvents (void)
+@@ -1098,6 +1205,15 @@ void IN_SendKeyEvents (void)
  			Key_Event(buttonremap[event.button.button - 1], event.button.state == SDL_PRESSED);
  			break;
  
@@ -850,10 +850,10 @@ index f1b3c62..ce81489 100644
  		case SDL_JOYBUTTONUP:
  			if (in_mode_set)
 diff --git a/engine/h2shared/sdl_inc.h b/engine/h2shared/sdl_inc.h
-index a54999a..dc0222b 100644
+index 5e44dd9..1055846 100644
 --- a/engine/h2shared/sdl_inc.h
 +++ b/engine/h2shared/sdl_inc.h
-@@ -25,12 +25,16 @@
+@@ -24,12 +24,16 @@
  
  #if !defined(SDLQUAKE)
  #error "SDLQUAKE must be defined in order to use sdl_inc.h"
@@ -872,7 +872,7 @@ index a54999a..dc0222b 100644
  #endif
  
  /* =================================================================
-@@ -53,14 +57,20 @@ hence the SDL_NEW_VERSION_REJECT macro below.
+@@ -52,14 +56,20 @@ hence the SDL_NEW_VERSION_REJECT macro below.
  
  #if SDL_VERSION_ATLEAST(1,3,0)
  
@@ -895,10 +895,10 @@ index a54999a..dc0222b 100644
  #define SDL_MIN_Y	2
  
 diff --git a/engine/h2shared/snd_sdl.c b/engine/h2shared/snd_sdl.c
-index 26742cc..be70a2c 100644
+index e27a9c5..e0ce259 100644
 --- a/engine/h2shared/snd_sdl.c
 +++ b/engine/h2shared/snd_sdl.c
-@@ -156,8 +156,18 @@ static qboolean S_SDL_Init (dma_t *dma)
+@@ -155,8 +155,18 @@ static qboolean S_SDL_Init (dma_t *dma)
  
  	Con_Printf ("SDL audio spec  : %d Hz, %d samples, %d channels\n",
  			obtained.freq, obtained.samples, obtained.channels);
@@ -918,10 +918,10 @@ index 26742cc..be70a2c 100644
  	Con_Printf ("SDL audio driver: %s, %d bytes buffer\n", drivername, buffersize);
  
 diff --git a/engine/h2shared/vid_sdl.c b/engine/h2shared/vid_sdl.c
-index 32bd3a5..6c5c060 100644
+index a0bd35f..37c35ba 100644
 --- a/engine/h2shared/vid_sdl.c
 +++ b/engine/h2shared/vid_sdl.c
-@@ -61,6 +61,12 @@ static int	num_fmodes;
+@@ -60,6 +60,12 @@ static int	num_fmodes;
  static int	num_wmodes;
  static int	*nummodes;
  //static int	bpp = 8;
@@ -934,7 +934,7 @@ index 32bd3a5..6c5c060 100644
  static SDL_Surface	*screen;
  static qboolean	vid_menu_fs;
  static qboolean	fs_toggle_works = true;
-@@ -146,12 +152,20 @@ static void VID_MenuKey (int key);
+@@ -145,12 +151,20 @@ static void VID_MenuKey (int key);
  
  qboolean VID_HasMouseOrInputFocus (void)
  {
@@ -955,7 +955,7 @@ index 32bd3a5..6c5c060 100644
  }
  
  
-@@ -262,16 +276,29 @@ static void VID_SetIcon (void)
+@@ -261,16 +275,29 @@ static void VID_SetIcon (void)
  	if (icon == NULL)
  		return;
  
@@ -985,7 +985,7 @@ index 32bd3a5..6c5c060 100644
  
  	ptr = (Uint8 *)icon->pixels;
  	/* one bit represents a pixel, black or white:  each
-@@ -285,8 +312,13 @@ static void VID_SetIcon (void)
+@@ -284,8 +311,13 @@ static void VID_SetIcon (void)
  		}
  	}
  
@@ -999,7 +999,7 @@ index 32bd3a5..6c5c060 100644
  #endif /* !OSX */
  }
  
-@@ -304,11 +336,69 @@ static int sort_modes (const void *arg1, const void *arg2)
+@@ -303,11 +335,69 @@ static int sort_modes (const void *arg1, const void *arg2)
  	//	return a2->w - a1->w;	// highres-to-lowres
  }
  
@@ -1070,7 +1070,7 @@ index 32bd3a5..6c5c060 100644
  
  	num_fmodes = 0;
  	num_wmodes = 0;
-@@ -507,9 +597,116 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
+@@ -506,9 +596,116 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
  {
  	Uint32 flags;
  	int	is_fullscreen;
@@ -1187,7 +1187,7 @@ index 32bd3a5..6c5c060 100644
  	if (screen)
  		SDL_FreeSurface(screen);
  
-@@ -524,6 +721,10 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
+@@ -523,6 +720,10 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
  	if (!screen)
  		return false;
  
@@ -1198,7 +1198,7 @@ index 32bd3a5..6c5c060 100644
  	// initial success. adjust vid vars.
  	vid.height = vid.conheight = modelist[modenum].height;
  	vid.width = vid.conwidth = modelist[modenum].width;
-@@ -539,7 +740,6 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
+@@ -538,7 +739,6 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
  
  	// real success. set vid_modenum properly.
  	vid_modenum = modenum;
@@ -1206,7 +1206,7 @@ index 32bd3a5..6c5c060 100644
  	modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
  	Cvar_SetValueQuick (&vid_config_swx, modelist[vid_modenum].width);
  	Cvar_SetValueQuick (&vid_config_swy, modelist[vid_modenum].height);
-@@ -551,8 +751,6 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
+@@ -550,8 +750,6 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
  
  	VID_SetPalette (palette);
  
@@ -1215,7 +1215,7 @@ index 32bd3a5..6c5c060 100644
  	Con_SafePrintf ("Video Mode: %ux%ux%d\n", vid.width, vid.height, modelist[modenum].bpp);
  
  	in_mode_set = false;
-@@ -666,7 +864,11 @@ void VID_SetPalette (const unsigned char *palette)
+@@ -665,7 +863,11 @@ void VID_SetPalette (const unsigned char *palette)
  		colors[i].b = *palette++;
  	}
  
@@ -1227,7 +1227,7 @@ index 32bd3a5..6c5c060 100644
  }
  
  
-@@ -684,7 +886,6 @@ VID_Init
+@@ -683,7 +885,6 @@ VID_Init
  void VID_Init (const unsigned char *palette)
  {
  	int		width, height, i, temp;
@@ -1235,7 +1235,7 @@ index 32bd3a5..6c5c060 100644
  	const char	*read_vars[] = {
  				"vid_config_fscr",
  				"vid_config_swx",
-@@ -715,10 +916,8 @@ void VID_Init (const unsigned char *palette)
+@@ -714,10 +915,8 @@ void VID_Init (const unsigned char *palette)
  			Sys_Error("Couldn't init video: %s", SDL_GetError());
  	}
  
@@ -1247,7 +1247,7 @@ index 32bd3a5..6c5c060 100644
  
  	// set vid_mode to our safe default first
  	Cvar_SetValueQuick (&vid_mode, vid_default);
-@@ -842,12 +1041,48 @@ FlipScreen
+@@ -841,12 +1040,48 @@ FlipScreen
  */
  static void FlipScreen (vrect_t *rects)
  {
@@ -1296,7 +1296,7 @@ index 32bd3a5..6c5c060 100644
  }
  
  void VID_Update (vrect_t *rects)
-@@ -910,12 +1145,32 @@ D_EndDirectRect
+@@ -909,12 +1144,32 @@ D_EndDirectRect
  */
  void D_EndDirectRect (int x, int y, int width, int height)
  {
@@ -1329,7 +1329,7 @@ index 32bd3a5..6c5c060 100644
  }
  
  
-@@ -1031,19 +1286,61 @@ extern qboolean menu_disabled_mouse;
+@@ -1030,19 +1285,61 @@ extern qboolean menu_disabled_mouse;
  void VID_ToggleFullscreen (void)
  {
  	int	is_fullscreen;
@@ -1391,7 +1391,7 @@ index 32bd3a5..6c5c060 100644
  		Cvar_SetValueQuick(&vid_config_fscr, is_fullscreen);
  		modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
  		if (is_fullscreen)
-@@ -1065,7 +1362,11 @@ void VID_ToggleFullscreen (void)
+@@ -1064,7 +1361,11 @@ void VID_ToggleFullscreen (void)
  	else
  	{
  		fs_toggle_works = false;
@@ -1404,10 +1404,10 @@ index 32bd3a5..6c5c060 100644
  }
  
 diff --git a/engine/hexen2/Makefile b/engine/hexen2/Makefile
-index 28e84dd..f1225b8 100644
+index 97145c0..c2404ef 100644
 --- a/engine/hexen2/Makefile
 +++ b/engine/hexen2/Makefile
-@@ -48,8 +48,17 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
+@@ -47,8 +47,17 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
  
  # X directory
  X11BASE    =/usr/X11R6
@@ -1425,7 +1425,7 @@ index 28e84dd..f1225b8 100644
  SDL_CFLAGS = $(shell $(SDL_CONFIG) --cflags 2> /dev/null)
  SDL_LIBS   = $(shell $(SDL_CONFIG) --libs 2> /dev/null)
  
-@@ -292,10 +301,17 @@ CPUFLAGS=
+@@ -291,10 +300,17 @@ CPUFLAGS=
  # @rpath can be used when targeting 10.5+
  USE_RPATH=no
  ifeq ($(MACH_TYPE),x86)
@@ -1443,7 +1443,7 @@ index 28e84dd..f1225b8 100644
  ifeq ($(MACH_TYPE),ppc)
  # require 10.2 for ppc builds (midi_osx.c requirement.)
  CFLAGS  +=-mmacosx-version-min=10.2
-@@ -348,7 +364,7 @@ endif
+@@ -347,7 +363,7 @@ endif
  
  # Unix builds rely on SDL:
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1452,7 +1452,7 @@ index 28e84dd..f1225b8 100644
  # not relying on sdl-config command and assuming
  # /Library/Frameworks/SDL.framework is available
  SDL_CFLAGS =-D_GNU_SOURCE=1 -D_THREAD_SAFE
-@@ -360,7 +376,12 @@ ifneq ($(SDL_FRAMEWORK_PATH),)
+@@ -359,7 +375,12 @@ ifneq ($(SDL_FRAMEWORK_PATH),)
  SDL_LIBS  +=-F$(SDL_FRAMEWORK_PATH)
  SDL_CFLAGS+=-F$(SDL_FRAMEWORK_PATH)
  endif
@@ -1466,7 +1466,7 @@ index 28e84dd..f1225b8 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -456,7 +477,7 @@ endif
+@@ -455,7 +476,7 @@ endif
  
  # Unix builds rely on SDL:
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1475,7 +1475,7 @@ index 28e84dd..f1225b8 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -489,8 +510,16 @@ LDFLAGS += -s
+@@ -488,8 +509,16 @@ LDFLAGS += -s
  CFLAGS  += -fno-omit-frame-pointer
  endif
  # using SDL for now:
@@ -1494,7 +1494,7 @@ index 28e84dd..f1225b8 100644
  USE_SDLCD=yes
  USE_SDLAUDIO=yes
  
-@@ -514,7 +543,7 @@ endif
+@@ -513,7 +542,7 @@ endif
  endif
  
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1503,7 +1503,7 @@ index 28e84dd..f1225b8 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -839,6 +868,8 @@ ifeq ($(TARGET_OS),morphos)
+@@ -838,6 +867,8 @@ ifeq ($(TARGET_OS),morphos)
  
  # MorphOS builds can use SDL or native code
  USE_SDL=no
@@ -1512,7 +1512,7 @@ index 28e84dd..f1225b8 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -898,7 +929,7 @@ endif
+@@ -897,7 +928,7 @@ endif
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1521,7 +1521,7 @@ index 28e84dd..f1225b8 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -915,6 +946,8 @@ ifeq ($(TARGET_OS),aros)
+@@ -914,6 +945,8 @@ ifeq ($(TARGET_OS),aros)
  
  # AROS builds can use SDL or native code
  USE_SDL=no
@@ -1530,7 +1530,7 @@ index 28e84dd..f1225b8 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -980,7 +1013,7 @@ endif
+@@ -979,7 +1012,7 @@ endif
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1539,7 +1539,7 @@ index 28e84dd..f1225b8 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -1000,6 +1033,8 @@ USE_CLIB2=yes
+@@ -999,6 +1032,8 @@ USE_CLIB2=yes
  
  # Don't use SDL on AmigaOS
  USE_SDL=no
@@ -1548,7 +1548,7 @@ index 28e84dd..f1225b8 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -1082,7 +1117,7 @@ endif
+@@ -1081,7 +1116,7 @@ endif
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1557,7 +1557,7 @@ index 28e84dd..f1225b8 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -1492,8 +1527,10 @@ SYSOBJ_SOFT_VID:= vid_sdl.o
+@@ -1491,8 +1526,10 @@ SYSOBJ_SOFT_VID:= vid_sdl.o
  SYSOBJ_NET := net_bsd.o net_udp.o
  SYSOBJ_SYS := sys_unix.o
  SYSOBJ_SYS += sys_osx.o
@@ -1682,10 +1682,10 @@ index e2f961f..2580345 100644
  	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
  	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
 diff --git a/engine/hexen2/sys_unix.c b/engine/hexen2/sys_unix.c
-index cd0dc3c..5ecb727 100644
+index b5b3da1..e162968 100644
 --- a/engine/hexen2/sys_unix.c
 +++ b/engine/hexen2/sys_unix.c
-@@ -576,8 +576,14 @@ static void Sys_CheckSDL (void)
+@@ -574,8 +574,14 @@ static void Sys_CheckSDL (void)
  {
  #if defined(SDLQUAKE)
  	const SDL_version *sdl_version;
@@ -1701,10 +1701,10 @@ index cd0dc3c..5ecb727 100644
  	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
  	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
 diff --git a/engine/hexenworld/client/Makefile b/engine/hexenworld/client/Makefile
-index f004324..8e37d36 100644
+index 7dce84f..8f8ed1a 100644
 --- a/engine/hexenworld/client/Makefile
 +++ b/engine/hexenworld/client/Makefile
-@@ -50,8 +50,17 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
+@@ -49,8 +49,17 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
  
  # X directory
  X11BASE    =/usr/X11R6
@@ -1722,7 +1722,7 @@ index f004324..8e37d36 100644
  SDL_CFLAGS = $(shell $(SDL_CONFIG) --cflags 2> /dev/null)
  SDL_LIBS   = $(shell $(SDL_CONFIG) --libs 2> /dev/null)
  
-@@ -253,10 +262,17 @@ CPUFLAGS=
+@@ -252,10 +261,17 @@ CPUFLAGS=
  # @rpath can be used when targeting 10.5+
  USE_RPATH=no
  ifeq ($(MACH_TYPE),x86)
@@ -1740,7 +1740,7 @@ index f004324..8e37d36 100644
  ifeq ($(MACH_TYPE),ppc)
  # require 10.2 for ppc builds (midi_osx.c requirement.)
  CFLAGS  +=-mmacosx-version-min=10.2
-@@ -309,7 +325,7 @@ endif
+@@ -308,7 +324,7 @@ endif
  
  # Unix builds rely on SDL:
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1749,7 +1749,7 @@ index f004324..8e37d36 100644
  # not relying on sdl-config command and assuming
  # /Library/Frameworks/SDL.framework is available
  SDL_CFLAGS =-D_GNU_SOURCE=1 -D_THREAD_SAFE
-@@ -321,7 +337,12 @@ ifneq ($(SDL_FRAMEWORK_PATH),)
+@@ -320,7 +336,12 @@ ifneq ($(SDL_FRAMEWORK_PATH),)
  SDL_LIBS  +=-F$(SDL_FRAMEWORK_PATH)
  SDL_CFLAGS+=-F$(SDL_FRAMEWORK_PATH)
  endif
@@ -1763,7 +1763,7 @@ index f004324..8e37d36 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -417,7 +438,7 @@ endif
+@@ -416,7 +437,7 @@ endif
  
  # Unix builds rely on SDL:
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1772,7 +1772,7 @@ index f004324..8e37d36 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -450,8 +471,16 @@ LDFLAGS += -s
+@@ -449,8 +470,16 @@ LDFLAGS += -s
  CFLAGS  += -fno-omit-frame-pointer
  endif
  # using SDL for now:
@@ -1791,7 +1791,7 @@ index f004324..8e37d36 100644
  USE_SDLCD=yes
  USE_SDLAUDIO=yes
  
-@@ -475,7 +504,7 @@ endif
+@@ -474,7 +503,7 @@ endif
  endif
  
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1800,7 +1800,7 @@ index f004324..8e37d36 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -790,6 +819,8 @@ ifeq ($(TARGET_OS),morphos)
+@@ -789,6 +818,8 @@ ifeq ($(TARGET_OS),morphos)
  
  # MorphOS builds can use SDL or native code
  USE_SDL=no
@@ -1809,7 +1809,7 @@ index f004324..8e37d36 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -849,7 +880,7 @@ endif
+@@ -848,7 +879,7 @@ endif
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1818,7 +1818,7 @@ index f004324..8e37d36 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -866,6 +897,8 @@ ifeq ($(TARGET_OS),aros)
+@@ -865,6 +896,8 @@ ifeq ($(TARGET_OS),aros)
  
  # AROS builds can use SDL or native code
  USE_SDL=no
@@ -1827,7 +1827,7 @@ index f004324..8e37d36 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -931,7 +964,7 @@ endif
+@@ -930,7 +963,7 @@ endif
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1836,7 +1836,7 @@ index f004324..8e37d36 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -951,6 +984,8 @@ USE_CLIB2=yes
+@@ -950,6 +983,8 @@ USE_CLIB2=yes
  
  # Don't use SDL on AmigaOS
  USE_SDL=no
@@ -1845,7 +1845,7 @@ index f004324..8e37d36 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -1033,7 +1068,7 @@ endif
+@@ -1032,7 +1067,7 @@ endif
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1854,7 +1854,7 @@ index f004324..8e37d36 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -1423,8 +1458,10 @@ SYSOBJ_GL_VID:= gl_vidsdl.o
+@@ -1422,8 +1457,10 @@ SYSOBJ_GL_VID:= gl_vidsdl.o
  SYSOBJ_SOFT_VID:= vid_sdl.o
  SYSOBJ_SYS := sys_unix.o
  SYSOBJ_SYS += sys_osx.o
@@ -1979,10 +1979,10 @@ index a3071d7..7e1bd9c 100644
  	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
  	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
 diff --git a/engine/hexenworld/client/sys_unix.c b/engine/hexenworld/client/sys_unix.c
-index 28dc3b9..d3f3dc9 100644
+index 11705fe..16c5b58 100644
 --- a/engine/hexenworld/client/sys_unix.c
 +++ b/engine/hexenworld/client/sys_unix.c
-@@ -521,8 +521,14 @@ static void Sys_CheckSDL (void)
+@@ -519,8 +519,14 @@ static void Sys_CheckSDL (void)
  {
  #if defined(SDLQUAKE)
  	const SDL_version *sdl_version;
@@ -1998,3 +1998,5 @@ index 28dc3b9..d3f3dc9 100644
  	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
  	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
 
+-- 
+1.7.1

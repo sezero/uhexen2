@@ -6,10 +6,11 @@ In addition, place a file named maplist.txt with only a 0 in
 it in your data1 directory (a sample file is provided here),
 so that the game wouldn't look for a progs2.dat
 
-diff -urNp gamecode-1.27/hc/h2/ai.hc gamecode/hc/h2/ai.hc
---- gamecode-1.27/hc/h2/ai.hc	2012-09-11 17:02:32.000000000 +0300
-+++ gamecode/hc/h2/ai.hc	2012-09-11 17:10:21.000000000 +0300
-@@ -35,7 +35,13 @@ void()SpiderMeleeBegin;
+diff --git a/gamecode/hc/h2/ai.hc b/gamecode/hc/h2/ai.hc
+index a6382f2..a5feb53 100644
+--- a/gamecode/hc/h2/ai.hc
++++ b/gamecode/hc/h2/ai.hc
+@@ -32,7 +32,13 @@ void()SpiderMeleeBegin;
  void()spider_onwall_wait;
  float(entity targ , entity from)infront_of_ent;
  void(entity proj)mezzo_choose_roll;
@@ -23,7 +24,7 @@ diff -urNp gamecode-1.27/hc/h2/ai.hc gamecode/hc/h2/ai.hc
  
  //void()check_climb;
  
-@@ -382,7 +388,18 @@ float		r;
+@@ -376,7 +382,18 @@ float		r;
  			if (!infront (client))
  				return FALSE;
  		}
@@ -43,7 +44,7 @@ diff -urNp gamecode-1.27/hc/h2/ai.hc gamecode/hc/h2/ai.hc
  	if (!visible (client))
  		return FALSE;
  
-@@ -487,7 +504,20 @@ void(float dist) ai_walk =
+@@ -481,7 +498,20 @@ void(float dist) ai_walk =
  	if (FindTarget (FALSE))
  		return;
  
@@ -65,7 +66,7 @@ diff -urNp gamecode-1.27/hc/h2/ai.hc gamecode/hc/h2/ai.hc
  };
  
  
-@@ -597,6 +627,11 @@ float() CheckAnyAttack =
+@@ -591,6 +621,11 @@ float() CheckAnyAttack =
  
  	if(self.goalentity==self.controller)
  		return FALSE;
@@ -77,7 +78,7 @@ diff -urNp gamecode-1.27/hc/h2/ai.hc gamecode/hc/h2/ai.hc
  
  	return CheckAttack ();
  };
-@@ -743,11 +778,13 @@ void(float dist) ai_run =
+@@ -737,11 +772,13 @@ void(float dist) ai_run =
  
  	enemy_infront = infront(self.enemy);
  	enemy_range = range(self.enemy);
@@ -93,7 +94,7 @@ diff -urNp gamecode-1.27/hc/h2/ai.hc gamecode/hc/h2/ai.hc
  		return;
  	}
  
-@@ -763,7 +800,20 @@ void(float dist) ai_run =
+@@ -757,7 +794,20 @@ void(float dist) ai_run =
  // head straight in
  //	if(self.netname=="spider")
  //		check_climb();
@@ -115,7 +116,7 @@ diff -urNp gamecode-1.27/hc/h2/ai.hc gamecode/hc/h2/ai.hc
  };
  
  
-@@ -1128,6 +1178,6 @@ void func_monsterspawn_spot (void)
+@@ -1122,6 +1172,6 @@ void func_monsterspawn_spot (void)
  		self.use=spawnspot_activate;
  }
  
@@ -124,10 +125,11 @@ diff -urNp gamecode-1.27/hc/h2/ai.hc gamecode/hc/h2/ai.hc
 +//void hive_die(){}
 +//void spawn_ghost (entity attacker){}
  
-diff -urNp gamecode-1.27/hc/h2/progs.src gamecode/hc/h2/progs.src
---- gamecode-1.27/hc/h2/progs.src	2004-11-29 13:39:59.000000000 +0200
-+++ gamecode/hc/h2/progs.src	2008-04-01 11:36:25.000000000 +0300
-@@ -125,11 +125,11 @@ fangel.hc
+diff --git a/gamecode/hc/h2/progs.src b/gamecode/hc/h2/progs.src
+index 9555c14..1114c5a 100644
+--- a/gamecode/hc/h2/progs.src
++++ b/gamecode/hc/h2/progs.src
+@@ -120,11 +120,11 @@ fangel.hc
  
  eric.hc
  
@@ -146,3 +148,5 @@ diff -urNp gamecode-1.27/hc/h2/progs.src gamecode/hc/h2/progs.src
  
  stats.hc
 
+-- 
+1.7.1

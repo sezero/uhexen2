@@ -10,11 +10,11 @@ Basic experimental fog code extracted from jshexen2 (activate with
   revived this crap is that the glowed missiles look
   somewhat better in fog (personal liking), sigh...
 
-Index: engine/h2shared/gl_func.h
-===================================================================
---- engine/h2shared/gl_func.h	(revision 5583)
-+++ engine/h2shared/gl_func.h	(working copy)
-@@ -72,6 +72,11 @@
+diff --git a/engine/h2shared/gl_func.h b/engine/h2shared/gl_func.h
+index f51975c..2ef3f6a 100644
+--- a/engine/h2shared/gl_func.h
++++ b/engine/h2shared/gl_func.h
+@@ -70,6 +70,11 @@ GL_FUNCTION(void, glColor3ubv, (const GLubyte *))
  GL_FUNCTION(void, glColor3f, (GLfloat,GLfloat,GLfloat))
  GL_FUNCTION(void, glClearColor, (GLclampf,GLclampf,GLclampf,GLclampf))
  
@@ -26,7 +26,7 @@ Index: engine/h2shared/gl_func.h
  GL_FUNCTION(void, glAlphaFunc, (GLenum,GLclampf))
  GL_FUNCTION(void, glBlendFunc, (GLenum,GLenum))
  GL_FUNCTION(void, glShadeModel, (GLenum))
-@@ -147,6 +152,11 @@
+@@ -145,6 +150,11 @@ GL_FUNCTION(void, glClearStencil, (GLint))
  #define glColor3f_fp		glColor3f
  #define glClearColor_fp		glClearColor
  
@@ -38,11 +38,36 @@ Index: engine/h2shared/gl_func.h
  #define glAlphaFunc_fp		glAlphaFunc
  #define glBlendFunc_fp		glBlendFunc
  #define glShadeModel_fp		glShadeModel
-Index: engine/h2shared/glquake.h
-===================================================================
---- engine/h2shared/glquake.h	(revision 5493)
-+++ engine/h2shared/glquake.h	(working copy)
-@@ -255,6 +255,16 @@
+diff --git a/engine/h2shared/gl_rlight.c b/engine/h2shared/gl_rlight.c
+index 788eed3..2bc6824 100644
+--- a/engine/h2shared/gl_rlight.c
++++ b/engine/h2shared/gl_rlight.c
+@@ -175,6 +175,10 @@ void R_RenderDlights (void)
+ 
+ 	r_dlightframecount = r_framecount + 1;	// because the count hasn't
+ 						//  advanced yet for this frame
++
++	// disable drawing fog on lights
++	if (gl_fogenable.integer)
++		glDisable_fp(GL_FOG);
+ 	glDepthMask_fp (0);
+ 	glDisable_fp (GL_TEXTURE_2D);
+ 	glShadeModel_fp (GL_SMOOTH);
+@@ -194,6 +198,9 @@ void R_RenderDlights (void)
+ 	glEnable_fp (GL_TEXTURE_2D);
+ 	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+ 	glDepthMask_fp (1);
++	// re-enable fog
++	if (gl_fogenable.integer)
++		glEnable_fp(GL_FOG);
+ }
+ 
+ 
+diff --git a/engine/h2shared/glquake.h b/engine/h2shared/glquake.h
+index c6d9ccf..09b0bce 100644
+--- a/engine/h2shared/glquake.h
++++ b/engine/h2shared/glquake.h
+@@ -254,6 +254,16 @@ extern	cvar_t	gl_glows;
  extern	cvar_t	gl_other_glows;
  extern	cvar_t	gl_missile_glows;
  
@@ -59,36 +84,11 @@ Index: engine/h2shared/glquake.h
  extern	cvar_t	gl_coloredlight;
  extern	cvar_t	gl_colored_dynamic_lights;
  extern	cvar_t	gl_extra_dynamic_lights;
-Index: engine/h2shared/gl_rlight.c
-===================================================================
---- engine/h2shared/gl_rlight.c	(revision 4767)
-+++ engine/h2shared/gl_rlight.c	(working copy)
-@@ -177,6 +177,10 @@ void R_RenderDlights (void)
- 
- 	r_dlightframecount = r_framecount + 1;	// because the count hasn't
- 						//  advanced yet for this frame
-+
-+	// disable drawing fog on lights
-+	if (gl_fogenable.integer)
-+		glDisable_fp(GL_FOG);
- 	glDepthMask_fp (0);
- 	glDisable_fp (GL_TEXTURE_2D);
- 	glShadeModel_fp (GL_SMOOTH);
-@@ -196,6 +200,9 @@ void R_RenderDlights (void)
- 	glEnable_fp (GL_TEXTURE_2D);
- 	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
- 	glDepthMask_fp (1);
-+	// re-enable fog
-+	if (gl_fogenable.integer)
-+		glEnable_fp(GL_FOG);
- }
- 
- 
-Index: engine/hexen2/gl_rmain.c
-===================================================================
---- engine/hexen2/gl_rmain.c	(revision 5976)
-+++ engine/hexen2/gl_rmain.c	(working copy)
-@@ -47,6 +47,8 @@
+diff --git a/engine/hexen2/gl_rmain.c b/engine/hexen2/gl_rmain.c
+index 2c22881..c960b1f 100644
+--- a/engine/hexen2/gl_rmain.c
++++ b/engine/hexen2/gl_rmain.c
+@@ -44,6 +44,8 @@ mplane_t	*mirror_plane;
  
  static float	model_constant_alpha;
  
@@ -97,7 +97,7 @@ Index: engine/hexen2/gl_rmain.c
  static float	r_time1;
  static float	r_lasttime1 = 0;
  
-@@ -106,6 +108,14 @@
+@@ -103,6 +105,14 @@ cvar_t	gl_waterripple = {"gl_waterripple", "2", CVAR_ARCHIVE};
  cvar_t	gl_glows = {"gl_glows", "0", CVAR_ARCHIVE};	// torch glows
  cvar_t	gl_other_glows = {"gl_other_glows", "0", CVAR_ARCHIVE};
  cvar_t	gl_missile_glows = {"gl_missile_glows", "1", CVAR_ARCHIVE};
@@ -112,7 +112,7 @@ Index: engine/hexen2/gl_rmain.c
  
  cvar_t	gl_coloredlight = {"gl_coloredlight", "0", CVAR_ARCHIVE};
  cvar_t	gl_colored_dynamic_lights = {"gl_colored_dynamic_lights", "0", CVAR_ARCHIVE};
-@@ -1335,6 +1345,9 @@ static void R_DrawAllGlows (void)
+@@ -1332,6 +1342,9 @@ static void R_DrawAllGlows (void)
  	if (!r_drawentities.integer)
  		return;
  
@@ -122,7 +122,7 @@ Index: engine/hexen2/gl_rmain.c
  	glDepthMask_fp (0);
  	glDisable_fp (GL_TEXTURE_2D);
  	glShadeModel_fp (GL_SMOOTH);
-@@ -1355,6 +1368,9 @@ static void R_DrawAllGlows (void)
+@@ -1352,6 +1365,9 @@ static void R_DrawAllGlows (void)
  		}
  	}
  
@@ -132,7 +132,7 @@ Index: engine/hexen2/gl_rmain.c
  	glDisable_fp (GL_BLEND);
  	glEnable_fp (GL_TEXTURE_2D);
  	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-@@ -1781,6 +1797,23 @@ static void R_RenderScene (void)
+@@ -1778,6 +1794,23 @@ static void R_RenderScene (void)
  
  	R_MarkLeaves ();	// done here so we know if we're in water
  
@@ -156,7 +156,7 @@ Index: engine/hexen2/gl_rmain.c
  	R_DrawWorld ();		// adds static entities to the list
  
  	S_ExtraUpdate ();	// don't let sound get messed up if going slow
-@@ -1789,6 +1822,8 @@ static void R_RenderScene (void)
+@@ -1786,6 +1819,8 @@ static void R_RenderScene (void)
  
  	R_DrawAllGlows();
  
@@ -165,7 +165,7 @@ Index: engine/hexen2/gl_rmain.c
  	R_RenderDlights ();
  }
  
-@@ -1984,6 +2019,39 @@ void R_RenderView (void)
+@@ -1981,6 +2016,39 @@ void R_RenderView (void)
  
  	R_Clear ();
  
@@ -205,7 +205,7 @@ Index: engine/hexen2/gl_rmain.c
  	// render normal view
  	R_RenderScene ();
  
-@@ -1999,6 +2067,9 @@ void R_RenderView (void)
+@@ -1996,6 +2064,9 @@ void R_RenderView (void)
  
  	R_DrawViewModel();
  
@@ -215,7 +215,7 @@ Index: engine/hexen2/gl_rmain.c
  	// render mirror view
  	R_Mirror ();
  
-@@ -2006,5 +2077,7 @@ void R_RenderView (void)
+@@ -2003,5 +2074,7 @@ void R_RenderView (void)
  
  	if (r_speeds.integer)
  		R_PrintTimes ();
@@ -223,11 +223,11 @@ Index: engine/hexen2/gl_rmain.c
 +	glDepthMask_fp(1);
  }
  
-Index: engine/hexen2/gl_rmisc.c
-===================================================================
---- engine/hexen2/gl_rmisc.c	(revision 5493)
-+++ engine/hexen2/gl_rmisc.c	(working copy)
-@@ -234,6 +234,15 @@ void R_Init (void)
+diff --git a/engine/hexen2/gl_rmisc.c b/engine/hexen2/gl_rmisc.c
+index a7dce61..054bb12 100644
+--- a/engine/hexen2/gl_rmisc.c
++++ b/engine/hexen2/gl_rmisc.c
+@@ -232,6 +232,15 @@ void R_Init (void)
  	Cvar_RegisterVariable (&gl_missile_glows);
  	Cvar_RegisterVariable (&gl_other_glows);
  
@@ -243,3 +243,6 @@ Index: engine/hexen2/gl_rmisc.c
  	Cvar_RegisterVariable (&gl_coloredlight);
  	Cvar_RegisterVariable (&gl_colored_dynamic_lights);
  	Cvar_RegisterVariable (&gl_extra_dynamic_lights);
+
+-- 
+1.7.1

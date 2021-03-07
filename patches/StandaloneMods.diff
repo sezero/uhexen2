@@ -1,11 +1,11 @@
 this patch adds initial support for standalone free contents.
 see the documentation file StandaloneMods.txt for details.
 
-Index: engine/h2shared/quakefs.c
-===================================================================
---- engine/h2shared/quakefs.c	(revision 5637)
-+++ engine/h2shared/quakefs.c	(working copy)
-@@ -59,6 +59,7 @@ static searchpath_t	*fs_base_searchpaths
+diff --git a/engine/h2shared/quakefs.c b/engine/h2shared/quakefs.c
+index 133567f..a59e585 100644
+--- a/engine/h2shared/quakefs.c
++++ b/engine/h2shared/quakefs.c
+@@ -58,6 +58,7 @@ static searchpath_t	*fs_base_searchpaths;	/* without gamedirs */
  static const char	*fs_basedir;
  static char	fs_gamedir[MAX_OSPATH];
  static char	fs_userdir[MAX_OSPATH];
@@ -13,7 +13,7 @@ Index: engine/h2shared/quakefs.c
  char	fs_gamedir_nopath[MAX_QPATH];
  
  unsigned int	gameflags;
-@@ -310,7 +311,7 @@ static pack_t *FS_LoadPackFile (const ch
+@@ -309,7 +310,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
  		CRC_ProcessByte (&crc, ((byte *)info)[i]);
  
  	/* check for modifications */
@@ -22,7 +22,7 @@ Index: engine/h2shared/quakefs.c
  		gameflags |= check_known_paks (paknum, numpackfiles, crc);
  	else	gameflags |= GAME_MODIFIED;
  
-@@ -488,6 +489,10 @@ void FS_Gamedir (const char *dir)
+@@ -487,6 +488,10 @@ void FS_Gamedir (const char *dir)
  /* check for reserved gamedirs */
  	if (!q_strcasecmp(dir, "hw"))
  	{
@@ -33,7 +33,7 @@ Index: engine/h2shared/quakefs.c
  #if defined(H2W)
  	/* that we reached here means the hw server decided to abandon
  	 * whatever the previous mod it was running and went back to
-@@ -525,6 +530,30 @@ void FS_Gamedir (const char *dir)
+@@ -524,6 +529,30 @@ void FS_Gamedir (const char *dir)
  		return;
  	}
  
@@ -64,7 +64,7 @@ Index: engine/h2shared/quakefs.c
  /* a new gamedir: let's set it here. */
  	FS_AddGameDirectory(dir, false);
  #if defined(H2W) && defined(SERVERONLY)
-@@ -1168,8 +1197,36 @@ static int CheckRegistered (void)
+@@ -1167,8 +1196,36 @@ static int CheckRegistered (void)
  FS_Init
  ================
  */
@@ -101,7 +101,7 @@ Index: engine/h2shared/quakefs.c
  	qboolean check_portals = false;
  	int	i;
  
-@@ -1497,6 +1554,87 @@ char *FS_MakePath_VABUF (int base, int *
+@@ -1496,6 +1553,87 @@ char *FS_MakePath_VABUF (int base, int *error, char *buf, size_t siz, const char
  	return p;
  }
  
@@ -189,11 +189,11 @@ Index: engine/h2shared/quakefs.c
  const char *FS_GetBasedir (void)
  {
  	return fs_basedir;
-Index: engine/h2shared/quakefs.h
-===================================================================
---- engine/h2shared/quakefs.h	(revision 5331)
-+++ engine/h2shared/quakefs.h	(working copy)
-@@ -47,6 +47,12 @@
+diff --git a/engine/h2shared/quakefs.h b/engine/h2shared/quakefs.h
+index 6d554bd..b4cfbe3 100644
+--- a/engine/h2shared/quakefs.h
++++ b/engine/h2shared/quakefs.h
+@@ -45,6 +45,12 @@
  
  #define	GAME_MODIFIED		(1 << 16)
  
@@ -206,3 +206,6 @@ Index: engine/h2shared/quakefs.h
  extern	char	fs_gamedir_nopath[MAX_QPATH];
  
  const char *FS_GetBasedir (void);
+
+-- 
+1.7.1

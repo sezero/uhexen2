@@ -1,0 +1,328 @@
+An update of platforms HexenC code from Thomas Freundt.  Originally, the
+intention was finding a way of making the elevator in egypt1 leading to
+the boss-level exit to behave:  that "ankh platform" isn't user friendly
+because you have to make a timely jump to go past it.  The code was then
+improved for compatibility into the current form.
+
+Quoting Thomas:
+
+ "As I wanted to have the improved functionality with the remaining
+  platforms as well, I looked at all other platforms that are
+  initialized by func_plat.  Their mode of operation appears more
+  reasonable with deathmatch (ravdm5) than in levels mainly designed
+  for single player.  Only the ankh platform has self.wait defined, but
+  the original code ignores this field.
+  Therefore, I wanted my amendments to meet the following requirements:
+  - full savegame compatibility (new progs with old savegame
+    && old progs with new savegame)
+  - no modifications to entity files
+  - special treatment of the ankh platform
+  - similar more user friendly behaviour of the other platforms
+  - close to original behaviour during deathmatch / teamplay
+  I have commented the important parts; as usual.  ..."
+
+May need some more testing before including mainstream.
+
+diff --git a/gamecode/hc/h2/plats.hc b/gamecode/hc/h2/plats.hc
+index 77577d3..0b856d0 100644
+--- a/gamecode/hc/h2/plats.hc
++++ b/gamecode/hc/h2/plats.hc
+@@ -9,6 +9,21 @@ void() plat_go_down;
+ void() plat_crush;
+ float PLAT_LOW_TRIGGER = 1;
+ 
++/*
++ - values 0 and 10 are reserved for init and ankh platform, respectively
++ - if PLAT_WAIT_WHILE_ON_PLAT < 0 and the player doesn't leave the platform after it has reached the top or bottom
++   then it stays in its position as long as the player resides on the platform
++*/
++float PLAT_WAIT_WHILE_ON_PLAT = 5;
++float PLAT_WAIT_WHILE_ON_PLAT_DM = -1;
++
++float PLAT_EMPTY_WAIT_DOWN = 4;
++float PLAT_EMPTY_WAIT_DOWN_DM = 3;
++float PLAT_LEAVE_WAIT_DOWN = 2;
++float PLAT_LEAVE_WAIT_DOWN_DM = 1;
++float PLAT_TRIGGER_DELAY = 0.5;
++float PLAT_TRIGGER_DELAY_DM = 0.2;
++
+ void() crusher_hit_bottom;
+ void() crusher_hit_top;
+ void() crusher_trigger_use;
+@@ -66,18 +81,46 @@ void() plat_spawn_inside_trigger =
+ 	setsize (trigger, tmin, tmax);
+ };
+ 
++void() plat_set_counters =
++{
++	if (!self.wait)								// helps maintain compatibility with old savegames
++		if(deathmatch || teamplay)
++			self.wait = PLAT_WAIT_WHILE_ON_PLAT_DM;
++		else
++			self.wait = PLAT_WAIT_WHILE_ON_PLAT;
++
++	self.cnt = time + self.wait;
++	self.counter = time;
++};
++
+ void() plat_hit_top =
+ {
+ 	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+ 	self.state = STATE_TOP;
+ 	self.think = plat_go_down;
+-	self.nextthink = self.ltime + 3;
++
++	if (self.wait != 10)							// non-ankh platforms are supposed to assume STATE_BOTTOM as resting position,
++		if (deathmatch || teamplay)					// so we have to make sure that the platform goes down automatically after some delay
++			self.nextthink = self.ltime + PLAT_EMPTY_WAIT_DOWN_DM;	// should the player leave the platform
++		else
++			self.nextthink = self.ltime + PLAT_EMPTY_WAIT_DOWN;
++
++	plat_set_counters();
+ };
+ 
+ void() plat_hit_bottom =
+ {
+ 	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+ 	self.state = STATE_BOTTOM;
++	self.think = plat_go_up;
++
++	if (self.th_save == plat_go_down)					// ankh platform: first time execution of plat_hit_bottom
++	{									// has the platform automatically go up again after a delay
++		self.th_save = SUB_Null;
++		self.nextthink = self.ltime + 3;
++	}
++
++	plat_set_counters();
+ };
+ 
+ void() plat_go_down =
+@@ -96,17 +139,51 @@ void() plat_go_up =
+ 
+ void() plat_center_touch =
+ {
+-	if (other.classname != "player"&&other.movetype!=MOVETYPE_PUSHPULL)//Monsters too?
+-		return;
+-		
+-	if (other.health <= 0)
++	if (other.classname != "player" && other.movetype != MOVETYPE_PUSHPULL)
+ 		return;
+ 
+ 	self = self.enemy;
+-	if (self.state == STATE_BOTTOM)
+-		plat_go_up ();
+-	else if (self.state == STATE_TOP)
+-		self.nextthink = self.ltime + 1;	// delay going down
++
++	if (self.think)								// non-ankh platform is going up/down or has gone up/down at least once
++	{
++		if (self.th_save == plat_go_down && self.state == STATE_DOWN)	// if player jumps onto the ankh platform during the first execution
++			self.th_save = SUB_Null;					// of plat_go_down, one-time automatic plat_go_up is disabled
++
++		if (other.health <= 0 || self.state == STATE_UP || self.state == STATE_DOWN)
++			return;
++	}
++	else if (self.targetname)						// platform with targetname not yet triggered
++		return;
++
++	if (self.think!=plat_go_up && self.think!=plat_go_down)			// init platform from old savegame or platform without targetname
++		if (self.state == STATE_BOTTOM)
++			self.think = plat_go_up;
++		else
++			self.think = plat_go_down;
++
++ 	if (time > self.counter + 0.1)						// if last activation of plat_center_touch > frametime
++	{									// then player must have (left and re-) entered the platform
++		if (deathmatch || teamplay)
++			self.cnt = time + PLAT_TRIGGER_DELAY_DM;
++		else
++			self.cnt = time + PLAT_TRIGGER_DELAY;
++
++		if (self.wait < 0)						// re-enable triggering for negative self.wait after player has left the platform
++			self.wait = 0;
++	}
++	else if (time > self.cnt && self.wait >= 0)
++	{
++		self.think();
++		return;
++	}
++
++	if (self.wait != 10 && self.state == STATE_TOP)
++		if (deathmatch || teamplay)
++			self.nextthink = self.ltime + PLAT_LEAVE_WAIT_DOWN_DM;
++		else
++			self.nextthink = self.ltime + PLAT_LEAVE_WAIT_DOWN;
++
++	self.counter = time;
+ };
+ 
+ void() plat_outside_touch =
+@@ -148,7 +225,14 @@ void() plat_use =
+ 	self.use = SUB_Null;
+ 	if (self.state != STATE_UP)
+ 		objerror ("plat_use: not in up state");
+-	plat_go_down();
++
++	if (self.wait == 10)						// only the ankh platform has self.wait defined by default,
++	{								// but the original code ignores this field
++		self.th_save = self.think = plat_go_down;
++		self.nextthink = self.ltime + 5;				// wait until the message "You have re-united the Crowns of Egypt! Horus smiles upon you"
++	}								// is no more displayed
++	else
++		plat_go_down();
+ };
+ 
+ 
+diff --git a/gamecode/hc/portals/plats.hc b/gamecode/hc/portals/plats.hc
+index c009730..d4ccbda 100644
+--- a/gamecode/hc/portals/plats.hc
++++ b/gamecode/hc/portals/plats.hc
+@@ -9,6 +9,21 @@ void() plat_go_down;
+ void() plat_crush;
+ float PLAT_LOW_TRIGGER = 1;
+ 
++/*
++ - values 0 and 10 are reserved for init and ankh platform, respectively
++ - if PLAT_WAIT_WHILE_ON_PLAT < 0 and the player doesn't leave the platform after it has reached the top or bottom
++   then it stays in its position as long as the player resides on the platform
++*/
++float PLAT_WAIT_WHILE_ON_PLAT = 5;
++float PLAT_WAIT_WHILE_ON_PLAT_DM = -1;
++
++float PLAT_EMPTY_WAIT_DOWN = 4;
++float PLAT_EMPTY_WAIT_DOWN_DM = 3;
++float PLAT_LEAVE_WAIT_DOWN = 2;
++float PLAT_LEAVE_WAIT_DOWN_DM = 1;
++float PLAT_TRIGGER_DELAY = 0.5;
++float PLAT_TRIGGER_DELAY_DM = 0.2;
++
+ void() crusher_hit_bottom;
+ void() crusher_hit_top;
+ void() crusher_trigger_use;
+@@ -69,18 +84,46 @@ vector	tmin, tmax;
+ 	setsize (trigger, tmin, tmax);
+ };
+ 
++void() plat_set_counters =
++{
++	if (!self.wait)								// helps maintain compatibility with old savegames
++		if(deathmatch || teamplay)
++			self.wait = PLAT_WAIT_WHILE_ON_PLAT_DM;
++		else
++			self.wait = PLAT_WAIT_WHILE_ON_PLAT;
++
++	self.cnt = time + self.wait;
++	self.counter = time;
++};
++
+ void() plat_hit_top =
+ {
+ 	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+ 	self.state = STATE_TOP;
+ 	self.think = plat_go_down;
+-	self.nextthink = self.ltime + 3;
++
++	if (self.wait != 10)							// non-ankh platforms are supposed to assume STATE_BOTTOM as resting position,
++		if (deathmatch || teamplay)					// so we have to make sure that the platform goes down automatically after some delay
++			self.nextthink = self.ltime + PLAT_EMPTY_WAIT_DOWN_DM;	// should the player leave the platform
++		else
++			self.nextthink = self.ltime + PLAT_EMPTY_WAIT_DOWN;
++
++	plat_set_counters();
+ };
+ 
+ void() plat_hit_bottom =
+ {
+ 	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+ 	self.state = STATE_BOTTOM;
++	self.think = plat_go_up;
++
++	if (self.th_save == plat_go_down)					// ankh platform: first time execution of plat_hit_bottom
++	{									// has the platform automatically go up again after a delay
++		self.th_save = SUB_Null;
++		self.nextthink = self.ltime + 3;
++	}
++
++	plat_set_counters();
+ };
+ 
+ void() plat_go_down =
+@@ -99,17 +142,51 @@ void() plat_go_up =
+ 
+ void() plat_center_touch =
+ {
+-	if (other.classname != "player"&&other.movetype!=MOVETYPE_PUSHPULL)//Monsters too?
+-		return;
+-		
+-	if (other.health <= 0)
++	if (other.classname != "player" && other.movetype != MOVETYPE_PUSHPULL)
+ 		return;
+ 
+ 	self = self.enemy;
+-	if (self.state == STATE_BOTTOM)
+-		plat_go_up ();
+-	else if (self.state == STATE_TOP)
+-		self.nextthink = self.ltime + 1;	// delay going down
++
++	if (self.think)								// non-ankh platform is going up/down or has gone up/down at least once
++	{
++		if (self.th_save == plat_go_down && self.state == STATE_DOWN)	// if player jumps onto the ankh platform during the first execution
++			self.th_save = SUB_Null;					// of plat_go_down, one-time automatic plat_go_up is disabled
++
++		if (other.health <= 0 || self.state == STATE_UP || self.state == STATE_DOWN)
++			return;
++	}
++	else if (self.targetname)						// platform with targetname not yet triggered
++		return;
++
++	if (self.think!=plat_go_up && self.think!=plat_go_down)			// init platform from old savegame or platform without targetname
++		if (self.state == STATE_BOTTOM)
++			self.think = plat_go_up;
++		else
++			self.think = plat_go_down;
++
++ 	if (time > self.counter + 0.1)						// if last activation of plat_center_touch > frametime
++	{									// then player must have (left and re-) entered the platform
++		if (deathmatch || teamplay)
++			self.cnt = time + PLAT_TRIGGER_DELAY_DM;
++		else
++			self.cnt = time + PLAT_TRIGGER_DELAY;
++
++		if (self.wait < 0)						// re-enable triggering for negative self.wait after player has left the platform
++			self.wait = 0;
++	}
++	else if (time > self.cnt && self.wait >= 0)
++	{
++		self.think();
++		return;
++	}
++
++	if (self.wait != 10 && self.state == STATE_TOP)
++		if (deathmatch || teamplay)
++			self.nextthink = self.ltime + PLAT_LEAVE_WAIT_DOWN_DM;
++		else
++			self.nextthink = self.ltime + PLAT_LEAVE_WAIT_DOWN;
++
++	self.counter = time;
+ };
+ 
+ /*
+@@ -151,7 +228,14 @@ void() plat_use =
+ 	self.use = SUB_Null;
+ 	if (self.state != STATE_UP)
+ 		objerror ("plat_use: not in up state");
+-	plat_go_down();
++
++	if (self.wait == 10)						// only the ankh platform has self.wait defined by default,
++	{								// but the original code ignores this field
++		self.th_save = self.think = plat_go_down;
++		self.nextthink = self.ltime + 5;				// wait until the message "You have re-united the Crowns of Egypt! Horus smiles upon you"
++	}								// is no more displayed
++	else
++		plat_go_down();
+ };
+ 
+ 
+
+-- 
+1.7.1

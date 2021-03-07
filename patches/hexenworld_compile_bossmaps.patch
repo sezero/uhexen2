@@ -2,10 +2,11 @@ allows compiling boss maps into hwprogs.dat of hexenworld.
 this is not of much use, because coop seems broken.. maybe
 someone messes with these someday...
 
-diff -urNp gamecode-1.27/hc/hw/ai.hc gamecode/hc/hw/ai.hc
---- gamecode-1.27/hc/hw/ai.hc	2007-02-07 18:57:46.000000000 +0200
-+++ gamecode/hc/hw/ai.hc	2008-04-01 11:37:55.000000000 +0300
-@@ -35,7 +35,13 @@ void()SpiderMeleeBegin;
+diff --git a/gamecode/hc/hw/ai.hc b/gamecode/hc/hw/ai.hc
+index 502509c..01e0645 100644
+--- a/gamecode/hc/hw/ai.hc
++++ b/gamecode/hc/hw/ai.hc
+@@ -32,7 +32,13 @@ void()SpiderMeleeBegin;
  void()spider_onwall_wait;
  float(entity targ , entity from)infront_of_ent;
  void(entity proj)mezzo_choose_roll;
@@ -19,7 +20,7 @@ diff -urNp gamecode-1.27/hc/hw/ai.hc gamecode/hc/hw/ai.hc
  
  //void()check_climb;
  
-@@ -385,7 +391,18 @@ float		r;
+@@ -379,7 +385,18 @@ float		r;
  			if (!infront (client))
  				return FALSE;
  		}
@@ -39,7 +40,7 @@ diff -urNp gamecode-1.27/hc/hw/ai.hc gamecode/hc/hw/ai.hc
  	if (!visible (client))
  		return FALSE;
  
-@@ -491,7 +508,20 @@ void(float dist) ai_walk =
+@@ -485,7 +502,20 @@ void(float dist) ai_walk =
  	if (FindTarget (FALSE))
  		return;
  
@@ -61,7 +62,7 @@ diff -urNp gamecode-1.27/hc/hw/ai.hc gamecode/hc/hw/ai.hc
  };
  
  
-@@ -601,6 +631,11 @@ float() CheckAnyAttack =
+@@ -595,6 +625,11 @@ float() CheckAnyAttack =
  
  	if(self.goalentity==self.controller)
  		return FALSE;
@@ -73,7 +74,7 @@ diff -urNp gamecode-1.27/hc/hw/ai.hc gamecode/hc/hw/ai.hc
  
  	return CheckAttack ();
  };
-@@ -747,11 +782,13 @@ void(float dist) ai_run =
+@@ -741,11 +776,13 @@ void(float dist) ai_run =
  
  	enemy_infront = infront(self.enemy);
  	enemy_range = range(self.enemy);
@@ -89,7 +90,7 @@ diff -urNp gamecode-1.27/hc/hw/ai.hc gamecode/hc/hw/ai.hc
  		return;
  	}
  
-@@ -767,6 +804,19 @@ void(float dist) ai_run =
+@@ -761,6 +798,19 @@ void(float dist) ai_run =
  // head straight in
  //	if(self.netname=="spider")
  //		check_climb();
@@ -110,9 +111,10 @@ diff -urNp gamecode-1.27/hc/hw/ai.hc gamecode/hc/hw/ai.hc
 +		movetogoal (dist);		// done in C code...
  };
  
-diff -urNp gamecode-1.27/hc/hw/plats_mp.hc gamecode/hc/hw/plats_mp.hc
---- gamecode-1.27/hc/hw/plats_mp.hc	2004-11-29 13:28:34.000000000 +0200
-+++ gamecode/hc/hw/plats_mp.hc	2008-04-01 11:37:55.000000000 +0300
+diff --git a/gamecode/hc/hw/plats_mp.hc b/gamecode/hc/hw/plats_mp.hc
+index 02980b6..a64b06e 100644
+--- a/gamecode/hc/hw/plats_mp.hc
++++ b/gamecode/hc/hw/plats_mp.hc
 @@ -4,7 +4,7 @@ float USE_ORIGIN	= 64;
  float ANGLE_WAIT	= 128;
  void() train_next_mp;
@@ -122,10 +124,11 @@ diff -urNp gamecode-1.27/hc/hw/plats_mp.hc gamecode/hc/hw/plats_mp.hc
  
  void() train_blocked_mp =
  {
-diff -urNp gamecode-1.27/hc/hw/progs.src gamecode/hc/hw/progs.src
---- gamecode-1.27/hc/hw/progs.src	2005-07-29 14:06:13.000000000 +0300
-+++ gamecode/hc/hw/progs.src	2008-04-01 11:37:55.000000000 +0300
-@@ -130,11 +130,11 @@ fangel.hc
+diff --git a/gamecode/hc/hw/progs.src b/gamecode/hc/hw/progs.src
+index d3f3f98..fd0d7c8 100644
+--- a/gamecode/hc/hw/progs.src
++++ b/gamecode/hc/hw/progs.src
+@@ -125,11 +125,11 @@ fangel.hc
  
  eric.hc
  
@@ -143,9 +146,10 @@ diff -urNp gamecode-1.27/hc/hw/progs.src gamecode/hc/hw/progs.src
 +eidolon.hc
  
  stats.hc
-diff -urNp gamecode-1.27/hc/hw/spawner.hc gamecode/hc/hw/spawner.hc
---- gamecode-1.27/hc/hw/spawner.hc	2006-10-14 08:38:16.000000000 +0300
-+++ gamecode/hc/hw/spawner.hc	2008-04-01 11:37:55.000000000 +0300
+diff --git a/gamecode/hc/hw/spawner.hc b/gamecode/hc/hw/spawner.hc
+index 279a315..2538149 100644
+--- a/gamecode/hc/hw/spawner.hc
++++ b/gamecode/hc/hw/spawner.hc
 @@ -360,16 +360,5 @@ void func_monsterspawn_spot (void)
  		self.use=spawnspot_activate;
  }
@@ -165,10 +169,11 @@ diff -urNp gamecode-1.27/hc/hw/spawner.hc gamecode/hc/hw/spawner.hc
 -void monster_eidolon(){}
 +void hive_die();
 +void spawn_ghost (entity attacker);
-diff -urNp gamecode-1.27/hc/hw/triggers.hc gamecode/hc/hw/triggers.hc
---- gamecode-1.29/hc/hw/triggers.hc	2013-08-05 12:23:09.000000000 +0300
-+++ gamecode/hc/hw/triggers.hc	2013-08-05 12:37:10.000000000 +0300
-@@ -1433,6 +1433,11 @@ void() trigger_monsterjump_touch =
+diff --git a/gamecode/hc/hw/triggers.hc b/gamecode/hc/hw/triggers.hc
+index 4769689..8ab64d6 100644
+--- a/gamecode/hc/hw/triggers.hc
++++ b/gamecode/hc/hw/triggers.hc
+@@ -1429,6 +1429,11 @@ void() trigger_monsterjump_touch =
  		return;
  
  // set XY even if not on ground, so the jump will clear lips
@@ -181,3 +186,5 @@ diff -urNp gamecode-1.27/hc/hw/triggers.hc gamecode/hc/hw/triggers.hc
  	other.velocity_y = self.movedir_y * self.speed;
  
 
+-- 
+1.7.1
