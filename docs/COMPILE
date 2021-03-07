@@ -118,7 +118,8 @@ libmad or libmpg123:
 libogg, opus, and opusfile:
 		Required if you want Opus music playback.
 libFLAC :	Required if you want FLAC music playback.
-libmikmod:	Required if you want tracker music playback.
+libxmp or libmikmod:
+		Required if you want tracker music playback.
 
 
 Compiling for Windows:
@@ -204,7 +205,7 @@ v3.1.x from the Apple website (you need an account) and extracting the
 sdk from it, and compiling a gcc source capable of targeting osx, e.g.
 gcc-4.0 from:	http://www.opensource.apple.com/tarballs/
 To create an x86_64-capable cross-toolchain with gcc-4.2, I followed
-the instructions from https://github.com/Tatsh/xchain/ as guidelines.
+the instructions from https://github.com/Tatsh/xchain as guidelines.
 
 
 Compiling for DOS:
@@ -273,29 +274,30 @@ https://github.com/sezero/amigaos-cross-toolchain.git
 
 Links:
 ------
-SDL homepage		: http://www.libsdl.org/
-Ogg/Vorbis homepage	: http://xiph.org/
-Opus homepage		: http://opus-codec.org/
+SDL homepage		: https://libsdl.org/
+			  https://github.com/libsdl-org/
+Ogg/Vorbis homepage	: https://xiph.org/
+Opus homepage		: https://opus-codec.org/
 libmad homepage		: http://www.underbit.com/products/mad/
 mpg123 homepage		: http://mpg123.org/
-FLAC homepage		: http://xiph.org/flac/
-			  http://sourceforge.net/projects/flac/
+FLAC homepage		: https://xiph.org/flac/
+			  https://sourceforge.net/projects/flac/
 MikMod homepage		: http://mikmod.sourceforge.net/
+libxmp homepage		: https://github.com/libxmp/
+			  http://xmp.sourceforge.net/
 ALSA homepage		: http://www.alsa-project.org/
 GCC homepage		: http://gcc.gnu.org/
 Binutils homepage	: http://sourceware.org/binutils/
 clang homepage		: http://clang.llvm.org/
 VBCC homepage		: http://sun.hasenbraten.de/vbcc/
 			  http://www.compilers.de/vbcc.html
-NASM homepage		: http://www.nasm.us/
+NASM homepage		: https://nasm.us/
 YASM homepage		: http://yasm.tortall.net/
 DJGPP homepage		: http://www.delorie.com/djgpp/
 WATT-32 homepage	: http://www.watt-32.net/
-MinGW/MSYS homepage	: http://mingw.org/
-			  http://sourceforge.net/projects/mingw/
-MinGW-w64 homepage	: http://mingw-w64.sourceforge.net/
-			  http://sourceforge.net/projects/mingw-w64/
+MSYS homepage		: https://www.msys2.org/
+MinGW-w64 homepage	: https://sourceforge.net/projects/mingw-w64/
+MinGW homepage		: https://sourceforge.net/projects/mingw/
 Open Watcom		: http://www.openwatcom.org/
-			  https://efbe.musca.uberspace.de/
 			  https://github.com/open-watcom/
 
