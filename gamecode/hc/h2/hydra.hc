@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/hydra.hc,v 1.2 2007-02-07 16:57:05 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\monsters\hydra\final\hydra.hc

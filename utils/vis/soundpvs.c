@@ -1,7 +1,4 @@
-/*
- * soundpvs.c
- * $Id: soundpvs.c,v 1.7 2008-12-27 16:56:39 sezero Exp $
- *
+/* soundpvs.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -43,7 +40,7 @@ SurfaceBBox
 
 ====================
 */
-#if 0	//all uses are commented out
+#if 0	/* all uses are commented out */
 static void SurfaceBBox (dface_t *s, vec3_t mins, vec3_t maxs)
 {
 	int		i, j;
@@ -176,4 +173,3 @@ void CalcAmbientSounds (void)
 		}
 	}
 }
-

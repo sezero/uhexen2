@@ -1,7 +1,4 @@
-/*
- * r_alias.c -- routines for setting up to draw alias models
- * $Id: r_alias.c,v 1.21 2008-04-22 13:06:06 sezero Exp $
- *
+/* r_alias.c -- routines for setting up to draw alias models
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *

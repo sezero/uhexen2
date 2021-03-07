@@ -1,7 +1,4 @@
-/*
- * trace.c
- * $Id: trace.c,v 1.6 2007-12-14 16:41:28 sezero Exp $
- *
+/* trace.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -219,4 +216,3 @@ qboolean TestLine (const vec3_t start, const vec3_t stop)
 		node = tnode->children[side];
 	}
 }
-

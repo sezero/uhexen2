@@ -1,6 +1,4 @@
-/*
- * bsp2wal.c
- *
+/* bsp2wal.c
  * Copyright (C) 2007-2012 O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify

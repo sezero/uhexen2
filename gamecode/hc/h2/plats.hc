@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/plats.hc,v 1.3 2007-02-07 16:57:08 sezero Exp $
- */
-
 void() newplat_center_touch;
 void() newplat_go_up;
 void() newplat_go_down;

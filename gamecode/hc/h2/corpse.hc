@@ -1,8 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/corpse.hc,v 1.2 2007-02-07 16:56:59 sezero Exp $
- */
-
-
 void corpseblink (void)
 {
 	self.think = corpseblink;

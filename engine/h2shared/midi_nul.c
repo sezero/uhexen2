@@ -1,6 +1,4 @@
-/*
- * midi_nul.c -- NULL midi driver
- * $Id$
+/* midi_nul.c -- NULL midi driver
  *
  * Copyright (C) 2006-2012 O.Sezer <sezero@users.sourceforge.net>
  *
@@ -34,4 +32,3 @@ qboolean MIDI_Init (void)
 void MIDI_Cleanup(void)
 {
 }
-

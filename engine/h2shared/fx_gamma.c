@@ -1,6 +1,4 @@
-/*
- * fx_gamma.c
- * $Id$
+/* fx_gamma.c
  *
  * Small library providing gamma control functions for 3Dfx Voodoo1/2
  * cards by abusing the exposed glide symbols when using fxMesa.

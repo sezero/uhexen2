@@ -1,6 +1,4 @@
-/*
- * scriplib.c
- * $Id: scriplib.c,v 1.4 2007-12-14 16:41:16 sezero Exp $
+/* scriplib.c
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -200,4 +198,3 @@ qboolean TokenAvailable (void)
 
 	return true;
 }
-

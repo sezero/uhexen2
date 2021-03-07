@@ -1,11 +1,8 @@
-/*
- * cl_interlude.c: Setup the Hexen II intermission screen flags.
+/* cl_interlude.c: Setup the Hexen II intermission screen flags.
  * Only the intermission index is sent by the server, therefore the
  * rest of the stuff is unfortunately hardcoded here in the engine.
  *
  * Copyright (C) 2012 O.Sezer <sezero@users.sourceforge.net>
- *
- * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

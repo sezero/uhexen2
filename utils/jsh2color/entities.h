@@ -1,7 +1,4 @@
-/*
- * entities.h
- * $Id: entities.h,v 1.9 2007-11-11 16:11:48 sezero Exp $
- *
+/* entities.h
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __ENTITIES_H__
-#define __ENTITIES_H__
+#ifndef ENTITIES_H_
+#define ENTITIES_H_
 
 #define DEFAULTLIGHTLEVEL	300
 
@@ -89,5 +86,4 @@ entity_t *FindEntityWithKeyPair (const char *key, const char *value);
 
 void	LoadEntities (void);
 
-#endif	/* __ENTITIES_H__ */
-
+#endif	/* ENTITIES_H_ */

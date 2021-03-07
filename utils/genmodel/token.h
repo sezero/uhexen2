@@ -1,6 +1,4 @@
-/*
- * token.h
- * $Id: token.h,v 1.6 2007-07-08 17:01:15 sezero Exp $
+/* token.h
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -111,4 +109,3 @@ extern char *tk_String;
 extern char tk_SourceName[MAX_FILE_NAME_LENGTH];
 
 #endif	/* __TOKEN_H__ */
-

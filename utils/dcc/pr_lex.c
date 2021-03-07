@@ -1,8 +1,4 @@
-/*
- * lexi.c
- *
- * $Id: pr_lex.c,v 1.14 2007-12-14 16:41:17 sezero Exp $
- *
+/* lexi.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997 Eric Hobbs <elhobbs@comcast.net>
  * Copyright (C) 2005-2012 O.Sezer <sezero@users.sourceforge.net>
@@ -22,7 +18,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 #include "q_stdinc.h"
 #include "compiler.h"
@@ -685,4 +680,3 @@ type_t *PR_ParseType (void)
 
 	return PR_FindType (&newtype);
 }
-

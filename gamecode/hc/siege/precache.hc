@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/precache.hc,v 1.3 2007-02-07 17:01:21 sezero Exp $
- */
-
 // called by worldspawn
 void() W_Precache =
 {

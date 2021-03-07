@@ -1,6 +1,4 @@
-/*
- * d_init.c -- rasterization driver initialization
- * $Id: d_init.c,v 1.9 2007-08-09 06:12:45 sezero Exp $
+/* d_init.c -- rasterization driver initialization
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

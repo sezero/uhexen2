@@ -1,8 +1,4 @@
-/*
- * qsnprint.c
- * $Id$
- *
- * (v)snprintf wrappers
+/* qsnprint.c -- (v)snprintf wrappers
  * Copyright (C) 2007 O. Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify

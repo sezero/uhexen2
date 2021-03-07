@@ -1,6 +1,4 @@
-/*
- * cd_win.c -- Windows cdaudio code
- * $Id$
+/* cd_win.c -- Windows cdaudio code
  *
  * Copyright (C) 1996-1997 Id Software, Inc.
  * Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc. All

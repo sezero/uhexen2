@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/reference/unused/gamecode/siege/mummy.hc,v 1.2 2007-02-07 16:56:47 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\monsters\mummy\mummy.hc

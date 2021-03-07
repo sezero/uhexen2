@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/pstboar.hc,v 1.3 2007-02-07 16:58:00 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\monsters\RdrPest\BOAR\final\Hpest.hc

@@ -1,6 +1,5 @@
 /*
  * snd_dma.c -- main control for any streaming sound output device
- * $Id$
  *
  * Copyright (C) 1996-2001 Id Software, Inc.
  * Copyright (C) 2010-2011 O. Sezer <sezero@users.sourceforge.net>

@@ -1,6 +1,4 @@
-/*
- * sys_unix.c -- Unix system interface code
- * $Id$
+/* sys_unix.c -- Unix system interface code
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2001 contributors of the Anvil of Thyrion project

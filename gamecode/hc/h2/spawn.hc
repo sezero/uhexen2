@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/spawn.hc,v 1.2 2007-02-07 16:57:10 sezero Exp $
- */
-
 float ENT_WORLD					= 0;
 float ENT_CHAIR					= 1;
 float ENT_BARSTOOL				= 2;

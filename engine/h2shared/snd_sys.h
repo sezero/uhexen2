@@ -1,6 +1,4 @@
-/*
- * snd_sys.h --
- * $Id$
+/* snd_sys.h
  *
  * Copyright (C) 2007-2012  O.Sezer
  *

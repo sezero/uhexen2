@@ -1,8 +1,4 @@
-/*
- * hwmaster.c
- * main master server program
- *
- * $Id$
+/* hwmaster.c - main master server program
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1999,2004  contributors of the QuakeForge project

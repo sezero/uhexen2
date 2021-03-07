@@ -1,7 +1,4 @@
-/*
- * qfiles.c
- * $Id: qfiles.c,v 1.11 2009-05-05 16:02:52 sezero Exp $
- *
+/* qfiles.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -273,4 +270,3 @@ int main (int argc, char **argv)
 
 	return 0;
 }
-

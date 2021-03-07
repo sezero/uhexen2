@@ -1,7 +1,5 @@
 /*
  * common.h -- misc utilities used in client and server
- * $Id: common.h,v 1.8 2010-08-31 13:32:08 sezero Exp $
- *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify

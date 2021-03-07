@@ -1,7 +1,4 @@
-/*
- * d_edge.c
- *
- * $Id: d_edge.c,v 1.18 2008-03-21 14:45:11 sezero Exp $
+/* d_edge.c
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

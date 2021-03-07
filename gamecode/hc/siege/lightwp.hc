@@ -1,11 +1,3 @@
-/*
-==============================================================================
-
- $Header: /cvsroot/uhexen2/gamecode/hc/siege/lightwp.hc,v 1.1 2005-01-26 17:26:11 sezero Exp $
-
-==============================================================================
-*/
-
 // For building the model
 $cd Q:\art\models\weapons\spllbook
 $origin 0 0 0

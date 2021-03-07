@@ -1,6 +1,4 @@
-/*
- * zone.c -- Memory management
- * $Id$
+/* zone.c -- Memory management
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -122,13 +120,11 @@ The zone calls are pretty much only used for small strings and structures,
 all big things are allocated on the hunk.
 ==============================================================================
 */
-
 static	zonelist_t	*zonelist;
 static	char		mainzone[] = "MAINZONE";
 #if (SECZONE_SIZE > 0)
 static	char		sec_zone[] = "SEC_ZONE";
 #endif
-
 
 /*
 ========================

@@ -1,7 +1,4 @@
-/*
- * byteordr.c -- init / validate byteorder functions.
- * $Id$
- *
+/* byteordr.c -- init / validate byteorder functions.
  * Copyright (C) 2005-2012 O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify

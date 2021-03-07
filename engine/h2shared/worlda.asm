@@ -2,7 +2,6 @@
 ; worlda.asm
 ; x86 assembly-language server testing stuff
 ; this file uses NASM syntax.
-; $Id: worlda.asm,v 1.5 2008-03-16 14:30:46 sezero Exp $
 ;
 ; Copyright (C) 1996-1997  Id Software, Inc.
 ;

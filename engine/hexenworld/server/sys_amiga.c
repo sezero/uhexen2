@@ -1,7 +1,4 @@
-/*
- * sys_amiga.c -- Amiga system interface code
- * $Id$
- *
+/* sys_amiga.c -- Amiga system interface code
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2012  Szilard Biro <col.lawrence@gmail.com>
  *

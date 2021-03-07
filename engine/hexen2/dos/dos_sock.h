@@ -1,8 +1,4 @@
-/*
- * dos_sock.h
- * quick socket api compatibility definitions for dos.
- * $Id$
- */
+/* dos_sock.h - quick socket api compatibility definitions for dos */
 
 #ifndef _DOS_SOCKDEFS_H
 #define _DOS_SOCKDEFS_H
@@ -20,4 +16,3 @@ typedef int		sys_socket_t;
 #endif	/* USE_WATT32 */
 
 #endif	/* _DOS_SOCKDEFS_H */
-

@@ -1,6 +1,4 @@
-/*
- * cd_null.c
- * $Id: cd_null.c,v 1.6 2007-06-01 15:55:08 sezero Exp $
+/* cd_null.c
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +15,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 #include "quakedef.h"
 #include "cdaudio.h"
@@ -52,4 +49,3 @@ int CDAudio_Init(void)
 void CDAudio_Shutdown(void)
 {
 }
-

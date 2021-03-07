@@ -1,6 +1,5 @@
 /*
  * net_chan.c -- net channel
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

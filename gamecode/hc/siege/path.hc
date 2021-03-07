@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/path.hc,v 1.2 2007-02-07 17:01:21 sezero Exp $
- */
-
-/*
 =============
 pathcorner_touch
 

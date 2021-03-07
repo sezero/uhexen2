@@ -1,6 +1,4 @@
-/*
- * effects.h -- effect types and defs for Hexen II
- * $Id: effects.h,v 1.1 2009-01-10 22:08:50 sezero Exp $
+/* effects.h -- effect types and defs for Hexen II
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -200,4 +198,3 @@ struct EffectT
 };
 
 #endif	/* __EFFECTS_H */
-

@@ -1,7 +1,4 @@
-/*
- * map.c
- * $Id: map.c,v 1.15 2008-05-12 14:08:06 sezero Exp $
- *
+/* map.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *

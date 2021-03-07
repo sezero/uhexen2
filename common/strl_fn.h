@@ -1,5 +1,4 @@
-/* strl_fn.h - header file for BSD strlcat and strlcpy
- * $Id$  */
+/* strl_fn.h - header file for BSD strlcat and strlcpy  */
 
 #ifndef __STRLFUNCS_H
 #define __STRLFUNCS_H
@@ -15,4 +14,3 @@ extern size_t q_strlcat (char *dst, const char *src, size_t size);
 #endif
 
 #endif	/* __STRLFUNCS_H */
-

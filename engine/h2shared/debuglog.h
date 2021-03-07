@@ -1,6 +1,4 @@
-/*
- * debuglog.h -- logging console output to a file.
- * $Id$
+/* debuglog.h -- logging console output to a file.
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2008-2010  O.Sezer <sezero@users.sourceforge.net>
@@ -20,7 +18,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 #ifndef __DEBUGLOG_H
 #define __DEBUGLOG_H
 
@@ -50,4 +47,3 @@ void LOG_Init (struct quakeparms_s *parms);
 void LOG_Close (void);
 
 #endif	/* __DEBUGLOG_H */
-

@@ -1,8 +1,6 @@
-/*
- * vid_vga.c -- VGA-specific DOS video stuff
+/* vid_vga.c -- VGA-specific DOS video stuff
  * TODO: proper handling of page-swap failure
  * from quake1 source with minor adaptations for uhexen2.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -523,7 +521,6 @@ static void VGA_SwapBuffersCopy (viddef_t *lvid, vmode_t *pcurrentmode, vrect_t 
 	}
 }
 
-
 /*
 ================
 VGA_SwapBuffers
@@ -536,4 +533,3 @@ static void VGA_SwapBuffers (viddef_t *lvid, vmode_t *pcurrentmode, vrect_t *rec
 
 	VGA_SwapBuffersCopy (lvid, pcurrentmode, rects);
 }
-

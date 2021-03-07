@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/rat.hc,v 1.2 2007-02-07 16:57:09 sezero Exp $
- */
-
 // Scuttle
 //$frame swalk1 swalk2 swalk3 swalk4 swalk5
 //$frame swalk6 swalk7 swalk8 swalk9 swalk10

@@ -1,6 +1,4 @@
-/*
- * world.c -- world query functions
- * $Id$
+/* world.c -- world query functions
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -100,4 +98,3 @@ trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, e
 edict_t	*SV_TestPlayerPosition (edict_t *ent, vec3_t origin);
 
 #endif	/* __HX2_WORLD_H */
-

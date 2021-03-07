@@ -2,7 +2,6 @@
 ; math.asm
 ; x86 assembly-language math routines.
 ; this file uses NASM syntax.
-; $Id: math.asm,v 1.7 2008-03-16 14:30:46 sezero Exp $
 ;
 ; Copyright (C) 1996-1997  Id Software, Inc.
 ;

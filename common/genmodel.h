@@ -1,8 +1,6 @@
 /*
  * genmodel.h -- model structures
  *
- * $Id$
- *
  * This file must be identical in the genmodel project and in the H3
  * project.
  *

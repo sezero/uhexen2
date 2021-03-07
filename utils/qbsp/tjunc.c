@@ -1,7 +1,4 @@
-/*
- * tjunc.c
- * $Id: tjunc.c,v 1.11 2007-12-14 16:41:28 sezero Exp $
- *
+/* tjunc.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -54,7 +51,7 @@ static int		tjuncfaces;
 static wvert_t	wverts[MAXWVERTS];
 static wedge_t	wedges[MAXWEDGES];
 
-#if 0	// no users
+#if 0	/* no users */
 void PrintFace (face_t *f)
 {
 	int		i;

@@ -1,8 +1,6 @@
 /*
  * r_light.c
  *
- * $Id: gl_rlight.c,v 1.17 2007-09-14 14:10:01 sezero Exp $
- *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *

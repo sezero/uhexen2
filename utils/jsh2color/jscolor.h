@@ -1,8 +1,4 @@
-/*
- * jscolor.h
- * $Id$
- *
- * based on MHColour v0.5
+/* jscolor.h -- based on MHColour v0.5
  * Copyright (C) 2002 Juraj Styk <jurajstyk@host.sk>
  * Copyright (C) 2005-2012 O.Sezer <sezero@users.sourceforge.net>
  *
@@ -48,4 +44,3 @@ void CheckTex (void);
 void FindTexlightColor (int *surf_r, int *surf_g, int *surf_b, const char *texname);
 
 #endif	/* JSCOLOR_H */
-

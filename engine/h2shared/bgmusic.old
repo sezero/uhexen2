@@ -1,6 +1,4 @@
 /*
- * $Id$
- *
  * Copyright (C) 1999-2005 Id Software, Inc.
  * Copyright (C) 2010-2012 O.Sezer <sezero@users.sourceforge.net>
  *
@@ -216,4 +214,3 @@ void BGM_PlayMIDIorMusic (const char *filename)
 
 	Con_Printf("Couldn't handle music file %s\n", filename);
 }
-

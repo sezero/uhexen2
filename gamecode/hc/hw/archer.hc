@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/archer.hc,v 1.2 2007-02-07 16:57:48 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\monsters\archerK\final\archer.hc

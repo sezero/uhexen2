@@ -1,6 +1,4 @@
-/*
- * d_vars.c - rasterization driver global variables
- * $Id: d_vars.c,v 1.3 2008-03-07 08:10:38 sezero Exp $
+/* d_vars.c - rasterization driver global variables
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -50,4 +48,3 @@ int		d_zrowbytes;
 int		d_zwidth;
 
 #endif	/* !id386 */
-

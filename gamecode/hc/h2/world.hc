@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/world.hc,v 1.1.1.1 2004-11-29 11:39:49 sezero Exp $
- */
-
 //void() InitBodyQue;
 
 

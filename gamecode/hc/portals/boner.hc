@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/boner.hc,v 1.2 2007-02-07 16:59:30 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\weapons\spllbook\spllbook.hc

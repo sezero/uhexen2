@@ -1,8 +1,4 @@
-/*
- * glheader.h: opengl system includes
- * $Id$
- */
-
+/* glheader.h: opengl system includes */
 
 #ifndef __GLHEADER_H
 #define __GLHEADER_H
@@ -86,4 +82,3 @@
 #endif
 
 #endif	/* __GLHEADER_H */
-

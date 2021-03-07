@@ -1,6 +1,5 @@
 /*
  * menu.c
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -2094,7 +2093,8 @@ static void M_Quit_Draw (void)
 	y += 8;
 	M_PrintWhite (16 + (10 * 8), y,  "Press y to exit");
 
-/*	y = 12;
+	/*
+	y = 12;
 	M_DrawTextBox (0, 0, 38, 23);
 	M_PrintWhite (16, y,  "        Hexen II version 0.0        ");	y += 8;
 	M_PrintWhite (16, y,  "         by Raven Software          ");	y += 16;
@@ -2111,7 +2111,7 @@ static void M_Quit_Draw (void)
 	M_PrintWhite (16, y,  "Sound Effects      Intern           ");	y += 8;
 	M_Print (16, y,       " Kevin Schilder     Josh Weier      ");	y += 16;
 	M_PrintWhite (16, y,  "          Press y to exit           ");	y += 8;
-*/
+	*/
 }
 
 //=============================================================================

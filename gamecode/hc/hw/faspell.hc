@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/faspell.hc,v 1.2 2007-02-07 16:57:54 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\monsters\Fangel\spell\FAspell.hc

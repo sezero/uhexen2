@@ -1,6 +1,4 @@
-/*
- * protocol.h -- communications protocols
- * $Id: protocol.h,v 1.15 2008-01-26 20:02:07 sezero Exp $
+/* protocol.h -- communications protocols
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

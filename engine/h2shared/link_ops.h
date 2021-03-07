@@ -1,7 +1,4 @@
-/*
- * link_ops.h -- linked list operations
- * $Id: link_ops.h,v 1.2 2007-06-16 07:30:29 sezero Exp $
- *
+/* link_ops.h -- linked list stuff
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify

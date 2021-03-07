@@ -1,6 +1,4 @@
-/*
- * net_dgrm.c -- This is enables a simple IP banning mechanism
- * $Id$
+/* net_dgrm.c -- This is enables a simple IP banning mechanism
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

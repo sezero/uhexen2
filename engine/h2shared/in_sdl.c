@@ -1,6 +1,4 @@
-/*
- * in_sdl.c -- SDL game input code
- * $Id$
+/* in_sdl.c -- SDL game input code.
  *
  * Copyright (C) 2001  contributors of the Anvil of Thyrion project
  * Joystick code taken from the darkplaces project with modifications

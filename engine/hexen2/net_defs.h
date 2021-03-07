@@ -1,7 +1,5 @@
-/*
- * net_defs.h -- functions and data private to the network layer
+/* net_defs.h -- functions and data private to the network layer
  * net_sys.h and its dependencies must be included before net_defs.h.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

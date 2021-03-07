@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/ph_eido.hc,v 1.1.1.1 2004-11-29 11:34:20 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\Eidolon\ph_eido.hc

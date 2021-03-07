@@ -1,7 +1,4 @@
-/*
- * sizebuf.c -- sized buffers
- * $Id: sizebuf.c,v 1.8 2009-01-26 09:05:22 sezero Exp $
- *
+/* sizebuf.c -- sized buffers
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify

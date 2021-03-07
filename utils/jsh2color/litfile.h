@@ -1,7 +1,4 @@
 /*
- * litfile.h
- * $Id: litfile.h,v 1.1 2007-05-12 09:56:35 sezero Exp $
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
@@ -18,8 +15,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __LITFILE_H
-#define __LITFILE_H
+#ifndef LITFILE_H_
+#define LITFILE_H_
 
 #define LIT_VERSION		1
 
@@ -31,5 +28,4 @@ typedef struct litheader_s
 
 void MakeLITFile (const char *filename);
 
-#endif	/* __LITFILE_H */
-
+#endif	/* LITFILE_H_ */

@@ -1,7 +1,4 @@
-/*
- * dhcc.h
- *
- * $Id$
+/* dhcc.h
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997 Eric Hobbs <elhobbs@comcast.net>
@@ -23,10 +20,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __DHCC_H__
-#define __DHCC_H__
+#ifndef DHCC_H
+#define DHCC_H
 
 extern int	Dcc_main (int argc, char **argv);
 
-#endif	/* __DHCC_H__ */
-
+#endif	/* DHCC_H */

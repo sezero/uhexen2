@@ -1,8 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/object.hc,v 1.2 2007-02-07 17:01:21 sezero Exp $
- */
-
-
 float SPAWNFLAG_BALLISTA_TRACK = 1;
 
 /*

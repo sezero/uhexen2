@@ -1,6 +1,5 @@
 /*
  * debuglog.c -- logging console output to a file.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2008-2010  O.Sezer <sezero@users.sourceforge.net>
@@ -190,4 +189,3 @@ void LOG_Close (void)
 	log_fd = -1;
 }
 #endif
-

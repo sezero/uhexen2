@@ -1,7 +1,4 @@
-/*
- * entities.h
- * $Id: entities.h,v 1.5 2007-11-11 16:11:48 sezero Exp $
- *
+/* entities.h
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -21,8 +18,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __ENTITIES_H__
-#define __ENTITIES_H__
+#ifndef ENTITIES_H_
+#define ENTITIES_H_
 
 #define DEFAULTLIGHTLEVEL	300
 
@@ -57,5 +54,4 @@ void	GetVectorForKey (entity_t *ent, const char *key, vec3_t vec);
 void	LoadEntities (void);
 void	WriteEntitiesToString (void);
 
-#endif	/* __ENTITIES_H__ */
-
+#endif	/* ENTITIES_H_ */

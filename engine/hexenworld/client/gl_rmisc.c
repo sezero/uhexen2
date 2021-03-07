@@ -1,6 +1,4 @@
-/*
- * r_misc.c --
- * $Id$
+/* r_misc.c --
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

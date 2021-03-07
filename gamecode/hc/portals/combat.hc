@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/combat.hc,v 1.3 2007-02-07 16:59:30 sezero Exp $
- */
 void(vector org, vector vel, float damage, entity victim) SpawnPuff;
 
 float MetalHitSound (float targettype)

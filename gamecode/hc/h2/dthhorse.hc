@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/dthhorse.hc,v 1.2 2007-02-07 16:57:01 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\monsters\RdrDeath\Horse\
@@ -33,10 +29,6 @@ $frame Rgall11      Rgall12
 $frame Rsickl1      Rsickl2      Rsickl3      Rsickl4      Rsickl5      
 $frame Rsickl6      Rsickl7      Rsickl8      Rsickl9      Rsickl10     
 $frame Rsickl11     Rsickl12     
-
-
-
-
 
 
 

@@ -1,28 +1,25 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/weather.hc,v 1.3 2007-02-07 16:58:09 sezero Exp $
- */
-/*
 void () dust_touch =
 {
-  local float numPuffs, thisPuff;
-  local vector dustpos, dustvect;
-  
-  numPuffs = random(5, 10) + 2;
-  thisPuff = 1;
+	local float numPuffs, thisPuff;
+	local vector dustpos, dustvect;
 
-  while (thisPuff < numPuffs)
-  {
+	numPuffs = random(5, 10) + 2;
+	thisPuff = 1;
+
+	while (thisPuff < numPuffs)
+	{
 		dustpos_x = random(self.maxs_x, self.mins_x);
 		dustpos_y = random(self.maxs_y, self.mins_y);
 		dustpos_z = self.maxs_z;
-   
+
 		dustvect_x = random(10, 20);
 		dustvect_y = random(10, 20);
 		dustvect_z = random(-10, -1);
-	
+
 		SpawnPuff (dustpos, dustvect, 414, world);
 		thisPuff += 1;
-  }
+	}
 };
 */
 
@@ -35,22 +32,22 @@ color   - palette number of the dust's color
 /*
 void() weather_dust =
 {
+	self.movetype = MOVETYPE_NOCLIP;
+	self.owner = self;
+	self.solid = SOLID_NOT;
+	setsize (self, self.mins , self.maxs);
+	setorigin (self, self.origin);
+	setmodel (self, self.model);
+	self.modelindex = 0;
+	self.model = "";
 
-  	self.movetype = MOVETYPE_NOCLIP;
-  	self.owner = self;
-  	self.solid = SOLID_NOT;
-  	setsize (self, self.mins , self.maxs);
-  	setorigin (self, self.origin);
-  	setmodel (self, self.model);
-   self.modelindex = 0;
-  	self.model = "";
-	        
-   self.touch = dust_touch;
+	self.touch = dust_touch;
 	self.use = dust_touch;
-	
+
 	if (!self.color) self.color=101;
 };
 */
+
 void () rain_use =
 {
 	dprint(" rain ");
@@ -124,18 +121,18 @@ float splat_count;
 		self.nextthink = time + random(5,30);
 	}
 
-  	self.movetype = MOVETYPE_NOCLIP;
-  	self.owner = self;
-  	self.solid = SOLID_NOT;
-  	setsize (self, self.mins , self.maxs);
-  	setorigin (self, self.origin);
-  	setmodel (self, self.model);
-   self.modelindex = 0;
-  	self.model = "";
-	
+	self.movetype = MOVETYPE_NOCLIP;
+	self.owner = self;
+	self.solid = SOLID_NOT;
+	setsize (self, self.mins , self.maxs);
+	setorigin (self, self.origin);
+	setmodel (self, self.model);
+	self.modelindex = 0;
+	self.model = "";
+
 	if (!self.wait)
 	   self.wait=0.10;
-	       
+
 	if (!self.color)
 		self.color=414;
 
@@ -173,15 +170,14 @@ void () weather_lightning_use =
 
 	if (self.classname == "weather_sunbeam_start")
 		sound(self,CHAN_WEAPON,"crusader/sunhum.wav",1,ATTN_NORM);
-	
+
 	if (!self.target)
 	{
 		dprint("No target for lightning\n");
 		return;
 	}
-	
+
 	targ = find (world, targetname, self.target);  // Get ending point
-	
 	if (!targ)
 	{
 		dprint("No target for beam effect\n");
@@ -197,11 +193,10 @@ void () weather_lightning_use =
 			sound (self,CHAN_AUTO,"crusader/lghtn1.wav",1,ATTN_NORM);
 	}*/
 
-	
 	p1 = self.origin;
 	p2 = targ.origin;
 	p1+=normalize(p2-p1)*15;	//So beam is drawn at startpoint
-				
+
 	if(self.classname=="weather_lightning_start")
 		do_lightning (self,1,0,4,p1,p2,10,TE_STREAM_LIGHTNING);
 
@@ -212,7 +207,7 @@ void () weather_lightning_use =
 		WriteEntity (MSG_BROADCAST, self);
 		WriteByte (MSG_BROADCAST, 0);
 		WriteByte (MSG_BROADCAST, 4);
-	
+
 		WriteCoord (MSG_BROADCAST, p1_x);
 		WriteCoord (MSG_BROADCAST, p1_y);
 		WriteCoord (MSG_BROADCAST, p1_z);
@@ -220,7 +215,7 @@ void () weather_lightning_use =
 		WriteCoord (MSG_BROADCAST, p2_x);
 		WriteCoord (MSG_BROADCAST, p2_y);
 		WriteCoord (MSG_BROADCAST, p2_z);
-		
+
 		LightningDamage (p1, p2, self, 10,"sunbeam");
 	}
 	else if(self.classname=="fx_colorbeam_start")
@@ -233,7 +228,7 @@ void () weather_lightning_use =
 		WriteByte (MSG_BROADCAST, 0);					//tag + flags
 		WriteByte (MSG_BROADCAST, 4);					//time
 		WriteByte (MSG_BROADCAST, self.color);			//color
-	
+
 		WriteCoord (MSG_BROADCAST, p1_x);
 		WriteCoord (MSG_BROADCAST, p1_y);
 		WriteCoord (MSG_BROADCAST, p1_z);
@@ -247,13 +242,13 @@ void () weather_lightning_use =
 
 	if (self.lifetime > time )  // Not done living
 		thinktime self : 0.2;
-  	else if (self.wait>-1)  // constantly running lightning needs to be reset
-  	{
+	else if (self.wait>-1)  // constantly running lightning needs to be reset
+	{
 		thinktime self : self.wait;
 		self.think = weather_lightning_use;
 		self.lifetime = self.lifespan + self.nextthink;
 		self.aflag=FALSE;
-  	}
+	}
 	else
 		self.nextthink=-1;
 };
@@ -380,10 +375,10 @@ lifespan - amount of time sunbeam will exist.
 */
 void () weather_sunbeam_start =
 {
-	precache_model("models/stsunsf1.mdl");
-	precache_model("models/stsunsf2.mdl");
-	precache_model("models/stsunsf3.mdl");
-	precache_model("models/stsunsf4.mdl");
+	precache_model ("models/stsunsf1.mdl");
+	precache_model ("models/stsunsf2.mdl");
+	precache_model ("models/stsunsf3.mdl");
+	precache_model ("models/stsunsf4.mdl");
 
 	self.noise = "crusader/lghtn1.wav";
 
@@ -447,4 +442,3 @@ void () fx_colorbeam_end =
 	weather_lightning_end();
 };
 */
-

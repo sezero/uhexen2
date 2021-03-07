@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/fx.hc,v 1.2 2007-02-07 16:57:04 sezero Exp $
- */
 
 float WHITE_PUFF	= 0;
 float RED_PUFF		= 1;

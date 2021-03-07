@@ -1,6 +1,5 @@
 /*
  * cvar.c -- dynamic variable tracking
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2008-2010  O.Sezer <sezero@users.sourceforge.net>

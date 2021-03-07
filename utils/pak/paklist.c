@@ -1,7 +1,4 @@
-/*
- * pakx.c -- pack file listing tool.
- * $Id: paklist.c,v 1.1 2010-02-23 12:40:12 sezero Exp $
- *
+/* pakx.c -- pack file listing tool.
  * Copyright (C) 1996-2001 Id Software, Inc.
  * Copyright (C) 2010 Ozkan Sezer <sezero@users.sourceforge.net>
  *
@@ -71,4 +68,3 @@ int main (int argc, char **argv)
 
 	return 0;
 }
-

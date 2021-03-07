@@ -1,6 +1,4 @@
-/*
- * cl_ents.c -- entity parsing and management
- * $Id$
+/* cl_ents.c -- entity parsing and management
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

@@ -1,6 +1,5 @@
 /*
  * sdl_inc.h -- common SDL header.
- * $Id$
  *
  * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>
  *

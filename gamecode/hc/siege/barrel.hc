@@ -1,7 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/barrel.hc,v 1.2 2007-02-07 17:00:33 sezero Exp $
- */
-/*
 ==============================================================================
 
 BARRELS

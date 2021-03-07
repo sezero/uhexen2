@@ -1,8 +1,6 @@
-/*
- * in_win.c -- windows 95 mouse and joystick code
+/* in_win.c -- windows 95 mouse and joystick code
  * 02/21/97 JCB Added extended DirectInput code to support
  * external controllers
- * $Id$
  *
  * Copyright (C) 1996-2001  Id Software, Inc.
  * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>

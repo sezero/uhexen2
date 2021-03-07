@@ -1,6 +1,5 @@
 /* MP3 decoding support using libmpg123
  * Copyright (C) 2011-2019 O.Sezer <sezero@users.sourceforge.net>
- * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -221,4 +220,3 @@ snd_codec_t mp3_codec =
 };
 
 #endif	/* USE_CODEC_MP3 */
-

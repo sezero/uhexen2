@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/chunk.hc,v 1.2 2007-02-07 16:57:51 sezero Exp $
- */
 void ThrowSolidHead (float dm);
 
 void blood_splatter()

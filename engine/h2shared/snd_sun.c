@@ -1,8 +1,6 @@
-/*
- * snd_sun.c -- SUN Audio driver for BSD and SunOS
+/* snd_sun.c -- SUN Audio driver for BSD and SunOS
  * Based on the code from Quake1 and the DarkPlaces project, with small
  * adaptations to make it work with Hexen II: Hammer of Thyrion (uHexen2)
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

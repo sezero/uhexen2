@@ -1,6 +1,4 @@
-/*
- * threads.c
- * $Id$
+/* threads.c
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2011-2012 O.Sezer <sezero@users.sourceforge.net>
@@ -654,4 +652,3 @@ void RunThreadsOn (threadfunc_t func)
 }
 
 #endif	/* no threads  */
-

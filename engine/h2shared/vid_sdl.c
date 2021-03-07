@@ -1,7 +1,6 @@
 /*
  * vid_sdl.c -- SDL video driver
  * Select window size and mode and init SDL in SOFTWARE mode.
- * $Id$
  *
  * Changed by S.A. 7/11/04, 27/12/04
  * Options are now: -fullscreen | -window, -height , -width

@@ -1,7 +1,4 @@
-/*
- * pathutil.c -- filename handling utilities
- * $Id$
- *
+/* pathutil.c -- filename handling utilities
  * Copyright (C) 1996-1997 Id Software, Inc.
  * Copyright (C) 2005-2012 O.Sezer <sezero@users.sourceforge.net>
  *
@@ -20,7 +17,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 // HEADER FILES ------------------------------------------------------------
 
@@ -184,4 +180,3 @@ void ExtractFileExtension (const char *in, char *out, size_t outsize)
 	else
 		q_strlcpy (out, ext, outsize);
 }
-

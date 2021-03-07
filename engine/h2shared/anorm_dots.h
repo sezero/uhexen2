@@ -1,6 +1,5 @@
 /*
  * anorm_dots.h
- * $Id: anorm_dots.h,v 1.3 2007-03-14 21:22:03 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

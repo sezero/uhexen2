@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/medusa.hc,v 1.1.1.1 2004-11-29 11:33:27 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\monsters\medusa\medusa.hc

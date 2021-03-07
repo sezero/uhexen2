@@ -1,8 +1,6 @@
-# $Id$
-#
 # This file contains all common MorphOS cross compilation definitions for
 # use with all other build_cross_morphos.sh scripts for the uhexen2 tree.
-#
+
 # Change this script to meet your needs and/or environment.
 
 TARGET=ppc-morphos
@@ -22,4 +20,3 @@ AR="$TARGET-ar"
 export CC AS RANLIB AR MOSBUILD
 
 STRIPPER="$TARGET-strip"
-

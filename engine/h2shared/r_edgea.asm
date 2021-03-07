@@ -2,7 +2,6 @@
 ; r_edgea.asm
 ; x86 assembly-language edge-processing code.
 ; this file uses NASM syntax.
-; $Id: r_edgea.asm,v 1.9 2008-03-28 08:01:56 sezero Exp $
 ;
 ; Copyright (C) 1996-1997  Id Software, Inc.
 ; Copyright (C) 1997-1998  Raven Software Corp.

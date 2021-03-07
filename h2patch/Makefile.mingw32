@@ -1,5 +1,4 @@
 # GNU Makefile for the H2PATCH tool - Win32: MinGW32
-# $Id$
 #
 # To build a debug version:		make DEBUG=yes
 #

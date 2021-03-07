@@ -1,6 +1,4 @@
-/*
- * util_io.h -- file and directory utilities
- * $Id$
+/* util_io.h -- file and directory utilities
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>
@@ -72,4 +70,3 @@ int	Q_CopyFile (const char *frompath, const char *topath);
 int	Q_WriteFileFromHandle (FILE *fromfile, const char *topath, size_t size);
 
 #endif	/* __UTILIO_H */
-

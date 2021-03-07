@@ -1,8 +1,4 @@
-/*
- * jscolor.c
- * $Id$
- *
- * based on MHColour v0.5
+/* jscolor.c -- based on MHColour v0.5
  * Copyright (C) 2002 Juraj Styk <jurajstyk@host.sk>
  * Copyright (C) 2005-2012 O.Sezer <sezero@users.sourceforge.net>
  *

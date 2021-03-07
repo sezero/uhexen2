@@ -3,7 +3,6 @@
  * MPATH TCP driver: the (Winsock) UDP driver for dosquake
  * for use when run from within win95.
  * from quake1 source with minor adaptations for uhexen2.
- * $Id: net_mp.h,v 1.4 2009-01-08 12:01:51 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -46,4 +45,3 @@ int  MPATH_GetSocketPort (struct qsockaddr *addr);
 int  MPATH_SetSocketPort (struct qsockaddr *addr, int port);
 
 #endif	/* __net_mpath_h */
-

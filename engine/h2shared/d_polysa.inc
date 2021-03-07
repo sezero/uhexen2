@@ -1,7 +1,6 @@
 ;
 ; d_polysa.inc -- common header for NASM format d_polys*.asm
 ; based on asm_draw.h and d_ifacea.h from original Quake source
-; $Id$
 ;
 ; Copyright (C) 1996-1997  Id Software, Inc.
 ; Copyright (C) 2012  O.Sezer <sezero@users.sourceforge.net>
@@ -35,4 +34,3 @@
 %define spanpackage_t_size				32
 %define SPAN_SIZE	(((DPS_MAXSPANS + 1 + ((CACHE_SIZE - 1) / spanpackage_t_size)) + 1) * spanpackage_t_size)
 ;				(MAXHEIGHT+1+1+1)*32
-

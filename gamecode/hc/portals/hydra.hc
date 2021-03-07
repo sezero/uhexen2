@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/hydra.hc,v 1.2 2007-02-07 16:59:33 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\monsters\hydra\final\hydra.hc
@@ -348,6 +344,7 @@ void hydra_reverse(void)
 	
 }
 */
+
 void hydra_move(float thrust) 
 {
 	check_pos_enemy();

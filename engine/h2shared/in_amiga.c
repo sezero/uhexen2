@@ -1,6 +1,4 @@
-/*
- * in_amiga.c -- Intuition game input code for Amiga & co.
- * $Id$
+/* in_amiga.c -- Intuition game input code for Amiga & co.
  *
  * Copyright (C) 2005-2010 Mark Olsen <bigfoot@private.dk>
  * Copyright (C) 2012-2016 Szilárd Biró <col.lawrence@gmail.com>

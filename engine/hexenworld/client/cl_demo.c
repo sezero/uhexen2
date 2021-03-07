@@ -1,6 +1,5 @@
 /*
  * cl_demo.c -- demo recording and playback
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -133,9 +132,7 @@ static void CL_WriteDemoMessage (sizebuf_t *msg)
 
 /*
 ====================
-CL_GetDemoMessage
-
-  FIXME...
+CL_GetDemoMessage -- FIXME..
 ====================
 */
 static qboolean CL_GetDemoMessage (void)

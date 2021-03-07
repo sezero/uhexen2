@@ -1,7 +1,4 @@
-/*
- * threads.h
- * $Id$
- *
+/* threads.h
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __H2UTILS_THREADS_H
-#define __H2UTILS_THREADS_H
+#ifndef H2UTILS_THREADS_H
+#define H2UTILS_THREADS_H
 
 #define	MAX_THREADS	32
 
@@ -34,5 +31,4 @@ void	ThreadLock (void);
 void	ThreadUnlock (void);
 void	RunThreadsOn (threadfunc_t func);
 
-#endif	/* __H2UTILS_THREADS_H */
-
+#endif	/* H2UTILS_THREADS_H */

@@ -1,6 +1,5 @@
 /*
  * vid_win.c -- Win32 video driver
- * $Id$
  *
  * Adapted from Quake2 and from an initial work by MH with many
  * modifications to make it work in Hexen II: Hammer of Thyrion.
@@ -2408,4 +2407,3 @@ static void VID_MenuKey (int key)
 		break;
 	}
 }
-

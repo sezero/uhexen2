@@ -3,7 +3,6 @@
 ; x86 assembly-language polygon model drawing code
 ; with translucency handling, #3.
 ; this file uses NASM syntax.
-; $Id: d_polysa4.asm,v 1.8 2008-03-20 14:07:51 sezero Exp $
 ;
 ; Copyright (C) 1996-1997  Id Software, Inc.
 ; Copyright (C) 1997-1998  Raven Software Corp.

@@ -1,10 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/fight.hc,v 1.3 2007-02-07 16:57:54 sezero Exp $
- */
-
-
-
-/*
  * A monster is in fight mode if it thinks it can effectively attack its enemy.
  * When it decides it can't attack, it goes into hunt mode.
  */

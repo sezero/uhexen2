@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/items.hc,v 1.2 2007-02-07 16:59:34 sezero Exp $
- */
 void() W_SetCurrentAmmo;
 void() W_SetCurrentWeapon;
 void() ring_touch;

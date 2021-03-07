@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/damage.hc,v 1.2 2007-02-07 16:57:52 sezero Exp $
- */
-
 void() T_MissileTouch;
 void() info_player_start;
 void necromancer_sphere(entity ent);

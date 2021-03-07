@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/rings.hc,v 1.2 2007-02-07 16:57:09 sezero Exp $
- */
 void player_fly(void);
 void Ring_Init(string modelname,string name);
 

@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/client.hc,v 1.4 2007-02-07 17:00:35 sezero Exp $
- */
-
 // prototypes
 void () W_WeaponFrame;
 void() W_SetCurrentAmmo;

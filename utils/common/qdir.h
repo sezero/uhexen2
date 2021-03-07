@@ -1,7 +1,4 @@
-/*
- * qdir.h
- * $Id: qdir.h,v 1.5 2007-11-11 16:11:46 sezero Exp $
- *
+/* qdir.h
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -34,4 +31,3 @@ char	*ExpandPath (const char *path);	// from scripts
 char	*ExpandPathAndArchive (const char *path);
 
 #endif	/* __QDIRS_H__ */
-

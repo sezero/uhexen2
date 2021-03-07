@@ -1,7 +1,4 @@
-/*
- * bsp5.c
- * $Id: qbsp.c,v 1.16 2008-01-29 12:03:13 sezero Exp $
- *
+/* bsp5.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -1093,4 +1090,3 @@ int main (int argc, char **argv)
 
 	return 0;
 }
-

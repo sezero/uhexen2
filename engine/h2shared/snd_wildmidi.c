@@ -1,6 +1,4 @@
-/*
- * MIDI streaming music support using WildMIDI library.
- *
+/* MIDI streaming music support using WildMIDI library.
  * wildmidi at least v0.2.3.x is required at both compile and runtime:
  * Latest stable v0.3.14 (as of this writing) is highly recommended:
  * - wildmidi-0.2.2 has a horrific mistake of freeing the buffer that
@@ -19,8 +17,6 @@
  *
  * Copyright (C) 2010-2015 O.Sezer <sezero@users.sourceforge.net>
  *
- * $Id$
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
@@ -35,7 +31,6 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- *
  */
 
 #include "quakedef.h"

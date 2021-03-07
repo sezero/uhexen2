@@ -1,7 +1,4 @@
-/*
- * surfaces.c (divide.h)
- * $Id: surfaces.c,v 1.9 2007-12-14 16:41:28 sezero Exp $
- *
+/* surfaces.c (divide.h)
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -119,7 +116,6 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 #endif
 
 #if 1
-
 /*
 ===============
 SubdivideFace
@@ -487,7 +483,7 @@ CheckVertexes
 // debugging
 =============
 */
-#if 0	// all uses are commented out
+#if 0	/* all uses are commented out */
 static void CheckVertexes (void)
 {
 	int		cb, c0, c1, c2, c3;
@@ -614,4 +610,3 @@ void MakeFaceEdges (node_t *headnode)
 	firstmodeledge = numedges;
 	firstmodelface = numfaces;
 }
-

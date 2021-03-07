@@ -1,5 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/assgren.hc,v 1.2 2007-02-07 16:57:49 sezero Exp $
 * Grenade Throw, Assassin. 
 */
 

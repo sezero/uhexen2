@@ -1,6 +1,4 @@
-/*
- * lmp2pcx.c
- * $Id$
+/* lmp2pcx.c
  * Copyright (C) 2002-2007 Forest Hale
  * Copyright (C) 2007-2012 O.Sezer
  *

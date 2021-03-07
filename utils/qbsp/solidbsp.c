@@ -1,7 +1,4 @@
-/*
- * solidbsp.c
- * $Id: solidbsp.c,v 1.9 2007-12-14 16:41:28 sezero Exp $
- *
+/* solidbsp.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -717,7 +714,7 @@ static void PartitionSurfaces (surface_t *surfaces, node_t *node)
 	PartitionSurfaces (backlist, node->children[1]);
 }
 
-#if 0	// no users
+#if 0	/* no users */
 /*
 ==================
 DrawSurface

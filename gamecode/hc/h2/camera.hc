@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/camera.hc,v 1.2 2007-02-07 16:56:59 sezero Exp $
- */
 void(entity voyeur, entity viewthing) CameraViewPort =
 {//FIXME: Doesn't seem to work if it's out of vis- only 
 //	remembers last spot it was at last time it WAS in vis

@@ -1,8 +1,4 @@
-/*
- * stmt.c
- *
- * $Id$
- *
+/* stmt.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -21,7 +17,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 // HEADER FILES ------------------------------------------------------------
 

@@ -1,5 +1,4 @@
 ; dosasm.asm  --
-; $Id$
 ; this file uses NASM syntax.
 ;
 ; Copyright (C) 1996-1997  Id Software, Inc.

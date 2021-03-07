@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/constant.hc,v 1.2 2005-09-19 19:50:09 sezero Exp $
- */
-
 //
 // constants
 //

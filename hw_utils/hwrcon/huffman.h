@@ -1,9 +1,4 @@
-/*
- * huffman.h
- * huffman encoding/decoding for use in hexenworld networking
- *
- * $Id: huffman.h,v 1.7 2007-11-12 14:02:56 sezero Exp $
- *
+/* huffman.h -- huffman encoding/decoding for use in hexenworld networking
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -36,4 +31,3 @@ extern void PrintFreqs (void);
 #endif	/* _DEBUG_HUFFMAN */
 
 #endif	/* __H2W_HUFFMAN_H */
-

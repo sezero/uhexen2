@@ -1,6 +1,4 @@
-/*
- * sys_main.c -- main loop and system interface
- * $Id$
+/* sys_unix.c -- Unix system interface code
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>

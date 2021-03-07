@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/invntory.hc,v 1.3 2007-02-07 16:57:55 sezero Exp $
- */
 
 void teleport_touch (void);
 void PlayerSpeed_Calc (void);

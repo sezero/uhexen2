@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/meteor.hc,v 1.2 2007-02-07 16:57:57 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\weapons\meteor\final\meteor.hc

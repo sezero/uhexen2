@@ -1,6 +1,5 @@
 /*
  * cdaudio.h -- client cd audio functions
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

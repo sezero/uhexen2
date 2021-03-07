@@ -1,7 +1,4 @@
-/*
- * link_ops.c -- linked list operations
- * $Id: link_ops.c,v 1.2 2007-12-14 16:41:10 sezero Exp $
- *
+/* link_ops.c -- linked list stuff
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -23,7 +20,7 @@
 #include "q_stdinc.h"
 #include "link_ops.h"
 
-// ClearLink is used for new headnodes
+/* ClearLink is used for new headnodes */
 void ClearLink (link_t *l)
 {
 	l->prev = l->next = l;

@@ -1,7 +1,4 @@
-/*
- * cmdlib.c -- functions common to all of the utilities
- * $Id$
- *
+/* cmdlib.c -- functions common to all of the utilities
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>
  *
@@ -485,4 +482,3 @@ int ParseNum (const char *str)
 		return ParseHex (str+2);
 	return atoi (str);
 }
-

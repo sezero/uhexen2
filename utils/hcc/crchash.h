@@ -1,8 +1,4 @@
-/*
- * crchash.h
- * hash functions for HCC
- *
- * $Id$
+/* crchash.h - hash functions for HCC
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -23,13 +19,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef _CRC_HASH_H
-#define _CRC_HASH_H
+#ifndef CRC_HASH_H
+#define CRC_HASH_H
 
 #include "crc.h"
 
 #define	HASH_TABLE_SIZE		9973
 int	COM_Hash (const char *string);
 
-#endif	/* _CRC_HASH_H */
-
+#endif	/* CRC_HASH_H */

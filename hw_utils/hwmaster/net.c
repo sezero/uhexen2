@@ -1,8 +1,4 @@
-/*
- * net_udp.c
- * network UDP driver
- *
- * $Id$
+/* net_udp.c -- network UDP driver
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -184,7 +180,7 @@ int NET_GetPacket (void)
 			return 0;
 		}
 # endif	/* _WINDOWS */
-	/*	Sys_Error ("%s: %s", __thisfunc__, socketerror(err));*/
+	/*	Sys_Error ("%s: %s", __thisfunc__, socketerror(err));	*/
 		printf ("%s warning: %s\n", __thisfunc__, socketerror(err));
 		return 0;
 	}
@@ -212,7 +208,7 @@ void NET_SendPacket (int length, void *data, const netadr_t *to)
 
 	NetadrToSockadr (to, &addr);
 
-	ret = sendto (net_socket, (char *)data, length, 0,
+	ret = sendto (net_socket, (char *) data, length, 0,
 				(struct sockaddr *)&addr, sizeof(addr) );
 	if (ret == SOCKET_ERROR)
 	{

@@ -1,6 +1,5 @@
 /*
  * snd_sys.c -- pre-Init platform specific sound stuff
- * $Id$
  *
  * Copyright (C) 2007-2012 O.Sezer <sezero@users.sourceforge.net>
  *

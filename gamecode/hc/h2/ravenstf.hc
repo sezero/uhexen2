@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/ravenstf.hc,v 1.3 2007-02-07 16:57:09 sezero Exp $
- */
-
 // For building the model
 $cd Q:\art\models\weapons\newass
 $origin 0 0 0

@@ -1,7 +1,4 @@
-/*
- * cd_linux.c
- * $Id$
- *
+/* cd_linux.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -19,7 +16,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 #include "cd_unix.h"
 

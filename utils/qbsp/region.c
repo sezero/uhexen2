@@ -1,7 +1,4 @@
-/*
- * region.c
- * $Id: region.c,v 1.9 2008-03-19 08:15:20 sezero Exp $
- *
+/* region.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *

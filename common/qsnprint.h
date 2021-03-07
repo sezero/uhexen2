@@ -1,8 +1,4 @@
-/*
- * qsnprint.h
- * $Id$
- *
- * (v)snprintf wrappers
+/* qsnprint.h-- (v)snprintf wrappers
  * Copyright (C) 2007 O. Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -34,4 +30,3 @@ extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
 #endif
 
 #endif	/* __Q_SNPRINF_H */
-

@@ -1,7 +1,4 @@
-/*
- * input.h -- external (non-keyboard) input devices
- * $Id$
- *
+/* input.h -- external (non-keyboard) input devices
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify

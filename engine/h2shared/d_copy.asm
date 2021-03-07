@@ -2,7 +2,6 @@
 ; d_copy.asm
 ; x86 assembly-language screen copying code.
 ; this file uses NASM syntax.
-; $Id$
 ;
 ; Copyright (C) 1996-1997  Id Software, Inc.
 ;

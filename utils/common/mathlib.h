@@ -1,6 +1,5 @@
 /*
  * mathlib.h -- math primitives
- * $Id: mathlib.h,v 1.6 2008-03-06 18:55:07 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -122,4 +121,3 @@ vec_t VectorNormalize (vec3_t v);
 vec_t Q_rint (vec_t in);
 
 #endif	/* __MATHLIB_H */
-

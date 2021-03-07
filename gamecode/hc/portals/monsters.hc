@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/monsters.hc,v 1.2 2007-02-07 16:59:34 sezero Exp $
- */
 /* ALL MONSTERS SHOULD BE 1 0 0 IN COLOR */
 
 // name =[framenum,	nexttime, nextthink] {code}

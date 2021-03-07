@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/axe.hc,v 1.2 2007-02-07 17:00:33 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\weapons\axe\final\axe.hc

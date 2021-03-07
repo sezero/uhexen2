@@ -2,8 +2,6 @@
  * cd_audio.c -- dos cdaudio support.
  * from quake1 source with minor adaptations for uhexen2.
  *
- * $Id$
- *
  * Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc.
  * All rights reserved.
  *

@@ -1,8 +1,4 @@
-/*
- * hwmquery.c
- * $Id$
- *
- * HWMQUERY 0.2 HexenWorld Master Server Query
+/* hwmquery.c - HWMQUERY 0.2 HexenWorld Master Server Query
  * Copyright (C) 2006-2011 O. Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,7 +16,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -345,4 +340,3 @@ int main (int argc, char **argv)
 	NET_Shutdown ();
 	return 0;
 }
-

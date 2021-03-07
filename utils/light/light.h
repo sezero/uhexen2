@@ -1,7 +1,4 @@
-/*
- * light.h
- * $Id: light.h,v 1.5 2007-03-14 21:04:40 sezero Exp $
- *
+/* light.h
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -21,8 +18,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __H2UTILS_LIGHT_H
-#define __H2UTILS_LIGHT_H
+#ifndef H2LIGHT_H
+#define H2LIGHT_H
 
 // structure of the light lump
 
@@ -52,5 +49,4 @@ void	LightFace (int surfnum);
 void	LightLeaf (dleaf_t *leaf);
 void	MakeTnodes (dmodel_t *bm);
 
-#endif	/* __H2UTILS_LIGHT_H */
-
+#endif	/* H2LIGHT_H */

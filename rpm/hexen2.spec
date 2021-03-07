@@ -1,5 +1,4 @@
 # RPM spec file for RedHat and Fedora.
-# $Id$
 
 # build options :
 # --without alsa: build without alsa audio support

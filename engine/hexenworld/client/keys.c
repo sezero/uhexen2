@@ -1,6 +1,5 @@
 /*
  * keys.c -- key up events are sent even if in console mode
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2006-2012  O.Sezer

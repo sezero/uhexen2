@@ -1,7 +1,6 @@
 /*
  * net.h -- quake's interface to the networking layer
  * network functions and data, common to the whole engine
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

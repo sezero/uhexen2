@@ -3,8 +3,6 @@
  * - depends on arch_def.h
  * - may depend on q_stdinc.h
  *
- * $Id$
- *
  * Copyright (C) 2007-2012  O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -322,4 +320,3 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
 
 
 #endif	/* __NET_SYS_H__ */
-

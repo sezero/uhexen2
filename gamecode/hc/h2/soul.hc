@@ -1,5 +1,3 @@
-/* h2/soul.hc */
-
 void () crusader_soul_touch =
 {
 	if(!other.flags2&FL_ALIVE)

@@ -1,7 +1,5 @@
-/*
- * vid_mgl4.c -- Win32 video driver using SciTech MGL-4.05
+/* vid_mgl4.c -- Win32 video driver using SciTech MGL-4.05
  * This is X86-WIN32 only: No WIN64 because no 64 bit MGL.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

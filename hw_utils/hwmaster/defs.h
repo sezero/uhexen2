@@ -1,8 +1,5 @@
-/*
- * mst_defs.h
+/* mst_defs.h
  * common definitions for hexenworld master server
- *
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -73,4 +70,3 @@ extern char	**com_argv;
 
 
 #endif	/* __HWMASTER_DEFS */
-

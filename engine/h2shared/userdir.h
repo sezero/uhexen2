@@ -1,6 +1,4 @@
-/*
- * userdir.h -- arch specific user directory definitions
- * $Id$
+/* userdir.h -- arch specific user directory definitions
  *
  * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>
  *

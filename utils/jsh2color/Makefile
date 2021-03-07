@@ -1,5 +1,4 @@
 # GNU Makefile for hexen2 jsh2colour tool using GCC.
-# $Id$
 #
 # To cross-compile for Win32 on Unix: either pass the W32BUILD=1
 # argument to make, or export it.  Also see build_cross_win32.sh.

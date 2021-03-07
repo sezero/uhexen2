@@ -1,5 +1,4 @@
 /* q_endian.h -- endianness detection / handling
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2007-2016  O.Sezer <sezero@users.sourceforge.net>

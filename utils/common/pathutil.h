@@ -1,7 +1,4 @@
-/*
- * pathutil.c -- filename handling utilities
- * $Id$
- *
+/* pathutil.c -- filename handling utilities
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -35,4 +32,3 @@ void	ExtractFileExtension (const char *in, char *out, size_t outsize);
 const char *FileGetExtension (const char *in); /* doesn't return NULL */
 
 #endif	/* __PATHUTIL_H */
-

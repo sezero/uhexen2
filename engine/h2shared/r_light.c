@@ -1,6 +1,5 @@
 /*
  * r_light.c
- * $Id: r_light.c,v 1.6 2007-09-14 14:10:02 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

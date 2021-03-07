@@ -1,7 +1,4 @@
-/*
- * cmd.h - command buffer and command execution
- * $Id$
- *
+/* cmd.h - command buffer and command execution
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -132,4 +129,3 @@ int ListAlias (const char *prefix, const char **buf, int pos);
 // maximum number of matches for console tab completion
 
 #endif	/* __HX2_CMD_H */
-

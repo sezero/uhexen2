@@ -1,7 +1,5 @@
-/*
- * mplpc.c -- support library for dosquake MPATH network driver.
+/* mplpc.c -- support library for dosquake MPATH network driver.
  * from quake1 source with minor adaptations for uhexen2.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -937,4 +935,3 @@ char *WSLIB_inet_ntoa (struct in_addr in)
 	return buf;
 }
 #endif	/* implemented in dos_inet.c */
-

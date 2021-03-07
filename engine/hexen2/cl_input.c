@@ -1,6 +1,5 @@
 /*
  * cl.input.c -- builds an intended movement command to send to the server
- * $Id: cl_input.c,v 1.23 2008-03-21 18:00:06 sezero Exp $
  *
  * Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc.
  * All rights reserved.

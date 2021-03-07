@@ -2,7 +2,6 @@
 ; snd_mixa.asm
 ; x86 assembly-language sound code
 ; this file uses NASM syntax.
-; $Id$
 ;
 ; Copyright (C) 1996-1997  Id Software, Inc.
 ;

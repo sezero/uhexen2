@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/hydra.hc,v 1.3 2007-02-07 17:01:03 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\monsters\hydra\final\hydra.hc

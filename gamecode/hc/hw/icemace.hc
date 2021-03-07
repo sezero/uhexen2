@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/icemace.hc,v 1.2 2007-02-07 16:57:55 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\weapons\icestaff\final\icestaff.hc

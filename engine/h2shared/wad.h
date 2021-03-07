@@ -1,6 +1,5 @@
 /*
  * wad.h -- wad file loading
- * $Id: wad.h,v 1.6 2007-11-11 13:17:42 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -75,4 +74,3 @@ void	*W_GetLumpNum (int num);
 void	SwapPic (qpic_t *pic);
 
 #endif	/* __HX2_WAD_H */
-

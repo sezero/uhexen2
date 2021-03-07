@@ -1,7 +1,4 @@
-/*
- * qcc.h
- * $Id: qcc.h,v 1.15 2010-01-11 18:48:20 sezero Exp $
- *
+/* qcc.h
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __QCC_H__
-#define __QCC_H__
+#ifndef QCC_H_
+#define QCC_H_
 
 /*
 	TODO:
@@ -463,4 +460,4 @@ extern	char	precache_files[MAX_FILES][MAX_DATA_PATH];
 extern	int	precache_files_block[MAX_SOUNDS];
 extern	int	numfiles;
 
-#endif	/* __QCC_H__ */
+#endif	/* QCC_H_ */

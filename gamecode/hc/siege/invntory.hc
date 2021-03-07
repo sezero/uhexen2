@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/invntory.hc,v 1.4 2007-02-07 17:01:18 sezero Exp $
- */
 
 void teleport_touch (void);
 void player_fly(void);

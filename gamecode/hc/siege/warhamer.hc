@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/warhamer.hc,v 1.2 2007-02-07 16:25:01 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\weapons\warhammer\final\warham.hc

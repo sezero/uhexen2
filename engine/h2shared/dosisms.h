@@ -1,7 +1,6 @@
 /*
  * dosisms.h -- DOS / DJGPP system header.
  * From quake1 source with minor adaptations for uhexen2.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -127,4 +126,3 @@ extern __dpmi_regs	regs;
 #endif
 
 #endif	/* _DOSISMS_H_ */
-

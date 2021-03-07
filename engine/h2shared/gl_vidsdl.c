@@ -1,7 +1,6 @@
 /*
  * gl_vidsdl.c -- SDL GL vid component
  * Select window size and mode and init SDL in GL mode.
- * $Id$
  *
  * Changed 7/11/04 by S.A.
  * - Fixed fullscreen opengl mode, window sizes

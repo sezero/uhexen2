@@ -2,7 +2,6 @@
 ; d_scana.asm
 ; x86 assembly-language turbulent texture mapping code
 ; this file uses NASM syntax.
-; $Id: d_scana.asm,v 1.5 2008-03-16 14:30:46 sezero Exp $
 ;
 ; Copyright (C) 1996-1997  Id Software, Inc.
 ; Copyright (C) 1997-1998  Raven Software Corp.

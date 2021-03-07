@@ -1,6 +1,5 @@
 /*
  * printsys.h -- console printing
- * $Id: printsys.h,v 1.7 2010-01-11 18:48:17 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>

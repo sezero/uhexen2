@@ -1,7 +1,4 @@
-/*
- * r_misc.c --
- * $Id: r_misc.c,v 1.10 2007-07-31 21:03:28 sezero Exp $
- *
+/* r_misc.c --
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -23,7 +20,6 @@
 
 #include "quakedef.h"
 #include "r_local.h"
-
 
 /*
 ===============

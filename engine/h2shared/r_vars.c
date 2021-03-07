@@ -1,6 +1,4 @@
-/*
- * r_vars.c -- global refresh variables
- * $Id: r_vars.c,v 1.6 2008-03-28 08:01:56 sezero Exp $
+/* r_vars.c -- global refresh variables
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -40,4 +38,3 @@ int		r_bmodelactive;
 int		FoundTrans;
 
 #endif	/* !id386 */
-

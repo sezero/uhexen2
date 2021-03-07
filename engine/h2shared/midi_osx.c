@@ -1,5 +1,4 @@
 /*
- * $Id$
  * based on an SDL_mixer code:
  * native_midi_macosx:  Native Midi support on Mac OS X for the SDL_mixer library
  * Copyright (C) 2009  Ryan C. Gordon <icculus@icculus.org>

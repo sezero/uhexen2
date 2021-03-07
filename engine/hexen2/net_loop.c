@@ -1,7 +1,4 @@
-/*
- * net_loop.c -- network loop driver
- * $Id: net_loop.c,v 1.9 2009-04-28 14:00:32 sezero Exp $
- *
+/* net_loop.c -- network loop driver
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -38,16 +35,13 @@ int Loop_Init (void)
 	return 0;
 }
 
-
 void Loop_Shutdown (void)
 {
 }
 
-
 void Loop_Listen (qboolean state)
 {
 }
-
 
 void Loop_SearchForHosts (qboolean xmit)
 {
@@ -65,7 +59,6 @@ void Loop_SearchForHosts (qboolean xmit)
 	hostcache[0].driver = net_driverlevel;
 	strcpy(hostcache[0].cname, "local");
 }
-
 
 qsocket_t *Loop_Connect (const char *host)
 {
@@ -106,7 +99,6 @@ qsocket_t *Loop_Connect (const char *host)
 	return loop_client;
 }
 
-
 qsocket_t *Loop_CheckNewConnections (void)
 {
 	if (!localconnectpending)
@@ -122,12 +114,10 @@ qsocket_t *Loop_CheckNewConnections (void)
 	return loop_server;
 }
 
-
 static int IntAlign(int value)
 {
 	return (value + (sizeof(int) - 1)) & (~(sizeof(int) - 1));
 }
-
 
 int Loop_GetMessage (qsocket_t *sock)
 {
@@ -154,7 +144,6 @@ int Loop_GetMessage (qsocket_t *sock)
 
 	return ret;
 }
-
 
 int Loop_SendMessage (qsocket_t *sock, sizebuf_t *data)
 {
@@ -189,7 +178,6 @@ int Loop_SendMessage (qsocket_t *sock, sizebuf_t *data)
 	return 1;
 }
 
-
 int Loop_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *data)
 {
 	byte *buffer;
@@ -221,7 +209,6 @@ int Loop_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *data)
 	return 1;
 }
 
-
 qboolean Loop_CanSendMessage (qsocket_t *sock)
 {
 	if (!sock->driverdata)
@@ -229,12 +216,10 @@ qboolean Loop_CanSendMessage (qsocket_t *sock)
 	return sock->canSend;
 }
 
-
 qboolean Loop_CanSendUnreliableMessage (qsocket_t *sock)
 {
 	return true;
 }
-
 
 void Loop_Close (qsocket_t *sock)
 {
@@ -248,4 +233,3 @@ void Loop_Close (qsocket_t *sock)
 	else
 		loop_server = NULL;
 }
-

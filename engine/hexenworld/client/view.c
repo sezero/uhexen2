@@ -1,6 +1,5 @@
 /*
  * view.c -- player eye positioning
- * $Id$
  *
  * The view is allowed to move slightly from it's true position
  * for bobbing, but if it exceeds 8 pixels linear distance

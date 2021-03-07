@@ -1,6 +1,5 @@
 /*
  * r_bsp.c
- * $Id: r_bsp.c,v 1.7 2008-04-22 13:06:06 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

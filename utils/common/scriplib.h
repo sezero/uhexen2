@@ -1,7 +1,4 @@
-/*
- * scriplib.h
- * $Id: scriplib.h,v 1.2 2007-11-11 16:11:46 sezero Exp $
- *
+/* scriplib.h
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -35,4 +32,3 @@ void UnGetToken (void);
 qboolean TokenAvailable (void);
 
 #endif	/* __SCRIPLIB_H */
-

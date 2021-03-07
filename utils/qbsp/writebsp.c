@@ -1,7 +1,4 @@
-/*
- * writebsp.c
- * $Id: writebsp.c,v 1.16 2008-11-07 18:02:42 sezero Exp $
- *
+/* writebsp.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -442,13 +439,13 @@ static qboolean TEX_InitWads (void)
 	 */
 		if (*path == '/')
 			tmp = fullpath;
-#  ifdef PLATFORM_WINDOWS
+#ifdef PLATFORM_WINDOWS
 		/* absolute path with drive? */
 		else if ( path[1] == ':' &&
 			 ((path[0] >= 'A' && path[0] <= 'Z') ||
 			  (path[0] >= 'a' && path[0] <= 'z')) )
 			tmp = fullpath;
-#  endif /* WINDOWS */
+#endif
 		else	/* relative path or no path. */
 		{
 			strcpy (fullpath, projectpath);
@@ -630,4 +627,3 @@ void FinishBSPFile (void)
 	PrintBSPFileSizes ();
 	WriteBSPFile (bspfilename);
 }
-

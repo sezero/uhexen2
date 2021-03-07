@@ -1,6 +1,4 @@
-/*
- * quakefs.h -- Hexen II filesystem
- * $Id$
+/* quakefs.h - Hexen II filesystem
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>
@@ -165,4 +163,3 @@ char *FS_fgets(char *s, int size, fshandle_t *fh);
 long FS_filelength (fshandle_t *fh);
 
 #endif	/* __QUAKEFS_H */
-

@@ -1,7 +1,5 @@
-/*
- * net_ser.h -- dosquake serial network driver.
+/* net_ser.h -- dosquake serial network driver.
  * from quake1 source with minor adaptations for uhexen2.
- * $Id: net_ser.h,v 1.2 2007-11-11 13:17:42 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -38,4 +36,3 @@ void		Serial_Close (qsocket_t *sock);
 void		Serial_Shutdown (void);
 
 #endif	/* __net_ser_h */
-

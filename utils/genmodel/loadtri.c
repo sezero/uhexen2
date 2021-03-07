@@ -1,6 +1,4 @@
-/*
- * loadtri.c
- * $Id: loadtri.c,v 1.14 2010-02-22 22:30:33 sezero Exp $
+/* loadtri.c
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

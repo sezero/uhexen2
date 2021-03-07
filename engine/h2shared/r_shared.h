@@ -1,7 +1,6 @@
 /*
  * r_shared.h -- general refresh-related stuff shared between the
  * refresh and the driver.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -190,4 +189,3 @@ extern	const int	color_offsets[MAX_PLAYER_CLASS];
 #endif	/* !GLQUAKE	*/
 
 #endif	/* R_SHARED_H	*/
-

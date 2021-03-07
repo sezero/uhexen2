@@ -1,7 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/torch.hc,v 1.3 2007-02-07 16:57:11 sezero Exp $
- */
-/*
 ==========================================================
 TORCH.HC
 MG

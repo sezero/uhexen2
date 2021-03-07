@@ -3,7 +3,6 @@
  * extended video modes: VESA-specific DOS video stuff
  * TODO: make dependencies on vid_vga.c explicit or eliminate them
  * from quake1 source with minor adaptations for uhexen2.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

@@ -1,6 +1,4 @@
-/*
- * cd_unix.h -- header for Unix builds to pick the correct cdaudio code
- * $Id: cd_unix.h,v 1.5 2008-04-02 20:37:36 sezero Exp $
+/* cd_unix.h -- header for Unix builds to pick the correct cdaudio code
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +15,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 #ifndef __CD_UNIX_H
 #define __CD_UNIX_H
@@ -44,4 +41,3 @@
 #endif
 
 #endif	/* __CD_UNIX_H */
-

@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/axe.hc,v 1.2 2007-02-07 16:56:55 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\weapons\axe\final\axe.hc

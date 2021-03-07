@@ -1,10 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/math.hc,v 1.2 2007-02-07 16:59:34 sezero Exp $
- */
-
-
-
-/*
  * crandom() -- Returns a random number between -1 and 1.
  */
 
@@ -78,4 +72,3 @@ vector newvec;
 	newvec_z=random(vrange_z,0-vrange_z);
 	return newvec;
 }
-

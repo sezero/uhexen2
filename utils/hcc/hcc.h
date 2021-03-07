@@ -1,6 +1,4 @@
-/*
- * hcc.h
- * $Id: hcc.h,v 1.10 2010-01-11 18:48:20 sezero Exp $
+/* hcc.h
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -21,8 +19,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __HCC_H__
-#define __HCC_H__
+#ifndef HCC_H_
+#define HCC_H_
 
 // HEADER FILES ------------------------------------------------------------
 
@@ -306,5 +304,4 @@ extern	int	ex_FunctionCallCount;
 extern	type_t	*st_ReturnType;
 extern	qboolean st_ReturnParsed;
 
-#endif	/* __HCC_H__ */
-
+#endif	/* HCC_H_ */

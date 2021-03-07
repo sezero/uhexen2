@@ -1,6 +1,5 @@
 /*
  * sv_model.h -- header for model loading and caching
- * $Id$
  *
  * This version of model.[ch] are based on the quake dedicated server
  * application lhnqserver by Forest 'LordHavoc' Hale, with simplified

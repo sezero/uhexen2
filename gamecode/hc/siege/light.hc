@@ -1,7 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/light.hc,v 1.2 2007-02-07 17:01:19 sezero Exp $
- */
-/*
 ==========================================================
 LIGHT.HC
 MG

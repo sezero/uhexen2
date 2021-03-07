@@ -1,9 +1,4 @@
-/*
- * huffman.c
- * huffman encoding/decoding for use in hexenworld networking
- *
- * $Id: huffman.c,v 1.21 2010-01-11 18:48:19 sezero Exp $
- *
+/* huffman.c -- huffman encoding/decoding for use in hexenworld networking
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
  * This program is free software; you can redistribute it and/or modify

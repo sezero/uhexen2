@@ -1,5 +1,4 @@
 # GNU Makefile for Hexen II dedicated server (h2ded) using GCC.
-# $Id$
 #
 # Remember to "make clean" between different types of builds or targets.
 #

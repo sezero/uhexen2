@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/sheep.hc,v 1.2 2007-02-07 16:24:59 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\players\SHEEP\ambient\sheep.hc

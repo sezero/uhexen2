@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/subs.hc,v 1.2 2007-02-07 16:57:11 sezero Exp $
- */
-
 float SPAWNFLAG_ACTIVATED	= 8;
 
 

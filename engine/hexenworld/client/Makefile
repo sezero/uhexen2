@@ -1,5 +1,4 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Id$
 #
 # Remember to "make clean" between different types of builds or targets.
 # Unix platforms require SDL !!!

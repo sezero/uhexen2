@@ -1,6 +1,4 @@
-/*
- * snd_mix.c -- portable code to mix sounds for snd_dma.c.
- * $Id$
+/* snd_mix.c -- portable code to mix sounds for snd_dma.c.
  *
  * Copyright (C) 1996-2001 Id Software, Inc.
  * Copyright (C) 2010-2011 O. Sezer <sezero@users.sourceforge.net>
@@ -349,4 +347,3 @@ static void SND_PaintChannelFrom16 (channel_t *ch, sfxcache_t *sc, int count)
 
 	ch->pos += count;
 }
-

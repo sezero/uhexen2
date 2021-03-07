@@ -1,7 +1,4 @@
-/*
- * net_wipx.h -- winsock ipx driver
- * $Id: net_wipx.h,v 1.8 2009-04-28 14:00:34 sezero Exp $
- *
+/* net_wipx.h -- winsock ipx driver
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -43,4 +40,3 @@ int  WIPX_GetSocketPort (struct qsockaddr *addr);
 int  WIPX_SetSocketPort (struct qsockaddr *addr, int port);
 
 #endif	/* __NET_WINIPX_H */
-

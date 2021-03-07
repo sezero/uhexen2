@@ -1,7 +1,4 @@
-/*
- * sys_win.c -- Windows system interface code
- * $Id$
- *
+/* sys_win.c -- Windows system interface code
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>
  *

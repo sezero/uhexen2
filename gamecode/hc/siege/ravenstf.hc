@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/ravenstf.hc,v 1.2 2007-02-07 17:01:22 sezero Exp $
- */
-
 // For building the model
 $cd Q:\art\models\weapons\newass
 $origin 0 0 0

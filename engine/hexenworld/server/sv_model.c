@@ -1,8 +1,6 @@
-/*
- * sv_model.c -- model loading and caching
+/* sv_model.c -- model loading and caching
  * models are the only shared resource between a client and server
  * running on the same machine.
- * $Id$
  *
  * This version of model.[ch] are based on the quake dedicated server
  * application lhnqserver by Forest 'LordHavoc' Hale, with simplified
@@ -940,4 +938,3 @@ static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer)
 		}
 	}
 }
-

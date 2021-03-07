@@ -1,6 +1,5 @@
 /*
  * Mac OS X specific functions needed by the common sys_unix.c.
- * $Id$
  *
  * Copyright (C) 2008-2012  O.Sezer <sezero@users.sourceforge.net>
  *
@@ -109,4 +108,3 @@ char *Sys_GetClipboardData (void)
     }
     return data;
 }
-

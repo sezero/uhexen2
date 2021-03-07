@@ -1,6 +1,4 @@
-/*
- * sv_effect.c -- Client side effects.
- * $Id$
+/* sv_effect.c -- Client side effects.
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

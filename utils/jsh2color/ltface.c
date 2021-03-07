@@ -1,7 +1,4 @@
-/*
- * ltface.c
- * $Id: ltface.c,v 1.13 2010-10-24 08:35:47 sezero Exp $
- *
+/* ltface.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Modifications by Kevin Shanahan, 1999-2000
  *
@@ -883,4 +880,3 @@ void TestLightFace (int surfnum, const vec3_t faceoffset)
 		}
 	}
 }
-

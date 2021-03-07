@@ -1,7 +1,4 @@
-/*
- * trace.c
- * $Id: trace.c,v 1.9 2007-12-14 16:41:23 sezero Exp $
- *
+/* trace.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Modifications by Kevin Shanahan, 1999-2000
  *
@@ -219,4 +216,3 @@ qboolean TestLine (const vec3_t start, const vec3_t stop)
 		node = tnode->children[side];
 	}
 }
-

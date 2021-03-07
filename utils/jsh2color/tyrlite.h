@@ -1,7 +1,4 @@
-/*
- * tyrlite.h
- * $Id$
- *
+/* tyrlite.h
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Modifications by Kevin Shanahan, 1999-2000
  * MH, 2001,  Juraj Styk, 2002,  O.Sezer 2012
@@ -55,4 +52,3 @@ void	LightLeaf (dleaf_t *leaf);
 void	MakeTnodes (dmodel_t *bm);
 
 #endif	/* TYRLITE_H */
-

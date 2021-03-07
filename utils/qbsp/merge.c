@@ -1,7 +1,4 @@
-/*
- * merge.c
- * $Id: merge.c,v 1.8 2007-12-14 16:41:25 sezero Exp $
- *
+/* merge.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *

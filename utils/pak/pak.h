@@ -1,7 +1,4 @@
-/*
- * pak.h
- * $Id: pak.h,v 1.1 2010-02-23 12:40:12 sezero Exp $
- *
+/* pak.h
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef _QUAKE_PAK_H
-#define _QUAKE_PAK_H
+#ifndef QUAKE_PAK_H
+#define QUAKE_PAK_H
 
 typedef struct
 {
@@ -40,5 +37,4 @@ typedef struct pack_s
 
 pack_t *LoadPackFile (const char *packfile);
 
-#endif	/* _QUAKE_PAK_H */
-
+#endif	/* QUAKE_PAK_H */

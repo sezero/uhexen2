@@ -1,7 +1,4 @@
-/*
- * vis.c
- * $Id: vis.c,v 1.18 2009-05-12 14:23:13 sezero Exp $
- *
+/* vis.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -375,7 +372,6 @@ static	void	LeafThread (void *junk)
 /*
 ===============
 CompressRow
-
 ===============
 */
 static int CompressRow (byte *vis, byte *dest)
@@ -885,4 +881,3 @@ int main (int argc, char **argv)
 
 	return 0;
 }
-

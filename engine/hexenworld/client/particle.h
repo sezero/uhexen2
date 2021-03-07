@@ -1,7 +1,6 @@
 /*
  * particle.h -- particle enums and types: note that hexen2 and
  * hexenworld versions of these are different !!!
- * $Id: particle.h,v 1.1 2007-07-28 12:28:15 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -99,4 +98,3 @@ typedef struct particle_s
 } particle_t;
 
 #endif	/* __PARTICLE_H */
-

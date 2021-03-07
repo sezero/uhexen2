@@ -1,7 +1,4 @@
-/*
- * bspfile.h -- common bspfile header
- * $Id: bspfile.h,v 1.6 2007-09-14 14:10:00 sezero Exp $
- *
+/* bspfile.h -- common bspfile header
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __BSPFILE_H
-#define __BSPFILE_H
+#ifndef BSPFILE_H_
+#define BSPFILE_H_
 
 // upper design bounds
 
@@ -236,7 +233,6 @@ typedef struct
 #define	ANGLE_UP	-1
 #define	ANGLE_DOWN	-2
 
-
 // the utilities get to be lazy and just use large static arrays
 
 extern	int			nummodels;
@@ -285,15 +281,14 @@ extern	int			numsurfedges;
 extern	int			dsurfedges[MAX_MAP_SURFEDGES];
 
 
-void DecompressVis (byte *in, byte *decompressed);
-int CompressVis (byte *vis, byte *dest);
+void	DecompressVis (byte *in, byte *decompressed);
+int	CompressVis (byte *vis, byte *dest);
 
 void	LoadBSPFile (const char *filename);
 void	WriteBSPFile (const char *filename);
 void	PrintBSPFileSizes (void);
 
 //===============
-
 
 typedef struct epair_s
 {
@@ -316,7 +311,7 @@ extern	entity_t	entities[MAX_MAP_ENTITIES];
 void	ParseEntities (void);
 void	UnparseEntities (void);
 
-void 	SetKeyValue (entity_t *ent, const char *key, const char *value);
+void	SetKeyValue (entity_t *ent, const char *key, const char *value);
 const char	*ValueForKey (entity_t *ent, const char *key);
 					// will return "" if not present
 
@@ -325,7 +320,6 @@ void	GetVectorForKey (entity_t *ent, const char *key, vec3_t vec);
 
 epair_t *ParseEpair (void);
 
-#endif	/*  QUAKE_GAME */
+#endif	/* QUAKE_GAME */
 
-#endif	/* __BSPFILE_H */
-
+#endif	/* BSPFILE_H_ */

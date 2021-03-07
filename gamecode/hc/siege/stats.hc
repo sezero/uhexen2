@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/stats.hc,v 1.2 2007-02-07 17:01:25 sezero Exp $
- */
-
 //  min health, max health,
 //  min health per level up to level 10,  min health per level up to level 10, 
 //  health per level past level 10

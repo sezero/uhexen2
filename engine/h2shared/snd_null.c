@@ -1,7 +1,6 @@
 /*
  * snd_null.c -- include this instead of all the other snd_* files
  * to have no sound code whatsoever
- * $Id: snd_null.c,v 1.4 2007-07-17 16:10:09 sezero Exp $
  *
  * Copyright (C) 1996-1997 Id Software, Inc.
  *
@@ -28,7 +27,7 @@ cvar_t		bgmtype = {"bgmtype", "cd", CVAR_ARCHIVE};	// cd or midi
 cvar_t		sfxvolume = {"volume", "0.7", CVAR_ARCHIVE};
 cvar_t		precache = {"precache", "1", CVAR_NONE};
 
- 
+
 void S_Init (void)
 {
 	Cvar_RegisterVariable(&precache);
@@ -73,7 +72,7 @@ void S_Update (vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 }
 
 void S_UpdateSoundPos (int entnum, int entchannel, vec3_t origin)
-{	
+{
 }
 
 void S_StopAllSounds (qboolean clear)
@@ -103,4 +102,3 @@ void S_BlockSound (void)
 void S_UnblockSound (void)
 {
 }
-

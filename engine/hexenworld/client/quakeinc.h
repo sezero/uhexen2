@@ -2,7 +2,6 @@
  * quakeinc.h -- primary header for client
  * FIXME:	kill this in the future and make each C
  *		file include only the necessary headers.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

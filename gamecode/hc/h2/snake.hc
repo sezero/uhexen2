@@ -1,7 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/snake.hc,v 1.2 2007-02-07 16:57:10 sezero Exp $
- */
-/*
 ==============================================================================
 
 SNAKE
@@ -504,4 +501,3 @@ void() monster_snake =
 
 	self.counter = 0;
 };
-

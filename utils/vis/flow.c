@@ -1,7 +1,4 @@
-/*
- * flow.c
- * $Id: flow.c,v 1.11 2008-03-06 18:26:48 sezero Exp $
- *
+/* flow.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -596,4 +593,3 @@ void BasePortalVis (void)
 //		printf ("portal:%4i  c_leafsee:%4i \n", i, c_leafsee);
 	}
 }
-

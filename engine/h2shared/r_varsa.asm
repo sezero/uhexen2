@@ -3,7 +3,6 @@
 ; global refresh variables
 ;
 ; this file uses NASM syntax.
-; $Id: r_varsa.asm,v 1.6 2008-03-28 08:01:56 sezero Exp $
 ;
 ; Copyright (C) 1996-1997  Id Software, Inc.
 ; Copyright (C) 1997-1998  Raven Software Corp.

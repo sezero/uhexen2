@@ -1,6 +1,5 @@
 /*
  * tracker music (module file) decoding support using libmikmod
- * $Id$
  *
  * Copyright (C) 2013 O.Sezer <sezero@users.sourceforge.net>
  *
@@ -220,4 +219,3 @@ snd_codec_t mikmod_codec =
 };
 
 #endif	/* USE_CODEC_MIKMOD */
-

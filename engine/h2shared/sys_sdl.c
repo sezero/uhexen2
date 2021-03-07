@@ -1,7 +1,6 @@
 /*
  * Alternative SDL-using implementations of system functions needed by
  * the common sys_unix.c when platform specific ones are not available.
- * $Id$
  *
  * Copyright (C) 2008-2012  O.Sezer <sezero@users.sourceforge.net>
  *
@@ -26,4 +25,3 @@
 #include "sys_sdl.h"
 
 /* NOTHING HERE YET. */
-

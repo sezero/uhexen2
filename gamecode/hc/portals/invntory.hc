@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/invntory.hc,v 1.3 2007-02-07 16:59:33 sezero Exp $
- */
 
 entity SelectSpawnPoint(void);
 void teleport_touch (void);

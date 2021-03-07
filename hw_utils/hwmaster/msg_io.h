@@ -1,8 +1,5 @@
 /*
- * msg_io.h
- * Message IO functions
- *
- * $Id: msg_io.h,v 1.1 2007-02-12 16:54:49 sezero Exp $
+ * msg_io.h -- Message IO functions
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

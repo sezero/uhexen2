@@ -1,6 +1,5 @@
 /*
  * cl_cmd.c -- client command forwarding to server
- * $Id: cl_cmd.c,v 1.5 2007-02-25 19:01:15 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

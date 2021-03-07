@@ -7,8 +7,6 @@
  * - shouldn't depend on arch_def.h, q_stdinc.h, or
  *   any other headers
  *
- * $Id$
- *
  * Copyright (C) 2007-2011  O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -113,4 +111,3 @@
 
 
 #endif	/* HX2_COMPILER_H */
-

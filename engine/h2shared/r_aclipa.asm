@@ -3,7 +3,6 @@
 ; x86 assembly-language Alias model transform and project code.
 ;
 ; this file uses NASM syntax.
-; $Id: r_aclipa.asm,v 1.5 2008-03-16 14:30:46 sezero Exp $
 ;
 ; Copyright (C) 1996-1997  Id Software, Inc.
 ;

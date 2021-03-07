@@ -1,7 +1,6 @@
 /*
  * d_sprite.c --
  * software top-level rasterization driver module for drawing sprites
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

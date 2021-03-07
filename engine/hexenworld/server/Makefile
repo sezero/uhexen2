@@ -1,5 +1,4 @@
 # GNU Makefile for hexenworld server using GCC.
-# $Id$
 #
 # Remember to "make clean" between different types of builds or targets.
 #

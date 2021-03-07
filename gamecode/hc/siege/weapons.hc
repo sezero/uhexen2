@@ -1,7 +1,3 @@
-/*
- * siege/weapons.hc
- */
-
 void (entity targ, entity inflictor, entity attacker, float damage) T_Damage;
 void(entity bomb, entity attacker, float rad, entity ignore) T_RadiusDamage;
 void(vector org, vector vel, float damage,entity victim) SpawnPuff;
@@ -1223,7 +1219,7 @@ W_ChangeWeapon
 */
 void() W_ChangeWeapon =
 {
-	if(self.weapon==IT_WEAPON1&&self.flags2&FL2_EXCALIBUR)
+	if(self.weapon==IT_WEAPON1 && self.flags2&FL2_EXCALIBUR)
 		return;
 
 	if(self.sheep_time>time)

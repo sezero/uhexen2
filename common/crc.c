@@ -1,8 +1,5 @@
 /*
- * crc.c
- * crc functions
- *
- * $Id$
+ * crc.c -- crc functions
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify

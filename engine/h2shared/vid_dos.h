@@ -1,7 +1,6 @@
 /*
  * vid_dos.h -- header file for DOS-specific video stuff.
  * from quake1 source with minor adaptations for uhexen2.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

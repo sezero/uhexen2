@@ -1,6 +1,5 @@
 /*
  * d_zpoint.c - software driver module for drawing z-buffered points
- * $Id: d_zpoint.c,v 1.4 2007-03-14 21:03:06 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

@@ -1,7 +1,3 @@
-/*
- * siege/skullwiz.hc
- */
-
 //
 $frame skdeth1      skdeth2      skdeth3      skdeth4      skdeth5      
 $frame skdeth6      skdeth7      skdeth8      skdeth9      skdeth10     

@@ -1,7 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/spit.hc,v 1.2 2007-02-07 16:59:37 sezero Exp $
- */
-/*
 ==============================================================================
 
 spit
@@ -61,11 +58,7 @@ void() SpitTouch =
 };
 
 
-
-
-
 //============================================================================
-
 
 void spit_1 (void)
 {
@@ -77,7 +70,6 @@ void spit_1 (void)
 
 
 //============================================================================
-
 
 void(vector offset) do_spit =
 {
@@ -91,7 +83,7 @@ void(vector offset) do_spit =
 	missile.solid = SOLID_BBOX;
 
 	setmodel (missile, "models/spit.mdl");
-	setsize (missile, '0 0 0', '0 0 0');		
+	setsize (missile, '0 0 0', '0 0 0');
 
 	// set missile speed	
 

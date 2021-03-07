@@ -1,8 +1,4 @@
-/*
- * comp.c
- *
- * $Id$
- *
+/* comp.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997 Eric Hobbs <elhobbs@comcast.net>
  * Copyright (C) 2005-2012 O.Sezer <sezero@users.sourceforge.net>
@@ -22,7 +18,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 #include "q_stdinc.h"
 #include "compiler.h"
@@ -1314,4 +1309,3 @@ qboolean PR_CompileFile (const char *string, const char *filename)
 
 	return (pr_error_count == 0);
 }
-

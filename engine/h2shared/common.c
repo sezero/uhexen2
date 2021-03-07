@@ -1,7 +1,5 @@
 /*
  * common.c -- misc utility functions used in client and server
- * $Id$
- *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2008-2012  O.Sezer <sezero@users.sourceforge.net>
  *

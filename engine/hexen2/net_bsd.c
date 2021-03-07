@@ -1,7 +1,4 @@
-/*
- * net_bsd.c
- * $Id$
- *
+/* net_bsd.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -36,10 +33,10 @@ net_driver_t net_drivers[] =
 		false,
 		Loop_Init,
 		Loop_Listen,
-#if !defined(SERVERONLY)
+		#if !defined(SERVERONLY)
 		Loop_SearchForHosts,
 		Loop_Connect,
-#endif	/* SERVERONLY */
+		#endif
 		Loop_CheckNewConnections,
 		Loop_GetMessage,
 		Loop_SendMessage,
@@ -55,10 +52,10 @@ net_driver_t net_drivers[] =
 		false,
 		Datagram_Init,
 		Datagram_Listen,
-#if !defined(SERVERONLY)
+		#if !defined(SERVERONLY)
 		Datagram_SearchForHosts,
 		Datagram_Connect,
-#endif	/* SERVERONLY */
+		#endif
 		Datagram_CheckNewConnections,
 		Datagram_GetMessage,
 		Datagram_SendMessage,
@@ -101,4 +98,3 @@ net_landriver_t	net_landrivers[] =
 };
 
 const int net_numlandrivers = (sizeof(net_landrivers) / sizeof(net_landrivers[0]));
-

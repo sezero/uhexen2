@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/ai.hc,v 1.7 2007-02-07 16:56:54 sezero Exp $
- */
 void(entity etemp, entity stemp, entity stemp, float dmg) T_Damage;
 /*
 
@@ -170,12 +167,12 @@ float infront_of_ent (entity targ , entity from)
 
 	spot2=(targ.absmax+targ.absmin)*0.5;
 
-    vec = normalize (spot2 - spot1);
+	vec = normalize (spot2 - spot1);
 	dot = vec * v_forward;
 
-    accept = 0.3;
-	
-    if ( dot > accept)
+	accept = 0.3;
+
+	if ( dot > accept)
 		return TRUE;
 	return FALSE;
 }
@@ -217,7 +214,6 @@ Called every 0.1 sec by monsters
 ============
 */
 /*
-
 void ChangeYaw ()
 {
 float		ideal, move;
@@ -226,7 +222,6 @@ float		ideal, move;
 // mod down the current angle
 	current_yaw = anglemod( self.angles_y );
 	ideal = self.ideal_yaw;
-
 
 	if (current_yaw == ideal)
 		return;
@@ -258,7 +253,6 @@ float		ideal, move;
 
 	self.angles_y = current_yaw;
 }
-
 */
 
 

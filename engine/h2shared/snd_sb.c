@@ -1,7 +1,5 @@
-/*
- * snd_sb.c -- sound support for dosquake. sound blaster code.
+/* snd_sb.c -- sound support for dosquake. sound blaster code.
  * from quake1 source with minor adaptations for uhexen2.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

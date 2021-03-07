@@ -1,7 +1,4 @@
-/*
- * map.h
- * $Id: map.h,v 1.6 2007-11-11 18:48:07 sezero Exp $
- *
+/* map.h
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -21,8 +18,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __H2UTILS_MAP_H
-#define __H2UTILS_MAP_H
+#ifndef H2MAP_H
+#define H2MAP_H
 
 #define	MAX_FACES	64	// 16
 
@@ -75,5 +72,4 @@ void	GetVectorForKey (entity_t *ent, const char *key, vec3_t vec);
 
 void	WriteEntitiesToString (void);
 
-#endif	/* __H2UTILS_MAP_H */
-
+#endif	/*H2MAP_H */

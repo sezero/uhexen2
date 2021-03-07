@@ -1,6 +1,4 @@
-/*
- * console.h -- the game console
- * $Id: console.h,v 1.13 2009-06-22 14:00:21 sezero Exp $
+/* console.h -- the game console
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -57,4 +55,3 @@ void Con_ToggleConsole_f (void);
 void Con_NotifyBox (const char *text);	// during startup for sound / cd warnings
 
 #endif	/* __CONSOLE_H */
-

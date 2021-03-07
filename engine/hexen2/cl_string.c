@@ -1,7 +1,6 @@
 /*
  * cl_string.c: Hexen II internationalized stuff
  * strings for the client-side puzzle piece and objectives displays.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

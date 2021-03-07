@@ -1,7 +1,4 @@
-/*
- * pakfile.c -- pakfile common lib.
- * $Id: pakfile.c,v 1.1 2010-02-23 12:40:12 sezero Exp $
- *
+/* pakfile.c -- pakfile common lib.
  * Copyright (C) 1996-2001 Id Software, Inc.
  * Copyright (C) 2010 Ozkan Sezer <sezero@users.sourceforge.net>
  *
@@ -99,4 +96,3 @@ pack_t *LoadPackFile (const char *packfile)
 
 	return pack;
 }
-

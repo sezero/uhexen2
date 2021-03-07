@@ -1,6 +1,4 @@
-/*
- * hexen2/server.h
- * $Id$
+/* hexen2/server.h
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -311,4 +309,3 @@ void SV_SaveEffects (FILE *FH);
 void SV_LoadEffects (FILE *FH);
 
 #endif	/* __HX2_SERVER_H */
-

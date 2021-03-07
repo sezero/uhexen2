@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/raven.hc,v 1.1.1.1 2004-11-29 11:35:11 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\monsters\RAVEN\FINAL\raven.hc

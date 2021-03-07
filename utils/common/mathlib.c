@@ -1,6 +1,5 @@
 /*
  * mathlib.c -- math primitives
- * $Id: mathlib.c,v 1.4 2008-03-06 18:55:07 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

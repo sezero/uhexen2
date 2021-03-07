@@ -1,7 +1,5 @@
-/*
- * net_ipx.c -- IPX network driver for dosquake.
+/* net_ipx.c -- IPX network driver for dosquake.
  * from quake1 source with minor adaptations for uhexen2.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

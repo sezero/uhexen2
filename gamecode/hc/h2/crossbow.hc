@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/crossbow.hc,v 1.4 2007-02-07 16:57:00 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\weapons\crossbow\final\crossbow.hc

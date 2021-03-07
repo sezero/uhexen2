@@ -1,6 +1,4 @@
-/*
- * skin.c -- skin loading
- * $Id$
+/* skin.c -- skin loading
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -307,4 +305,3 @@ void	Skin_AllSkins_f (void)
 
 	Skin_Skins_f ();
 }
-

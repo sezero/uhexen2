@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/purifier.hc,v 1.3 2007-03-18 08:11:02 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\weapons\purifier\final\purifier.hc

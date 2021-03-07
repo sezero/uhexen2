@@ -1,7 +1,6 @@
 /*
  * vid_cgx.c -- CyberGraphX video driver for AmigaOS & variants.
  * Select window size and mode and init CGX in SOFTWARE mode.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2004-2005  Steven Atkinson <stevenaaus@yahoo.com>

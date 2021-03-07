@@ -1,7 +1,5 @@
 /*
  * info_str.c -- Hexen2World info strings handling
- * $Id: info_str.c,v 1.9 2007-11-11 13:17:44 sezero Exp $
- *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify

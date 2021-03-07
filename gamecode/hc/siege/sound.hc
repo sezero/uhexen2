@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/sound.hc,v 1.2 2007-02-07 17:01:24 sezero Exp $
- */
-
 void sound_maker_run(void)
 {
 	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);

@@ -1,8 +1,4 @@
-/*
- * hcc.c
- *
- * $Id: hcc.c,v 1.22 2009-06-15 09:12:21 sezero Exp $
- *
+/* hcc.c
  * Hash table modifications based on fastqcc by Jonathan Roy
  * (roy@atlantic.net).
  *
@@ -25,7 +21,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 // HEADER FILES ------------------------------------------------------------
 

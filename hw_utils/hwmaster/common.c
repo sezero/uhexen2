@@ -1,7 +1,5 @@
 /*
  * common.c -- misc utility functions used in client and server
- * $Id: common.c,v 1.6 2007-12-14 16:41:13 sezero Exp $
- *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify

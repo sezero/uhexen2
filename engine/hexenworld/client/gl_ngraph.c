@@ -1,6 +1,5 @@
 /*
  * gl_ngraph.c -- net graph drawing
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -59,7 +58,7 @@ static void R_LineGraph (int x, int h)
 }
 
 
-#if 0	// no users.
+#if 0	/* no users. */
 extern	byte		*draw_chars;	// 8*8 graphic characters
 
 void Draw_CharToNetGraph (int x, int y, int num)
@@ -162,7 +161,6 @@ void R_NetGraph (void)
 	glVertex2f_fp (x, y+NET_GRAPHHEIGHT);
 	glEnd_fp ();
 }
-
 
 void R_InitNetgraphTexture (void)
 {

@@ -1,11 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/artifact.hc,v 1.2 2007-02-07 16:56:55 sezero Exp $
- */
-
-
-
-
-/*
  * artifact_touch() -- Called when an artifact is being touched.
  *                     Awards players random amounts of whatever they represent.
  */

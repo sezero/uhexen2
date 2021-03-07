@@ -1,6 +1,4 @@
-/*
- * cd_sdl.c
- * $Id$
+/* cd_sdl.c
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Taken from the Twilight project with modifications
@@ -21,7 +19,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 #include "cd_unix.h"
 
@@ -543,4 +540,3 @@ void CDAudio_Shutdown(void)
 #endif	/* SDL_INIT_CDROM */
 
 #endif	/* __USE_SDL_CDROM__ */
-

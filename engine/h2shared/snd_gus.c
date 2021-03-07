@@ -1,8 +1,6 @@
-/*
- * snd_gus.c -- Routines for GUS support in dosquake
+/* snd_gus.c -- Routines for GUS support in dosquake
  * Author(s) :  Jayeson Lee-Steere
  * from quake1 source with minor adaptations for uhexen2.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -1372,4 +1370,3 @@ snd_driver_t snddrv_gus =
 };
 
 #endif	/* HAVE_DOS_GUS_SOUND */
-

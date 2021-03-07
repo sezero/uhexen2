@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/buttons.hc,v 1.2 2007-02-07 16:56:59 sezero Exp $
- */
 // button and multiple button
 
 float SPAWNFLAG_BUTTON_ACTIVATE = 1;

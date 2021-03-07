@@ -1,7 +1,4 @@
-/*
- * bspfile.h -- common bspfile header
- * $Id: bspfile.h,v 1.5 2007-09-14 14:10:06 sezero Exp $
- *
+/* bspfile.h -- common bspfile header
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __BSPFILE_H
-#define __BSPFILE_H
+#ifndef BSPFILE_H_
+#define BSPFILE_H_
 
 // upper design bounds
 
@@ -149,7 +146,6 @@ typedef struct
 #define	CONTENTS_CURRENT_270	-12
 #define	CONTENTS_CURRENT_UP	-13
 #define	CONTENTS_CURRENT_DOWN	-14
-
 
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct
@@ -280,7 +276,6 @@ void	LoadBSPFile (const char *filename);
 void	WriteBSPFile (const char *filename);
 void	PrintBSPFileSizes (void);
 
-#endif	/*  QUAKE_GAME */
+#endif	/* QUAKE_GAME */
 
-#endif	/* __BSPFILE_H */
-
+#endif	/* BSPFILE_H_ */

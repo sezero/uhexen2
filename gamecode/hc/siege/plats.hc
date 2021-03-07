@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/plats.hc,v 1.3 2007-02-07 17:01:21 sezero Exp $
- */
 void()func_train_mp;
 void() newplat_center_touch;
 void() newplat_go_up;

@@ -1,6 +1,4 @@
-/*
- * gl_warp_sin.h
- * $Id: gl_warp_sin.h,v 1.3 2007-03-14 21:22:04 sezero Exp $
+/* gl_warp_sin.h
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

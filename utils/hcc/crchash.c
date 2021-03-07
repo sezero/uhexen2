@@ -1,8 +1,4 @@
-/*
- * crchash.c
- * hash functions for HCC
- *
- * $Id$
+/* crchash.c - hash functions for HCC
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -29,7 +25,6 @@
 /*
 ==============
 COM_Hash
-
 ==============
 */
 int COM_Hash (const char *key)
@@ -60,4 +55,3 @@ int COM_Hash (const char *key)
 
 	return hash % HASH_TABLE_SIZE;
 }
-

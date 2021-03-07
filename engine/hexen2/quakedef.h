@@ -1,6 +1,4 @@
-/*
- * quakedef.h -- common definitions for client and server.
- * $Id$
+/* quakedef.h -- common definitions for client and server.
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -224,4 +222,3 @@
 #include "quakeinc.h"
 
 #endif	/* __QUAKEDEFS_H */
-

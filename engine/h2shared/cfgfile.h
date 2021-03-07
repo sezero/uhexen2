@@ -1,6 +1,5 @@
 /*
  * cfgfile.h -- misc reads from the config file
- * $Id$
  *
  * Copyright (C) 2008-2012  O.Sezer <sezero@users.sourceforge.net>
  *
@@ -41,4 +40,3 @@ void CFG_ReadCvarOverrides (const char **vars, int num_vars);
 // locking your cvars.
 
 #endif	/* __CFGFILE_H */
-

@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/plaque.hc,v 1.2 2007-02-07 16:57:08 sezero Exp $
- */
-
 float PLAQUE_INVISIBLE = 1;
 float PLAQUE_ACTIVATE  = 2;
 

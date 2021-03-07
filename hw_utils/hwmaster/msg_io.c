@@ -1,9 +1,6 @@
 /*
- * msg_io.c
- * Message IO functions
+ * msg_io.c -- Message IO functions
  * Handles byte ordering and avoids alignment errors
- *
- * $Id: msg_io.c,v 1.6 2008-01-12 08:15:46 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

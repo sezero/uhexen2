@@ -1,6 +1,4 @@
-/*
- * r_part.h -- exported functions from r_part.c
- * $Id: r_part.h,v 1.4 2008-05-14 08:37:20 sezero Exp $
+/* r_part.h -- exported functions from r_part.c
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

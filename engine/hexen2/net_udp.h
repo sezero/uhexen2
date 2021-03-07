@@ -1,7 +1,4 @@
-/*
- * net_udp.h
- * $Id: net_udp.h,v 1.9 2009-04-28 14:00:32 sezero Exp $
- *
+/* net_udp.h
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -43,4 +40,3 @@ int  UDP_GetSocketPort (struct qsockaddr *addr);
 int  UDP_SetSocketPort (struct qsockaddr *addr, int port);
 
 #endif	/* __net_udp_h */
-

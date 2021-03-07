@@ -4,8 +4,6 @@
  * by Andy Ward <wardwh@swbell.net>, with additional updates
  * by O. Sezer - see git repo at https://github.com/sezero/umr.git
  *
- * $Id$
- *
  * Copyright (C) 2013 O. Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify

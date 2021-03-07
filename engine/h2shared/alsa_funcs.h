@@ -2,7 +2,6 @@
  * alsa_funcs.h -- ALSA function list
  * Author: Bill Currie, 2002/4/19
  * make sure NOT to protect this file against multiple inclusions!
- * $Id$
  *
  * Copyright (C) 2001 Bill Currie <bill@taniwha.org>
  *

@@ -1,6 +1,5 @@
 /*
  * d_clear.c -- clears a specified rectangle to the specified color
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

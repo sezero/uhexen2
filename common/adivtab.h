@@ -1,6 +1,5 @@
 /*
  * adivtab.h
- * $Id$
  *
  * table of quotients and remainders
  * for [-15...16] / [-15...16]

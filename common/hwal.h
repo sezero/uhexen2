@@ -2,8 +2,6 @@
  * hwal.h
  * Hexen II, .WAL texture file format
  *
- * $Id$
- *
  * Copyright (C) 1996-2001  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify

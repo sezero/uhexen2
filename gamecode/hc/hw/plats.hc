@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/plats.hc,v 1.3 2007-02-07 16:58:00 sezero Exp $
- */
 void()func_train_mp;
 void() newplat_center_touch;
 void() newplat_go_up;

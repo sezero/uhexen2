@@ -1,5 +1,4 @@
 # GNU Makefile for hexen2 svgalib-client using GCC.
-# $Id$
 #
 # To use a compiler other than gcc:	make CC=compiler_name [other stuff]
 # To use a different nasm-compatible assembler, such as yasm:

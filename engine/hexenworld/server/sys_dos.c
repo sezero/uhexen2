@@ -1,8 +1,5 @@
-/*
- * sys_dos.c -- DOS system interface code.
+/* sys_dos.c -- DOS system interface code.
  * from quake1 source with adaptations for uhexen2.
- * $Id$
- *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify

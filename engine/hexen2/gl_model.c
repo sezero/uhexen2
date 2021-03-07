@@ -2,7 +2,6 @@
  * model.c -- model loading and caching
  * models are the only shared resource between a client and server
  * running on the same machine.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

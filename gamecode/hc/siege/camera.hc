@@ -1,6 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/camera.hc,v 1.2 2007-02-07 17:00:34 sezero Exp $
- */
 void(entity voyeur, entity viewthing) CameraViewPort =
 {//FIXME: Doesn't work in H2W
 	msg_entity = voyeur;                        

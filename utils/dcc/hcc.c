@@ -1,8 +1,5 @@
-/*
- * hcc.c
- * HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
- *
- * $Id$
+/* hcc.c
+ * HCode compiler based on qcc - modifed by Eric Hobbs to work with DCC
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997 Eric Hobbs <elhobbs@comcast.net>

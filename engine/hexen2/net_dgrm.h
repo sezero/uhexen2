@@ -1,7 +1,4 @@
-/*
- * net_dgrm.h -- net-datagram header
- * $Id: net_dgrm.h,v 1.5 2007-11-11 13:17:40 sezero Exp $
- *
+/* net_dgrm.h -- net-datagram header
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -37,4 +34,3 @@ void		Datagram_Close (qsocket_t *sock);
 void		Datagram_Shutdown (void);
 
 #endif	/* __NET_DATAGRAM_H */
-

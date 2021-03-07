@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/weather.hc,v 1.3 2007-02-07 16:59:38 sezero Exp $
- */
-
 void reset_solid_trigger ()
 {
 	self.solid=SOLID_TRIGGER;
@@ -9,9 +5,9 @@ void reset_solid_trigger ()
 
 void dust_touch ()
 {
-float numPuffs, thisPuff;
-vector dustpos, dustvect;
-	
+	float numPuffs, thisPuff;
+	vector dustpos, dustvect;
+
 	if(self.inactive)
 		return;
 
@@ -23,17 +19,17 @@ vector dustpos, dustvect;
 
 	numPuffs = random(5, 10) + 2;
 	thisPuff = 1;
-	
+
 	while (thisPuff < numPuffs)
 	{
 		dustpos_x = random(self.maxs_x, self.mins_x);
 		dustpos_y = random(self.maxs_y, self.mins_y);
 		dustpos_z = self.maxs_z;
-		
+
 		dustvect_x = random(10, 20);
 		dustvect_y = random(10, 20);
 		dustvect_z = random(-10, -1);
-		
+
 		particle4(dustpos,dustvect_x,self.color,PARTICLETYPE_FASTGRAV,3);
 		thisPuff += 1;
 	}
@@ -56,11 +52,11 @@ count - How much dust falls (0 - 100)
 void weather_dust ()
 {
 	InitTrigger();
-	        
+
 	self.touch = dust_touch;
 	self.use = dust_touch;
-	
-	if (!self.color) 
+
+	if (!self.color)
 		self.color=285;
 
 	if (!self.count) 
@@ -129,7 +125,7 @@ ACID	 		= 21
 void trigger_rubble ()
 {
 	InitTrigger();
-	        
+
 	if(!self.targetname)
 	{
 		if(!self.spawnflags&2)
@@ -138,8 +134,8 @@ void trigger_rubble ()
 	}
 	else
 		self.use = rubble_turn_on;
-	
-	if (!self.count) 
+
+	if (!self.count)
 		self.count=10;
 
 	if (!self.dmg) 
@@ -224,18 +220,18 @@ float splat_count;
 		self.nextthink = time + random(5,30);
 	}
 
-  	self.movetype = MOVETYPE_NOCLIP;
-  	self.owner = self;
-  	self.solid = SOLID_NOT;
-  	setsize (self, self.mins , self.maxs);
-  	setorigin (self, self.origin);
-  	setmodel (self, self.model);
-   self.modelindex = 0;
-  	self.model = "";
-	
+	self.movetype = MOVETYPE_NOCLIP;
+	self.owner = self;
+	self.solid = SOLID_NOT;
+	setsize (self, self.mins , self.maxs);
+	setorigin (self, self.origin);
+	setmodel (self, self.model);
+	self.modelindex = 0;
+	self.model = "";
+
 	if (!self.wait)
 	   self.wait=0.10;
-	       
+
 	if (!self.color)
 		self.color=414;
 
@@ -312,18 +308,18 @@ void() weather_snow =
 
 	precache_sound4("fx/snowwind.wav");
 
-  	self.movetype = MOVETYPE_NOCLIP;
-  	self.owner = self;
-  	self.solid = SOLID_NOT;
-  	setsize (self, self.mins , self.maxs);
-  	setorigin (self, self.origin);
-  	setmodel (self, self.model);
+	self.movetype = MOVETYPE_NOCLIP;
+	self.owner = self;
+	self.solid = SOLID_NOT;
+	setsize (self, self.mins , self.maxs);
+	setorigin (self, self.origin);
+	setmodel (self, self.model);
 	self.modelindex = 0;
-  	self.model = "";
-	
+	self.model = "";
+
 //	if (!self.wait)
 //	   self.wait = 0.10;
-	       
+
 	if (!self.counter)
 		self.counter = 10;
 	else
@@ -364,18 +360,16 @@ void() weather_snow =
 
 void () weather_lightning_use =
 {
-vector p1,p2;
-entity targ;
+	vector p1,p2;
+	entity targ;
 
-	
 	if (!self.target)
 	{
 		dprint("No target for lightning\n");
 		return;
 	}
-	
+
 	targ = find (world, targetname, self.target);  // Get ending point
-	
 	if (!targ)
 	{
 		dprint("No target for beam effect\n");
@@ -391,11 +385,10 @@ entity targ;
 			sound (self,CHAN_AUTO,"crusader/lghtn1.wav",1,ATTN_NORM);
 	}*/
 
-	
 	p1 = self.origin;
 	p2 = targ.origin;
 	p1+=normalize(p2-p1)*15;	//So beam is drawn at startpoint
-				
+
 	if(self.classname=="weather_lightning_start")
 		do_lightning (self,1,0,4,p1,p2,10,TE_STREAM_LIGHTNING);
 
@@ -408,7 +401,7 @@ entity targ;
 		WriteEntity (MSG_BROADCAST, self);
 		WriteByte (MSG_BROADCAST, 0);
 		WriteByte (MSG_BROADCAST, 4);
-	
+
 		WriteCoord (MSG_BROADCAST, p1_x);
 		WriteCoord (MSG_BROADCAST, p1_y);
 		WriteCoord (MSG_BROADCAST, p1_z);
@@ -416,7 +409,7 @@ entity targ;
 		WriteCoord (MSG_BROADCAST, p2_x);
 		WriteCoord (MSG_BROADCAST, p2_y);
 		WriteCoord (MSG_BROADCAST, p2_z);
-		
+
 		LightningDamage (p1, p2, self, 10,"sunbeam");
 	}
 	else if(self.classname=="fx_colorbeam_start")
@@ -429,7 +422,7 @@ entity targ;
 		WriteByte (MSG_BROADCAST, 0);					//tag + flags
 		WriteByte (MSG_BROADCAST, 4);					//time
 		WriteByte (MSG_BROADCAST, self.color);			//color
-	
+
 		WriteCoord (MSG_BROADCAST, p1_x);
 		WriteCoord (MSG_BROADCAST, p1_y);
 		WriteCoord (MSG_BROADCAST, p1_z);
@@ -443,13 +436,13 @@ entity targ;
 
 	if (self.lifetime > time )  // Not done living
 		thinktime self : 0.2;
-  	else if (self.wait>-1)  // constantly running lightning needs to be reset
-  	{
+	else if (self.wait>-1)  // constantly running lightning needs to be reset
+	{
 		thinktime self : self.wait;
 		self.think = weather_lightning_use;
 		self.lifetime = self.lifespan + self.nextthink;
 		self.aflag=FALSE;
-  	}
+	}
 	else
 		self.nextthink=-1;
 };
@@ -623,13 +616,11 @@ color - color of the beam
 lifespan - amount of time beam will exist.
 --------------------------------------------------------
 */
-
 void () fx_colorbeam_start =
 {
 	precache_model("models/stclrbm.mdl");
 	weather_lightning_start();
 };
-
 
 /*QUAKED fx_colorbeam_end (0 1 1) (-8 -8 -8) (8 8 8)
 Where colorbeam from weather_colorbeam_start will hit.
@@ -637,9 +628,7 @@ Where colorbeam from weather_colorbeam_start will hit.
 none
 --------------------------------------------------------
 */
-
 void () fx_colorbeam_end =
 {
 	weather_lightning_end();
 };
-

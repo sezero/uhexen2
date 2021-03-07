@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/sunstaff.hc,v 1.2 2007-02-07 17:01:25 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\weapons\sunstaff\final\newfinal\sunstaff.hc

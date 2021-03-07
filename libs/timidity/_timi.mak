@@ -1,5 +1,4 @@
 # makefile fragment to be included by libtimidity.a users
-# $Id$
 
 ifdef DEBUG
 TIMIDITY_BUILD = DEBUG=yes

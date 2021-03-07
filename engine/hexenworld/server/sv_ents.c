@@ -1,6 +1,4 @@
-/*
- * sv_ents.c -- server entities handling
- * $Id$
+/* sv_ents.c -- server entities handling
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

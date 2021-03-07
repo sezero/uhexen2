@@ -1,7 +1,5 @@
 /*
  * info_str.h -- Hexen2World info strings handling
- * $Id: info_str.h,v 1.4 2007-11-11 13:17:44 sezero Exp $
- *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -37,4 +35,3 @@ void Info_SetValueForStarKey (char *s, const char *key, const char *value, size_
 void Info_Print (const char *s);
 
 #endif	/* __H2W_INFOSTR_H */
-

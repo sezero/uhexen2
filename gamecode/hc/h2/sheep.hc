@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/sheep.hc,v 1.1.1.1 2004-11-29 11:40:29 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\players\SHEEP\ambient\sheep.hc

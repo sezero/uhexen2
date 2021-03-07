@@ -1,7 +1,3 @@
-/*
- * siege/triggers.hc
- */
-
 void() button_return;
 void() multi_touch;
 

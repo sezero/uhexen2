@@ -1,7 +1,4 @@
-/*
- * chase.c -- chase camera code
- * $Id: chase.c,v 1.9 2007-04-03 06:19:19 sezero Exp $
- *
+/* chase.c -- chase camera code
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -100,4 +97,3 @@ void Chase_Update (void)
 // move towards destination
 	VectorCopy (chase_dest, r_refdef.vieworg);
 }
-

@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/raven.hc,v 1.1 2005-01-26 17:26:12 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\monsters\RAVEN\FINAL\raven.hc

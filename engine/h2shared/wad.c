@@ -1,6 +1,5 @@
 /*
  * wad.c -- wad file loading
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -160,4 +159,3 @@ void SwapPic (qpic_t *pic)
 	pic->width = LittleLong(pic->width);
 	pic->height = LittleLong(pic->height);
 }
-

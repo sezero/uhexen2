@@ -1,7 +1,4 @@
-/*
- * net_loop.h -- network loop driver
- * $Id$
- *
+/* net_loop.h -- network loop driver
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,10 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __NET_LOOP_H
-#define __NET_LOOP_H
+#ifndef NET_LOOP_H
+#define NET_LOOP_H
 
-#if !defined(NO_LOOP_DRIVER)
 int		Loop_Init (void);
 void		Loop_Listen (qboolean state);
 void		Loop_SearchForHosts (qboolean xmit);
@@ -36,7 +32,6 @@ qboolean	Loop_CanSendMessage (qsocket_t *sock);
 qboolean	Loop_CanSendUnreliableMessage (qsocket_t *sock);
 void		Loop_Close (qsocket_t *sock);
 void		Loop_Shutdown (void);
-#endif	/* NO_LOOP */
 
-#endif	/* __NET_LOOP_H */
+#endif	/* NET_LOOP_H */
 

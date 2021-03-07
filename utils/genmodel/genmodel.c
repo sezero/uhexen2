@@ -1,7 +1,4 @@
-/*
- * genmodel.c
- * $Id: genmodel.c,v 1.16 2009-01-24 23:41:28 sezero Exp $
- *
+/* genmodel.c
  * Generates a .mdl file from a base frame, a texture bitmap,
  * and a series of frames.
  *

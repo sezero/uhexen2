@@ -1,7 +1,5 @@
-/*
- * sys.h: non-portable functions
+/* sys.h: non-portable functions
  * relies on: arch_def.h
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>

@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/mummy.hc,v 1.2 2007-02-07 16:59:34 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\monsters\mummy\mummy.hc

@@ -1,6 +1,4 @@
-/*
- * loadtri.h
- * $Id: loadtri.h,v 1.5 2007-11-11 18:48:07 sezero Exp $
+/* loadtri.h
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -44,4 +42,3 @@ extern float	FixHTRTranslateY;
 extern float	FixHTRTranslateZ;
 
 #endif	/* __LOADTRI_H */
-

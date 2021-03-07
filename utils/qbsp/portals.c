@@ -1,7 +1,4 @@
-/*
- * portals.c
- * $Id: portals.c,v 1.9 2007-12-14 16:41:25 sezero Exp $
- *
+/* portals.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -96,7 +93,7 @@ static void RemovePortalFromNode (portal_t *portal, node_t *l)
 
 //============================================================================
 
-#if 0	// no users
+#if 0	/* no users */
 void PrintPortal (portal_t *p)
 {
 	int			i;
@@ -193,7 +190,7 @@ static void PlaneFromWinding (winding_t *w, plane_t *plane)
 	plane->dist = DotProduct (w->points[0], plane->normal);
 }
 
-#if 0	// all uses are commented out
+#if 0	/* all uses are commented out. */
 static void CheckWindingInNode (winding_t *w, node_t *node)
 {
 	int		i, j;
@@ -617,4 +614,3 @@ void WritePortalfile (node_t *headnode)
 
 	fclose (pf);
 }
-

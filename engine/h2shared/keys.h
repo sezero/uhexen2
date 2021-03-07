@@ -1,7 +1,5 @@
 /*
  * keys.h -- key definitions and keyboard public functions
- * $Id: keys.h,v 1.13 2007-11-16 10:24:57 sezero Exp $
- *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify

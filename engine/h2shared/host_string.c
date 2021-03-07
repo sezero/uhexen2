@@ -1,7 +1,6 @@
 /*
  * host_string.c --
  * internationalized string resource shared between client and server
- * $Id$
  *
  * Copyright (C) 1997-1998 Raven Software Corp.
  *

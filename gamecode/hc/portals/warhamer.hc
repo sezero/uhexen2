@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/warhamer.hc,v 1.2 2007-02-07 16:24:59 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\weapons\warhammer\final\warham.hc
@@ -156,7 +152,7 @@ float distance;
 	if(self.controller.health<=0||!self.controller.flags2&FL_ALIVE||self.controller.model=="models/sheep.mdl")
     {
         stopSound(self,CHAN_VOICE);
-		//sound(self, CHAN_VOICE, "misc/null.wav", 0.3, ATTN_NORM);
+        //sound(self, CHAN_VOICE, "misc/null.wav", 0.3, ATTN_NORM);
 		if(pointcontents(self.origin)==CONTENT_SOLID)
 			remove(self);
 		else

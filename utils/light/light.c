@@ -1,7 +1,4 @@
-/*
- * lighting.c
- * $Id: light.c,v 1.13 2008-12-27 16:45:08 sezero Exp $
- *
+/* light.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -177,4 +174,3 @@ int main (int argc, char **argv)
 
 	return 0;
 }
-

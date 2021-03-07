@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/stats.hc,v 1.3 2007-02-07 16:59:37 sezero Exp $
- */
-
 // ExperienceValues for each level indicate the minimum at which
 // you can become that level.  The 11th entry indicates the amount
 // of experience needed for each level past 10

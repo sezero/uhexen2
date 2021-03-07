@@ -1,11 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/artifact.hc,v 1.2 2007-02-07 16:59:29 sezero Exp $
- */
-
-
-
-
-/*
  * artifact_touch() -- Called when an artifact is being touched.
  *                     Awards players random amounts of whatever they represent.
  */
@@ -454,6 +447,7 @@ void DouseTorch()//Never called?!
 	KillTorch();
 }
 */
+
 void DimTorch()
 {
 	sound (self, CHAN_BODY, "raven/kiltorch.wav", 1, ATTN_IDLE);

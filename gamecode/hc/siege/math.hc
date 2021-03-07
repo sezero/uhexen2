@@ -1,10 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/math.hc,v 1.2 2007-02-07 17:01:19 sezero Exp $
- */
-
-
-
-/*
  * crandom() -- Returns a random number between -1 and 1.
  */
 
@@ -76,4 +70,3 @@ vector newvec;
 	newvec_z=random(vrange_z,0-vrange_z);
 	return newvec;
 }
-

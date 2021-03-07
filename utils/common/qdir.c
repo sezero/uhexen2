@@ -1,7 +1,4 @@
-/*
- * qdir.c
- *
- * $Id: qdir.c,v 1.12 2008-01-29 12:03:10 sezero Exp $
+/* qdir.c
  *
  * Copyright (C) 1996-1997 Id Software, Inc.
  * Copyright (C) 2005-2012 O.Sezer <sezero@users.sourceforge.net>
@@ -150,4 +147,3 @@ char *ExpandPathAndArchive (const char *path)
 	}
 	return expanded;
 }
-

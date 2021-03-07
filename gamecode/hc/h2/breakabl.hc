@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/breakabl.hc,v 1.2 2007-02-07 16:56:59 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 BREAKABLE BRUSHES

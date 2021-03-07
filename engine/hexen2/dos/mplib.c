@@ -1,7 +1,5 @@
-/*
- * mplib.c -- support library for dosquake MPATH network driver.
+/* mplib.c -- support library for dosquake MPATH network driver.
  * from quake1 source with minor adaptations for uhexen2.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

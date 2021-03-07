@@ -1,7 +1,4 @@
-/*
- * vis.h
- * $Id: vis.h,v 1.7 2009-05-12 14:23:13 sezero Exp $
- *
+/* vis.h
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
@@ -21,8 +18,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __H2UTILS_VIS_H
-#define __H2UTILS_VIS_H
+#ifndef H2VIS_H
+#define H2VIS_H
 
 typedef struct
 {
@@ -46,14 +43,12 @@ typedef struct
 	float		dist;
 } plane_t;
 
-
 typedef enum
 {
 	stat_none,
 	stat_working,
 	stat_done
 } vstatus_t;
-
 
 typedef struct
 {
@@ -67,13 +62,11 @@ typedef struct
 	int			numcansee;
 } portal_t;
 
-
 typedef struct seperating_plane_s
 {
 	struct seperating_plane_s *next;
 	plane_t		plane;		// from portal is on positive side
 } sep_t;
-
 
 typedef struct passage_s
 {
@@ -82,7 +75,6 @@ typedef struct passage_s
 	sep_t		*planes;
 } passage_t;
 
-
 #define	MAX_PORTALS_ON_LEAF		128
 typedef struct leaf_s
 {
@@ -90,7 +82,6 @@ typedef struct leaf_s
 	passage_t	*passages;
 	portal_t	*portals[MAX_PORTALS_ON_LEAF];
 } leaf_t;
-
 
 typedef struct pstack_s
 {
@@ -140,5 +131,4 @@ void		FreeWinding (winding_t *w);
 winding_t	*ClipWinding (winding_t *in, plane_t *split, qboolean keepon);
 winding_t	*CopyWinding (winding_t *w);
 
-#endif	/* __H2UTILS_VIS_H */
-
+#endif	/* H2VIS_H */

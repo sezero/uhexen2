@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/spawn.hc,v 1.2 2007-02-07 17:01:24 sezero Exp $
- */
-
 float ENT_WORLD					= 0;
 float ENT_CHAIR					= 1;
 float ENT_BARSTOOL				= 2;

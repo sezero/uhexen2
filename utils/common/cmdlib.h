@@ -1,7 +1,4 @@
-/*
- * cmdlib.h --
- * $Id$
- *
+/* cmdlib.h --
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -85,4 +82,3 @@ int	ParseHex (const char *hex);
 int	ParseNum (const char *str);
 
 #endif	/* __CMDLIB_H__	*/
-

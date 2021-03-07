@@ -1,5 +1,4 @@
 # GNU Makefile using GCC in a unix shell.
-# $Id$
 
 # This file is responsible for determining the Host OS and Target OS,
 # selecting the compiler, assigning the compiler command as the linker,
@@ -217,4 +216,3 @@ WINDRES ?= windres
 RC ?= $(WINDRES)
 LIPO ?= lipo
 LINKER = $(CC)
-

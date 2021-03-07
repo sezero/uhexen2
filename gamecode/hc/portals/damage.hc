@@ -1,7 +1,3 @@
-/*
- * $Id$
- */
-
 void() T_MissileTouch;
 void() info_player_start;
 void necromancer_sphere(entity ent);

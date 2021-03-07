@@ -1,6 +1,5 @@
 /*
  * host.c -- coordinates spawning and killing of local servers
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

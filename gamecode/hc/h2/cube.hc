@@ -1,8 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/cube.hc,v 1.2 2007-02-07 16:57:00 sezero Exp $
- */
-
-
 float cube_distance = 500;
 
 void CubeDie(void)

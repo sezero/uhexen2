@@ -1,6 +1,4 @@
-/*
- * zone.h
- * $Id$
+/* zone.h
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -142,4 +140,3 @@ void Cache_Report (void);
 #endif	/* SERVERONLY */
 
 #endif	/* ZZONE_H */
-

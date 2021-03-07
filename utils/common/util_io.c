@@ -1,6 +1,4 @@
-/*
- * util_io.c -- file and directory utilities
- * $Id$
+/* util_io.c -- file and directory utilities
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>

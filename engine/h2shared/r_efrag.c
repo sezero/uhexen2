@@ -1,6 +1,5 @@
 /*
  * r_efrag.c -- entity fragments
- * $Id: r_efrag.c,v 1.9 2008-04-22 13:06:07 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

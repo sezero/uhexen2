@@ -1,6 +1,5 @@
 /*
  * r_efrag.c -- entity fragments
- * $Id: gl_refrag.c,v 1.9 2008-04-22 13:06:06 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

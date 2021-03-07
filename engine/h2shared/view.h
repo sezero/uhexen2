@@ -1,6 +1,4 @@
-/*
- * view.h -- player eye positioning
- * $Id$
+/* view.h -- player eye positioning
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -42,4 +40,3 @@ float V_CalcRoll (vec3_t angles, vec3_t velocity);
 void V_UpdatePalette (void);
 
 #endif	/* __HX2_VIEW_H */
-

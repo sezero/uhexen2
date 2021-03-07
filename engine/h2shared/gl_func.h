@@ -2,8 +2,6 @@
  * gl_func.h -- opengl function pointers
  * make sure NOT to protect this file against multiple inclusions!
  *
- * $Id$
- *
  * Copyright (C) 2001 contributors of the Anvil of Thyrion project
  * Copyright (C) 2005-2016  O.Sezer <sezero@users.sourceforge.net>
  *

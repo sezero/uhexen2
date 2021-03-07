@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/world.hc,v 1.6 2006-10-31 19:31:48 sezero Exp $
- */
-
 //void() InitBodyQue;
 
 

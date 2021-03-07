@@ -1,7 +1,5 @@
-/*
- * net_bw.h -- Beame & Whiteside TCP/IP for dosquake.
+/* net_bw.h -- Beame & Whiteside TCP/IP for dosquake.
  * from quake1 source with minor adaptations for uhexen2.
- * $Id: net_bw.h,v 1.3 2009-01-08 12:01:51 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -44,4 +42,3 @@ int  BW_GetSocketPort (struct qsockaddr *addr);
 int  BW_SetSocketPort (struct qsockaddr *addr, int port);
 
 #endif	/* __net_bw_h */
-

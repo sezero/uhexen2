@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/punchdgr.hc,v 1.2 2007-02-07 16:58:00 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\weapons\pnchdagr\final\punchdgr.hc

@@ -1,6 +1,5 @@
 /*
  * world.c -- world query functions
- * $Id$
  *
  * entities never clip against themselves, or their owner
  * line of sight checks trace->crosscontent, but bullets don't

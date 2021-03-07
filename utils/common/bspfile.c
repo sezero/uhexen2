@@ -1,7 +1,4 @@
-/*
- * bspfile.c
- * $Id: bspfile.c,v 1.6 2009-05-05 16:02:49 sezero Exp $
- *
+/* bspfile.c
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify

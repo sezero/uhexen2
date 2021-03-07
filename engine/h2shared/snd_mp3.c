@@ -1,5 +1,4 @@
-/*
- * MP3 decoding support using libmad:  Adapted from the SoX library at
+/* MP3 decoding support using libmad:  Adapted from the SoX library at
  * http://sourceforge.net/projects/sox/, LGPLv2, Copyright (c) 2007-2009
  * SoX contributors, written by Fabrizio Gennari <fabrizio.ge@tiscali.it>,
  * with the decoding part based on the decoder tutorial program madlld
@@ -7,8 +6,6 @@
  * http://www.bsd-dk.dk/~elrond/audio/madlld/).
  * Adapted for use in Quake and Hexen II game engines by O.Sezer:
  * Copyright (C) 2010-2019 O.Sezer <sezero@users.sourceforge.net>
- *
- * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

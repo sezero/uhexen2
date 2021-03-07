@@ -1,6 +1,4 @@
-/*
- * q_endian.c -- byte order functions
- * $Id$
+/* q_endian.c -- byte order functions
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2007-2016  O.Sezer <sezero@users.sourceforge.net>

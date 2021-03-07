@@ -1,6 +1,5 @@
 /*
  * cl_pred.c --client side player movement prediction
- * $Id: cl_pred.c,v 1.13 2008-02-07 09:27:24 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

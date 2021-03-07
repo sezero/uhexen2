@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/ravenai.hc,v 1.2 2007-02-07 16:58:01 sezero Exp $
- */
-
 float() LocateTarget =
 {
 	return FindTarget(TRUE);

@@ -1,6 +1,5 @@
 /*
  * r_sky.c
- * $Id: r_sky.c,v 1.7 2007-09-14 14:10:02 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

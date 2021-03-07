@@ -1,8 +1,4 @@
-/*
- * hwrcon.c
- * $Id$
- *
- * HWRCON 1.2 HexenWorld Remote CONsole
+/* hwrcon.c - HWRCON 1.2 HexenWorld Remote CONsole
  * Idea based on RCon 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
  * Made to work with HexenWorld using code from the HexenWorld
  * engine (C) Raven Software and ID Software.
@@ -24,7 +20,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -290,4 +285,3 @@ int main (int argc, char *argv[])
 	NET_Shutdown ();
 	return 0;
 }
-

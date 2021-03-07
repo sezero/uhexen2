@@ -1,7 +1,6 @@
 /*
  * draw.c
  * This is the only file outside the refresh that touches the vid buffer.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

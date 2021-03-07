@@ -1,7 +1,6 @@
 /*
  * vregset.h -- header file for video register-setting interpreter.
  * from quake1 source with minor adaptations for uhexen2.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -58,4 +57,3 @@
 void VideoRegisterSet (const int *pregset);
 
 #endif	/* __VREGSET_H__ */
-

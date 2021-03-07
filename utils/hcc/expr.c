@@ -1,6 +1,4 @@
-/*
- * expr.c
- * $Id: expr.c,v 1.10 2007-12-14 16:41:17 sezero Exp $
+/* expr.c
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

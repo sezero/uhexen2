@@ -1,6 +1,4 @@
-/*
- * dcc.c -- An hcode compiler/decompiler for Hexen II by Eric Hobbs
- * $Id$
+/* dcc.c -- An hcode compiler/decompiler for Hexen II by Eric Hobbs
  *
  * Copyright (C) 1996-1997 Id Software, Inc.
  * Copyright (C) 1997 Eric Hobbs <elhobbs@comcast.net>
@@ -2677,4 +2675,3 @@ int Dcc_main (int argc, char **argv)
 
 	return 0;
 }
-

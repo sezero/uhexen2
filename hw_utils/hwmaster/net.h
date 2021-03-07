@@ -1,9 +1,5 @@
 /*
- * net.h
- * quake's interface to the networking layer
- *
- * $Id: net.h,v 1.6 2009-04-29 07:49:28 sezero Exp $
- *
+ * net.h -- quake's interface to the networking layer
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify

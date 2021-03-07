@@ -1,7 +1,5 @@
-/*
- * vgamodes.h -- VGA mode set tables for vid_vga.c
+/* vgamodes.h -- VGA mode set tables for vid_vga.c
  * from quake1 source with minor adaptations for uhexen2.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

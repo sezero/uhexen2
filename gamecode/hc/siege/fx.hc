@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/fx.hc,v 1.2 2007-02-07 17:01:03 sezero Exp $
- */
-
 float WHITE_PUFF	= 0;
 float RED_PUFF		= 1;
 float GREEN_PUFF	= 2;

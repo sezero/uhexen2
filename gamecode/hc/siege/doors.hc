@@ -1,7 +1,3 @@
-/*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/doors.hc,v 1.3 2007-02-07 17:00:37 sezero Exp $
- */
-
 float DOOR_START_OPEN	= 1;
 float REVERSE			= 2;
 float DOOR_DONT_LINK	= 4;

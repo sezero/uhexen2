@@ -1,7 +1,6 @@
 /*
  * xbm_icon.h -- wrapper header file including the correct xbm
  * icon file for different Hexen II flavors
- * $Id: xbm_icon.h,v 1.4 2007-09-07 20:06:03 sezero Exp $
  *
  * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>
  *

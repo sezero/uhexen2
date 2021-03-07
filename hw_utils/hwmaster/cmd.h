@@ -1,7 +1,4 @@
-/*
- * cmd.h - command buffer and command execution
- * $Id: cmd.h,v 1.4 2007-11-11 13:18:22 sezero Exp $
- *
+/* cmd.h - command buffer and command execution
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -68,4 +65,3 @@ void	Cmd_ExecuteString (const char *text);
 // as if it was typed at the console
 
 #endif	/* __HX2_CMD_H */
-

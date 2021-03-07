@@ -1,7 +1,5 @@
-/*
- * in_svgalib.c:	Linux SVGALIB specific input driver.
+/* in_svgalib.c: Linux SVGALIB specific input driver.
  * from quake1 source with minor adaptations for uhexen2.
- * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *

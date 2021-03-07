@@ -2,7 +2,6 @@
 ; r_drawa.asm
 ; x86 assembly-language edge clipping and emission code
 ; this file uses NASM syntax.
-; $Id: r_drawa.asm,v 1.8 2008-03-16 14:30:46 sezero Exp $
 ;
 ; Copyright (C) 1996-1997  Id Software, Inc.
 ;

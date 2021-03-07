@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/sunstaff.hc,v 1.2 2007-02-07 16:58:07 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\weapons\sunstaff\final\newfinal\sunstaff.hc

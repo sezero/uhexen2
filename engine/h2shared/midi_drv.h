@@ -1,6 +1,5 @@
 /*
  * midi_drv.h - MIDI driver exports for BGM interface
- * $Id$
  *
  * Copyright (C) 1999-2005 Id Software, Inc.
  * Copyright (C) 2010-2012 O.Sezer <sezero@users.sourceforge.net>
@@ -52,4 +51,3 @@ typedef struct midi_driver_s
 } midi_driver_t;
 
 #endif	/* _MIDI_DRV_H_ */
-

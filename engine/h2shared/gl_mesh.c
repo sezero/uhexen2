@@ -1,7 +1,5 @@
 /*
  * gl_mesh.c -- triangle model functions
- * $Id: gl_mesh.c,v 1.24 2010-10-30 11:33:15 sezero Exp $
- *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify

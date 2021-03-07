@@ -1,7 +1,4 @@
-/*
- * hufffreq.h -- huffman freq table for use in hexenworld networking
- * $Id: hufffreq.h,v 1.2 2007-03-14 21:03:33 sezero Exp $
- *
+/* hufffreq.h -- huffman freq table for use in hexenworld networking
  * Copyright (C) 1997-1998  Raven Software Corp.
  *
  * This program is free software; you can redistribute it and/or modify

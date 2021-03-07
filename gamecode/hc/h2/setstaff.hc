@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/setstaff.hc,v 1.5 2007-02-07 16:57:09 sezero Exp $
- */
-
-/*
 ==============================================================================
 
 Q:\art\models\weapons\setstaff\newstff\scarabst.hc
