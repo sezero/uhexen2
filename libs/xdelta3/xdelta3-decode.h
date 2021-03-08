@@ -493,12 +493,6 @@ xd3_decode_finish_window (xd3_stream *stream)
 }
 
 static int
-xd3_decode_secondary_sections (xd3_stream *secondary_stream)
-{
-  return 0;
-}
-
-static int
 xd3_decode_sections (xd3_stream *stream)
 {
   usize_t need, more, take;
@@ -563,8 +557,6 @@ xd3_decode_sections (xd3_stream *stream)
     }
 
   XD3_ASSERT (stream->dec_winbytes == need);
-
-  if ((ret = xd3_decode_secondary_sections (stream))) { return ret; }
 
   if (stream->flags & XD3_SKIP_EMIT)
     {

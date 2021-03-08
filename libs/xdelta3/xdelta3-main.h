@@ -808,6 +808,8 @@ main_open_output (xd3_stream *stream, main_file *ofile)
 {
   int ret;
 
+  (void) stream;
+
       if ((ret = main_file_open (ofile, ofile->filename, XO_WRITE)))
 	{
 	  return ret;

@@ -204,6 +204,8 @@ main_getblk_lru (xd3_source *source, xoff_t blkno,
   main_blklru *blru = NULL;
   usize_t i;
 
+  (void) source;
+
   (*is_new) = 0;
 
       /* Sequential search through LRU. */

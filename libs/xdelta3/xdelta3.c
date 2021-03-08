@@ -1705,8 +1705,7 @@ xd3_close_stream (xd3_stream *stream)
  ******************************************************************/
 
 static int
-xd3_process_stream (int            is_encode,
-		    xd3_stream    *stream,
+xd3_process_stream (xd3_stream    *stream,
 		    int          (*func) (xd3_stream *),
 		    int            close_stream,
 		    const uint8_t *input,
@@ -1775,8 +1774,7 @@ xd3_process_stream (int            is_encode,
 }
 
 static int
-xd3_process_memory (int            is_encode,
-		    int          (*func) (xd3_stream *),
+xd3_process_memory (int          (*func) (xd3_stream *),
 		    int            close_stream,
 		    const uint8_t *input,
 		    usize_t        input_size,
@@ -1791,6 +1789,8 @@ xd3_process_memory (int            is_encode,
   xd3_source src;
   int ret;
 
+  (void) close_stream;
+
   memset (& stream, 0, sizeof (stream));
   memset (& config, 0, sizeof (config));
 
@@ -1801,15 +1801,6 @@ xd3_process_memory (int            is_encode,
   }
 
   config.flags = flags;
-
-  if (is_encode)
-    {
-      config.srcwin_maxsz = source_size;
-      config.winsize = xd3_min(input_size, (usize_t) XD3_DEFAULT_WINSIZE);
-      config.iopt_size = xd3_min(input_size / 32, XD3_DEFAULT_IOPT_SIZE);
-      config.iopt_size = xd3_max(config.iopt_size, 128U);
-      config.sprevsz = xd3_pow2_roundup (config.winsize);
-    }
 
   if ((ret = xd3_config_stream (&stream, &config)) != 0)
     {
@@ -1831,8 +1822,7 @@ xd3_process_memory (int            is_encode,
 	}
     }
 
-  if ((ret = xd3_process_stream (is_encode,
-				 & stream,
+  if ((ret = xd3_process_stream (& stream,
 				 func, 1,
 				 input, input_size,
 				 output,
@@ -1855,7 +1845,7 @@ xd3_decode_stream (xd3_stream    *stream,
 		   usize_t       *output_size,
 		   usize_t        output_size_max)
 {
-  return xd3_process_stream (0, stream, & xd3_decode_input, 1,
+  return xd3_process_stream (stream, & xd3_decode_input, 1,
 			     input, input_size,
 			     output, output_size, output_size_max);
 }
@@ -1869,7 +1859,7 @@ xd3_decode_memory (const uint8_t *input,
 		   usize_t       *output_size,
 		   usize_t        output_size_max,
 		   int            flags) {
-  return xd3_process_memory (0, & xd3_decode_input, 1,
+  return xd3_process_memory (& xd3_decode_input, 1,
 			     input, input_size,
 			     source, source_size,
 			     output, output_size, output_size_max,
