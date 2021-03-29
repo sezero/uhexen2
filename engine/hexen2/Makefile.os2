@@ -60,7 +60,7 @@ USE_CODEC_WILDMIDI=no
 # which library to use for mp3 decoding: mad or mpg123
 MP3LIB=mad
 # which library to use for ogg decoding: vorbis or tremor
-VORBISLIB=tremor
+VORBISLIB=vorbis
 
 # Names of the binaries
 SW_BINARY=h2.exe

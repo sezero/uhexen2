@@ -25,20 +25,11 @@
 #define _ogg_realloc realloc
 #define _ogg_free    free
 */
-#include "zone.h"
+#include  "zone.h"
 #define _ogg_malloc(s)    Z_Malloc((s),Z_SECZONE)
 #define _ogg_calloc(n,s)  Z_Malloc((n)*(s),Z_SECZONE)
 #define _ogg_realloc(p,s) Z_Realloc((p),(s),Z_SECZONE)
 #define _ogg_free(p)      Z_Free((p))
-/* replacing alloca() was not necessary */
-/*
-#define _ogg_alloca       alloca
-#define _ogg_stackfree(p) do{}while(0)
-*/
-/*
-#define _ogg_alloca(s)    Z_Malloc((s),Z_SECZONE)
-#define _ogg_stackfree(p) Z_Free((p))
-*/
 
 #if defined(_WIN32)
 
@@ -111,7 +102,7 @@
    typedef uint32_t ogg_uint32_t;
    typedef int64_t ogg_int64_t;
 
-#elif defined (__EMX__)
+#elif defined (__EMX__) || defined (__OS2__)
 
    /* OS/2 GCC */
    typedef short ogg_int16_t;
@@ -124,6 +115,7 @@
 
    /* DJGPP */
    typedef short ogg_int16_t;
+   typedef unsigned short ogg_uint16_t;
    typedef int ogg_int32_t;
    typedef unsigned int ogg_uint32_t;
    typedef long long ogg_int64_t;
@@ -135,6 +127,7 @@
    typedef int ogg_int32_t;
    typedef unsigned ogg_uint32_t;
    typedef short ogg_int16_t;
+   typedef unsigned short ogg_uint16_t;
 
 #elif defined(__SYMBIAN32__)
 

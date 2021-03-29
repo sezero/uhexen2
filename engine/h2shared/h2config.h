@@ -185,7 +185,12 @@
    ================================================================== */
 
 #define	LIBMAD_NEEDMEM	0x10000	/* 64K is fairly enough for libmad */
+#if defined(VORBIS_USE_TREMOR)
+#define	VORBIS_NEEDMEM	0x10000	/* 64K is fairly enough for vorbis */
+		/* with libvorbisidec (tremor) from the lowmem branch. */
+#else
 #define	VORBIS_NEEDMEM	0x60000	/* 400K enough for vorbis most times */
+#endif
 
 
 /* ====================================================================
