@@ -157,7 +157,9 @@
 
 #else
 
+#ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
+#endif
 #  include "config_types.h"
 
 #endif

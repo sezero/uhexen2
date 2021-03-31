@@ -2,7 +2,7 @@ replaced malloc, calloc and free calls by Z_Malloc and ZFree
 
 --- os_types.h.orig
 +++ os_types.h
-@@ -19,10 +19,17 @@
+@@ -27,10 +27,17 @@
  
  /* make it easy on the folks that want to compile the libs with a
     different malloc than stdlib */
