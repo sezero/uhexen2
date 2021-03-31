@@ -254,15 +254,15 @@ static void load_instrument(MidSong *song, const char *name,
       uint16 tmpshort;
       uint8 tmpchar;
 
-#define READ_CHAR(thing)				\
-      if (1 != fread(&tmpchar, 1, 1, fp)) goto badread;	\
-      thing = tmpchar;
-#define READ_SHORT(thing)				\
-      if (1 != fread(&tmpshort, 2, 1, fp)) goto badread;\
-      thing = SWAPLE16(tmpshort);
-#define READ_LONG(thing)				\
-      if (1 != fread(&tmplong, 4, 1, fp)) goto badread;	\
-      thing = SWAPLE32(tmplong);
+#define READ_CHAR(thing)					\
+  if (1 != fread(&tmpchar, 1, 1, fp))  goto badread;		\
+  thing = tmpchar;
+#define READ_SHORT(thing)					\
+  if (1 != fread(&tmpshort, 2, 1, fp)) goto badread;		\
+  thing = SWAPLE16(tmpshort);
+#define READ_LONG(thing)					\
+  if (1 != fread(&tmplong, 4, 1, fp))  goto badread;		\
+  thing = SWAPLE32(tmplong);
 
       fseek(fp, 7, SEEK_CUR); /* Skip the wave name */
 

@@ -97,8 +97,7 @@ static int read_config_file(const char *name, int rcf_count)
   MidToneBank *bank;
   int i, j, k, line, r, words;
 
-  if (rcf_count >= MAX_RCFCOUNT)
-  {
+  if (rcf_count >= MAX_RCFCOUNT) {
     DEBUG_MSG("Probable source loop in configuration files\n");
     return -1;
   }
@@ -296,6 +295,7 @@ static int read_config_file(const char *name, int rcf_count)
     }
     else
     {
+      size_t sz;
       if ((words < 2) || (*w[0] < '0' || *w[0] > '9'))
       {
 	DEBUG_MSG("%s: line %d: syntax error\n", name, line);
@@ -315,9 +315,10 @@ static int read_config_file(const char *name, int rcf_count)
 	goto fail;
       }
       timi_free(bank->tone[i].name);
-      bank->tone[i].name=(char *) timi_calloc(strlen(w[1])+1);
+      sz = strlen(w[1])+1;
+      bank->tone[i].name = (char *) timi_calloc(sz);
       if (!bank->tone[i].name) goto fail;
-      strcpy(bank->tone[i].name,w[1]);
+      memcpy(bank->tone[i].name,w[1],sz);
       bank->tone[i].note=bank->tone[i].amp=bank->tone[i].pan=
       bank->tone[i].strip_loop=bank->tone[i].strip_envelope=
       bank->tone[i].strip_tail=-1;
