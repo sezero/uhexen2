@@ -517,6 +517,8 @@ CPPFLAGS+= -DSDLQUAKE
 CFLAGS  += $(SDL_CFLAGS)
 LDFLAGS += $(SDL_LIBS)
 
+# use Tremor as Vorbis decoder for OS/2?
+VORBISLIB=tremor
 ifeq ($(USE_CODEC_VORBIS),yes)
 CODEC_INC = -I$(OSLIBS)/os2/codecs/include
 CODEC_LINK= -L$(OSLIBS)/os2/codecs/lib

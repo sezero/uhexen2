@@ -138,6 +138,45 @@ typedef struct {
   long           body_len;
 } ogg_page;
 
+
+/* libogg is private here in tremor lowmem branch - mangle symbols: */
+#define OGG_NAMESPACE(x) _lowmem_ ## x
+
+#define oggpack_readinit OGG_NAMESPACE(oggpack_readinit)
+#define oggpack_look OGG_NAMESPACE(oggpack_look)
+#define oggpack_adv OGG_NAMESPACE(oggpack_adv)
+#define oggpack_read OGG_NAMESPACE(oggpack_read)
+#define oggpack_bytes OGG_NAMESPACE(oggpack_bytes)
+#define oggpack_bits OGG_NAMESPACE(oggpack_bits)
+#define oggpack_eop OGG_NAMESPACE(oggpack_eop)
+#define ogg_sync_create OGG_NAMESPACE(ogg_sync_create)
+#define ogg_sync_destroy OGG_NAMESPACE(ogg_sync_destroy)
+#define ogg_sync_reset OGG_NAMESPACE(ogg_sync_reset)
+#define ogg_sync_bufferin OGG_NAMESPACE(ogg_sync_bufferin)
+#define ogg_sync_wrote OGG_NAMESPACE(ogg_sync_wrote)
+#define ogg_sync_pageseek OGG_NAMESPACE(ogg_sync_pageseek)
+#define ogg_sync_pageout OGG_NAMESPACE(ogg_sync_pageout)
+#define ogg_stream_pagein OGG_NAMESPACE(ogg_stream_pagein)
+#define ogg_stream_packetout OGG_NAMESPACE(ogg_stream_packetout)
+#define ogg_stream_packetpeek OGG_NAMESPACE(ogg_stream_packetpeek)
+#define ogg_stream_create OGG_NAMESPACE(ogg_stream_create)
+#define ogg_stream_destroy OGG_NAMESPACE(ogg_stream_destroy)
+#define ogg_stream_reset OGG_NAMESPACE(ogg_stream_reset)
+#define ogg_stream_reset_serialno OGG_NAMESPACE(ogg_stream_reset_serialno)
+#define ogg_stream_eos OGG_NAMESPACE(ogg_stream_eos)
+#define ogg_page_version OGG_NAMESPACE(ogg_page_version)
+#define ogg_page_continued OGG_NAMESPACE(ogg_page_continued)
+#define ogg_page_bos OGG_NAMESPACE(ogg_page_bos)
+#define ogg_page_eos OGG_NAMESPACE(ogg_page_eos)
+#define ogg_page_granulepos OGG_NAMESPACE(ogg_page_granulepos)
+#define ogg_page_serialno OGG_NAMESPACE(ogg_page_serialno)
+#define ogg_page_pageno OGG_NAMESPACE(ogg_page_pageno)
+#define ogg_page_packets OGG_NAMESPACE(ogg_page_packets)
+#define ogg_page_getbuffer OGG_NAMESPACE(ogg_page_getbuffer)
+#define ogg_packet_release OGG_NAMESPACE(ogg_packet_release)
+#define ogg_page_release OGG_NAMESPACE(ogg_page_release)
+#define ogg_page_dup OGG_NAMESPACE(ogg_page_dup)
+
 /* Ogg BITSTREAM PRIMITIVES: bitstream ************************/
 
 extern void  oggpack_readinit(oggpack_buffer *b,ogg_reference *r);
@@ -169,8 +208,6 @@ extern int      ogg_stream_destroy(ogg_stream_state *os);
 extern int      ogg_stream_reset(ogg_stream_state *os);
 extern int      ogg_stream_reset_serialno(ogg_stream_state *os,int serialno);
 extern int      ogg_stream_eos(ogg_stream_state *os);
-
-extern int      ogg_page_checksum_set(ogg_page *og);
 
 extern int      ogg_page_version(ogg_page *og);
 extern int      ogg_page_continued(ogg_page *og);
