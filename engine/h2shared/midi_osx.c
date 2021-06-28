@@ -35,6 +35,9 @@
 #include <AudioToolbox/AudioToolbox.h>
 #include <AvailabilityMacros.h>
 
+#if (MAC_OS_X_VERSION_MIN_REQUIRED < 1030 && (defined(__ppc__)||defined(__POWERPC__)))
+#define OLD_TRACK_DURATION
+#endif
 #if (MAC_OS_X_VERSION_MIN_REQUIRED < 1050)
 #define AUGraphNodeInfo_FN(_graph,_node,_desc,_unit)			\
 	AUGraphGetNodeInfo((_graph),(_node),(_desc),NULL,NULL,(_unit))
@@ -172,11 +175,13 @@ qboolean MIDI_Init(void)
 	return true;
 }
 
+/* https://lists.apple.com/archives/Coreaudio-api/2003/Jul/msg00370.html
+ * figure out sequence length. */
 static OSStatus GetSequenceLength(MusicSequence sequence, MusicTimeStamp *_sequenceLength)
 {
-/* http://lists.apple.com/archives/Coreaudio-api/2003/Jul/msg00370.html
- * figure out sequence length  */
+	#ifdef OLD_TRACK_DURATION
 	static qboolean old_osx = false;
+	#endif
 	UInt32 ntracks, i;
 	MusicTimeStamp sequenceLength = 0;
 	OSStatus err;
@@ -188,13 +193,22 @@ static OSStatus GetSequenceLength(MusicSequence sequence, MusicTimeStamp *_seque
 	for (i = 0; i < ntracks; ++i)
 	{
 		MusicTrack track;
+		#ifdef OLD_TRACK_DURATION
 		MusicEventIterator iter = NULL;
+		#endif
 		MusicTimeStamp tracklen = 0;
 		UInt32 tracklenlen = sizeof (tracklen);
 
 		err = MusicSequenceGetIndTrack(sequence, i, &track);
 		if (err != noErr)
 			return err;
+		#ifndef OLD_TRACK_DURATION
+		err = MusicTrackGetProperty(track, kSequenceTrackProperty_TrackLength,
+								&tracklen, &tracklenlen);
+		if (err != noErr) return err;
+		if (sequenceLength < tracklen)
+			sequenceLength = tracklen;
+		#else
 		if (!old_osx)
 		{
 			/* kSequenceTrackProperty_TrackLength (5) needs 10.3 and newer.
@@ -228,6 +242,7 @@ static OSStatus GetSequenceLength(MusicSequence sequence, MusicTimeStamp *_seque
 			if (iter) DisposeMusicEventIterator (iter);
 			if (err != noErr) return err;
 		}
+		#endif
 	}
 
 	*_sequenceLength = sequenceLength;
