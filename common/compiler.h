@@ -62,6 +62,12 @@
 #define FUNC_NORETURN
 #endif
 
+#if defined(__GNUC__)
+#define FUNC_UNUSED	__attribute__((__unused__))
+#else
+#define FUNC_UNUSED
+#endif
+
 #if defined(__GNUC__) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
 #define FUNC_NOINLINE	__attribute__((__noinline__))
 #elif defined(_MSC_VER) && (_MSC_VER >= 1300)
@@ -108,6 +114,5 @@
 #if defined(_MSC_VER) && !defined(__cplusplus)
 #define inline __inline
 #endif	/* _MSC_VER */
-
 
 #endif	/* HX2_COMPILER_H */
