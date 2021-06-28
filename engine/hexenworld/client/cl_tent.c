@@ -4313,6 +4313,7 @@ void MeteorBlastThink(explosion_t *ex)
 	R_RocketTrail (ex->oldorg, ex->origin, rt_fireball);
 
 	ex->data -= 1600 * host_frametime; // decrease distance, roughly...
+	VectorClear(oldPos); // pacify compiler.
 
 	if (ex->data <= 0)
 	{	// ran out of juice
