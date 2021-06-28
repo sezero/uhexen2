@@ -448,12 +448,12 @@ static void VID_Init8bitPalette (void)
 
 
 #if !defined(USE_3DFXGAMMA)
-static inline int Init_3dfxGammaCtrl (void)		{ return 0; }
-static inline void Shutdown_3dfxGamma (void)		{ }
-static inline int do3dfxGammaCtrl (float value)			{ return 0; }
-static inline int glGetDeviceGammaRamp3DFX (void *arrays)	{ return 0; }
-static inline int glSetDeviceGammaRamp3DFX (void *arrays)	{ return 0; }
-static inline qboolean VID_Check3dfxGamma (void)	{ return false; }
+static inline int  FUNC_UNUSED Init_3dfxGammaCtrl (void) { return 0; }
+static inline void FUNC_UNUSED Shutdown_3dfxGamma (void) {/*nothing*/}
+static inline int  FUNC_UNUSED do3dfxGammaCtrl (float _f) { return 0; }
+static inline int  FUNC_UNUSED glGetDeviceGammaRamp3DFX (void *_p) { return 0; }
+static inline int  FUNC_UNUSED glSetDeviceGammaRamp3DFX (void *_p) { return 0; }
+static inline qboolean FUNC_UNUSED VID_Check3dfxGamma (void) { return false; }
 #else
 static qboolean VID_Check3dfxGamma (void)
 {
