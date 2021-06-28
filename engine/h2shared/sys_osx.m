@@ -1,5 +1,4 @@
-/*
- * Mac OS X specific functions needed by the common sys_unix.c.
+/* Mac OS X specific functions needed by the common sys_unix.c.
  *
  * Copyright (C) 2008-2012  O.Sezer <sezero@users.sourceforge.net>
  *
@@ -74,6 +73,9 @@ int OSX_GetBasedir (char *argv0, char *dst, size_t dstsize)
 }
 
 
+#ifndef MAC_OS_X_VERSION_10_12
+#define NSAlertStyleCritical NSCriticalAlertStyle
+#endif
 /* Display message from Sys_Error() on a window: */
 void Cocoa_ErrorMessage (const char *errorMsg)
 {
@@ -82,10 +84,21 @@ void Cocoa_ErrorMessage (const char *errorMsg)
 #else
     NSString* msg = [NSString stringWithCString:errorMsg encoding:NSASCIIStringEncoding];
 #endif
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1030
     NSRunCriticalAlertPanel (@"Hexen II Error", msg, @"OK", nil, nil);
+#else
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    alert.alertStyle = NSAlertStyleCritical;
+    alert.messageText = @"Hexen II Error";
+    alert.informativeText = msg;
+    [alert runModal];
+#endif
 }
 
 
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1060
+#define NSPasteboardTypeString NSStringPboardType
+#endif
 #define MAX_CLIPBOARDTXT	MAXCMDLINE	/* 256 */
 char *Sys_GetClipboardData (void)
 {
@@ -93,8 +106,8 @@ char *Sys_GetClipboardData (void)
     NSPasteboard* pasteboard	= [NSPasteboard generalPasteboard];
     NSArray* types		= [pasteboard types];
 
-    if ([types containsObject: NSStringPboardType]) {
-	NSString* clipboardString = [pasteboard stringForType: NSStringPboardType];
+    if ([types containsObject: NSPasteboardTypeString]) {
+	NSString* clipboardString = [pasteboard stringForType: NSPasteboardTypeString];
 	if (clipboardString != NULL && [clipboardString length] > 0) {
 		size_t sz = [clipboardString length] + 1;
 		sz = q_min(MAX_CLIPBOARDTXT, sz);
