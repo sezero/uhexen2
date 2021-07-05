@@ -450,18 +450,19 @@ static int Sys_rename (const char *oldp, const char *newp)
 static long Sys_filesize (const char *path)
 {
 	long size = -1;
-	BPTR fh = Open((const STRPTR) path, MODE_OLDFILE);
-	if (fh)
+	BPTR lock = Lock((const STRPTR) path, ACCESS_READ);
+	if (lock)
 	{
 		struct FileInfoBlock *fib = (struct FileInfoBlock*)
 					AllocDosObject(DOS_FIB, NULL);
 		if (fib != NULL)
 		{
-			if (ExamineFH(fh, fib))
+			if (Examine(lock, fib)) {
 				size = fib->fib_Size;
+			}
 			FreeDosObject(DOS_FIB, fib);
 		}
-		Close(fh);
+		UnLock(lock);
 	}
 	return size;
 }
@@ -469,22 +470,21 @@ static long Sys_filesize (const char *path)
 static int Sys_FileType (const char *path)
 {
 	int type = FS_ENT_NONE;
-	BPTR fh = Open((const STRPTR) path, MODE_OLDFILE);
-	if (fh)
+	BPTR lock = Lock((const STRPTR) path, ACCESS_READ);
+	if (lock)
 	{
 		struct FileInfoBlock *fib = (struct FileInfoBlock*)
 					AllocDosObject(DOS_FIB, NULL);
 		if (fib != NULL)
 		{
-			if (ExamineFH(fh, fib))
-			{
+			if (Examine(lock, fib)) {
 				if (fib->fib_DirEntryType >= 0)
 					type = FS_ENT_DIRECTORY;
 				else	type = FS_ENT_FILE;
 			}
 			FreeDosObject(DOS_FIB, fib);
 		}
-		Close(fh);
+		UnLock(lock);
 	}
 	return type;
 }
@@ -790,4 +790,3 @@ int main (int argc, char **argv)
 	fprintf (stdout, "%d file(s) patched.\n", num_patched);
 	return 0;
 }
-

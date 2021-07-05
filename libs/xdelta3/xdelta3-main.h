@@ -92,9 +92,15 @@ const char* xd3_mainerror(int err_num);
 #include <sys/stat.h> /* stat() and fstat() */
 #endif
 
-#if XD3_AMIGA
+#if XD3_AMIGA    /* */
+#ifdef __amigaos4__
+#define __USE_INLINE__
+#endif
 #include <proto/exec.h>
 #include <proto/dos.h>
+#ifdef __amigaos4__
+#include <dos/obsolete.h>
+#endif
 #endif
 
 #ifdef __DJGPP__
