@@ -188,7 +188,7 @@ static void load_instrument(MidSong *song, const char *name,
 
   TIMI_UNUSED(percussion);
   *out = NULL;
-  if (!name) return;
+  if (!name || !*name) return;
 
   /* Open patch file */
   if ((fp=timi_openfile(name)) == NULL)
@@ -196,13 +196,10 @@ static void load_instrument(MidSong *song, const char *name,
       /* Try with various extensions */
       for (i=0; patch_ext[i]; i++)
 	{
-	  if (strlen(name)+strlen(patch_ext[i])<sizeof(tmp))
-	    {
-	      strcpy(tmp, name);
-	      strcat(tmp, patch_ext[i]);
-	      if ((fp=timi_openfile(tmp)) != NULL)
+	    size_t l = timi_strxcpy(tmp, name, sizeof(tmp)) - 1;
+	    timi_strxcpy(tmp + l, patch_ext[i], sizeof(tmp) - l);
+	    if ((fp=timi_openfile(tmp)) != NULL)
 		break;
-	    }
 	}
     }
 
@@ -239,12 +236,12 @@ static void load_instrument(MidSong *song, const char *name,
       goto badpat;
     }
 
-  *out = (MidInstrument *) timi_calloc(sizeof(MidInstrument));
+  *out = (MidInstrument *) timi_malloc(sizeof(MidInstrument));
   ip = *out;
   if (!ip) goto nomem;
 
   ip->samples = tmp[198];
-  ip->sample = (MidSample *) timi_calloc(sizeof(MidSample) * ip->samples);
+  ip->sample = (MidSample *) timi_calloc(ip->samples, sizeof(MidSample));
   if (!ip->sample) goto nomem;
 
   for (i=0; i<ip->samples; i++)
@@ -398,7 +395,7 @@ static void load_instrument(MidSong *song, const char *name,
 	}
 
       /* Then read the sample data */
-      sp->data = (sample_t *) timi_calloc(sp->data_length+4);
+      sp->data = (sample_t *) timi_malloc(sp->data_length+4);
       if (!sp->data) goto nomem;
 
       if (1 != fread(sp->data, sp->data_length, 1, fp))
@@ -412,7 +409,7 @@ static void load_instrument(MidSong *song, const char *name,
 	  sp->data_length *= 2;
 	  sp->loop_start *= 2;
 	  sp->loop_end *= 2;
-	  tmp16 = new16 = (uint16 *) timi_calloc(sp->data_length+4);
+	  tmp16 = new16 = (uint16 *) timi_malloc(sp->data_length+4);
 	  if (!new16) goto nomem;
 	  while (k--)
 	    *tmp16++ = (uint16)(*cp++) << 8;
@@ -492,9 +489,7 @@ static void load_instrument(MidSong *song, const char *name,
       sp->loop_end /= 2;
 
       /* initialize the 2 extra samples at the end (those +4 bytes) */
-#if 0 /* no need - alloc'ed using timi_calloc() */
       sp->data[sp->data_length] = sp->data[sp->data_length+1] = 0;
-#endif
 
       /* Then fractional samples */
       sp->data_length <<= FRACTION_BITS;

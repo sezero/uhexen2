@@ -8,6 +8,14 @@ uHexen2-specific changes:
 ------------------------------------------------------------------------
 
 
+Changes by libtimidity-0.2.7:
+-----------------------------
+
+- Several code clean-ups.
+- Several build and portability fixes/updates. Removed support for
+  lcc-win32 compiler.
+
+
 Changes by libtimidity-0.2.6:
 -----------------------------
 

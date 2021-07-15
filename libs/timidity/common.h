@@ -39,10 +39,15 @@ extern int  timi_add_pathlist(const char *s, size_t len);
 extern void timi_free_pathlist(void);
 
 /* in case someone wants to compile with a different malloc() than stdlib */
-#define timi_malloc malloc
-#define timi_free   free
+#define timi_malloc  malloc
+#define timi_calloc  calloc
+#define timi_realloc realloc
+#define timi_free    free
 
-/* timi_calloc() returns zero'ed memory using timi_malloc() */
-extern void *timi_calloc(size_t count);
+/* timi_strtokr() is a strtok_r() replacement */
+char *timi_strtokr(char *s1, const char *s2, char **ptr);
+
+/* returns the number of chars written, including NULL */
+size_t timi_strxcpy(char *dst, const char *src, size_t size);
 
 #endif /* TIMIDITY_COMMON_H */

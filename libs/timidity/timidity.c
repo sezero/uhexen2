@@ -66,8 +66,7 @@ static char *timi_fgets(char *s, int size, FILE *fp)
 
     --size;/* to nul terminate properly */
 
-    for (; num_read < size; ++p)
-    {
+    for (; num_read < size; ++p) {
 	if (fread(p, 1, 1, fp) != 1)
 	    break;
 
@@ -77,8 +76,7 @@ static char *timi_fgets(char *s, int size, FILE *fp)
 	 * probably get an extra blank line for every line that's being
 	 * read, but that should be ok.
 	 */
-	if (*p == '\n' || *p == '\r')
-	{
+	if (*p == '\n' || *p == '\r') {
 	    *p = '\0';
 	    return s;
 	}
@@ -94,6 +92,7 @@ static int read_config_file(const char *name, int rcf_count)
   FILE *fp;
   char  tmp[TIM_MAXPATH];
   char *w[MAXWORDS], *cp;
+  char *endp;
   MidToneBank *bank;
   int i, j, k, line, r, words;
 
@@ -113,13 +112,12 @@ static int read_config_file(const char *name, int rcf_count)
   {
     line++;
     words=0;
-    w[0]=strtok(tmp, " \t\240");
+    w[0]=timi_strtokr(tmp, " \t\240", &endp);
     if (!w[0]) continue;
 
     /* Originally the TiMidity++ extensions were prefixed like this */
-    if (strcmp(w[0], "#extension") == 0)
-    {
-      w[0]=strtok(NULL, " \t\240");
+    if (strcmp(w[0], "#extension") == 0) {
+      w[0]=timi_strtokr(NULL, " \t\240", &endp);
       if (!w[0]) continue;
     }
 
@@ -128,7 +126,7 @@ static int read_config_file(const char *name, int rcf_count)
 
     while (w[words] && *w[words] != '#') {
       if (++words == MAXWORDS) break;
-      w[words]=strtok(NULL, " \t\240");
+      w[words]=timi_strtokr(NULL, " \t\240", &endp);
     }
 
     /* TiMidity++ adds a number of extensions to the config file format.
@@ -211,8 +209,7 @@ static int read_config_file(const char *name, int rcf_count)
     /* Standard TiMidity config */
     else if (!strcmp(w[0], "dir"))
     {
-      if (words < 2)
-      {
+      if (words < 2) {
 	DEBUG_MSG("%s: line %d: No directory given\n", name, line);
 	goto fail;
       }
@@ -223,13 +220,11 @@ static int read_config_file(const char *name, int rcf_count)
     }
     else if (!strcmp(w[0], "source"))
     {
-      if (words < 2)
-      {
+      if (words < 2) {
 	DEBUG_MSG("%s: line %d: No file name given\n", name, line);
 	goto fail;
       }
-      for (i=1; i<words; i++)
-      {
+      for (i=1; i<words; i++) {
 	r = read_config_file(w[i], rcf_count + 1);
 	if (r != 0)
 	  goto fail;
@@ -238,57 +233,46 @@ static int read_config_file(const char *name, int rcf_count)
     }
     else if (!strcmp(w[0], "default"))
     {
-      if (words != 2)
-      {
-	DEBUG_MSG("%s: line %d: Must specify exactly one patch name\n",
-		name, line);
+      if (words != 2) {
+	DEBUG_MSG("%s: line %d: Must specify exactly one patch name\n", name, line);
 	goto fail;
       }
-      strncpy(def_instr_name, w[1], 255);
-      def_instr_name[255]='\0';
+      timi_strxcpy(def_instr_name, w[1], 256);
     }
     else if (!strcmp(w[0], "drumset"))
     {
-      if (words < 2)
-      {
+      if (words < 2) {
 	DEBUG_MSG("%s: line %d: No drum set number given\n", name, line);
 	goto fail;
       }
       i=atoi(w[1]);
-      if (i<0 || i>127)
-      {
-	DEBUG_MSG("%s: line %d: Drum set must be between 0 and 127\n",
-		name, line);
+      if (i<0 || i>127) {
+	DEBUG_MSG("%s: line %d: Drum set must be between 0 and 127\n", name, line);
 	goto fail;
       }
-      if (!master_drumset[i])
-      {
-	master_drumset[i] = (MidToneBank *) timi_calloc(sizeof(MidToneBank));
+      if (!master_drumset[i]) {
+	master_drumset[i] = (MidToneBank *) timi_calloc(1, sizeof(MidToneBank));
 	if (!master_drumset[i]) goto fail;
-	master_drumset[i]->tone = (MidToneBankElement *) timi_calloc(128 * sizeof(MidToneBankElement));
+	master_drumset[i]->tone = (MidToneBankElement *) timi_calloc(128, sizeof(MidToneBankElement));
 	if (!master_drumset[i]->tone) goto fail;
       }
       bank=master_drumset[i];
     }
     else if (!strcmp(w[0], "bank"))
     {
-      if (words < 2)
-      {
+      if (words < 2) {
 	DEBUG_MSG("%s: line %d: No bank number given\n", name, line);
 	goto fail;
       }
       i=atoi(w[1]);
-      if (i<0 || i>127)
-      {
-	DEBUG_MSG("%s: line %d: Tone bank must be between 0 and 127\n",
-		name, line);
+      if (i<0 || i>127) {
+	DEBUG_MSG("%s: line %d: Tone bank must be between 0 and 127\n", name, line);
 	goto fail;
       }
-      if (!master_tonebank[i])
-      {
-	master_tonebank[i] = (MidToneBank *) timi_calloc(sizeof(MidToneBank));
+      if (!master_tonebank[i]) {
+	master_tonebank[i] = (MidToneBank *) timi_calloc(1, sizeof(MidToneBank));
 	if (!master_tonebank[i]) goto fail;
-	master_tonebank[i]->tone = (MidToneBankElement *) timi_calloc(128 * sizeof(MidToneBankElement));
+	master_tonebank[i]->tone = (MidToneBankElement *) timi_calloc(128, sizeof(MidToneBankElement));
 	if (!master_tonebank[i]->tone) goto fail;
       }
       bank=master_tonebank[i];
@@ -296,27 +280,22 @@ static int read_config_file(const char *name, int rcf_count)
     else
     {
       size_t sz;
-      if ((words < 2) || (*w[0] < '0' || *w[0] > '9'))
-      {
+      if ((words < 2) || (*w[0] < '0' || *w[0] > '9')) {
 	DEBUG_MSG("%s: line %d: syntax error\n", name, line);
 	goto fail;
       }
       i=atoi(w[0]);
-      if (i<0 || i>127)
-      {
-	DEBUG_MSG("%s: line %d: Program must be between 0 and 127\n",
-		name, line);
+      if (i<0 || i>127) {
+	DEBUG_MSG("%s: line %d: Program must be between 0 and 127\n", name, line);
 	goto fail;
       }
-      if (!bank)
-      {
-	DEBUG_MSG("%s: line %d: Must specify tone bank or drum set before assignment\n",
-		name, line);
+      if (!bank) {
+	DEBUG_MSG("%s: line %d: Must specify tone bank or drum set before assignment\n", name, line);
 	goto fail;
       }
       timi_free(bank->tone[i].name);
       sz = strlen(w[1])+1;
-      bank->tone[i].name = (char *) timi_calloc(sz);
+      bank->tone[i].name = (char *) timi_malloc(sz);
       if (!bank->tone[i].name) goto fail;
       memcpy(bank->tone[i].name,w[1],sz);
       bank->tone[i].note=bank->tone[i].amp=bank->tone[i].pan=
@@ -325,36 +304,28 @@ static int read_config_file(const char *name, int rcf_count)
 
       for (j=2; j<words; j++)
       {
-	if (!(cp=strchr(w[j], '=')))
-	{
+	if (!(cp=strchr(w[j], '='))) {
 	  DEBUG_MSG("%s: line %d: bad patch option %s\n", name, line, w[j]);
 	  goto fail;
 	}
 	*cp++=0;
-	if (!strcmp(w[j], "amp"))
-	{
+	if (!strcmp(w[j], "amp")) {
 	  k=atoi(cp);
-	  if ((k<0 || k>MAX_AMPLIFICATION) || (*cp < '0' || *cp > '9'))
-	  {
-	    DEBUG_MSG("%s: line %d: amplification must be between 0 and %d\n",
-		    name, line, MAX_AMPLIFICATION);
+	  if ((k<0 || k>MAX_AMPLIFICATION) || (*cp < '0' || *cp > '9')) {
+	    DEBUG_MSG("%s: line %d: amplification must be between 0 and %d\n", name, line, MAX_AMPLIFICATION);
 	    goto fail;
 	  }
 	  bank->tone[i].amp=k;
 	}
-	else if (!strcmp(w[j], "note"))
-	{
+	else if (!strcmp(w[j], "note")) {
 	  k=atoi(cp);
-	  if ((k<0 || k>127) || (*cp < '0' || *cp > '9'))
-	  {
-	    DEBUG_MSG("%s: line %d: note must be between 0 and 127\n",
-		    name, line);
+	  if ((k<0 || k>127) || (*cp < '0' || *cp > '9')) {
+	    DEBUG_MSG("%s: line %d: note must be between 0 and 127\n", name, line);
 	    goto fail;
 	  }
 	  bank->tone[i].note=k;
 	}
-	else if (!strcmp(w[j], "pan"))
-	{
+	else if (!strcmp(w[j], "pan")) {
 	  if (!strcmp(cp, "center"))
 	    k=64;
 	  else if (!strcmp(cp, "left"))
@@ -363,43 +334,35 @@ static int read_config_file(const char *name, int rcf_count)
 	    k=127;
 	  else
 	    k=((atoi(cp)+100) * 100) / 157;
-	  if ((k<0 || k>127) || (k==0 && *cp!='-' && (*cp < '0' || *cp > '9')))
-	  {
-	    DEBUG_MSG("%s: line %d: panning must be left, right, center, or between -100 and 100\n",
-		    name, line);
+	  if ((k<0 || k>127) || (k==0 && *cp!='-' && (*cp < '0' || *cp > '9'))) {
+	    DEBUG_MSG("%s: line %d: panning must be left, right, center, or between -100 and 100\n", name, line);
 	    goto fail;
 	  }
 	  bank->tone[i].pan=k;
 	}
-	else if (!strcmp(w[j], "keep"))
-	{
+	else if (!strcmp(w[j], "keep")) {
 	  if (!strcmp(cp, "env"))
 	    bank->tone[i].strip_envelope=0;
 	  else if (!strcmp(cp, "loop"))
 	    bank->tone[i].strip_loop=0;
-	  else
-	  {
+	  else {
 	    DEBUG_MSG("%s: line %d: keep must be env or loop\n", name, line);
 	    goto fail;
 	  }
 	}
-	else if (!strcmp(w[j], "strip"))
-	{
+	else if (!strcmp(w[j], "strip")) {
 	  if (!strcmp(cp, "env"))
 	    bank->tone[i].strip_envelope=1;
 	  else if (!strcmp(cp, "loop"))
 	    bank->tone[i].strip_loop=1;
 	  else if (!strcmp(cp, "tail"))
 	    bank->tone[i].strip_tail=1;
-	  else
-	  {
-	    DEBUG_MSG("%s: line %d: strip must be env, loop, or tail\n",
-		    name, line);
+	  else {
+	    DEBUG_MSG("%s: line %d: strip must be env, loop, or tail\n", name, line);
 	    goto fail;
 	  }
 	}
-	else
-	{
+	else {
 	  DEBUG_MSG("%s: line %d: bad patch option %s\n", name, line, w[j]);
 	  goto fail;
 	}
@@ -416,14 +379,14 @@ fail:
 static int init_alloc_banks (void)
 {
   /* Allocate memory for the standard tonebank and drumset */
-  master_tonebank[0] = (MidToneBank *) timi_calloc(sizeof(MidToneBank));
+  master_tonebank[0] = (MidToneBank *) timi_calloc(1, sizeof(MidToneBank));
   if (!master_tonebank[0]) goto _nomem;
-  master_tonebank[0]->tone = (MidToneBankElement *) timi_calloc(128 * sizeof(MidToneBankElement));
+  master_tonebank[0]->tone = (MidToneBankElement *) timi_calloc(128, sizeof(MidToneBankElement));
   if (!master_tonebank[0]->tone) goto _nomem;
 
-  master_drumset[0] = (MidToneBank *) timi_calloc(sizeof(MidToneBank));
+  master_drumset[0] = (MidToneBank *) timi_calloc(1, sizeof(MidToneBank));
   if (!master_drumset[0]) goto _nomem;
-  master_drumset[0]->tone = (MidToneBankElement *) timi_calloc(128 * sizeof(MidToneBankElement));
+  master_drumset[0]->tone = (MidToneBankElement *) timi_calloc(128, sizeof(MidToneBankElement));
   if (!master_drumset[0]->tone) goto _nomem;
 
   return 0;
@@ -498,22 +461,22 @@ static void do_song_load(MidIStream *stream, MidSongOptions *options, MidSong **
   case MID_AUDIO_U16LSB:
   case MID_AUDIO_U16MSB: break; /* supported */
   default:
-    DEBUG_MSG("Bad audio format 0x%x\n",options->format);
+    DEBUG_MSG("Bad audio format 0x%x\n", options->format);
     return;
   }
 
   /* Allocate memory for the song */
-  song = (MidSong *)timi_calloc(sizeof(MidSong));
+  song = (MidSong *)timi_calloc(1, sizeof(MidSong));
   if (!song) return;
 
   for (i = 0; i < 128; i++) {
     if (master_tonebank[i]) {
-      song->tonebank[i] = (MidToneBank *) timi_calloc(sizeof(MidToneBank));
+      song->tonebank[i] = (MidToneBank *) timi_calloc(1, sizeof(MidToneBank));
       if (!song->tonebank[i]) goto fail;
       song->tonebank[i]->tone = master_tonebank[i]->tone;
     }
     if (master_drumset[i]) {
-      song->drumset[i] = (MidToneBank *) timi_calloc(sizeof(MidToneBank));
+      song->drumset[i] = (MidToneBank *) timi_calloc(1, sizeof(MidToneBank));
       if (!song->drumset[i]) goto fail;
       song->drumset[i]->tone = master_drumset[i]->tone;
     }
@@ -553,9 +516,9 @@ static void do_song_load(MidIStream *stream, MidSongOptions *options, MidSong **
   }
 
   song->buffer_size = options->buffer_size;
-  song->resample_buffer = (sample_t *) timi_calloc(options->buffer_size * sizeof(sample_t));
+  song->resample_buffer = (sample_t *) timi_malloc(options->buffer_size * sizeof(sample_t));
   if (!song->resample_buffer) goto fail;
-  song->common_buffer = (sint32 *) timi_calloc(options->buffer_size * 2 * sizeof(sint32));
+  song->common_buffer = (sint32 *) timi_malloc(options->buffer_size * 2 * sizeof(sint32));
   if (!song->common_buffer) goto fail;
 
   song->bytes_per_sample = 2;
@@ -659,7 +622,7 @@ long mid_get_version (void)
   return LIBTIMIDITY_VERSION;
 }
 
-/* ===== for libtimidity <= 0.2.x compatibility =====
+/* ====== for libtimidity <= 0.2.1 compatibility ======
  */
 MidDLSPatches *mid_dlspatches_load (MidIStream *stream)
 {

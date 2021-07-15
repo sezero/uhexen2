@@ -3,7 +3,7 @@
 
 INCLUDES=-I.
 CPPFLAGS=-DTIMIDITY_BUILD -DTIMIDITY_STATIC
-# to build a debug version :
+# to enable loud debug messages:
 #CPPFLAGS+= -DTIMIDITY_DEBUG
 
 CFLAGS = -zq -bt=os2 -bm -fp5 -fpi87 -mf -oeatxh -w4 -ei -j -zp8
