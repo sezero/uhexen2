@@ -21,10 +21,12 @@
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -86,7 +88,8 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy "..\..\oslibs\windows\codecs\x86\*.dll" "$(TargetDir)"&#x0D;&#x0A;copy "..\..\oslibs\windows\scitech\x86\*.dll" "$(TargetDir)"</Command>
+      <Command>copy "..\..\oslibs\windows\codecs\x86\*.dll" "$(TargetDir)"
+copy "..\..\oslibs\windows\scitech\x86\*.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -128,7 +131,8 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy "..\..\oslibs\windows\codecs\x86\*.dll" "$(TargetDir)"&#x0D;&#x0A;copy "..\..\oslibs\windows\scitech\x86\*.dll" "$(TargetDir)"</Command>
+      <Command>copy "..\..\oslibs\windows\codecs\x86\*.dll" "$(TargetDir)"
+copy "..\..\oslibs\windows\scitech\x86\*.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
