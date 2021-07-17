@@ -1209,6 +1209,12 @@ static void IN_JoyMove (usercmd_t *cmd)
 		return;
 	}
 
+	// don't apply while paused, otherwise looking influences the camera
+	if (cl.paused)
+	{
+		return;
+	}
+	
 	if (in_speed.state & 1)
 		speed = cl_movespeedkey.value;
 	else
