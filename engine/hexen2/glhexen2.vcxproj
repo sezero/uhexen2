@@ -326,6 +326,7 @@
     <ClInclude Include="..\h2shared\cvar.h" />
     <ClInclude Include="..\h2shared\debuglog.h" />
     <ClInclude Include="..\h2shared\draw.h" />
+    <ClInclude Include="config.h" />
     <ClInclude Include="effects.h" />
     <ClInclude Include="..\..\common\genmodel.h" />
     <ClInclude Include="..\h2shared\gl_func.h" />
