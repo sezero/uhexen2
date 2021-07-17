@@ -64,7 +64,7 @@ MMRESULT WINAPI joyGetPosEx(UINT uJoyID, LPJOYINFOEX pji)
 
 	if (rt > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
 		pji->dwUpos = 32768 + (int)(rt / 255.0 * 32767);
-	
+
 	pji->dwButtons = 0;
 
 	if (pad.wButtons & XINPUT_GAMEPAD_A)
@@ -96,6 +96,12 @@ MMRESULT WINAPI joyGetPosEx(UINT uJoyID, LPJOYINFOEX pji)
 
 	if (pad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
 		pji->dwButtons |= JOY_BUTTON10;
+
+	if (lt > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
+		pji->dwButtons |= JOY_BUTTON11;
+
+	if (rt > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
+		pji->dwButtons |= JOY_BUTTON12;
 
 	pji->dwPOV = JOY_POVCENTERED;
 
