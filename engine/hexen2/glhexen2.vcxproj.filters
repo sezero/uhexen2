@@ -536,6 +536,9 @@
     <ClInclude Include="..\h2shared\resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="in_joy_xinput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\resource\h2mp.ico">

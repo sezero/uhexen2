@@ -340,6 +340,7 @@
     <ClInclude Include="..\h2shared\keys.h" />
     <ClInclude Include="..\h2shared\link_ops.h" />
     <ClInclude Include="..\h2shared\mathlib.h" />
+    <ClInclude Include="in_joy_xinput.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="..\h2shared\mid2strm.h" />
     <ClInclude Include="..\h2shared\midi_drv.h" />

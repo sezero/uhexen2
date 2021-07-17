@@ -27,6 +27,11 @@
 #include <mmsystem.h>
 #include <dinput.h>
 
+#define XINPUT 1
+#ifdef XINPUT
+#endif
+#include "in_joy_xinput.h"
+
 // mouse variables
 static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
 
