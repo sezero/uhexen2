@@ -55,6 +55,16 @@ MMRESULT WINAPI joyGetPosEx(UINT uJoyID, LPJOYINFOEX pji)
 	if (abs(ry) > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
 		pji->dwRpos += ry;
 
+	const BYTE lt = pad.bLeftTrigger;
+
+	if (lt > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
+		pji->dwUpos = 32768 + (int)(lt / 255.0 * 32767);
+
+	const BYTE rt = pad.bRightTrigger;
+
+	if (rt > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
+		pji->dwUpos = 32768 + (int)(rt / 255.0 * 32767);
+	
 	pji->dwButtons = 0;
 
 	if (pad.wButtons & XINPUT_GAMEPAD_A)
@@ -109,7 +119,7 @@ MMRESULT WINAPI joyGetDevCaps(UINT uJoyID, LPJOYCAPS pjc, UINT cbjc)
 	if (uJoyID != 0)
 		return MMSYSERR_NODRIVER;
 
-	pjc->wNumButtons = 10;
+	pjc->wNumButtons = 12;
 	pjc->wCaps = JOYCAPS_HASPOV;
 
 	return JOYERR_NOERROR;
