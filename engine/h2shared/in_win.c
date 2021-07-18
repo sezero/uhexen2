@@ -27,6 +27,14 @@
 #include <mmsystem.h>
 #include <dinput.h>
 
+#include "config.h"
+
+#ifndef XINPUT
+#include "in_joy_dinput.h"
+#else
+#include "in_joy_xinput.h"
+#endif
+
 // mouse variables
 static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
 
@@ -910,7 +918,7 @@ static void IN_StartupJoystick (void)
 		return;
 
 	// verify joystick driver is present
-	if ((numdevs = joyGetNumDevs ()) == 0)
+	if ((numdevs = joy_get_num_devs ()) == 0)
 	{
 		Con_SafePrintf ("\njoystick not found -- driver not present\n\n");
 		return;
@@ -923,7 +931,7 @@ static void IN_StartupJoystick (void)
 		ji.dwSize = sizeof(ji);
 		ji.dwFlags = JOY_RETURNCENTERED;
 
-		if ((mmr = joyGetPosEx (joy_id, &ji)) == JOYERR_NOERROR)
+		if ((mmr = joy_get_pos_ex (joy_id, &ji)) == JOYERR_NOERROR)
 			break;
 	}
 
@@ -937,7 +945,7 @@ static void IN_StartupJoystick (void)
 	// get the capabilities of the selected joystick
 	// abort startup if command fails
 	memset (&jc, 0, sizeof(jc));
-	if ((mmr = joyGetDevCaps (joy_id, &jc, sizeof(jc))) != JOYERR_NOERROR)
+	if ((mmr = joy_get_dev_caps (joy_id, &jc, sizeof(jc))) != JOYERR_NOERROR)
 	{
 		Con_SafePrintf ("\njoystick not found -- invalid joystick capabilities (%x)\n\n", mmr);
 		return;
@@ -1068,7 +1076,7 @@ static qboolean IN_ReadJoystick (void)
 	ji.dwSize = sizeof(ji);
 	ji.dwFlags = joy_flags;
 
-	if (joyGetPosEx (joy_id, &ji) == JOYERR_NOERROR)
+	if (joy_get_pos_ex (joy_id, &ji) == JOYERR_NOERROR)
 	{
 		// this is a hack -- there is a bug in the Logitech WingMan Warrior DirectInput Driver
 		// rather than having 32768 be the zero point, they have the zero point at 32668
