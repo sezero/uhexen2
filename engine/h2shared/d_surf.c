@@ -140,7 +140,7 @@ static surfcache_t *D_SCAlloc (int width, int size)
 		Sys_Error ("%s: bad cache size %d", __thisfunc__, size);
 
 	/* This adds the offset of data[0] in the surfcache_t struct. */
-	size += (size_t) &(((surfcache_t *)0)->data[0]);
+	size += (intptr_t) &(((surfcache_t *)0)->data[0]);
 #define SIZE_ALIGN	(sizeof (surfcache_t *) - 1)
 	size = (size + SIZE_ALIGN) & ~SIZE_ALIGN;
 #undef	SIZE_ALIGN
