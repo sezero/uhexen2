@@ -16,7 +16,7 @@ diff --git a/engine/hexen2/sys_unix.c b/engine/hexen2/sys_unix.c
 index b5b3da1..8c305ac 100644
 --- a/engine/hexen2/sys_unix.c
 +++ b/engine/hexen2/sys_unix.c
-@@ -599,65 +599,268 @@ static void PrintVersion (void)
+@@ -595,65 +595,267 @@ static void PrintVersion (void)
  }
  
  #include "snd_sys.h"
@@ -164,7 +164,6 @@ index b5b3da1..8c305ac 100644
 +#endif
 +/* MISCELLANEOUS */
 +	{"","","",0,"Miscellaneous"},
-+	{"-forcemem",	"",		"",	0, "Force memory option"},
 +	{"-surfcachesize","",		"",	1, "Surface cache size"},
 +	{"-protocol",	"",		"",	1, "Request different game version"},
 +	{"-particles",	"",		"",	1, "Set number of particles"},
@@ -315,7 +314,7 @@ index b5b3da1..8c305ac 100644
  }
  
  /*
-@@ -680,23 +883,7 @@ int main (int argc, char **argv)
+@@ -676,23 +878,7 @@ int main (int argc, char **argv)
  
  	PrintVersion();
  
@@ -343,3 +342,4 @@ index b5b3da1..8c305ac 100644
 
 -- 
 1.7.1
+

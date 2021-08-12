@@ -40,12 +40,8 @@
 #endif	/* SDLQUAKE */
 
 
-// heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
-// -heapsize argument will abide by these min/max settings
-// unless the -forcemem argument is used
 #define MIN_MEM_ALLOC	0x1000000
 #define STD_MEM_ALLOC	0x2000000
-#define MAX_MEM_ALLOC	0x6000000
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 cvar_t		sys_throttle = {"sys_throttle", "0.02", CVAR_ARCHIVE};
@@ -508,30 +504,13 @@ int main (int argc, char **argv)
 	Sys_CheckSDL ();
 
 	parms.memsize = STD_MEM_ALLOC;
-
 	i = COM_CheckParm ("-heapsize");
 	if (i && i < com_argc-1)
-	{
 		parms.memsize = atoi (com_argv[i+1]) * 1024;
 
-		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
-		{
-			Sys_Printf ("Requested memory (%d Mb) too large, using the default maximum.\n", parms.memsize/(1024*1024));
-			Sys_Printf ("If you are sure, use the -forcemem switch.\n");
-			parms.memsize = MAX_MEM_ALLOC;
-		}
-		else if ((parms.memsize < MIN_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
-		{
-			Sys_Printf ("Requested memory (%d Mb) too little, using the default minimum.\n", parms.memsize/(1024*1024));
-			Sys_Printf ("If you are sure, use the -forcemem switch.\n");
-			parms.memsize = MIN_MEM_ALLOC;
-		}
-	}
-
 	parms.membase = malloc (parms.memsize);
-
 	if (!parms.membase)
-		Sys_Error ("Insufficient memory.\n");
+		Sys_Error ("Insufficient memory.");
 
 	Sys_Init ();
 	atexit (Sys_AtExit);
@@ -569,4 +548,3 @@ int main (int argc, char **argv)
 
 	return 0;
 }
-

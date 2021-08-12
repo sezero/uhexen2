@@ -45,12 +45,8 @@ static int my_rc = 0;
 #define HAVE_AROS_MAIN_WRAPPER
 #endif
 
-// heapsize: minimum 8 mb, standart 16 mb, max is 32 mb.
-// -heapsize argument will abide by these min/max settings
-// unless the -forcemem argument is used
 #define MIN_MEM_ALLOC	0x0800000
 #define STD_MEM_ALLOC	0x1000000
-#define MAX_MEM_ALLOC	0x2000000
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 int		devlog;	/* log the Con_DPrintf and Sys_DPrintf content when !developer.integer */
@@ -682,34 +678,14 @@ int main (int argc, char **argv)
 	COM_ValidateByteorder ();
 
 	availMem = AvailMem(MEMF_ANY|MEMF_LARGEST);
-	if (availMem < STD_MEM_ALLOC)
-		parms.memsize = MIN_MEM_ALLOC;
-	else
-		parms.memsize = STD_MEM_ALLOC;
-
+	parms.memsize = (availMem < STD_MEM_ALLOC)? MIN_MEM_ALLOC : STD_MEM_ALLOC;
 	i = COM_CheckParm ("-heapsize");
 	if (i && i < com_argc-1)
-	{
 		parms.memsize = atoi (com_argv[i+1]) * 1024;
 
-		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
-		{
-			Sys_Printf ("Requested memory (%d Mb) too large, using the default maximum.\n", parms.memsize/(1024*1024));
-			Sys_Printf ("If you are sure, use the -forcemem switch.\n");
-			parms.memsize = MAX_MEM_ALLOC;
-		}
-		else if ((parms.memsize < MIN_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
-		{
-			Sys_Printf ("Requested memory (%d Mb) too little, using the default minimum.\n", parms.memsize/(1024*1024));
-			Sys_Printf ("If you are sure, use the -forcemem switch.\n");
-			parms.memsize = MIN_MEM_ALLOC;
-		}
-	}
-
 	parms.membase = malloc (parms.memsize);
-
 	if (!parms.membase)
-		Sys_Error ("Insufficient memory.\n");
+		Sys_Error ("Insufficient memory.");
 
 #ifndef HAVE_AROS_MAIN_WRAPPER
 	atexit (Sys_AtExit);
@@ -721,6 +697,9 @@ int main (int argc, char **argv)
 // report the filesystem to the user
 	Sys_Printf("gamedir is: %s\n", FS_GetGamedir());
 	Sys_Printf("userdir is: %s\n", FS_GetUserdir());
+
+// run one frame immediately for first heartbeat
+	SV_Frame (HX_FRAME_TIME);
 
 //
 // main loop

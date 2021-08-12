@@ -25,12 +25,8 @@
 #include "debuglog.h"
 
 
-// heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
-// -heapsize argument will abide by these min/max settings
-// unless the -forcemem argument is used
 #define MIN_MEM_ALLOC	0x1000000
 #define STD_MEM_ALLOC	0x2000000
-#define MAX_MEM_ALLOC	0x6000000
 
 #define CONSOLE_ERROR_TIMEOUT	60.0	/* # of seconds to wait on Sys_Error running dedicated before exiting */
 #define PAUSE_SLEEP		50	/* sleep time on pause or minimization		*/
@@ -694,7 +690,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	lpBuffer.dwLength = sizeof(MEMORYSTATUS);
 	GlobalMemoryStatus (&lpBuffer);
-	/* Maximum of 2GiB to work around signed int */
+	/* Limit to 2 GB to work around signed int */
 	if (lpBuffer.dwAvailPhys > 0x7FFFFFFF)
 		lpBuffer.dwAvailPhys = 0x7FFFFFFF;
 	if (lpBuffer.dwTotalPhys > 0x7FFFFFFF)
@@ -771,37 +767,23 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		Sys_CreateInitSplash (global_hInstance);
 
 // take the greater of all the available memory or half the total memory,
-// but at least 16 Mb and no more than 32 Mb, unless they explicitly
-// request otherwise
+// but at least 16 Mb and no more than 32 Mb, unless explicitly requested.
 	parms.memsize = lpBuffer.dwAvailPhys;
-
 	if (parms.memsize < MIN_MEM_ALLOC)
 		parms.memsize = MIN_MEM_ALLOC;
-
 	if (parms.memsize < (int) (lpBuffer.dwTotalPhys >> 1))
 		parms.memsize = (int) (lpBuffer.dwTotalPhys >> 1);
-
 	if (parms.memsize > STD_MEM_ALLOC)
 		parms.memsize = STD_MEM_ALLOC;
-
 	if (isDedicated)
 		parms.memsize = MIN_MEM_ALLOC;
-
 	i = COM_CheckParm ("-heapsize");
 	if (i && i < com_argc-1)
-	{
 		parms.memsize = atoi (com_argv[i+1]) * 1024;
 
-		if ((parms.memsize > MAX_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
-			parms.memsize = MAX_MEM_ALLOC;
-		else if ((parms.memsize < MIN_MEM_ALLOC) && !(COM_CheckParm ("-forcemem")))
-			parms.memsize = MIN_MEM_ALLOC;
-	}
-
 	parms.membase = malloc (parms.memsize);
-
 	if (!parms.membase)
-		Sys_Error ("Insufficient memory.\n");
+		Sys_Error ("Insufficient memory.");
 
 	if (COM_CheckParm("-nopagein") == 0)
 	{
