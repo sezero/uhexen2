@@ -1252,14 +1252,14 @@ static void Mod_LoadLeafs (lump_t *l)
 	count = l->filelen / sizeof(*in);
 	out = (mleaf_t *) Hunk_AllocName (count * sizeof(*out), "leafs");
 
+	loadmodel->leafs = out;
+	loadmodel->numleafs = count;
+
 	#ifdef H2W
 	q_snprintf (s, sizeof(s), "maps/%s.bsp", Info_ValueForKey(cl.serverinfo,"map"));
 	if (!strcmp(s, loadmodel->name))
 		isnotmap = false;
 	#endif
-
-	loadmodel->leafs = out;
-	loadmodel->numleafs = count;
 
 	for (i = 0; i < count; i++, in++, out++)
 	{

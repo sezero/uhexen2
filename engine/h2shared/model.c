@@ -1685,34 +1685,6 @@ static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer)
 	int			skinsize;
 	int			start, end, total;
 
-#if defined(H2W)
-/*	// rjr FIXME
-	if (!strcmp(loadmodel->name, "models/paladin.mdl"))
-	{
-		unsigned short	crc;
-		byte	*p;
-		int		len;
-		char	st[40];
-
-		CRC_Init(&crc);
-		for (len = fs_filesize, p = (byte *)buffer; len; len--, p++)
-			CRC_ProcessByte(&crc, *p);
-
-		q_snprintf (st, sizeof(st), "%d", (int) crc);
-	// rjr FIXME
-		Info_SetValueForKey (cls.userinfo, "pmodel", st, MAX_INFO_STRING);//"emodel"
-
-	// rjr FIXME
-		if (cls.state >= ca_connected)
-		{
-			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-			q_snprintf (st, sizeof(st), "setinfo %s %d", "pmodel", (int)crc);//"emodel"
-			SZ_Print (&cls.netchan.message, st);
-		}
-	}
-*/
-#endif
-
 	start = Hunk_LowMark ();
 
 	pinmodel = (newmdl_t *)buffer;
@@ -1949,6 +1921,34 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 	maliasskindesc_t	*pskindesc;
 	int			skinsize;
 	int			start, end, total;
+
+#if defined(H2W)
+/*	// rjr FIXME
+	if (!strcmp(loadmodel->name, "models/paladin.mdl"))
+	{
+		unsigned short	crc;
+		byte	*p;
+		int		len;
+		char	st[40];
+
+		CRC_Init(&crc);
+		for (len = fs_filesize, p = (byte *)buffer; len; len--, p++)
+			CRC_ProcessByte(&crc, *p);
+
+		q_snprintf (st, sizeof(st), "%d", (int) crc);
+	// rjr FIXME
+		Info_SetValueForKey (cls.userinfo, "pmodel", st, MAX_INFO_STRING);//"emodel"
+
+	// rjr FIXME
+		if (cls.state >= ca_connected)
+		{
+			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+			q_snprintf (st, sizeof(st), "setinfo %s %d", "pmodel", (int)crc);//"emodel"
+			SZ_Print (&cls.netchan.message, st);
+		}
+	}
+*/
+#endif
 
 	start = Hunk_LowMark ();
 
