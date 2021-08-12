@@ -47,6 +47,10 @@ static int	mod_numknown;
 
 static vec3_t	aliasmins, aliasmaxs;
 
+#ifndef H2W
+int		entity_file_size;
+#endif
+
 
 /*
 ===============
@@ -309,6 +313,7 @@ static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash)
 
 // call the apropriate loader
 	mod->needload = NL_PRESENT;
+
 	mod_type = (buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24));
 	switch (mod_type)
 	{
@@ -399,7 +404,6 @@ static void Mod_LoadTextures (lump_t *l)
 		mt->height = LittleLong (mt->height);
 		for (j = 0; j < MIPLEVELS; j++)
 			mt->offsets[j] = LittleLong (mt->offsets[j]);
-
 #ifdef WAL_TEXTURES
 		if (!r_texture_external.integer)
 			goto bsp_tex_internal;
@@ -634,6 +638,9 @@ static void Mod_LoadEntities (lump_t *l)
 		}
 		else
 		{
+			#ifndef H2W
+			entity_file_size = fs_filesize;
+			#endif
 			loadmodel->entities = ents;
 			Con_DPrintf("Loaded external entity file %s\n", entfilename);
 			return;
@@ -648,6 +655,9 @@ _load_embedded:
 	}
 	loadmodel->entities = (char *) Hunk_AllocName ( l->filelen, "entities");
 	memcpy (loadmodel->entities, mod_base + l->fileofs, l->filelen);
+	#ifndef H2W
+	entity_file_size = l->filelen;
+	#endif
 }
 
 
@@ -1125,7 +1135,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 	hull->firstclipnode = 0;
 	hull->lastclipnode = count-1;
 	hull->planes = loadmodel->planes;
-#if 1
+#ifdef H2W
 	hull->clip_mins[0] = -40;
 	hull->clip_mins[1] = -40;
 	hull->clip_mins[2] = -42;
@@ -1368,6 +1378,7 @@ static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer)
 	Mod_MakeHull0 ();
 
 	mod->numframes = 2;		// regular and alternate animation
+	mod->flags = 0;
 
 //
 // set up the submodels (FIXME: this is confusing)
@@ -1674,6 +1685,34 @@ static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer)
 	int			skinsize;
 	int			start, end, total;
 
+#if defined(H2W)
+/*	// rjr FIXME
+	if (!strcmp(loadmodel->name, "models/paladin.mdl"))
+	{
+		unsigned short	crc;
+		byte	*p;
+		int		len;
+		char	st[40];
+
+		CRC_Init(&crc);
+		for (len = fs_filesize, p = (byte *)buffer; len; len--, p++)
+			CRC_ProcessByte(&crc, *p);
+
+		q_snprintf (st, sizeof(st), "%d", (int) crc);
+	// rjr FIXME
+		Info_SetValueForKey (cls.userinfo, "pmodel", st, MAX_INFO_STRING);//"emodel"
+
+	// rjr FIXME
+		if (cls.state >= ca_connected)
+		{
+			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+			q_snprintf (st, sizeof(st), "setinfo %s %d", "pmodel", (int)crc);//"emodel"
+			SZ_Print (&cls.netchan.message, st);
+		}
+	}
+*/
+#endif
+
 	start = Hunk_LowMark ();
 
 	pinmodel = (newmdl_t *)buffer;
@@ -1911,31 +1950,6 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 	int			skinsize;
 	int			start, end, total;
 
-/*	// rjr FIXME
-	if (!strcmp(loadmodel->name, "models/paladin.mdl"))
-	{
-		unsigned short	crc;
-		byte	*p;
-		int		len;
-		char	st[40];
-
-		CRC_Init(&crc);
-		for (len = fs_filesize, p = (byte *)buffer; len; len--, p++)
-			CRC_ProcessByte(&crc, *p);
-
-		q_snprintf (st, sizeof(st), "%d", (int) crc);
-	// rjr FIXME
-		Info_SetValueForKey (cls.userinfo, "pmodel", st, MAX_INFO_STRING);//"emodel"
-
-	// rjr FIXME
-		if (cls.state >= ca_connected)
-		{
-			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-			q_snprintf (st, sizeof(st), "setinfo %s %d", "pmodel", (int)crc);//"emodel"
-			SZ_Print (&cls.netchan.message, st);
-		}
-	}
-*/
 	start = Hunk_LowMark ();
 
 	pinmodel = (mdl_t *)buffer;
@@ -2306,6 +2320,7 @@ static void Mod_LoadSpriteModel (qmodel_t *mod, void *buffer)
 		Sys_Error ("%s: Invalid # of frames: %d", __thisfunc__, numframes);
 
 	mod->numframes = numframes;
+	mod->flags = 0;
 
 	pframetype = (dspriteframetype_t *)(pin + 1);
 

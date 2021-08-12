@@ -510,7 +510,7 @@ static void CalcSurfaceExtents (msurface_t *s, int firstedge, int numedges)
 
 		s->texturemins[i] = bmins[i] * 16;
 		s->extents[i] = (bmaxs[i] - bmins[i]) * 16;
-		if ( !(tex->flags & TEX_SPECIAL) && s->extents[i] > 256)
+		if ( !(tex->flags & TEX_SPECIAL) && s->extents[i] > 512 /* 256 */ )
 			Host_Error ("Bad surface extents");
 	}
 }
@@ -719,31 +719,49 @@ static void Mod_LoadClipnodes (lump_t *l)
 	hull->clip_maxs[1] = 16;
 	hull->clip_maxs[2] = 16;
 
-//hydra
+//hydra -changing in MP to '-8 -8 -8', '8 8 8' for pentacles
 	hull = &loadmodel->hulls[4];
 	hull->clipnodes = out;
 	hull->firstclipnode = 0;
 	hull->lastclipnode = count-1;
 	hull->planes = loadmodel->planes;
+#ifdef H2W
 	hull->clip_mins[0] = -40;
 	hull->clip_mins[1] = -40;
 	hull->clip_mins[2] = -42;
 	hull->clip_maxs[0] = 40;
 	hull->clip_maxs[1] = 40;
 	hull->clip_maxs[2] = 42;
+#else
+	hull->clip_mins[0] = -8;
+	hull->clip_mins[1] = -8;
+	hull->clip_mins[2] = -8;
+	hull->clip_maxs[0] = 8;
+	hull->clip_maxs[1] = 8;
+	hull->clip_maxs[2] = 8;
+#endif
 
-//golem
+//golem - maybe change to '-28 -28 -40', '28 28 40' for Yakman
 	hull = &loadmodel->hulls[5];
 	hull->clipnodes = out;
 	hull->firstclipnode = 0;
 	hull->lastclipnode = count-1;
 	hull->planes = loadmodel->planes;
+#if 0	//use yak sizes
+	hull->clip_mins[0] = -28;
+	hull->clip_mins[1] = -28;
+	hull->clip_mins[2] = -40;
+	hull->clip_maxs[0] = 28;
+	hull->clip_maxs[1] = 28;
+	hull->clip_maxs[2] = 40;
+#else
 	hull->clip_mins[0] = -48;
 	hull->clip_mins[1] = -48;
 	hull->clip_mins[2] = -50;
 	hull->clip_maxs[0] = 48;
 	hull->clip_maxs[1] = 48;
 	hull->clip_maxs[2] = 50;
+#endif
 
 	for (i = 0; i < count; i++, out++, in++)
 	{

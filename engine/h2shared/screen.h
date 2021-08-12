@@ -22,8 +22,7 @@
 #ifndef __HX2_SCREEN_H
 #define __HX2_SCREEN_H
 
-#define PLAQUE_WIDTH	26
-	// width for the info plaques
+#define PLAQUE_WIDTH	26	/* width for the info plaques */
 
 void SCR_Init (void);
 void SCR_UpdateScreen (void);
@@ -40,9 +39,11 @@ void SCR_DrawLoading (void);	// for the Loading plaque
 void SCR_SetPlaqueMessage (const char *msg);	// set pointer to current plaque message
 int SCR_ModalMessage (const char *text);
 
+#ifndef H2W
 extern	int			total_loading_size;	// global vars for
 extern	int			current_loading_size;	// the Loading screen
 extern	int			entity_file_size, loading_stage;
+#endif
 
 extern	float		scr_con_current;
 extern	float		scr_conlines;		// lines of console to display
