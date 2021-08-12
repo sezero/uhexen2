@@ -219,7 +219,9 @@ extern	cvar_t	r_speeds;
 extern	cvar_t	r_waterwarp;
 extern	cvar_t	r_fullbright;
 extern	cvar_t	r_lightmap;
+#ifdef R_SHADOWS
 extern	cvar_t	r_shadows;
+#endif
 extern	cvar_t	r_mirroralpha;
 extern	cvar_t	r_wateralpha;
 extern	cvar_t	r_skyalpha;

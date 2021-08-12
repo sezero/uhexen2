@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.10: (Mar. 07, 2021.)
+Changes in v1.5.10: (Aug. 12, 2021.)
 ========================================================================
 
 This is a minor bug fix and maintenance release:
@@ -9,6 +9,9 @@ This is a minor bug fix and maintenance release:
 - Fixed possible crash in effects code (thanks to Jonathan Bergeron).
 
 - OpenGL: Fixed graphical artifacts with scaled UI (sf.net bug 59.)
+
+- OpenGL: Shadows are now a compile time option, disabled by default.
+  Shadows have always been broken, needs major rework to fix.
 
 - Improvements to mp3 tag detection / skipping.
 

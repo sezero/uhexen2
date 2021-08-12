@@ -2200,7 +2200,9 @@ enum
 	OGL_COLOREDEXTRA,
 	OGL_TEXFILTER,
 	OGL_ANISOTROPY,
+#ifdef R_SHADOWS
 	OGL_SHADOWS,
+#endif
 	OGL_ITEMS
 };
 
@@ -2290,8 +2292,10 @@ static void M_OpenGL_Draw (void)
 	M_Print (232, 90 + 8*OGL_ANISOTROPY, (gl_max_anisotropy < 2) ? "N/A" :
 				Cvar_VariableString("gl_texture_anisotropy"));
 
+#ifdef R_SHADOWS
 	M_Print (32 + (15 * 8), 90 + 8*OGL_SHADOWS,	"Shadows");
 	M_DrawCheckbox (232, 90 + 8*OGL_SHADOWS, r_shadows.integer);
+#endif
 
 	// cursor
 	M_DrawCharacter (216, 90 + opengl_cursor*8, 12+((int)(realtime*4)&1));
@@ -2457,9 +2461,11 @@ static void M_OpenGL_Key (int k)
 			Cvar_SetValue ("gl_texture_anisotropy", tex_mode);
 			break;
 
+#ifdef R_SHADOWS
 		case OGL_SHADOWS:	// shadows
 			Cvar_Set ("r_shadows", r_shadows.integer ? "0" : "1");
 			break;
+#endif
 
 		default:
 			break;
