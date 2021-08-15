@@ -239,9 +239,27 @@ static void SwapBSPFile (qboolean todisk)
 
 static dheader_t	*header;
 
-static int CopyLump (int lump, void *dest, int size)
+static const char *numnames[] = {
+	"entdatasize",
+	"numplanes",
+	"texdatasize",
+	"numvertexes",
+	"visdatasize",
+	"numnodes",
+	"numtexinfo",
+	"numfaces",
+	"lightdatasize",
+	"numclipnodes",
+	"numleafs",
+	"nummarksurfaces",
+	"numedges",
+	"numsurfedges",
+	"nummodels"
+};
+
+static int CopyLump (int lump, void *dest, int size, int maxnum)
 {
-	int		length, ofs;
+	int		length, ofs, num;
 
 	length = header->lumps[lump].filelen;
 	ofs = header->lumps[lump].fileofs;
@@ -249,9 +267,15 @@ static int CopyLump (int lump, void *dest, int size)
 	if (length % size)
 		COM_Error ("%s: odd lump size", __thisfunc__);
 
+	num = length / size;
+	if (num > maxnum) {
+		COM_Error ("%s: %s = %d exceeds hardcoded limit of %d",
+			   __thisfunc__, numnames[lump], num, maxnum);
+	}
+
 	memcpy (dest, (byte *)header + ofs, length);
 
-	return length / size;
+	return num;
 }
 
 /*
@@ -275,22 +299,22 @@ void LoadBSPFile (const char *filename)
 	if (header->version != BSPVERSION)
 		COM_Error ("%s is version %i, not %i", filename, header->version, BSPVERSION);
 
-	nummodels = CopyLump (LUMP_MODELS, dmodels, sizeof(dmodel_t));
-	numvertexes = CopyLump (LUMP_VERTEXES, dvertexes, sizeof(dvertex_t));
-	numplanes = CopyLump (LUMP_PLANES, dplanes, sizeof(dplane_t));
-	numleafs = CopyLump (LUMP_LEAFS, dleafs, sizeof(dleaf_t));
-	numnodes = CopyLump (LUMP_NODES, dnodes, sizeof(dnode_t));
-	numtexinfo = CopyLump (LUMP_TEXINFO, texinfo, sizeof(texinfo_t));
-	numclipnodes = CopyLump (LUMP_CLIPNODES, dclipnodes, sizeof(dclipnode_t));
-	numfaces = CopyLump (LUMP_FACES, dfaces, sizeof(dface_t));
-	nummarksurfaces = CopyLump (LUMP_MARKSURFACES, dmarksurfaces, sizeof(dmarksurfaces[0]));
-	numsurfedges = CopyLump (LUMP_SURFEDGES, dsurfedges, sizeof(dsurfedges[0]));
-	numedges = CopyLump (LUMP_EDGES, dedges, sizeof(dedge_t));
+	nummodels = CopyLump (LUMP_MODELS, dmodels, sizeof(dmodel_t), MAX_MAP_MODELS);
+	numvertexes = CopyLump (LUMP_VERTEXES, dvertexes, sizeof(dvertex_t), MAX_MAP_VERTS);
+	numplanes = CopyLump (LUMP_PLANES, dplanes, sizeof(dplane_t), MAX_MAP_PLANES);
+	numleafs = CopyLump (LUMP_LEAFS, dleafs, sizeof(dleaf_t), MAX_MAP_LEAFS);
+	numnodes = CopyLump (LUMP_NODES, dnodes, sizeof(dnode_t), MAX_MAP_NODES);
+	numtexinfo = CopyLump (LUMP_TEXINFO, texinfo, sizeof(texinfo_t), MAX_MAP_TEXINFO);
+	numclipnodes = CopyLump (LUMP_CLIPNODES, dclipnodes, sizeof(dclipnode_t), MAX_MAP_CLIPNODES);
+	numfaces = CopyLump (LUMP_FACES, dfaces, sizeof(dface_t), MAX_MAP_FACES);
+	nummarksurfaces = CopyLump (LUMP_MARKSURFACES, dmarksurfaces, sizeof(dmarksurfaces[0]), MAX_MAP_MARKSURFACES);
+	numsurfedges = CopyLump (LUMP_SURFEDGES, dsurfedges, sizeof(dsurfedges[0]), MAX_MAP_SURFEDGES);
+	numedges = CopyLump (LUMP_EDGES, dedges, sizeof(dedge_t), MAX_MAP_EDGES);
 
-	texdatasize = CopyLump (LUMP_TEXTURES, dtexdata, 1);
-	visdatasize = CopyLump (LUMP_VISIBILITY, dvisdata, 1);
-	lightdatasize = CopyLump (LUMP_LIGHTING, dlightdata, 1);
-	entdatasize = CopyLump (LUMP_ENTITIES, dentdata, 1);
+	texdatasize = CopyLump (LUMP_TEXTURES, dtexdata, 1, MAX_MAP_MIPTEX);
+	visdatasize = CopyLump (LUMP_VISIBILITY, dvisdata, 1, MAX_MAP_VISIBILITY);
+	lightdatasize = CopyLump (LUMP_LIGHTING, dlightdata, 1, MAX_MAP_LIGHTING);
+	entdatasize = CopyLump (LUMP_ENTITIES, dentdata, 1, MAX_MAP_ENTSTRING);
 
 	free (pbuf);	// everything has been copied out
 
