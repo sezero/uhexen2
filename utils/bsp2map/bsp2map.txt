@@ -1,0 +1,90 @@
+
+BSP2MAP v0.12 (Hexen II)
+.BSP to .MAP file converter
+
+Since Hexen II .BSP file structure was changed since Quake, v0.11 did not work
+with Hexen II maps, so I replaced some routines from QUtils used by this prog
+with ones of HexUtils, made a few changes and recompiled the program.
+
+When Hexen II .MAP file is created by BSP, there's one extra paremater for each
+entity line compared to Quake, almost always it is 0. I did not know what it
+meant so the prog currently always sets it to 0. Also, max edges per surface
+limit has been increased from 20 to 100 since v0.11.
+
+The prog is far from perfect, an attempt to decompile a fairly complex map and
+recompile it will produce a lot of leaks and other weird things which are not
+present in the original map, if only QBSP will be able to handle your 1.5M map
+file at all (all BSP2MAP does is create a separate brush for each face). So if
+you want something better, which can merge brushes, get BSPC or WinBSPC
+(http://www.botepidemic.com/gladiator), but this one only works with Quake or
+Quake II (not Hexen II), and the author did not put out the source code
+(basterd), so there's nothing I can do about that one. Pray to the author real
+hard, may be he'll give you the source.
+
+Modified sources included in SOURCE subdirectory. All the files you need are
+there, just create a project and include all .c files in it. I used LCC v3.2 to
+compile, so I had to adapt some 'standard' functions (_strnicmp) which are a
+bit different in Microsoft's Visual C++, since HexUtils is originally a Visual
+C++ project. Or maybe I just missed some defines.
+
+Do what you want with this stuff.
+
+Pa3PyX (pa3pyx87405703@icqmail.com)
+
+-------------------------------------------------------------------------------
+
+this program reads bsp file, and generetes map file from it.
+it is just version 0.1 and is not wery good.
+my goal was not to make realy usable convertor, but just to proof that it is possible.
+still its usable for small (and maybe even medium) maps.
+method used in this program is wery simple: it creates one brush
+for each face found in bsp file, so resulting map file contains much
+more brushes than original. so after converting big levels back to map it
+contains too many brushes for QBSP to handle and for most editors to load.
+there is problems with water/slime/lava brushes
+also it sometimes generates "brush with duplicate plane" and "brush plane with no normal"
+
+its not good to create brush for each face, but its was easy (i spent
+only 2 days to write this program). it must connect brushes together
+and use all other information found in bsp file unfortunatly i know
+nothing about BSP trees, Nodes, Leaves.
+im not sure that i will continue work on this program, probably will not.
+
+i tested it with:
+start.map had 4900 brushes (4096 is max for QBSP)
+dm4.map had 1800 brushes
+dm5.map had 2060 brushes and i succesfully QBSPed these maps and played in Quake.
+
+
+Notice
+--------------------
+this program contains some functions from Carmack's QBSP (from qbsp/map.c).
+to compile this program you also must to have quake utils (files common/bspfile.c,
+common/cmdlib.c, common/mathlib.c and corresponding .h files (which are not
+included in this package)). you can get quake utils
+from: ftp://ftp.idsoftware.com/idstuff/source/qutils.zip
+
+you are free to use this program
+you are free to use/modify/compile source code
+you can do anything you want with it
+
+
+Credits
+--------------------
+id Software, for Quake
+
+John Carmack, for QBSP source
+
+Olivier Montanuy,  Brian Martin, Raphaël Quinet, Nicholas Dwarkanath
+John Wakelin, David Etherton, for Unofficial Quake Technical Specifications 3.4
+
+peoples on rgcq.editing for saying that it is absolutely impossible to
+convert bsp to map, w/o them i would never wrote this program
+
+--------------------
+If you like it, hate it, have comments, questions, suggestions, etc etc
+please email me at ppsaikne@mail.vernet.lv.
+
+Janis Jagars (Disastry on Quake and IRC)
+
+Thanks!
