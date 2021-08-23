@@ -27,8 +27,7 @@ static void GetEdges(int ledge, dedge_t *edge)
 
 static void ProcessFace(int face)
 {
-    short n_face_edges;
-    int ledge, ledge2;
+    int n_face_edges, ledge, ledge2;
     dedge_t edges[MAX_FACE_EDGES];
     dvertex_t vert_beg[MAX_FACE_EDGES];
     dvertex_t vert_end[MAX_FACE_EDGES];
