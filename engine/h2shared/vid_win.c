@@ -2115,6 +2115,16 @@ static LRESULT WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 #endif	/* ! _NO_CDAUDIO */
 		break;
 
+#if !defined(_NO_MIDIDRV)
+	case WM_MSTREAM_UPDATEVOLUME:
+		MIDI_SetChannelVolume((DWORD)wParam, (DWORD)lParam);
+		return 1;
+
+	case WM_MSTREAM_UPDATEVOLUMES:
+		MIDI_SetAllChannelVolumes((DWORD) wParam);
+		return 1;
+#endif	/* ! _NO_MIDIDRV */
+
 	default:
 		/* pass all unhandled messages to DefWindowProc */
 		ret = DefWindowProc (hWnd, uMsg, wParam, lParam);

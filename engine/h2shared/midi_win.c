@@ -84,8 +84,9 @@ static HANDLE		hBufferReturnEvent;
 static void FreeBuffers (void);
 static int  StreamBufferSetup (const char *filename);
 static void CALLBACK MidiProc (HMIDIIN, UINT, DWORD_PTR, DWORD_PTR, DWORD_PTR);
-static void SetAllChannelVolumes (DWORD volume_percent);
-/*static void SetChannelVolume (DWORD channel_num, DWORD volume_percent);*/
+
+void MIDI_SetAllChannelVolumes (DWORD percent);
+void MIDI_SetChannelVolume (DWORD chn, DWORD percent);
 
 
 #define CHECK_MIDI_ALIVE()		\
@@ -108,19 +109,17 @@ static void MidiErrorMessageBox (MMRESULT mmr)
 
 static void MIDI_SetVolume (void **handle, float value)
 {
-	DWORD val;
-
 	CHECK_MIDI_ALIVE();
 
 	if (hw_vol_capable)
 	{
-		val = (DWORD)(value * 65535.0f);
+		DWORD val = (DWORD)(value * 65535.0f);
 		midiOutSetVolume((HMIDIOUT)hStream, (val << 16) + val);
 	}
 	else
 	{
-		val = (DWORD)(value * 1000.0f);
-		SetAllChannelVolumes (val);
+	//	MIDI_SetAllChannelVolumes((DWORD) (value * 1000.0f));
+		PostMessage(mainwindow, WM_MSTREAM_UPDATEVOLUMES, (DWORD) (value * 1000.0f), 0);
 	}
 }
 
@@ -567,6 +566,9 @@ static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD_PTR dwInstance, DW
 
 			/* mask off the channel number and cache the volume data byte */
 			volume_cache[MIDIEVENT_CHANNEL(me->dwEvent)] = MIDIEVENT_VOLUME(me->dwEvent);
+			if (hw_vol_capable) break;
+			PostMessage(mainwindow, WM_MSTREAM_UPDATEVOLUME, MIDIEVENT_CHANNEL(me->dwEvent),
+					(DWORD) (bgmvolume.value * 1000.0f));
 		}
 		break;
 
@@ -580,9 +582,9 @@ static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD_PTR dwInstance, DW
  * Given a percent in tenths of a percent, sets volume
  * on all channels to reflect the new value.
  */
-static void SetAllChannelVolumes(DWORD volume_percent)
+void MIDI_SetAllChannelVolumes(DWORD volume_percent)
 {
-	int i;
+	DWORD i;
 	DWORD event, status, vol;
 	MMRESULT mmr;
 
@@ -607,8 +609,7 @@ static void SetAllChannelVolumes(DWORD volume_percent)
  * Given a percent in tenths of a percent, sets volume
  * on a specified channel to reflect the new value.
  */
-#if 0	/* not used */
-static void SetChannelVolume(DWORD channel_num, DWORD volume_percent)
+void MIDI_SetChannelVolume(DWORD channel_num, DWORD volume_percent)
 {
 	DWORD event, vol;
 	MMRESULT mmr;
@@ -623,5 +624,4 @@ static void SetChannelVolume(DWORD channel_num, DWORD volume_percent)
 	if (mmr != MMSYSERR_NOERROR)
 		MidiErrorMessageBox(mmr);
 }
-#endif	/* #if 0 */
 

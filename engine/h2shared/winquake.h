@@ -69,5 +69,10 @@ extern HWND		hwnd_dialog;
 
 LRESULT CDAudio_MessageHandler (HWND, UINT, WPARAM, LPARAM);
 
+#define WM_MSTREAM_UPDATEVOLUME  (WM_USER + 101)
+#define WM_MSTREAM_UPDATEVOLUMES (WM_USER + 102)
+void MIDI_SetChannelVolume(DWORD chn, DWORD percent);
+void MIDI_SetAllChannelVolumes (DWORD percent);
+
 #endif	/* __WINQUAKE_H */
 
