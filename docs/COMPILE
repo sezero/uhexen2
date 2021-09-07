@@ -269,7 +269,8 @@ https://github.com/sezero/amigaos-cross-toolchain.git
   is recommended, which is the default. (libnix builds had experienced
   stdio brokenness issues: might or might not be fixed in newer libnix
   versions.)
-- vbcc: vbcc 0.9f patch1, vasm 1.8d, and vlink 0.16a are tested.
+- vbcc: vbcc 0.9f patch1, vasm 1.8l, and vlink 0.16h are tested.
+  Note: vbcc builds run slower: using gcc is recommended.
 
 
 Links:
@@ -283,7 +284,7 @@ mpg123 homepage		: http://mpg123.org/
 FLAC homepage		: https://xiph.org/flac/
 			  https://sourceforge.net/projects/flac/
 MikMod homepage		: http://mikmod.sourceforge.net/
-libxmp homepage		: https://github.com/libxmp/
+libxmp homepage		: https://github.com/libxmp/libxmp
 			  http://xmp.sourceforge.net/
 ALSA homepage		: http://www.alsa-project.org/
 GCC homepage		: http://gcc.gnu.org/
@@ -293,11 +294,12 @@ VBCC homepage		: http://sun.hasenbraten.de/vbcc/
 			  http://www.compilers.de/vbcc.html
 NASM homepage		: https://nasm.us/
 YASM homepage		: http://yasm.tortall.net/
+			  https://github.com/yasm/yasm
 DJGPP homepage		: http://www.delorie.com/djgpp/
 WATT-32 homepage	: http://www.watt-32.net/
 MSYS homepage		: https://www.msys2.org/
 MinGW-w64 homepage	: https://sourceforge.net/projects/mingw-w64/
-MinGW homepage		: https://sourceforge.net/projects/mingw/
+MinGW homepage		: https://osdn.net/projects/mingw/
 Open Watcom		: http://www.openwatcom.org/
 			  https://github.com/open-watcom/
 
