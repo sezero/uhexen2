@@ -871,14 +871,14 @@ void IN_SendKeyEvents (void)
 							usym += 64;
 						else	usym += 96;
 					}
-#if defined(__APPLE__) && defined(__MACH__)
+					#if defined(__APPLE__) && defined(__MACH__)
 					if (sym == SDLK_BACKSPACE)
 						usym = sym;	/* avoid change to SDLK_DELETE */
-#endif	/* Mac OS X */
-#if defined(__QNX__) || defined(__QNXNTO__)
+					#endif
+					#if defined(__QNX__) || defined(__QNXNTO__)
 					if (sym == SDLK_BACKSPACE || sym == SDLK_RETURN)
 						usym = sym;	/* S.A: fixes QNX weirdness */
-#endif	/* __QNX__ */
+					#endif
 					/* only use unicode for ` and ~ in game mode */
 					if (!gamekey || usym == '`' || usym == '~')
 						sym = usym;

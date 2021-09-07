@@ -1031,16 +1031,16 @@ void VID_ToggleFullscreen (void)
 {
 	int	is_fullscreen;
 
+	if (!screen) return;
 	if (!fs_toggle_works)
 		return;
 	if (!num_fmodes)
 		return;
-	if (!screen)
-		return;
 
 	S_ClearBuffer ();
 
-	if (SDL_WM_ToggleFullScreen(screen) == 1)
+	fs_toggle_works = (SDL_WM_ToggleFullScreen(screen) == 1);
+	if (fs_toggle_works)
 	{
 		is_fullscreen = (screen->flags & SDL_FULLSCREEN) ? 1 : 0;
 		Cvar_SetValueQuick(&vid_config_fscr, is_fullscreen);
@@ -1063,7 +1063,6 @@ void VID_ToggleFullscreen (void)
 	}
 	else
 	{
-		fs_toggle_works = false;
 		Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
 	}
 }

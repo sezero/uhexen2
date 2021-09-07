@@ -631,13 +631,6 @@ static qboolean VID_Check3dfxGamma (void)
 	if (!q_strncasecmp(gl_renderer, "Mesa DRI", 8) ||
 	    !q_strncasecmp(gl_renderer, "Mesa Glide - DRI", 16))
 		return false;
-#if 0
-	/* Daniel Borca's SAGE is not necessarily V1/2-only
-	 * on Windows. it is V1/2-only on Linux, because it
-	 * is not a DRI driver.  */
-	if (!q_strncasecmp(gl_renderer, "SAGE Glide", 10))
-		return false;
-#endif
 
 #if USE_3DFX_RAMPS /* not recommended for Voodoo1, currently crashes */
 	ret = glGetDeviceGammaRamp3DFX(orig_ramps);
@@ -667,15 +660,14 @@ static void VID_InitGamma (void)
 	/* Here is an evil hack abusing the exposed Glide symbols: */
 	if (is_3dfx)
 		fx_gamma = VID_Check3dfxGamma();
-	if (!fx_gamma)
-	{
-#if USE_GAMMA_RAMPS
+	if (!fx_gamma) {
+		#if USE_GAMMA_RAMPS
 		gammaworks	= (SDL_GetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]) == 0);
 		if (gammaworks)
 		    gammaworks	= (SDL_SetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]) == 0);
-#else
+		#else
 		gammaworks	= (SDL_SetGamma(1, 1, 1) == 0);
-#endif
+		#endif
 	}
 
 	if (!gammaworks && !fx_gamma)
@@ -1799,18 +1791,18 @@ void VID_ToggleFullscreen (void)
 {
 	int	is_fullscreen;
 
+	if (!screen) return;
 	if (!fs_toggle_works)
 		return;
 	if (!num_fmodes)
-		return;
-	if (!screen)
 		return;
 
 	S_ClearBuffer ();
 
 	// This doesn't seem to cause any trouble even
 	// with is_3dfx == true and FX_GLX_MESA == f
-	if (SDL_WM_ToggleFullScreen(screen) == 1)
+	fs_toggle_works = (SDL_WM_ToggleFullScreen(screen) == 1);
+	if (fs_toggle_works)
 	{
 		is_fullscreen = (screen->flags & SDL_FULLSCREEN) ? 1 : 0;
 		Cvar_SetValueQuick(&vid_config_fscr, is_fullscreen);
@@ -1835,7 +1827,6 @@ void VID_ToggleFullscreen (void)
 	}
 	else
 	{
-		fs_toggle_works = false;
 		Con_Printf ("SDL_WM_ToggleFullScreen failed\n");
 	}
 }
