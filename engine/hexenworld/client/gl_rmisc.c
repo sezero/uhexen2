@@ -180,9 +180,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_waterwarp);
 	Cvar_RegisterVariable (&r_drawentities);
 	Cvar_RegisterVariable (&r_drawviewmodel);
-#ifdef R_SHADOWS
 	Cvar_RegisterVariable (&r_shadows);
-#endif
 	Cvar_RegisterVariable (&r_mirroralpha);
 	Cvar_RegisterVariable (&r_wateralpha);
 	Cvar_RegisterVariable (&r_skyalpha);

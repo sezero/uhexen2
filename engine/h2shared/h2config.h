@@ -232,15 +232,5 @@
    ================================================================== */
 
 
-/* ====================================================================
-   R_SHADOWS
-   Value  :	not a value, but a define or undef
-   Affects:	gl_rmain.c, gl_rmisc.c, menu.c
-
-   Support for opengl shadows. Disabled by default.
-   ================================================================== */
-#undef	R_SHADOWS
-
-
 #endif	/* __HEXEN2_OPTIONS_H		*/
 

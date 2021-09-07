@@ -10,9 +10,6 @@ This is a minor bug fix and maintenance release:
 
 - OpenGL: Fixed graphical artifacts with scaled UI (sf.net bug 59.)
 
-- OpenGL: Shadows are now a compile time option, disabled by default.
-  Shadows have always been broken, and need a major rework to fix.
-
 - Windows, midi: Fixed volume reseting after loop (sf.net bug 66.)
 
 - Improvements to mp3 tag detection / skipping.

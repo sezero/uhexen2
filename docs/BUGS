@@ -25,6 +25,9 @@ Known issues:
 - HexenWorld: Coop mode is broken. Known problem since Raven's latest
   beta versions.
 
+- OpenGL: Shadows have always been broken (they need a major rework to
+  fix) and are disabled by default.
+
 - 3dfx Voodoo:  Palettized textures are broken with the old unmodified
   Mesa 3.x drivers. The new Mesa-6.2 drivers work fine. Windows people
   should use the latest "MesaFX" driver.

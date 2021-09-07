@@ -78,9 +78,7 @@ cvar_t	r_speeds = {"r_speeds", "0", CVAR_NONE};
 cvar_t	r_waterwarp = {"r_waterwarp", "0", CVAR_ARCHIVE};
 cvar_t	r_fullbright = {"r_fullbright", "0", CVAR_NONE};
 cvar_t	r_lightmap = {"r_lightmap", "0", CVAR_NONE};
-#ifdef R_SHADOWS
-cvar_t	r_shadows = {"r_shadows", "0", CVAR_ARCHIVE};
-#endif
+cvar_t	r_shadows = {"r_shadows", "0", CVAR_NONE};
 cvar_t	r_mirroralpha = {"r_mirroralpha", "1", CVAR_NONE};
 cvar_t	r_wateralpha = {"r_wateralpha", "0.33", CVAR_ARCHIVE};
 cvar_t	r_skyalpha = {"r_skyalpha", "0.67", CVAR_ARCHIVE};
@@ -583,7 +581,6 @@ static void GL_DrawAliasFrame (entity_t *e, aliashdr_t *paliashdr, int posenum)
 }
 
 
-#ifdef R_SHADOWS
 /*
 =============
 GL_DrawAliasShadow
@@ -653,7 +650,6 @@ static void GL_DrawAliasShadow (entity_t *e, aliashdr_t *paliashdr, int posenum)
 	if (have_stencil)
 		glDisable_fp(GL_STENCIL_TEST);
 }
-#endif
 
 
 /*
@@ -732,13 +728,11 @@ static void R_DrawAliasModel (entity_t *e)
 	VectorCopy (e->origin, r_entorigin);
 	VectorSubtract (r_origin, r_entorigin, modelorg);
 
-#ifdef R_SHADOWS
 	// if shadows are enabled, get lighting information here regardless
 	// of special cases below, because R_LightPoint[Color]() calculates
 	// lightspot for us which is used by GL_DrawAliasShadow()
 	if (r_shadows.integer && e != &cl.viewent)
 		AliasModelGetLightInfo (e);
-#endif
 
 	mls = e->drawflags & MLS_MASKIN;
 	if (e->model->flags & EF_ROTATE)
@@ -770,10 +764,8 @@ static void R_DrawAliasModel (entity_t *e)
 	}
 	else if (e != &cl.viewent)	// R_DrawViewModel() already does viewmodel lighting.
 	{
-		#ifdef R_SHADOWS
 		if (!r_shadows.integer)
-		#endif
-		    AliasModelGetLightInfo (e);
+			AliasModelGetLightInfo (e);
 
 		for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 		{
@@ -1014,7 +1006,6 @@ static void R_DrawAliasModel (entity_t *e)
 
 	glPopMatrix_fp ();
 
-#ifdef R_SHADOWS
 	if (r_shadows.integer)
 	{
 		glPushMatrix_fp ();
@@ -1030,7 +1021,6 @@ static void R_DrawAliasModel (entity_t *e)
 		glColor4f_fp (1,1,1,1);
 		glPopMatrix_fp ();
 	}
-#endif
 }
 
 //=============================================================================
@@ -1851,13 +1841,11 @@ static void R_Clear (void)
 
 	glDepthRange_fp (gldepthmin, gldepthmax);
 
-#ifdef R_SHADOWS
 	if (have_stencil && r_shadows.integer)
 	{
 		glClearStencil_fp(1);
 		glClear_fp(GL_STENCIL_BUFFER_BIT);
 	}
-#endif
 }
 
 
