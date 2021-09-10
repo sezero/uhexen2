@@ -6,6 +6,8 @@ Changes in v1.5.10: (Aug. 28, 2021.)
 
 This is a minor bug fix and maintenance release:
 
+- Added BSP2 format support, based on an initial patch by Spoike.
+
 - Fixed possible crash in effects code (thanks to Jonathan Bergeron).
 
 - OpenGL: Fixed graphical artifacts with scaled UI (sf.net bug 59.)

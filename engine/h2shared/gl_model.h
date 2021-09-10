@@ -95,7 +95,7 @@ typedef struct texture_s
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct
 {
-	unsigned short	v[2];
+	unsigned int	v[2];
 	unsigned int	cachededgeoffset;
 } medge_t;
 
@@ -127,8 +127,8 @@ typedef struct msurface_s
 	int		firstedge;	// look up in model->surfedges[], negative numbers
 	int		numedges;	// are backwards edges
 
-	short		texturemins[2];
-	short		extents[2];
+	int		texturemins[2];
+	int		extents[2];
 
 	int		light_s, light_t;	// gl lightmap coordinates
 
@@ -162,8 +162,8 @@ typedef struct mnode_s
 	mplane_t	*plane;
 	struct mnode_s	*children[2];	
 
-	unsigned short	firstsurface;
-	unsigned short	numsurfaces;
+	unsigned int	firstsurface;
+	unsigned int	numsurfaces;
 } mnode_t;
 
 
@@ -187,10 +187,12 @@ typedef struct mleaf_s
 	byte		ambient_sound_level[NUM_AMBIENTS];
 } mleaf_t;
 
+typedef dlclipnode_t	mclipnode_t;		// for BSP2.
+
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct
 {
-	dclipnode_t	*clipnodes;
+	mclipnode_t	*clipnodes;
 	mplane_t	*planes;
 	int		firstclipnode;
 	int		lastclipnode;
@@ -468,7 +470,7 @@ typedef struct qmodel_s
 	int		*surfedges;
 
 	int		numclipnodes;
-	dclipnode_t	*clipnodes;
+	mclipnode_t	*clipnodes;
 
 	int		nummarksurfaces;
 	msurface_t	**marksurfaces;

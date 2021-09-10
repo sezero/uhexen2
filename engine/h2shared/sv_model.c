@@ -39,7 +39,7 @@ static byte	mod_novis[MAX_MAP_LEAFS/8];
 static int	*surfedges;
 static medge_t	*edges;
 
-#define	MAX_MOD_KNOWN	2048
+#define	MAX_MOD_KNOWN	4096
 static qmodel_t	mod_known[MAX_MOD_KNOWN];
 static int	mod_numknown;
 
@@ -404,26 +404,46 @@ static void Mod_LoadSubmodels (lump_t *l)
 Mod_LoadEdges
 =================
 */
-static void Mod_LoadEdges (lump_t *l)
+static void Mod_LoadEdges (lump_t *l, qboolean bsp2)
 {
-	dedge_t *in;
 	medge_t *out;
 	int	i, count;
 
-	in = (dedge_t *)(mod_base + l->fileofs);
-	if (l->filelen % sizeof(*in))
-		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-	count = l->filelen / sizeof(*in);
-	out = (medge_t *) Hunk_AllocName ((count + 1) * sizeof(*out), "edges");
-
-//	loadmodel->edges = out;
-//	loadmodel->numedges = count;
-	edges = out;
-
-	for (i = 0; i < count; i++, in++, out++)
+	if (bsp2)
 	{
-		out->v[0] = (unsigned short)LittleShort(in->v[0]);
-		out->v[1] = (unsigned short)LittleShort(in->v[1]);
+		dledge_t *in = (dledge_t *)(mod_base + l->fileofs);
+		if (l->filelen % sizeof(*in))
+			Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		count = l->filelen / sizeof(*in);
+		out = (medge_t *) Hunk_AllocName ((count + 1) * sizeof(*out), "edges");
+
+	//	loadmodel->edges = out;
+	//	loadmodel->numedges = count;
+		edges = out;
+
+		for (i = 0; i < count; i++, in++, out++)
+		{
+			out->v[0] = (unsigned int)LittleLong(in->v[0]);
+			out->v[1] = (unsigned int)LittleLong(in->v[1]);
+		}
+	}
+	else
+	{
+		dsedge_t *in = (dsedge_t *)(mod_base + l->fileofs);
+		if (l->filelen % sizeof(*in))
+			Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		count = l->filelen / sizeof(*in);
+		out = (medge_t *) Hunk_AllocName ((count + 1) * sizeof(*out), "edges");
+
+	//	loadmodel->edges = out;
+	//	loadmodel->numedges = count;
+		edges = out;
+
+		for (i = 0; i < count; i++, in++, out++)
+		{
+			out->v[0] = (unsigned short)LittleShort(in->v[0]);
+			out->v[1] = (unsigned short)LittleShort(in->v[1]);
+		}
 	}
 }
 
@@ -473,8 +493,8 @@ static void CalcSurfaceExtents (msurface_t *s, int firstedge, int numedges)
 	mtexinfo_t	*tex;
 	int		bmins[2], bmaxs[2];
 
-	mins[0] = mins[1] = 999999;
-	maxs[0] = maxs[1] = -99999;
+	mins[0] = mins[1] = 99999999;
+	maxs[0] = maxs[1] = -99999999;
 
 	tex = s->texinfo;
 
@@ -521,52 +541,79 @@ static void CalcSurfaceExtents (msurface_t *s, int firstedge, int numedges)
 Mod_LoadFaces
 =================
 */
-static void Mod_LoadFaces (lump_t *l)
+static void Mod_LoadFaces (lump_t *l, qboolean bsp2)
 {
-	dface_t		*in;
+	dsface_t		*ins = NULL;
+	dlface_t		*inl = NULL;
 	msurface_t	*out;
 	int			i, count, surfnum;
 	int			planenum, side;
-	int			firstedge, numedges;
+	int			firstedge, numedges, texinfo, lightofs;
 
-	in = (dface_t *)(mod_base + l->fileofs);
-	if (l->filelen % sizeof(*in))
-		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-	count = l->filelen / sizeof(*in);
+	if (bsp2)
+	{
+		inl = (dlface_t *)(mod_base + l->fileofs);
+		if (l->filelen % sizeof(*inl))
+			Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		count = l->filelen / sizeof(*inl);
+	}
+	else
+	{
+		ins = (dsface_t *)(mod_base + l->fileofs);
+		if (l->filelen % sizeof(*ins))
+			Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		count = l->filelen / sizeof(*ins);
+	}
 	out = (msurface_t *) Hunk_AllocName (count * sizeof(*out), "faces");
 
 	loadmodel->surfaces = out;
 	loadmodel->numsurfaces = count;
 
-	for (surfnum = 0; surfnum < count; surfnum++, in++, out++)
+	for (surfnum = 0; surfnum < count; surfnum++, out++)
 	{
-		firstedge = LittleLong(in->firstedge);
-		numedges = LittleShort(in->numedges);
+		if (bsp2)
+		{
+			firstedge = LittleLong(inl->firstedge);
+			numedges = LittleLong(inl->numedges);
+			planenum = LittleLong(inl->planenum);
+			side = LittleLong(inl->side);
+			texinfo = LittleLong (inl->texinfo);
+			for (i = 0; i < MAXLIGHTMAPS; i++)
+				out->styles[i] = inl->styles[i];
+			lightofs = LittleLong(inl->lightofs);
+			inl++;
+		}
+		else
+		{
+			firstedge = LittleLong(ins->firstedge);
+			numedges = LittleShort(ins->numedges);
+			planenum = LittleShort(ins->planenum);
+			side = LittleShort(ins->side);
+			texinfo = LittleShort (ins->texinfo);
+			for (i = 0; i < MAXLIGHTMAPS; i++)
+				out->styles[i] = ins->styles[i];
+			lightofs = LittleLong(ins->lightofs);
+			ins++;
+		}
 		out->flags = 0;
 
-		planenum = LittleShort(in->planenum);
-		side = LittleShort(in->side);
 		if (side)
 			out->flags |= SURF_PLANEBACK;
 
 		out->plane = loadmodel->planes + planenum;
 
-		out->texinfo = loadmodel->texinfo + LittleShort (in->texinfo);
+		out->texinfo = loadmodel->texinfo + texinfo;
 
 		CalcSurfaceExtents (out, firstedge, numedges);
 
 	// lighting info
-
-		for (i = 0; i < MAXLIGHTMAPS; i++)
-			out->styles[i] = in->styles[i];
-		i = LittleLong(in->lightofs);
-		if (i == -1)
+		if (lightofs == -1)
 		{
 			out->samples = NULL;
 		}
 		else
 		{
-				out->samples = loadmodel->lightdata + i;
+			out->samples = loadmodel->lightdata + lightofs;
 		}
 	}
 }
@@ -591,36 +638,67 @@ static void Mod_SetParent (mnode_t *node, mnode_t *parent)
 Mod_LoadNodes
 =================
 */
-static void Mod_LoadNodes (lump_t *l)
+static void Mod_LoadNodes (lump_t *l, qboolean bsp2)
 {
 	int			i, j, count, p;
-	dnode_t		*in;
 	mnode_t		*out;
 
-	in = (dnode_t *)(mod_base + l->fileofs);
-	if (l->filelen % sizeof(*in))
-		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-	count = l->filelen / sizeof(*in);
-	out = (mnode_t *) Hunk_AllocName (count * sizeof(*out), "nodes");
-
-	loadmodel->nodes = out;
-	loadmodel->numnodes = count;
-
-	for (i = 0; i < count; i++, in++, out++)
+	if (bsp2)
 	{
-		p = LittleLong(in->planenum);
-		out->plane = loadmodel->planes + p;
+		dlnode_t		*in = (dlnode_t *)(mod_base + l->fileofs);
+		if (l->filelen % sizeof(*in))
+			Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		count = l->filelen / sizeof(*in);
+		out = (mnode_t *) Hunk_AllocName (count * sizeof(*out), "nodes");
 
-		out->firstsurface = LittleShort (in->firstface);
-		out->numsurfaces = LittleShort (in->numfaces);
+		loadmodel->nodes = out;
+		loadmodel->numnodes = count;
 
-		for (j = 0; j < 2; j++)
+		for (i = 0; i < count; i++, in++, out++)
 		{
-			p = LittleShort (in->children[j]);
-			if (p >= 0)
-				out->children[j] = loadmodel->nodes + p;
-			else
-				out->children[j] = (mnode_t *)(loadmodel->leafs + (-1 - p));
+			p = LittleLong(in->planenum);
+			out->plane = loadmodel->planes + p;
+
+			out->firstsurface = LittleLong (in->firstface);
+			out->numsurfaces = LittleLong (in->numfaces);
+
+			for (j = 0; j < 2; j++)
+			{
+				p = LittleLong (in->children[j]);
+				if (p >= 0)
+					out->children[j] = loadmodel->nodes + p;
+				else
+					out->children[j] = (mnode_t *)(loadmodel->leafs + (-1 - p));
+			}
+		}
+	}
+	else
+	{
+		dsnode_t		*in = (dsnode_t *)(mod_base + l->fileofs);
+		if (l->filelen % sizeof(*in))
+			Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		count = l->filelen / sizeof(*in);
+		out = (mnode_t *) Hunk_AllocName (count * sizeof(*out), "nodes");
+
+		loadmodel->nodes = out;
+		loadmodel->numnodes = count;
+
+		for (i = 0; i < count; i++, in++, out++)
+		{
+			p = LittleLong(in->planenum);
+			out->plane = loadmodel->planes + p;
+
+			out->firstsurface = LittleShort (in->firstface);
+			out->numsurfaces = LittleShort (in->numfaces);
+
+			for (j = 0; j < 2; j++)
+			{
+				p = LittleShort (in->children[j]);
+				if (p >= 0)
+					out->children[j] = loadmodel->nodes + p;
+				else
+					out->children[j] = (mnode_t *)(loadmodel->leafs + (-1 - p));
+			}
 		}
 	}
 
@@ -632,31 +710,56 @@ static void Mod_LoadNodes (lump_t *l)
 Mod_LoadLeafs
 =================
 */
-static void Mod_LoadLeafs (lump_t *l)
+static void Mod_LoadLeafs (lump_t *l, qboolean bsp2)
 {
-	dleaf_t		*in;
 	mleaf_t		*out;
 	int			i, count, p;
 
-	in = (dleaf_t *)(mod_base + l->fileofs);
-	if (l->filelen % sizeof(*in))
-		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-	count = l->filelen / sizeof(*in);
-	out = (mleaf_t *) Hunk_AllocName (count * sizeof(*out), "leafs");
-
-	loadmodel->leafs = out;
-	loadmodel->numleafs = count;
-
-	for (i = 0; i < count; i++, in++, out++)
+	if (bsp2)
 	{
-		p = LittleLong(in->contents);
-		out->contents = p;
+		dlleaf_t		*in = (dlleaf_t *)(mod_base + l->fileofs);
+		if (l->filelen % sizeof(*in))
+			Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		count = l->filelen / sizeof(*in);
+		out = (mleaf_t *) Hunk_AllocName (count * sizeof(*out), "leafs");
 
-		p = LittleLong(in->visofs);
-		if (p == -1)
-			out->compressed_vis = NULL;
-		else
-			out->compressed_vis = loadmodel->visdata + p;
+		loadmodel->leafs = out;
+		loadmodel->numleafs = count;
+
+		for (i = 0; i < count; i++, in++, out++)
+		{
+			p = LittleLong(in->contents);
+			out->contents = p;
+
+			p = LittleLong(in->visofs);
+			if (p == -1)
+				out->compressed_vis = NULL;
+			else
+				out->compressed_vis = loadmodel->visdata + p;
+		}
+	}
+	else
+	{
+		dsleaf_t		*in = (dsleaf_t *)(mod_base + l->fileofs);
+		if (l->filelen % sizeof(*in))
+			Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		count = l->filelen / sizeof(*in);
+		out = (mleaf_t *) Hunk_AllocName (count * sizeof(*out), "leafs");
+
+		loadmodel->leafs = out;
+		loadmodel->numleafs = count;
+
+		for (i = 0; i < count; i++, in++, out++)
+		{
+			p = LittleLong(in->contents);
+			out->contents = p;
+
+			p = LittleLong(in->visofs);
+			if (p == -1)
+				out->compressed_vis = NULL;
+			else
+				out->compressed_vis = loadmodel->visdata + p;
+		}
 	}
 }
 
@@ -665,24 +768,56 @@ static void Mod_LoadLeafs (lump_t *l)
 Mod_LoadClipnodes
 =================
 */
-static void Mod_LoadClipnodes (lump_t *l)
+static void Mod_LoadClipnodes (lump_t *l, qboolean bsp2)
 {
-	dclipnode_t	*in, *out;
+	mclipnode_t	*out;
 	int			i, count;
 	hull_t		*hull;
 
-	in = (dclipnode_t *)(mod_base + l->fileofs);
-	if (l->filelen % sizeof(*in))
-		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-	count = l->filelen / sizeof(*in);
-	out = (dclipnode_t *) Hunk_AllocName (count * sizeof(*out), "clipnodes");
+	if (bsp2)
+	{
+		dlclipnode_t *in = (dlclipnode_t *)(mod_base + l->fileofs);
+		if (l->filelen % sizeof(*in))
+			Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		count = l->filelen / sizeof(*in);
+		out = (mclipnode_t *) Hunk_AllocName (count * sizeof(*out), "clipnodes");
 
-	loadmodel->clipnodes = out;
-	loadmodel->numclipnodes = count;
+		loadmodel->clipnodes = out;
+		loadmodel->numclipnodes = count;
+
+		for (i = 0; i < count; i++, out++, in++)
+		{
+			out->planenum = LittleLong(in->planenum);
+			out->children[0] = LittleLong(in->children[0]);
+			out->children[1] = LittleLong(in->children[1]);
+			if (out->children[0] >= count || out->children[1] >= count)
+				Host_Error("Corrupt clipping hull (out of range child)\n");
+		}
+	}
+	else
+	{
+		dsclipnode_t *in = (dsclipnode_t *)(mod_base + l->fileofs);
+		if (l->filelen % sizeof(*in))
+			Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		count = l->filelen / sizeof(*in);
+		out = (mclipnode_t *) Hunk_AllocName (count * sizeof(*out), "clipnodes");
+
+		loadmodel->clipnodes = out;
+		loadmodel->numclipnodes = count;
+
+		for (i = 0; i < count; i++, out++, in++)
+		{
+			out->planenum = LittleLong(in->planenum);
+			out->children[0] = LittleShort(in->children[0]);
+			out->children[1] = LittleShort(in->children[1]);
+			if (out->children[0] >= count || out->children[1] >= count)
+				Host_Error("Corrupt clipping hull (out of range child)\n");
+		}
+	}
 
 //player
 	hull = &loadmodel->hulls[1];
-	hull->clipnodes = out;
+	hull->clipnodes = loadmodel->clipnodes;
 	hull->firstclipnode = 0;
 	hull->lastclipnode = count-1;
 	hull->planes = loadmodel->planes;
@@ -695,7 +830,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 
 //scorpion
 	hull = &loadmodel->hulls[2];
-	hull->clipnodes = out;
+	hull->clipnodes = loadmodel->clipnodes;
 	hull->firstclipnode = 0;
 	hull->lastclipnode = count-1;
 	hull->planes = loadmodel->planes;
@@ -708,7 +843,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 
 //crouch
 	hull = &loadmodel->hulls[3];
-	hull->clipnodes = out;
+	hull->clipnodes = loadmodel->clipnodes;
 	hull->firstclipnode = 0;
 	hull->lastclipnode = count-1;
 	hull->planes = loadmodel->planes;
@@ -721,7 +856,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 
 //hydra -changing in MP to '-8 -8 -8', '8 8 8' for pentacles
 	hull = &loadmodel->hulls[4];
-	hull->clipnodes = out;
+	hull->clipnodes = loadmodel->clipnodes;
 	hull->firstclipnode = 0;
 	hull->lastclipnode = count-1;
 	hull->planes = loadmodel->planes;
@@ -743,7 +878,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 
 //golem - maybe change to '-28 -28 -40', '28 28 40' for Yakman
 	hull = &loadmodel->hulls[5];
-	hull->clipnodes = out;
+	hull->clipnodes = loadmodel->clipnodes;
 	hull->firstclipnode = 0;
 	hull->lastclipnode = count-1;
 	hull->planes = loadmodel->planes;
@@ -762,15 +897,6 @@ static void Mod_LoadClipnodes (lump_t *l)
 	hull->clip_maxs[1] = 48;
 	hull->clip_maxs[2] = 50;
 #endif
-
-	for (i = 0; i < count; i++, out++, in++)
-	{
-		out->planenum = LittleLong(in->planenum);
-		out->children[0] = LittleShort(in->children[0]);
-		out->children[1] = LittleShort(in->children[1]);
-		if (out->children[0] >= count || out->children[1] >= count)
-			Host_Error("Corrupt clipping hull (out of range child)\n");
-	}
 }
 
 /*
@@ -783,7 +909,7 @@ Duplicate the drawing hull structure as a clipping hull
 static void Mod_MakeHull0 (void)
 {
 	mnode_t		*in, *child;
-	dclipnode_t	*out;
+	mclipnode_t	*out;
 	int			i, j, count;
 	hull_t		*hull;
 
@@ -791,7 +917,7 @@ static void Mod_MakeHull0 (void)
 
 	in = loadmodel->nodes;
 	count = loadmodel->numnodes;
-	out = (dclipnode_t *) Hunk_AllocName (count * sizeof(*out), "hull0");
+	out = (mclipnode_t *) Hunk_AllocName (count * sizeof(*out), "hull0");
 
 	hull->clipnodes = out;
 	hull->firstclipnode = 0;
@@ -885,13 +1011,16 @@ static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer)
 	int			i, j;
 	dheader_t	*header;
 	dmodel_t	*bm;
+	qboolean	bsp2 = false;
 
 	loadmodel->type = mod_brush;
 
 	header = (dheader_t *)buffer;
 
 	i = LittleLong (header->version);
-	if (i != BSPVERSION)
+	if (i == BSP2VERSION)
+		bsp2 = true;
+	else if (i != BSPVERSION)
 		Host_Error ("%s: %s has wrong version number (%i should be %i)", __thisfunc__, mod->name, i, BSPVERSION);
 
 // swap all the lumps
@@ -903,18 +1032,18 @@ static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer)
 // load into heap
 
 	Mod_LoadVertexes (&header->lumps[LUMP_VERTEXES]);
-	Mod_LoadEdges (&header->lumps[LUMP_EDGES]);
+	Mod_LoadEdges (&header->lumps[LUMP_EDGES], bsp2);
 	Mod_LoadSurfedges (&header->lumps[LUMP_SURFEDGES]);
 	Mod_LoadLighting (&header->lumps[LUMP_LIGHTING]);
 	Mod_LoadPlanes (&header->lumps[LUMP_PLANES]);
 	Mod_LoadTexinfo (&header->lumps[LUMP_TEXINFO]);
-	Mod_LoadFaces (&header->lumps[LUMP_FACES]);
+	Mod_LoadFaces (&header->lumps[LUMP_FACES], bsp2);
 	surfedges = NULL;
 	edges = NULL;
 	Mod_LoadVisibility (&header->lumps[LUMP_VISIBILITY]);
-	Mod_LoadLeafs (&header->lumps[LUMP_LEAFS]);
-	Mod_LoadNodes (&header->lumps[LUMP_NODES]);
-	Mod_LoadClipnodes (&header->lumps[LUMP_CLIPNODES]);
+	Mod_LoadLeafs (&header->lumps[LUMP_LEAFS], bsp2);
+	Mod_LoadNodes (&header->lumps[LUMP_NODES], bsp2);
+	Mod_LoadClipnodes (&header->lumps[LUMP_CLIPNODES], bsp2);
 	Mod_LoadEntities (&header->lumps[LUMP_ENTITIES]);
 	Mod_LoadSubmodels (&header->lumps[LUMP_MODELS]);
 

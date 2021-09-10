@@ -56,10 +56,8 @@ SV_HullPointContents:
  sub ebx,ebx
  push esi
 Lhloop:
- mov ecx, dword [0+edi+eax*8]
- mov eax, dword [4+edi+eax*8]
- mov esi,eax
- ror eax,16
+ lea eax, [eax+eax*2]	;eax*=3
+ mov ecx, dword [0+edi+eax*4]
  lea ecx, [ecx+ecx*4]
  mov bl, byte [16+ebp+ecx*4]
  cmp bl,3
@@ -79,15 +77,18 @@ Lnodot:
  fld  dword [12+ebp+ecx*4]
  fsubr  dword [edx+ebx*4]
 Lsub:
- sar eax,16
- sar esi,16
- fstp  dword [Ltemp]
- mov ecx, dword [Ltemp]
- sar ecx,31
- and esi,ecx
- xor ecx,0FFFFFFFFh
- and eax,ecx
- or eax,esi
+; if dist is negative(float's sign bit is set), copy child[1] into eax
+ fstp dword [Ltemp]
+ test dword [Ltemp],080000000h
+ jns Lpos
+ mov eax, dword [8+edi+eax*4]
+ test eax,eax
+ jns Lhloop
+ jmp Lhdone
+ Lpos:
+; otherwise copy child[0] into eax
+ mov eax,dword [4+edi+eax*4] 
+ test eax,eax
  jns Lhloop
 Lhdone:
  pop esi

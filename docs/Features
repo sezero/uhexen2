@@ -18,6 +18,8 @@ Features:
 * In-game resolution changing for both opengl and software renderers.
   Instant fullscreen/windowed toggling on X11 (unix).
 
+* BSP2 map format support.
+
 * Widescreen FOV (field of view) support and automatic Hor+ FOV scaling
   based on resoluton in both opengl and software renderer.
 

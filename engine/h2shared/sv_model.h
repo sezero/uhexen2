@@ -81,7 +81,7 @@ typedef struct mplane_s
 
 typedef struct
 {
-	unsigned short	v[2];
+	unsigned int	v[2];
 } medge_t;
 
 typedef struct
@@ -95,8 +95,8 @@ typedef struct msurface_s
 	mplane_t	*plane;
 	int		flags;
 
-	short		texturemins[2];
-	short		extents[2];
+	int		texturemins[2];
+	int		extents[2];
 
 	mtexinfo_t	*texinfo;
 
@@ -116,8 +116,8 @@ typedef struct mnode_s
 	mplane_t	*plane;
 	struct mnode_s	*children[2];	
 
-	unsigned short	firstsurface;
-	unsigned short	numsurfaces;
+	unsigned int	firstsurface;
+	unsigned int	numsurfaces;
 } mnode_t;
 
 
@@ -132,10 +132,12 @@ typedef struct mleaf_s
 	byte		*compressed_vis;
 } mleaf_t;
 
+typedef dlclipnode_t	mclipnode_t;		// for BSP2.
+
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct
 {
-	dclipnode_t	*clipnodes;
+	mclipnode_t	*clipnodes;
 	mplane_t	*planes;
 	int		firstclipnode;
 	int		lastclipnode;
@@ -249,7 +251,7 @@ typedef struct qmodel_s
 	msurface_t	*surfaces;
 
 	int		numclipnodes;
-	dclipnode_t	*clipnodes;
+	mclipnode_t	*clipnodes;
 
 	hull_t		hulls[MAX_MAP_HULLS];
 
