@@ -10,6 +10,7 @@ if test "$1" = "strip"; then
 		vis/vis$exe_ext			\
 		light/light$exe_ext		\
 		qbsp/qbsp$exe_ext		\
+		bsp2map/bsp2map$exe_ext		\
 		bspinfo/bspinfo$exe_ext		\
 		qfiles/qfiles$exe_ext		\
 		pak/pakx$exe_ext		\
@@ -31,6 +32,7 @@ esac
 
 if test "$1" = "clean"; then
 	$MAKE_CMD -s -C hcc clean
+	$MAKE_CMD -s -C bsp2map clean
 	$MAKE_CMD -s -C bspinfo clean
 	$MAKE_CMD -s -C qbsp clean
 	$MAKE_CMD -s -C light clean
@@ -59,6 +61,8 @@ echo "" && echo "Now building light.."
 $MAKE_CMD -C light $* || exit 1
 echo "" && echo "Now building vis.."
 $MAKE_CMD -C vis $* || exit 1
+echo "" && echo "Now building bsp2map.."
+$MAKE_CMD -C bsp2map $* || exit 1
 echo "" && echo "Now building bspinfo.."
 $MAKE_CMD -C bspinfo $* || exit 1
 echo "" && echo "Now building dhcc, a progs.dat decompiler.."
