@@ -113,9 +113,19 @@ static void R_AddDynamicLights (msurface_t *surf)
 				if (dist < minlight)
 				{
 					brightness = rad - dist;
-					bl[0] += (int) (brightness * cred);
-					bl[1] += (int) (brightness * cgreen);
-					bl[2] += (int) (brightness * cblue);
+					if (cl_dlights[lnum].dark)
+					{
+						// clamp to 0
+						bl[0] -= (int)(((brightness * cred) < bl[0]) ? (brightness * cred) : bl[0]);
+						bl[1] -= (int)(((brightness * cgreen) < bl[1]) ? (brightness * cgreen) : bl[1]);
+						bl[2] -= (int)(((brightness * cblue) < bl[2]) ? (brightness * cblue) : bl[2]);
+					}
+					else
+					{
+						bl[0] += (int)(brightness * cred);
+						bl[1] += (int)(brightness * cgreen);
+						bl[2] += (int)(brightness * cblue);
+					}
 
 					blocklights[t*smax + s] += (rad - dist)*256;
 				}

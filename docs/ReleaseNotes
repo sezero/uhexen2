@@ -10,6 +10,9 @@ This is a minor bug fix and maintenance release:
 
 - Fixed possible crash in effects code (thanks to Jonathan Bergeron).
 
+- OpenGL: Fixed dark dynamic lights -- e.g. when Necromancer uses
+  invulnerability. (thanks to Shanjaq Astraljam, sf.net bug 48.)
+
 - OpenGL: Fixed graphical artifacts with scaled UI (sf.net bug 59.)
 
 - Windows, midi: Fixed volume reseting after loop (sf.net bug 66.)
