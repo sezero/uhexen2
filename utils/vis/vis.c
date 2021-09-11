@@ -803,7 +803,7 @@ int main (int argc, char **argv)
 
 	ValidateByteorder ();
 
-	wantthreads = 1;	// default to single threaded
+	wantthreads = -1;		// default to auto-detect.
 
 	for (i = 1 ; i < argc ; i++)
 	{

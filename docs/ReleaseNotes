@@ -22,6 +22,9 @@ This is a minor bug fix and maintenance release:
 - New console command music_jump: Jump to given order in music,
   like Unreal's music change.  Only for module (tracker) music.
 
+- Utils: light, vis, and jsh2color now default to auto-detecting the
+  max number of threads.
+
 - Updated third-party libraries (music codecs, SDL, etc.) Other minor
   fixes, tidy-ups, and protability tweaks.
 
