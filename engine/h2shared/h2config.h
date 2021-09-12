@@ -106,20 +106,6 @@
 
 
 /* ====================================================================
-   ENABLE_BSP2
-   Whether we want the mission pack support to be activated directly.
-   Value  :	not a value, but a define or undef
-   Affects:	many places regarding world model.
-
-   Default is enabled.
-
-   NOTE: If you change this, remember to change both NASM and MASM
-         versions worlda.inc !!!
-   ================================================================== */
-#define	ENABLE_BSP2
-
-
-/* ====================================================================
    H2MP
    Whether we want the mission pack support to be activated directly.
    Value  :	not a value, but a define or undef
@@ -135,6 +121,19 @@
 #if defined(H2W) || defined(DEMOBUILD)
 #undef	H2MP
 #endif		/* H2W || DEMOBUILD */
+
+
+/* ====================================================================
+   ENABLE_BSP2
+   Value  :	not a value, but a define or undef
+   Affects:	many places regarding world model.
+
+   Whether we want BSP2 format support. Default is enabled.
+
+   NOTE: If you change this, remember to change both NASM and MASM
+         versions worlda.inc !!!
+   ================================================================== */
+#define	ENABLE_BSP2
 
 
 /* ====================================================================
