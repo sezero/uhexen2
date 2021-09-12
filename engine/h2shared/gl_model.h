@@ -187,7 +187,7 @@ typedef struct mleaf_s
 	byte		ambient_sound_level[NUM_AMBIENTS];
 } mleaf_t;
 
-typedef dlclipnode_t	mclipnode_t;		// for BSP2.
+typedef dclipnode2_t	mclipnode_t;		// for BSP2.
 
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct

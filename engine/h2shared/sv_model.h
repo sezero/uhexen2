@@ -132,7 +132,7 @@ typedef struct mleaf_s
 	byte		*compressed_vis;
 } mleaf_t;
 
-typedef dlclipnode_t	mclipnode_t;		// for BSP2.
+typedef dclipnode2_t	mclipnode_t;		// for BSP2.
 
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct

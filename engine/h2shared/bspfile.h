@@ -159,7 +159,7 @@ typedef struct
 	short		maxs[3];
 	unsigned short	firstface;
 	unsigned short	numfaces;	// counting both sides
-} dsnode_t;
+} dnode_t;
 
 typedef struct
 {
@@ -169,19 +169,19 @@ typedef struct
 	float		maxs[3];
 	unsigned int	firstface;
 	unsigned int	numfaces;	// counting both sides
-} dlnode_t;
+} dnode2_t;
 
 typedef struct
 {
 	int		planenum;
 	short		children[2];	// negative numbers are contents
-} dsclipnode_t;
+} dclipnode_t;
 
 typedef struct
 {
 	int		planenum;
 	int		children[2];	// negative numbers are contents
-} dlclipnode_t;
+} dclipnode2_t;
 
 
 typedef struct texinfo_s
@@ -197,12 +197,12 @@ typedef struct texinfo_s
 typedef struct
 {
 	unsigned short	v[2];		// vertex numbers
-} dsedge_t;
+} dedge_t;
 
 typedef struct
 {
 	unsigned int	v[2];		// vertex numbers
-} dledge_t;
+} dedge2_t;
 
 #define	MAXLIGHTMAPS	4
 typedef struct
@@ -217,7 +217,7 @@ typedef struct
 // lighting info
 	byte		styles[MAXLIGHTMAPS];
 	int		lightofs;	// start of [numstyles*surfsize] samples
-} dsface_t;
+} dface_t;
 
 typedef struct
 {
@@ -231,7 +231,7 @@ typedef struct
 // lighting info
 	byte		styles[MAXLIGHTMAPS];
 	int		lightofs;	// start of [numstyles*surfsize] samples
-} dlface_t;
+} dface2_t;
 
 
 #define	AMBIENT_WATER		0
@@ -255,7 +255,7 @@ typedef struct
 	unsigned short	nummarksurfaces;
 
 	byte		ambient_level[NUM_AMBIENTS];
-} dsleaf_t;
+} dleaf_t;
 
 typedef struct
 {
@@ -269,7 +269,7 @@ typedef struct
 	unsigned int	nummarksurfaces;
 
 	byte		ambient_level[NUM_AMBIENTS];
-} dlleaf_t;
+} dleaf2_t;
 
 
 //============================================================================

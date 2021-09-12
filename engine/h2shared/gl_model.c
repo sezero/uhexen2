@@ -950,44 +950,55 @@ static void Mod_LoadSubmodels (lump_t *l)
 Mod_LoadEdges
 =================
 */
+static void Mod_LoadEdges_V29 (lump_t *l);
+static void Mod_LoadEdges_BSP2(lump_t *l);
 static void Mod_LoadEdges (lump_t *l, qboolean bsp2)
 {
+	if (bsp2) Mod_LoadEdges_BSP2(l);
+	else	  Mod_LoadEdges_V29 (l);
+}
+
+static void Mod_LoadEdges_BSP2(lump_t *l)
+{
+	dedge2_t *in;
 	medge_t *out;
 	int	i, count;
 
-	if (bsp2)
+	in = (dedge2_t *)(mod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+	count = l->filelen / sizeof(*in);
+	out = (medge_t *) Hunk_AllocName ((count + 1) * sizeof(*out), "edges");
+
+	loadmodel->edges = out;
+	loadmodel->numedges = count;
+
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		dledge_t *in = (dledge_t *)(mod_base + l->fileofs);
-		if (l->filelen % sizeof(*in))
-			Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-		count = l->filelen / sizeof(*in);
-		out = (medge_t *) Hunk_AllocName ((count + 1) * sizeof(*out), "edges");
-
-		loadmodel->edges = out;
-		loadmodel->numedges = count;
-
-		for (i = 0; i < count; i++, in++, out++)
-		{
-			out->v[0] = (unsigned int)LittleLong(in->v[0]);
-			out->v[1] = (unsigned int)LittleLong(in->v[1]);
-		}
+		out->v[0] = (unsigned int)LittleLong(in->v[0]);
+		out->v[1] = (unsigned int)LittleLong(in->v[1]);
 	}
-	else
+}
+
+static void Mod_LoadEdges_V29 (lump_t *l)
+{
+	dedge_t *in;
+	medge_t *out;
+	int	i, count;
+
+	in = (dedge_t *)(mod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+	count = l->filelen / sizeof(*in);
+	out = (medge_t *) Hunk_AllocName ((count + 1) * sizeof(*out), "edges");
+
+	loadmodel->edges = out;
+	loadmodel->numedges = count;
+
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		dsedge_t *in = (dsedge_t *)(mod_base + l->fileofs);
-		if (l->filelen % sizeof(*in))
-			Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-		count = l->filelen / sizeof(*in);
-		out = (medge_t *) Hunk_AllocName ((count + 1) * sizeof(*out), "edges");
-
-		loadmodel->edges = out;
-		loadmodel->numedges = count;
-
-		for (i = 0; i < count; i++, in++, out++)
-		{
-			out->v[0] = (unsigned short)LittleShort(in->v[0]);
-			out->v[1] = (unsigned short)LittleShort(in->v[1]);
-		}
+		out->v[0] = (unsigned short)LittleShort(in->v[0]);
+		out->v[1] = (unsigned short)LittleShort(in->v[1]);
 	}
 }
 
@@ -1105,112 +1116,154 @@ static void CalcSurfaceExtents (msurface_t *s)
 Mod_LoadFaces
 =================
 */
+static void Mod_SetDrawingFlags(msurface_t *out);
+static void Mod_LoadFaces_BSP2(lump_t *l);
+static void Mod_LoadFaces_V29 (lump_t *l);
 static void Mod_LoadFaces (lump_t *l, qboolean bsp2)
 {
-	dsface_t		*ins = NULL;
-	dlface_t		*inl = NULL;
+	if (bsp2) Mod_LoadFaces_BSP2(l);
+	else	  Mod_LoadFaces_V29 (l);
+}
+
+static void Mod_LoadFaces_BSP2(lump_t *l)
+{
+	dface2_t	*in;
 	msurface_t	*out;
 	int			i, count, surfnum;
-	int			planenum, side, lightofs, texinfo;
+	int			planenum, side;
 
-	if (bsp2)
-	{
-		inl = (dlface_t *)(mod_base + l->fileofs);
-		if (l->filelen % sizeof(*inl))
-			Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-		count = l->filelen / sizeof(*inl);
-	}
-	else
-	{
-		ins = (dsface_t *)(mod_base + l->fileofs);
-		if (l->filelen % sizeof(*ins))
-			Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-		count = l->filelen / sizeof(*ins);
-	}
+	in = (dface2_t *)(mod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+	count = l->filelen / sizeof(*in);
 	out = (msurface_t *) Hunk_AllocName (count * sizeof(*out), "faces");
 
 	loadmodel->surfaces = out;
 	loadmodel->numsurfaces = count;
 
-	for (surfnum = 0; surfnum < count; surfnum++, out++)
+	for (surfnum = 0; surfnum < count; surfnum++, in++, out++)
 	{
-		if (bsp2)
-		{
-			out->firstedge = LittleLong(inl->firstedge);
-			out->numedges = LittleLong(inl->numedges);
-			planenum = LittleLong(inl->planenum);
-			side = LittleLong(inl->side);
-			texinfo = LittleLong(inl->texinfo);
-			lightofs = LittleLong(inl->lightofs);
-			for (i = 0; i < MAXLIGHTMAPS; i++)
-				out->styles[i] = inl->styles[i];
-			inl++;
-		}
-		else
-		{
-			out->firstedge = LittleLong(ins->firstedge);
-			out->numedges = LittleShort(ins->numedges);
-			planenum = LittleShort(ins->planenum);
-			side = LittleShort(ins->side);
-			texinfo = LittleShort (ins->texinfo);
-			lightofs = LittleLong(ins->lightofs);
-			for (i = 0; i < MAXLIGHTMAPS; i++)
-				out->styles[i] = ins->styles[i];
-			ins++;
-		}
+		out->firstedge = LittleLong(in->firstedge);
+		out->numedges = LittleLong(in->numedges);
 		out->flags = 0;
 
+		planenum = LittleLong(in->planenum);
+		side = LittleLong(in->side);
 		if (side)
 			out->flags |= SURF_PLANEBACK;
 
 		out->plane = loadmodel->planes + planenum;
 
-		out->texinfo = loadmodel->texinfo + texinfo;
+		out->texinfo = loadmodel->texinfo + LittleLong (in->texinfo);
 
 		CalcSurfaceExtents (out);
 
 	// lighting info
-		if (lightofs  == -1)
+		for (i = 0; i < MAXLIGHTMAPS; i++)
+			out->styles[i] = in->styles[i];
+		i = LittleLong(in->lightofs);
+		if (i == -1)
 		{
 			out->samples = NULL;
 		}
 		else
 		{
-			//out->samples = loadmodel->lightdata + lightofs ;
+			//out->samples = loadmodel->lightdata + i;
 			if (gl_lightmap_format == GL_RGBA)
-				out->samples = loadmodel->lightdata + (lightofs  * 3);
+				out->samples = loadmodel->lightdata + (i * 3);
 			else
-				out->samples = loadmodel->lightdata + lightofs ;
+				out->samples = loadmodel->lightdata + i;
 		}
 
 	// set the drawing flags flag
+		Mod_SetDrawingFlags(out);
+	}
+}
 
-		if (!strncmp(out->texinfo->texture->name,"sky",3))	// sky
+static void Mod_LoadFaces_V29 (lump_t *l)
+{
+	dface_t		*in;
+	msurface_t	*out;
+	int			i, count, surfnum;
+	int			planenum, side;
+
+	in = (dface_t *)(mod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+	count = l->filelen / sizeof(*in);
+	out = (msurface_t *) Hunk_AllocName (count * sizeof(*out), "faces");
+
+	loadmodel->surfaces = out;
+	loadmodel->numsurfaces = count;
+
+	for (surfnum = 0; surfnum < count; surfnum++, in++, out++)
+	{
+		out->firstedge = LittleLong(in->firstedge);
+		out->numedges = LittleShort(in->numedges);
+		out->flags = 0;
+
+		planenum = LittleShort(in->planenum);
+		side = LittleShort(in->side);
+		if (side)
+			out->flags |= SURF_PLANEBACK;
+
+		out->plane = loadmodel->planes + planenum;
+
+		out->texinfo = loadmodel->texinfo + LittleShort (in->texinfo);
+
+		CalcSurfaceExtents (out);
+
+	// lighting info
+		for (i = 0; i < MAXLIGHTMAPS; i++)
+			out->styles[i] = in->styles[i];
+		i = LittleLong(in->lightofs);
+		if (i == -1)
 		{
-			out->flags |= (SURF_DRAWSKY | SURF_DRAWTILED);
-#ifndef QUAKE2
-			GL_SubdivideSurface (out);	// cut up polygon for warps
-#endif
-			continue;
+			out->samples = NULL;
+		}
+		else
+		{
+			//out->samples = loadmodel->lightdata + i;
+			if (gl_lightmap_format == GL_RGBA)
+				out->samples = loadmodel->lightdata + (i * 3);
+			else
+				out->samples = loadmodel->lightdata + i;
 		}
 
-		if (out->texinfo->texture->name[0] == '*')		// turbulent
+	// set the drawing flags flag
+		Mod_SetDrawingFlags(out);
+	}
+}
+
+static void Mod_SetDrawingFlags(msurface_t *out)
+{
+	int		i;
+
+	if (!strncmp(out->texinfo->texture->name,"sky",3))	// sky
+	{
+		out->flags |= (SURF_DRAWSKY | SURF_DRAWTILED);
+		#ifndef QUAKE2
+		GL_SubdivideSurface (out);	// cut up polygon for warps
+		#endif
+		return;
+	}
+
+	if (out->texinfo->texture->name[0] == '*')		// turbulent
+	{
+		out->flags |= (SURF_DRAWTURB | SURF_DRAWTILED);
+		for (i = 0; i < 2; i++)
 		{
-			out->flags |= (SURF_DRAWTURB | SURF_DRAWTILED);
-			for (i = 0; i < 2; i++)
-			{
-				out->extents[i] = 16384;
-				out->texturemins[i] = -8192;
-			}
-
-			GL_SubdivideSurface (out);	// cut up polygon for warps
-
-			if ( (!q_strncasecmp(out->texinfo->texture->name,"*rtex078",8)) ||
-					(!q_strncasecmp(out->texinfo->texture->name,"*lowlight",9)) )
-				out->flags |= SURF_TRANSLUCENT;
-
-			continue;
+			out->extents[i] = 16384;
+			out->texturemins[i] = -8192;
 		}
+
+		GL_SubdivideSurface (out);	// cut up polygon for warps
+
+		if (!q_strncasecmp(out->texinfo->texture->name,"*rtex078",8) ||
+		    !q_strncasecmp(out->texinfo->texture->name,"*lowlight",9) )
+			out->flags |= SURF_TRANSLUCENT;
+
+		return;
 	}
 }
 
@@ -1234,79 +1287,92 @@ static void Mod_SetParent (mnode_t *node, mnode_t *parent)
 Mod_LoadNodes
 =================
 */
+static void Mod_LoadNodes_BSP2(lump_t *l);
+static void Mod_LoadNodes_V29 (lump_t *l);
 static void Mod_LoadNodes (lump_t *l, qboolean bsp2)
 {
+	if (bsp2) Mod_LoadNodes_BSP2(l);
+	else	  Mod_LoadNodes_V29 (l);
+}
+
+static void Mod_LoadNodes_BSP2(lump_t *l)
+{
 	int			i, j, count, p;
+	dnode2_t	*in;
 	mnode_t		*out;
 
-	if (bsp2)
+	in = (dnode2_t *)(mod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+	count = l->filelen / sizeof(*in);
+	out = (mnode_t *) Hunk_AllocName (count * sizeof(*out), "nodes");
+
+	loadmodel->nodes = out;
+	loadmodel->numnodes = count;
+
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		dlnode_t		*in = (dlnode_t *)(mod_base + l->fileofs);
-		if (l->filelen % sizeof(*in))
-			Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-		count = l->filelen / sizeof(*in);
-		out = (mnode_t *) Hunk_AllocName (count * sizeof(*out), "nodes");
-
-		loadmodel->nodes = out;
-		loadmodel->numnodes = count;
-
-		for (i = 0; i < count; i++, in++, out++)
+		for (j = 0; j < 3; j++)
 		{
-			for (j = 0; j < 3; j++)
-			{
-				out->minmaxs[j] = LittleFloat (in->mins[j]);
-				out->minmaxs[3+j] = LittleFloat (in->maxs[j]);
-			}
+			out->minmaxs[j] = LittleFloat (in->mins[j]);
+			out->minmaxs[3+j] = LittleFloat (in->maxs[j]);
+		}
 
-			p = LittleLong(in->planenum);
-			out->plane = loadmodel->planes + p;
+		p = LittleLong(in->planenum);
+		out->plane = loadmodel->planes + p;
 
-			out->firstsurface = LittleLong (in->firstface);
-			out->numsurfaces = LittleLong (in->numfaces);
+		out->firstsurface = LittleLong (in->firstface);
+		out->numsurfaces = LittleLong (in->numfaces);
 
-			for (j = 0; j < 2; j++)
-			{
-				p = LittleLong (in->children[j]);
-				if (p >= 0)
-					out->children[j] = loadmodel->nodes + p;
-				else
-					out->children[j] = (mnode_t *)(loadmodel->leafs + (-1 - p));
-			}
+		for (j = 0; j < 2; j++)
+		{
+			p = LittleLong (in->children[j]);
+			if (p >= 0)
+				out->children[j] = loadmodel->nodes + p;
+			else
+				out->children[j] = (mnode_t *)(loadmodel->leafs + (-1 - p));
 		}
 	}
-	else
+
+	Mod_SetParent (loadmodel->nodes, NULL);	// sets nodes and leafs
+}
+
+static void Mod_LoadNodes_V29 (lump_t *l)
+{
+	int			i, j, count, p;
+	dnode_t		*in;
+	mnode_t		*out;
+
+	in = (dnode_t *)(mod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+	count = l->filelen / sizeof(*in);
+	out = (mnode_t *) Hunk_AllocName (count * sizeof(*out), "nodes");
+
+	loadmodel->nodes = out;
+	loadmodel->numnodes = count;
+
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		dsnode_t		*in = (dsnode_t *)(mod_base + l->fileofs);
-		if (l->filelen % sizeof(*in))
-			Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-		count = l->filelen / sizeof(*in);
-		out = (mnode_t *) Hunk_AllocName (count * sizeof(*out), "nodes");
-
-		loadmodel->nodes = out;
-		loadmodel->numnodes = count;
-
-		for (i = 0; i < count; i++, in++, out++)
+		for (j = 0; j < 3; j++)
 		{
-			for (j = 0; j < 3; j++)
-			{
-				out->minmaxs[j] = LittleShort (in->mins[j]);
-				out->minmaxs[3+j] = LittleShort (in->maxs[j]);
-			}
+			out->minmaxs[j] = LittleShort (in->mins[j]);
+			out->minmaxs[3+j] = LittleShort (in->maxs[j]);
+		}
 
-			p = LittleLong(in->planenum);
-			out->plane = loadmodel->planes + p;
+		p = LittleLong(in->planenum);
+		out->plane = loadmodel->planes + p;
 
-			out->firstsurface = LittleShort (in->firstface);
-			out->numsurfaces = LittleShort (in->numfaces);
+		out->firstsurface = LittleShort (in->firstface);
+		out->numsurfaces = LittleShort (in->numfaces);
 
-			for (j = 0; j < 2; j++)
-			{
-				p = LittleShort (in->children[j]);
-				if (p >= 0)
-					out->children[j] = loadmodel->nodes + p;
-				else
-					out->children[j] = (mnode_t *)(loadmodel->leafs + (-1 - p));
-			}
+		for (j = 0; j < 2; j++)
+		{
+			p = LittleShort (in->children[j]);
+			if (p >= 0)
+				out->children[j] = loadmodel->nodes + p;
+			else
+				out->children[j] = (mnode_t *)(loadmodel->leafs + (-1 - p));
 		}
 	}
 
@@ -1318,118 +1384,134 @@ static void Mod_LoadNodes (lump_t *l, qboolean bsp2)
 Mod_LoadLeafs
 =================
 */
+#ifdef H2W
+static qboolean Mod_isnotmap(void) {
+	char s[80];
+	q_snprintf (s, sizeof(s), "maps/%s.bsp", Info_ValueForKey(cl.serverinfo,"map"));
+	return (!strcmp(s, loadmodel->name)) ? false : true;
+}
+#endif
+static void Mod_LoadLeafs_BSP2(lump_t *l);
+static void Mod_LoadLeafs_V29 (lump_t *l);
 static void Mod_LoadLeafs (lump_t *l, qboolean bsp2)
 {
+	if (bsp2) Mod_LoadLeafs_BSP2(l);
+	else	  Mod_LoadLeafs_V29 (l);
+}
+
+static void Mod_LoadLeafs_BSP2(lump_t *l)
+{
+	dleaf2_t	*in;
 	mleaf_t		*out;
 	int	i, j, count, p;
 	#ifdef H2W
-	qboolean	isnotmap = true;
-	char		s[80];
-
-	q_snprintf (s, sizeof(s), "maps/%s.bsp", Info_ValueForKey(cl.serverinfo,"map"));
-	if (!strcmp(s, loadmodel->name))
-		isnotmap = false;
+	qboolean isnotmap = Mod_isnotmap();
 	#endif
 
-	if (bsp2)
+	in = (dleaf2_t *)(mod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+	count = l->filelen / sizeof(*in);
+	out = (mleaf_t *) Hunk_AllocName (count * sizeof(*out), "leafs");
+
+	loadmodel->leafs = out;
+	loadmodel->numleafs = count;
+
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		dlleaf_t		*in = (dlleaf_t *)(mod_base + l->fileofs);
-		if (l->filelen % sizeof(*in))
-			Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-		count = l->filelen / sizeof(*in);
-		out = (mleaf_t *) Hunk_AllocName (count * sizeof(*out), "leafs");
-
-		loadmodel->leafs = out;
-		loadmodel->numleafs = count;
-
-		for (i = 0; i < count; i++, in++, out++)
+		for (j = 0; j < 3; j++)
 		{
-			for (j = 0; j < 3; j++)
-			{
-				out->minmaxs[j] = LittleFloat (in->mins[j]);
-				out->minmaxs[3+j] = LittleFloat (in->maxs[j]);
-			}
-
-			p = LittleLong(in->contents);
-			out->contents = p;
-
-			out->firstmarksurface = loadmodel->marksurfaces + LittleLong(in->firstmarksurface);
-			out->nummarksurfaces = LittleLong(in->nummarksurfaces);
-
-			p = LittleLong(in->visofs);
-			if (p == -1)
-				out->compressed_vis = NULL;
-			else
-				out->compressed_vis = loadmodel->visdata + p;
-			out->efrags = NULL;
-
-			for (j = 0; j < 4; j++)
-				out->ambient_sound_level[j] = in->ambient_level[j];
-
-			// gl underwater warp
-			if (out->contents != CONTENTS_EMPTY)
-			{
-				for (j = 0; j < out->nummarksurfaces; j++)
-					out->firstmarksurface[j]->flags |= SURF_UNDERWATER;
-			}
-			#ifdef H2W
-			if (isnotmap)
-			{
-				for (j = 0; j < out->nummarksurfaces; j++)
-					out->firstmarksurface[j]->flags |= SURF_DONTWARP;
-			}
-			#endif
+			out->minmaxs[j] = LittleFloat (in->mins[j]);
+			out->minmaxs[3+j] = LittleFloat (in->maxs[j]);
 		}
+
+		p = LittleLong(in->contents);
+		out->contents = p;
+
+		out->firstmarksurface = loadmodel->marksurfaces + LittleLong(in->firstmarksurface);
+		out->nummarksurfaces = LittleLong(in->nummarksurfaces);
+
+		p = LittleLong(in->visofs);
+		if (p == -1)
+			out->compressed_vis = NULL;
+		else
+			out->compressed_vis = loadmodel->visdata + p;
+		out->efrags = NULL;
+
+		for (j = 0; j < 4; j++)
+			out->ambient_sound_level[j] = in->ambient_level[j];
+
+		// gl underwater warp
+		if (out->contents != CONTENTS_EMPTY)
+		{
+			for (j = 0; j < out->nummarksurfaces; j++)
+				out->firstmarksurface[j]->flags |= SURF_UNDERWATER;
+		}
+		#ifdef H2W
+		if (isnotmap)
+		{
+			for (j = 0; j < out->nummarksurfaces; j++)
+				out->firstmarksurface[j]->flags |= SURF_DONTWARP;
+		}
+		#endif
 	}
-	else
+}
+
+static void Mod_LoadLeafs_V29 (lump_t *l)
+{
+	dleaf_t		*in;
+	mleaf_t		*out;
+	int	i, j, count, p;
+	#ifdef H2W
+	qboolean isnotmap = Mod_isnotmap();
+	#endif
+
+	in = (dleaf_t *)(mod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+	count = l->filelen / sizeof(*in);
+	out = (mleaf_t *) Hunk_AllocName (count * sizeof(*out), "leafs");
+
+	loadmodel->leafs = out;
+	loadmodel->numleafs = count;
+
+	for (i = 0; i < count; i++, in++, out++)
 	{
-		dsleaf_t		*in = (dsleaf_t *)(mod_base + l->fileofs);
-		if (l->filelen % sizeof(*in))
-			Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-		count = l->filelen / sizeof(*in);
-		out = (mleaf_t *) Hunk_AllocName (count * sizeof(*out), "leafs");
-
-		loadmodel->leafs = out;
-		loadmodel->numleafs = count;
-
-		for (i = 0; i < count; i++, in++, out++)
+		for (j = 0; j < 3; j++)
 		{
-			for (j = 0; j < 3; j++)
-			{
-				out->minmaxs[j] = LittleShort (in->mins[j]);
-				out->minmaxs[3+j] = LittleShort (in->maxs[j]);
-			}
-
-			p = LittleLong(in->contents);
-			out->contents = p;
-
-			out->firstmarksurface = loadmodel->marksurfaces + LittleShort(in->firstmarksurface);
-			out->nummarksurfaces = LittleShort(in->nummarksurfaces);
-
-			p = LittleLong(in->visofs);
-			if (p == -1)
-				out->compressed_vis = NULL;
-			else
-				out->compressed_vis = loadmodel->visdata + p;
-			out->efrags = NULL;
-
-			for (j = 0; j < 4; j++)
-				out->ambient_sound_level[j] = in->ambient_level[j];
-
-			// gl underwater warp
-			if (out->contents != CONTENTS_EMPTY)
-			{
-				for (j = 0; j < out->nummarksurfaces; j++)
-					out->firstmarksurface[j]->flags |= SURF_UNDERWATER;
-			}
-			#ifdef H2W
-			if (isnotmap)
-			{
-				for (j = 0; j < out->nummarksurfaces; j++)
-					out->firstmarksurface[j]->flags |= SURF_DONTWARP;
-			}
-			#endif
+			out->minmaxs[j] = LittleShort (in->mins[j]);
+			out->minmaxs[3+j] = LittleShort (in->maxs[j]);
 		}
+
+		p = LittleLong(in->contents);
+		out->contents = p;
+
+		out->firstmarksurface = loadmodel->marksurfaces + LittleShort(in->firstmarksurface);
+		out->nummarksurfaces = LittleShort(in->nummarksurfaces);
+
+		p = LittleLong(in->visofs);
+		if (p == -1)
+			out->compressed_vis = NULL;
+		else
+			out->compressed_vis = loadmodel->visdata + p;
+		out->efrags = NULL;
+
+		for (j = 0; j < 4; j++)
+			out->ambient_sound_level[j] = in->ambient_level[j];
+
+		// gl underwater warp
+		if (out->contents != CONTENTS_EMPTY)
+		{
+			for (j = 0; j < out->nummarksurfaces; j++)
+				out->firstmarksurface[j]->flags |= SURF_UNDERWATER;
+		}
+		#ifdef H2W
+		if (isnotmap)
+		{
+			for (j = 0; j < out->nummarksurfaces; j++)
+				out->firstmarksurface[j]->flags |= SURF_DONTWARP;
+		}
+		#endif
 	}
 }
 
@@ -1438,48 +1520,68 @@ static void Mod_LoadLeafs (lump_t *l, qboolean bsp2)
 Mod_LoadClipnodes
 =================
 */
+static void Mod_MakeHulls (int count);
+static void Mod_LoadClipnodes_BSP2(lump_t *l);
+static void Mod_LoadClipnodes_V29 (lump_t *l);
 static void Mod_LoadClipnodes (lump_t *l, qboolean bsp2)
 {
+	if (bsp2) Mod_LoadClipnodes_BSP2(l);
+	else	  Mod_LoadClipnodes_V29 (l);
+}
+
+static void Mod_LoadClipnodes_BSP2(lump_t *l)
+{
+	dclipnode2_t	*in;
 	mclipnode_t	*out;
 	int			i, count;
+
+	in = (dclipnode2_t *)(mod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+	count = l->filelen / sizeof(*in);
+	out = (mclipnode_t *) Hunk_AllocName (count * sizeof(*out), "clipnodes");
+
+	loadmodel->clipnodes = out;
+	loadmodel->numclipnodes = count;
+
+	for (i = 0; i < count; i++, out++, in++)
+	{
+		out->planenum = LittleLong(in->planenum);
+		out->children[0] = LittleLong(in->children[0]);
+		out->children[1] = LittleLong(in->children[1]);
+	}
+
+	Mod_MakeHulls(count);
+}
+
+static void Mod_LoadClipnodes_V29 (lump_t *l)
+{
+	dclipnode_t	*in;
+	mclipnode_t	*out;
+	int			i, count;
+
+	in = (dclipnode_t *)(mod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+	count = l->filelen / sizeof(*in);
+	out = (mclipnode_t *) Hunk_AllocName (count * sizeof(*out), "clipnodes");
+
+	loadmodel->clipnodes = out;
+	loadmodel->numclipnodes = count;
+
+	for (i = 0; i < count; i++, out++, in++)
+	{
+		out->planenum = LittleLong(in->planenum);
+		out->children[0] = LittleShort(in->children[0]);
+		out->children[1] = LittleShort(in->children[1]);
+	}
+
+	Mod_MakeHulls(count);
+}
+
+static void Mod_MakeHulls (int count)
+{
 	hull_t		*hull;
-
-	if (bsp2)
-	{
-		dlclipnode_t *in = (dlclipnode_t *)(mod_base + l->fileofs);
-		if (l->filelen % sizeof(*in))
-			Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-		count = l->filelen / sizeof(*in);
-		out = (mclipnode_t *) Hunk_AllocName (count * sizeof(*out), "clipnodes");
-
-		loadmodel->clipnodes = out;
-		loadmodel->numclipnodes = count;
-
-		for (i = 0; i < count; i++, out++, in++)
-		{
-			out->planenum = LittleLong(in->planenum);
-			out->children[0] = LittleLong(in->children[0]);
-			out->children[1] = LittleLong(in->children[1]);
-		}
-	}
-	else
-	{
-		dsclipnode_t *in = (dsclipnode_t *)(mod_base + l->fileofs);
-		if (l->filelen % sizeof(*in))
-			Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-		count = l->filelen / sizeof(*in);
-		out = (mclipnode_t *) Hunk_AllocName (count * sizeof(*out), "clipnodes");
-
-		loadmodel->clipnodes = out;
-		loadmodel->numclipnodes = count;
-
-		for (i = 0; i < count; i++, out++, in++)
-		{
-			out->planenum = LittleLong(in->planenum);
-			out->children[0] = LittleShort(in->children[0]);
-			out->children[1] = LittleShort(in->children[1]);
-		}
-	}
 
 //player
 	hull = &loadmodel->hulls[1];
@@ -1609,48 +1711,59 @@ static void Mod_MakeHull0 (void)
 Mod_LoadMarksurfaces
 =================
 */
+static void Mod_LoadMarksurfaces_BSP2(lump_t *l);
+static void Mod_LoadMarksurfaces_V29 (lump_t *l);
 static void Mod_LoadMarksurfaces (lump_t *l, qboolean bsp2)
 {
+	if (bsp2) Mod_LoadMarksurfaces_BSP2(l);
+	else	  Mod_LoadMarksurfaces_V29 (l);
+}
+
+static void Mod_LoadMarksurfaces_BSP2(lump_t *l)
+{
 	int		i, j, count;
+	int		*in;
 	msurface_t	**out;
 
-	if (bsp2)
+	in = (int *)(mod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+	count = l->filelen / sizeof(*in);
+	out = (msurface_t **) Hunk_AllocName (count * sizeof(*out), "marksurfaces");
+
+	loadmodel->marksurfaces = out;
+	loadmodel->nummarksurfaces = count;
+
+	for (i = 0; i < count; i++)
 	{
-		int		*in = (int *)(mod_base + l->fileofs);
-		if (l->filelen % sizeof(*in))
-			Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-		count = l->filelen / sizeof(*in);
-		out = (msurface_t **) Hunk_AllocName (count * sizeof(*out), "marksurfaces");
-
-		loadmodel->marksurfaces = out;
-		loadmodel->nummarksurfaces = count;
-
-		for (i = 0; i < count; i++)
-		{
-			j = LittleLong(in[i]);
-			if (j >= loadmodel->numsurfaces)
-				Sys_Error ("%s: bad surface number", __thisfunc__);
-			out[i] = loadmodel->surfaces + j;
-		}
+		j = LittleLong(in[i]);
+		if (j >= loadmodel->numsurfaces)
+			Sys_Error ("%s: bad surface number", __thisfunc__);
+		out[i] = loadmodel->surfaces + j;
 	}
-	else
+}
+
+static void Mod_LoadMarksurfaces_V29 (lump_t *l)
+{
+	int		i, j, count;
+	unsigned short		*in;
+	msurface_t	**out;
+
+	in = (unsigned short *)(mod_base + l->fileofs);
+	if (l->filelen % sizeof(*in))
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+	count = l->filelen / sizeof(*in);
+	out = (msurface_t **) Hunk_AllocName (count * sizeof(*out), "marksurfaces");
+
+	loadmodel->marksurfaces = out;
+	loadmodel->nummarksurfaces = count;
+
+	for (i = 0; i < count; i++)
 	{
-		unsigned short		*in = (unsigned short *)(mod_base + l->fileofs);
-		if (l->filelen % sizeof(*in))
-			Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
-		count = l->filelen / sizeof(*in);
-		out = (msurface_t **) Hunk_AllocName (count * sizeof(*out), "marksurfaces");
-
-		loadmodel->marksurfaces = out;
-		loadmodel->nummarksurfaces = count;
-
-		for (i = 0; i < count; i++)
-		{
-			j = (unsigned short)LittleShort(in[i]);
-			if (j >= loadmodel->numsurfaces)
-				Sys_Error ("%s: bad surface number", __thisfunc__);
-			out[i] = loadmodel->surfaces + j;
-		}
+		j = (unsigned short)LittleShort(in[i]);
+		if (j >= loadmodel->numsurfaces)
+			Sys_Error ("%s: bad surface number", __thisfunc__);
+		out[i] = loadmodel->surfaces + j;
 	}
 }
 
@@ -1766,7 +1879,6 @@ static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer)
 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
 
 // load into heap
-
 	Mod_LoadVertexes (&header->lumps[LUMP_VERTEXES]);
 	Mod_LoadEdges (&header->lumps[LUMP_EDGES], bsp2);
 	Mod_LoadSurfedges (&header->lumps[LUMP_SURFEDGES]);
