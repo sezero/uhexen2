@@ -20,6 +20,8 @@
 ; 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ;
 
+ include worlda.inc
+
  .386P
  .model FLAT
 
@@ -43,8 +45,15 @@ _SV_HullPointContents:
  sub ebx,ebx
  push esi
 Lhloop:
+IFDEF ENABLE_BSP2
  lea eax,ds:dword ptr[eax+eax*2]	;eax*=3
  mov ecx,ds:dword ptr[0+edi+eax*4]
+ELSE
+ mov ecx,ds:dword ptr[0+edi+eax*8]
+ mov eax,ds:dword ptr[4+edi+eax*8]
+ mov esi,eax
+ ror eax,16
+ENDIF
  lea ecx,ds:dword ptr[ecx+ecx*4]
  mov bl,ds:byte ptr[16+ebp+ecx*4]
  cmp bl,3
@@ -64,6 +73,7 @@ Lnodot:
  fld ds:dword ptr[12+ebp+ecx*4]
  fsubr ds:dword ptr[edx+ebx*4]
 Lsub:
+IFDEF ENABLE_BSP2
 ; if dist is negative(float's sign bit is set), copy child[1] into eax
  fstp ds:dword ptr[Ltemp]
  test ds:dword ptr[Ltemp],080000000h
@@ -76,6 +86,17 @@ Lsub:
 ; otherwise copy child[0] into eax
  mov eax,ds:dword ptr[4+edi+eax*4] 
  test eax,eax
+ELSE
+ sar eax,16
+ sar esi,16
+ fstp ds:dword ptr[Ltemp]
+ mov ecx,ds:dword ptr[Ltemp]
+ sar ecx,31
+ and esi,ecx
+ xor ecx,0FFFFFFFFh
+ and eax,ecx
+ or eax,esi
+ENDIF
  jns Lhloop
 Lhdone:
  pop esi

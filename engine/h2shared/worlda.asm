@@ -23,6 +23,7 @@
 ;
 
 %include "asm_nasm.inc"
+%include "worlda.inc"
 
 ; underscore prefix handling
 ; for C-shared symbols:
@@ -56,8 +57,15 @@ SV_HullPointContents:
  sub ebx,ebx
  push esi
 Lhloop:
+%ifdef ENABLE_BSP2
  lea eax, [eax+eax*2]	;eax*=3
  mov ecx, dword [0+edi+eax*4]
+%else
+ mov ecx, dword [0+edi+eax*8]
+ mov eax, dword [4+edi+eax*8]
+ mov esi,eax
+ ror eax,16
+%endif
  lea ecx, [ecx+ecx*4]
  mov bl, byte [16+ebp+ecx*4]
  cmp bl,3
@@ -77,6 +85,7 @@ Lnodot:
  fld  dword [12+ebp+ecx*4]
  fsubr  dword [edx+ebx*4]
 Lsub:
+%ifdef ENABLE_BSP2
 ; if dist is negative(float's sign bit is set), copy child[1] into eax
  fstp dword [Ltemp]
  test dword [Ltemp],080000000h
@@ -89,6 +98,17 @@ Lsub:
 ; otherwise copy child[0] into eax
  mov eax,dword [4+edi+eax*4] 
  test eax,eax
+%else
+ sar eax,16
+ sar esi,16
+ fstp  dword [Ltemp]
+ mov ecx, dword [Ltemp]
+ sar ecx,31
+ and esi,ecx
+ xor ecx,0FFFFFFFFh
+ and eax,ecx
+ or eax,esi
+%endif
  jns Lhloop
 Lhdone:
  pop esi

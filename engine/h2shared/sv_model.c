@@ -404,6 +404,9 @@ static void Mod_LoadSubmodels (lump_t *l)
 Mod_LoadEdges
 =================
 */
+#ifndef ENABLE_BSP2
+#define Mod_LoadEdges(_l, _v) Mod_LoadEdges_V29((_l))
+#else
 static void Mod_LoadEdges_V29 (lump_t *l);
 static void Mod_LoadEdges_BSP2(lump_t *l);
 static void Mod_LoadEdges (lump_t *l, qboolean bsp2)
@@ -434,6 +437,7 @@ static void Mod_LoadEdges_BSP2(lump_t *l)
 		out->v[1] = (unsigned int)LittleLong(in->v[1]);
 	}
 }
+#endif
 
 static void Mod_LoadEdges_V29 (lump_t *l)
 {
@@ -552,6 +556,9 @@ static void CalcSurfaceExtents (msurface_t *s, int firstedge, int numedges)
 Mod_LoadFaces
 =================
 */
+#ifndef ENABLE_BSP2
+#define Mod_LoadFaces(_l, _v) Mod_LoadFaces_V29((_l))
+#else
 static void Mod_LoadFaces_BSP2(lump_t *l);
 static void Mod_LoadFaces_V29 (lump_t *l);
 static void Mod_LoadFaces (lump_t *l, qboolean bsp2)
@@ -608,6 +615,7 @@ static void Mod_LoadFaces_BSP2(lump_t *l)
 		}
 	}
 }
+#endif
 
 static void Mod_LoadFaces_V29 (lump_t *l)
 {
@@ -678,6 +686,9 @@ static void Mod_SetParent (mnode_t *node, mnode_t *parent)
 Mod_LoadNodes
 =================
 */
+#ifndef ENABLE_BSP2
+#define Mod_LoadNodes(_l, _v) Mod_LoadNodes_V29((_l))
+#else
 static void Mod_LoadNodes_BSP2(lump_t *l);
 static void Mod_LoadNodes_V29 (lump_t *l);
 static void Mod_LoadNodes (lump_t *l, qboolean bsp2)
@@ -721,6 +732,7 @@ static void Mod_LoadNodes_BSP2(lump_t *l)
 
 	Mod_SetParent (loadmodel->nodes, NULL);	// sets nodes and leafs
 }
+#endif
 
 static void Mod_LoadNodes_V29 (lump_t *l)
 {
@@ -763,6 +775,9 @@ static void Mod_LoadNodes_V29 (lump_t *l)
 Mod_LoadLeafs
 =================
 */
+#ifndef ENABLE_BSP2
+#define Mod_LoadLeafs(_l, _v) Mod_LoadLeafs_V29((_l))
+#else
 static void Mod_LoadLeafs_BSP2(lump_t *l);
 static void Mod_LoadLeafs_V29 (lump_t *l);
 static void Mod_LoadLeafs (lump_t *l, qboolean bsp2)
@@ -798,6 +813,7 @@ static void Mod_LoadLeafs_BSP2(lump_t *l)
 			out->compressed_vis = loadmodel->visdata + p;
 	}
 }
+#endif
 
 static void Mod_LoadLeafs_V29 (lump_t *l)
 {
@@ -833,6 +849,9 @@ Mod_LoadClipnodes
 =================
 */
 static void Mod_MakeHulls (int count);
+#ifndef ENABLE_BSP2
+#define Mod_LoadClipnodes(_l, _v) Mod_LoadClipnodes_V29((_l))
+#else
 static void Mod_LoadClipnodes_BSP2(lump_t *l);
 static void Mod_LoadClipnodes_V29 (lump_t *l);
 static void Mod_LoadClipnodes (lump_t *l, qboolean bsp2)
@@ -867,6 +886,7 @@ static void Mod_LoadClipnodes_BSP2(lump_t *l)
 
 	Mod_MakeHulls(count);
 }
+#endif
 
 static void Mod_LoadClipnodes_V29 (lump_t *l)
 {
@@ -1102,10 +1122,15 @@ static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer)
 	header = (dheader_t *)buffer;
 
 	i = LittleLong (header->version);
+#ifndef ENABLE_BSP2
+	(void) bsp2;
+#else
 	if (i == BSP2VERSION)
 		bsp2 = true;
-	else if (i != BSPVERSION)
-		Host_Error ("%s: %s has wrong version number (%i should be %i)", __thisfunc__, mod->name, i, BSPVERSION);
+	else
+#endif
+	if (i != BSPVERSION)
+		Host_Error ("%s: %s has unsupported version %i", __thisfunc__, mod->name, i);
 
 // swap all the lumps
 	mod_base = (byte *)header;

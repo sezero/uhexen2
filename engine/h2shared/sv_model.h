@@ -24,8 +24,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __HX2_MODEL_H
-#define __HX2_MODEL_H
+#ifndef SV_MODEL_H
+#define SV_MODEL_H
 
 #include "genmodel.h"
 #include "spritegn.h"
@@ -132,7 +132,11 @@ typedef struct mleaf_s
 	byte		*compressed_vis;
 } mleaf_t;
 
-typedef dclipnode2_t	mclipnode_t;		// for BSP2.
+#ifdef ENABLE_BSP2
+typedef dclipnode2_t	mclipnode_t;
+#else
+typedef dclipnode_t	mclipnode_t;
+#endif
 
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct
@@ -275,5 +279,5 @@ qmodel_t *Mod_FindName (const char *name);
 mleaf_t *Mod_PointInLeaf (float *p, qmodel_t *model);
 byte	*Mod_LeafPVS (mleaf_t *leaf, qmodel_t *model);
 
-#endif	/* __HX2_MODEL_H */
+#endif	/* SV_MODEL_H */
 
