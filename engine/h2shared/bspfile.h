@@ -40,9 +40,11 @@
 #define	MAX_MAP_TEXINFO		4096
 #define	MAX_MAP_EDGES		256000
 #define	MAX_MAP_SURFEDGES	512000
+#define	MAX_MAP_TEXTURES	512
 #define	MAX_MAP_MIPTEX		0x200000
 #define	MAX_MAP_LIGHTING	0x100000
 #define	MAX_MAP_VISIBILITY	0x100000
+#define	MAX_MAP_PORTALS		65536
 
 // key / value pair sizes
 
@@ -216,6 +218,7 @@ typedef struct
 	byte		styles[MAXLIGHTMAPS];
 	int		lightofs;	// start of [numstyles*surfsize] samples
 } dsface_t;
+
 typedef struct
 {
 	int		planenum;
@@ -272,6 +275,9 @@ typedef struct
 //============================================================================
 
 #ifndef QUAKE_GAME
+
+#define	ANGLE_UP	-1
+#define	ANGLE_DOWN	-2
 
 // the utilities get to be lazy and just use large static arrays
 
