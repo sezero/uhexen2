@@ -5,7 +5,7 @@
  * Copyright (C) 1997-1998  Raven Software Corp.
  * Copyright (C) 2004-2005  Steven Atkinson <stevenaaus@yahoo.com>
  * Copyright (C) 2005-2016  O.Sezer <sezero@users.sourceforge.net>
- * Copyright (C) 2012-2016  Szilárd Biró <col.lawrence@gmail.com>
+ * Copyright (C) 2012-2016  Szilard Biro <col.lawrence@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

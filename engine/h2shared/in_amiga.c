@@ -1,7 +1,7 @@
 /* in_amiga.c -- Intuition game input code for Amiga & co.
  *
  * Copyright (C) 2005-2010 Mark Olsen <bigfoot@private.dk>
- * Copyright (C) 2012-2016 Szilárd Biró <col.lawrence@gmail.com>
+ * Copyright (C) 2012-2016 Szilard Biro <col.lawrence@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

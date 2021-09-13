@@ -75,10 +75,11 @@ NOTES:
   the included H2PATCH program and it will be done.
 
 * MEMORY:  The default amount of required memory is 32 MB.  You need
-  at least 16 MB.  If you want to specify the amount of memory to use,
-  run the game like this:
+  at least 24 MB of RAM, otherwise you might experience crashes.  If
+  you want to specify the amount of memory to use, run the game like
+  this:
 
-        h2dos -mem 16
+    h2dos -mem 16
 
   - Note: Higher video resolutions will be disabled when sufficient
     amount of memory is not present.
