@@ -20,14 +20,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#define BAN_TEST
-
 #include "q_stdinc.h"
 #include "arch_def.h"
 #include "net_sys.h"
 #include "quakedef.h"
 #include "net_defs.h"
 #include "net_dgrm.h"
+
+#define BAN_TEST
+
+#if defined(PLATFORM_DOS) && !defined(USE_WATT32)
+#undef  BAN_TEST
+#endif
 
 // these two macros are to make the code more readable
 #define sfunc	net_landrivers[sock->landriver]
