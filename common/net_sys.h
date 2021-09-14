@@ -272,6 +272,7 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <tcp.h>		/* for select_s(), sock_init() & friends. */
+
 extern int	_watt_do_exit;	/* in sock_ini.h, but not in public headers. */
 
 #define	selectsocket	select_s
@@ -292,7 +293,6 @@ typedef int	sys_socket_t;
 COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFFSET);
 
 #else /* local headers: */
-#include "dos/dos_inet.h"
 #include "dos/dos_sock.h"
 
 #endif	/* USE_WATT32 */

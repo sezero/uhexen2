@@ -44,10 +44,6 @@ USE_WINSOCK2=no
 USE_SERIAL=no
 # use WatTCP (WATT-32) for DOS UDP networking?
 USE_WATT32=yes
-# use Beame & Whiteside TCP for DOS networking?
-USE_BWTCP=yes
-# use MPATH for DOS UDP networking under Win9x?
-USE_MPATH=no
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -113,12 +109,6 @@ INCLUDES += -I$(OSLIBS)/dos
 
 ifeq ($(USE_SERIAL),yes)
 CPPFLAGS+= -DUSE_SERIAL
-endif
-ifeq ($(USE_BWTCP),yes)
-CPPFLAGS+= -DUSE_BWTCP
-endif
-ifeq ($(USE_MPATH),yes)
-CPPFLAGS+= -DUSE_MPATH
 endif
 ifeq ($(USE_WATT32),yes)
 CPPFLAGS+= -DUSE_WATT32 -DWATT32_NO_OLDIES
@@ -332,20 +322,10 @@ SYSOBJ_SYS := sys_win.o
 endif
 ifeq ($(TARGET_OS),dos)
 DOSTCP :=
-ifeq ($(USE_BWTCP),yes)
-DOSTCP += dos/net_bw.o
-endif
-ifeq ($(USE_MPATH),yes)
-DOSTCP += dos/net_mp.o dos/mplpc.o
-endif
+SYSOBJ_NET := dos/net_dos.o dos/net_ipx.o
 ifeq ($(USE_WATT32),yes)
-DOSTCP += net_udp.o
-else
-# get inet_addr() and inet_ntoa() either from Watt-32
-# or from our local implementation
-DOSTCP += dos/dos_inet.o dos/inet_addr.o
+SYSOBJ_NET += net_udp.o
 endif
-SYSOBJ_NET := dos/net_dos.o dos/net_ipx.o $(DOSTCP)
 ifeq ($(USE_SERIAL),yes)
 SYSOBJ_NET += dos/net_ser.o
 endif

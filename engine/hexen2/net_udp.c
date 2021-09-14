@@ -122,29 +122,13 @@ sys_socket_t UDP_Init (void)
 	}
 #endif	/* PLATFORM_OS2 */
 #if defined(PLATFORM_DOS)
-#if defined(USE_MPATH) && defined(USE_WATT32)
-	if (COM_CheckParm ("-mpath"))
-	{
-		Con_Printf("Skipping WATTCP due to -mpath\n");
-		return INVALID_SOCKET;
-	}
-#endif
-#if defined(USE_BWTCP) && defined(USE_WATT32)
-	if (tcpipAvailable)
-	{
-		Con_Printf("Skipping WATTCP (BWTCP present)\n");
-		return INVALID_SOCKET;
-	}
-#endif
 #if defined(USE_WATT32)
 	if (ipxAvailable) /* IPX + PktDrvr don't get along */
 	{
 		Con_Printf("Skipping WATTCP (IPX present)\n");
 		return INVALID_SOCKET;
 	}
-#endif
 
-#if defined(USE_WATT32)
 /*	dbug_init();*/
 	i = _watt_do_exit;
 	_watt_do_exit = 0;

@@ -93,14 +93,8 @@ const int net_numdrivers = (sizeof(net_drivers) / sizeof(net_drivers[0]));
 
 
 #include "net_ipx.h"
-#ifdef USE_BWTCP
-#include "net_bw.h"
-#endif
 #ifdef USE_WATT32
 #include "net_udp.h"
-#endif
-#ifdef USE_MPATH
-#include "net_mp.h"
 #endif
 
 /* be careful about the order of drivers */
@@ -129,31 +123,6 @@ net_landriver_t	net_landrivers[] =
 		IPX_SetSocketPort
 	},
 
-#ifdef USE_BWTCP
-	{	"Beame & Whiteside TCP/IP",
-		false,
-		0,
-		BW_Init,
-		BW_Shutdown,
-		BW_Listen,
-		BW_OpenSocket,
-		BW_CloseSocket,
-		BW_Connect,
-		BW_CheckNewConnections,
-		BW_Read,
-		BW_Write,
-		BW_Broadcast,
-		BW_AddrToString,
-		BW_StringToAddr,
-		BW_GetSocketAddr,
-		BW_GetNameFromAddr,
-		BW_GetAddrFromName,
-		BW_AddrCompare,
-		BW_GetSocketPort,
-		BW_SetSocketPort
-	},
-#endif /* USE_BWTCP */
-
 #ifdef USE_WATT32
 	{	"Waterloo TCP",
 		false,
@@ -178,31 +147,6 @@ net_landriver_t	net_landrivers[] =
 		UDP_SetSocketPort
 	},
 #endif /* USE_WATT32 */
-
-#ifdef USE_MPATH
-	{	"Win95 TCP/IP",
-		false,
-		0,
-		MPATH_Init,
-		MPATH_Shutdown,
-		MPATH_Listen,
-		MPATH_OpenSocket,
-		MPATH_CloseSocket,
-		MPATH_Connect,
-		MPATH_CheckNewConnections,
-		MPATH_Read,
-		MPATH_Write,
-		MPATH_Broadcast,
-		MPATH_AddrToString,
-		MPATH_StringToAddr,
-		MPATH_GetSocketAddr,
-		MPATH_GetNameFromAddr,
-		MPATH_GetAddrFromName,
-		MPATH_AddrCompare,
-		MPATH_GetSocketPort,
-		MPATH_SetSocketPort
-	}
-#endif /* USE_MPATH */
 };
 
 const int net_numlandrivers = (sizeof(net_landrivers) / sizeof(net_landrivers[0]));

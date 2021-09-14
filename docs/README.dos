@@ -27,7 +27,7 @@ Things that just work:
 
 Things not tested, but should work:
 
-* NETWORKING:  Neither of BWTCP, modem or direct connection is tested.
+* NETWORKING:  Neither of modem or direct connection is tested.
   The code is almost exactly the same as the quake dos network code,
   therefore they should work the same way they do with dos-quake.  On
   the other hand, IPX has been reported to work fine.
@@ -133,4 +133,3 @@ NOTES:
   With this switch, all and every messages from the game engine will be
   written into the file named debug_h2.log. It may contain clues about
   any problems you may have encountered.
-
