@@ -56,12 +56,12 @@ XD3DEPS=xdelta3-decode.h xdelta3-list.h xdelta3-main.h xdelta3-blkcache.h xdelta
 
 xdelta3.obj: $(XD3DEPS)
 	wcc386 $(CFLAGS) $(XDFLAGS) -fo=$^@ $(XDELTA_DIR)$(PATH_SEP)xdelta3.c
+
 h2patch.res: h2patch3.rc
 	wrc -q -r $(RCFLAGS) $(RC_DEFS) -fo=$^@ $<
 
 h2patch.exe: $(OBJECTS) h2patch.res
-	wlink N $@ SYS NT OP q F {$(OBJECTS)}
-	wrc -q $^*.res
+	wlink N $@ SYS NT OP q OP RESOURCE=$^*.res F {$(OBJECTS)}
 
 clean: .symbolic
 	rm -f *.obj *.res

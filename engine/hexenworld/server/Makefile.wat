@@ -136,7 +136,7 @@ OBJECTS = &
 all: $(BINARY)
 h2ded: $(BINARY)
 
-# 512 KB stack size.
+# 512 KB stack.
 $(BINARY): $(OBJECTS)
 	wlink N $@ SYS NT OPTION q OPTION STACK=0x80000 LIBR {$(LIBS)} F {$(OBJECTS)}
 
