@@ -1,5 +1,5 @@
-# makefile to build hexen2 jsh2colour tool for Win32 using Open Watcom:
-#   wmake -f OWMakefile.win32
+# makefile to build hexen2 mapping tools for Win32 using Open Watcom:
+#   wmake -f Makefile.wat
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -21,7 +21,7 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
 !endif
 
 # Names of the binaries
-BINARY=jsh2colour.exe
+BSPINFO=bspinfo.exe
 
 # Compiler flags
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
@@ -51,33 +51,16 @@ OBJECTS = qsnprint.obj &
 	byteordr.obj &
 	util_io.obj &
 	pathutil.obj &
-	threads.obj &
-	mathlib.obj &
 	bspfile.obj &
-	litfile.obj &
-	entities.obj &
-	ltface.obj &
-	trace.obj &
-	jscolor.obj &
-	tyrlite.obj
+	bspinfo.obj
 
-all: $(BINARY)
+all: $(BSPINFO)
 
-# FIXME: request 4 MB stack.
-$(BINARY): $(OBJECTS)
-	wlink N $@ SYS NT OPTION q OPTION STACK=0x400000 F {$(OBJECTS)}
+$(BSPINFO): $(OBJECTS)
+	wlink N $@ SYS NT OP q F {$(OBJECTS)}
 
-!ifdef __UNIX__
-INCLUDES+= -I$(OSLIBS)/windows/misc/include
+INCLUDES+= -I"$(OSLIBS)/windows/misc/include"
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
-	rm -f $(BINARY)
-!else
-INCLUDES+= -I$(OSLIBS)\windows\misc\include
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(BINARY) del $(BINARY)
-!endif
+	rm -f $(BSPINFO)

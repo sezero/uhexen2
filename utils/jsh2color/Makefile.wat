@@ -1,5 +1,5 @@
-# makefile to build hexen2 mapping tools for Win32 using Open Watcom:
-#   wmake -f OWMakefile.win32
+# makefile to build hexen2 jsh2colour tool for Win32 using Open Watcom:
+#   wmake -f Makefile.wat
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -21,7 +21,7 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
 !endif
 
 # Names of the binaries
-LIGHT=light.exe
+BINARY=jsh2colour.exe
 
 # Compiler flags
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
@@ -43,7 +43,7 @@ INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 	wcc386 $(INCLUDES) $(CFLAGS) -fo=$^@ $<
 
 # Objects
-OBJ_COMMON= qsnprint.obj &
+OBJECTS = qsnprint.obj &
 	strlcat.obj &
 	strlcpy.obj &
 	cmdlib.obj &
@@ -51,32 +51,24 @@ OBJ_COMMON= qsnprint.obj &
 	byteordr.obj &
 	util_io.obj &
 	pathutil.obj &
+	threads.obj &
 	mathlib.obj &
-	bspfile.obj
-
-OBJ_LIGHT= threads.obj &
+	bspfile.obj &
+	litfile.obj &
 	entities.obj &
-	light.obj &
 	ltface.obj &
-	trace.obj
+	trace.obj &
+	jscolor.obj &
+	tyrlite.obj
 
-all: $(LIGHT)
+all: $(BINARY)
 
-# 1 MB stack size
-$(LIGHT): $(OBJ_COMMON) $(OBJ_LIGHT)
-	wlink N $@ SYS NT OPTION q OPTION STACK=0x100000 F {$(OBJ_COMMON) $(OBJ_LIGHT)}
+# FIXME: 4 MB stack.
+$(BINARY): $(OBJECTS)
+	wlink N $@ SYS NT OPTION q OPTION STACK=0x400000 F {$(OBJECTS)}
 
-!ifdef __UNIX__
-INCLUDES+= -I$(OSLIBS)/windows/misc/include
+INCLUDES+= -I"$(OSLIBS)/windows/misc/include"
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
-	rm -f $(LIGHT)
-!else
-INCLUDES+= -I$(OSLIBS)\windows\misc\include
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(LIGHT) del $(LIGHT)
-!endif
+	rm -f $(BINARY)

@@ -1,5 +1,5 @@
-# makefile to build hexen2 genmodel tool for Win32 using Open Watcom:
-#   wmake -f OWMakefile.win32
+# makefile to build hexen2 mapping tools for Win32 using Open Watcom:
+#   wmake -f Makefile.wat
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -21,7 +21,7 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
 !endif
 
 # Names of the binaries
-BINARY=genmodel.exe
+LIGHT=light.exe
 
 # Compiler flags
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
@@ -30,6 +30,7 @@ CFLAGS+= -d2
 !else
 CFLAGS+= -DNDEBUG=1
 !endif
+CFLAGS+= -DDOUBLEVEC_T
 CFLAGS+= -DWIN32_LEAN_AND_MEAN
 
 INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
@@ -42,7 +43,7 @@ INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 	wcc386 $(INCLUDES) $(CFLAGS) -fo=$^@ $<
 
 # Objects
-OBJECTS = qsnprint.obj &
+OBJ_COMMON= qsnprint.obj &
 	strlcat.obj &
 	strlcpy.obj &
 	cmdlib.obj &
@@ -50,29 +51,23 @@ OBJECTS = qsnprint.obj &
 	byteordr.obj &
 	util_io.obj &
 	pathutil.obj &
-	scriplib.obj &
-	qdir.obj &
 	mathlib.obj &
-	loadtri.obj &
-	token.obj &
-	genmodel.obj
+	bspfile.obj
 
-all: $(BINARY)
+OBJ_LIGHT= threads.obj &
+	entities.obj &
+	light.obj &
+	ltface.obj &
+	trace.obj
 
-$(BINARY): $(OBJECTS)
-	wlink N $@ SYS NT OP q F {$(OBJECTS)}
+all: $(LIGHT)
 
-!ifdef __UNIX__
-INCLUDES+= -I$(OSLIBS)/windows/misc/include
+# 1 MB stack.
+$(LIGHT): $(OBJ_COMMON) $(OBJ_LIGHT)
+	wlink N $@ SYS NT OPTION q OPTION STACK=0x100000 F {$(OBJ_COMMON) $(OBJ_LIGHT)}
+
+INCLUDES+= -I"$(OSLIBS)/windows/misc/include"
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
-	rm -f $(BINARY)
-!else
-INCLUDES+= -I$(OSLIBS)\windows\misc\include
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(BINARY) del $(BINARY)
-!endif
+	rm -f $(LIGHT)

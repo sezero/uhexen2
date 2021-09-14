@@ -1,19 +1,19 @@
-# makefile to build hexen2 bsp2wal tool for Win32 using Open Watcom:
-#   wmake -f OWMakefile.win32
+# makefile to build hexen2 mapping tools for Win32 using Open Watcom:
+#   wmake -f Makefile.wat
 
 # PATH SETTINGS:
 !ifndef __UNIX__
 PATH_SEP=\
-UHEXEN2_TOP=..\..\..
-UTILS_TOP=..\..
+UHEXEN2_TOP=..\..
+UTILS_TOP=..
 COMMONDIR=$(UTILS_TOP)\common
 UHEXEN2_SHARED=$(UHEXEN2_TOP)\common
 LIBS_DIR=$(UHEXEN2_TOP)\libs
 OSLIBS=$(UHEXEN2_TOP)\oslibs
 !else
 PATH_SEP=/
-UHEXEN2_TOP=../../..
-UTILS_TOP=../..
+UHEXEN2_TOP=../..
+UTILS_TOP=..
 COMMONDIR=$(UTILS_TOP)/common
 UHEXEN2_SHARED=$(UHEXEN2_TOP)/common
 LIBS_DIR=$(UHEXEN2_TOP)/libs
@@ -21,7 +21,7 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
 !endif
 
 # Names of the binaries
-BINARY=bsp2wal.exe
+VIS=vis.exe
 
 # Compiler flags
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
@@ -30,6 +30,7 @@ CFLAGS+= -d2
 !else
 CFLAGS+= -DNDEBUG=1
 !endif
+CFLAGS+= -DDOUBLEVEC_T
 CFLAGS+= -DWIN32_LEAN_AND_MEAN
 
 INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
@@ -42,7 +43,7 @@ INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 	wcc386 $(INCLUDES) $(CFLAGS) -fo=$^@ $<
 
 # Objects
-OBJECTS= qsnprint.obj &
+OBJ_COMMON= qsnprint.obj &
 	strlcat.obj &
 	strlcpy.obj &
 	cmdlib.obj &
@@ -50,25 +51,22 @@ OBJECTS= qsnprint.obj &
 	byteordr.obj &
 	util_io.obj &
 	pathutil.obj &
-	bspfile.obj &
-	bsp2wal.obj
+	mathlib.obj &
+	bspfile.obj
 
-all: $(BINARY)
+OBJ_VIS= threads.obj &
+	flow.obj &
+	soundpvs.obj &
+	vis.obj
 
-$(BINARY): $(OBJECTS)
-	wlink N $@ SYS NT OP q F {$(OBJECTS)}
+all: $(VIS)
 
-!ifdef __UNIX__
-INCLUDES+= -I$(OSLIBS)/windows/misc/include
+# 1 MB stack.
+$(VIS): $(OBJ_COMMON) $(OBJ_VIS)
+	wlink N $@ SYS NT OPTION q OPTION STACK=0x100000 F {$(OBJ_COMMON) $(OBJ_VIS)}
+
+INCLUDES+= -I"$(OSLIBS)/windows/misc/include"
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
-	rm -f $(BINARY)
-!else
-INCLUDES+= -I$(OSLIBS)\windows\misc\include
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(BINARY) del $(BINARY)
-!endif
+	rm -f $(VIS)

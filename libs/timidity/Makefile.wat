@@ -1,5 +1,5 @@
 # Makefile for Win32 using Watcom compiler.
-# wmake -f OWMakefile.win32
+# wmake -f Makefile.wat
 
 INCLUDES=-I.
 CPPFLAGS=-DTIMIDITY_BUILD -DTIMIDITY_STATIC

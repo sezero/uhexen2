@@ -1,5 +1,5 @@
-# makefile to build hexen2 mapping tools for Win32 using Open Watcom:
-#   wmake -f OWMakefile.win32
+# makefile to build hexen2 hcc tool for Win32 using Open Watcom:
+#   wmake -f Makefile.wat
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -21,7 +21,7 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
 !endif
 
 # Names of the binaries
-BSPINFO=bspinfo.exe
+BINARY=hcc.exe
 
 # Compiler flags
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
@@ -30,7 +30,6 @@ CFLAGS+= -d2
 !else
 CFLAGS+= -DNDEBUG=1
 !endif
-CFLAGS+= -DDOUBLEVEC_T
 CFLAGS+= -DWIN32_LEAN_AND_MEAN
 
 INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
@@ -47,29 +46,23 @@ OBJECTS = qsnprint.obj &
 	strlcat.obj &
 	strlcpy.obj &
 	cmdlib.obj &
+	util_io.obj &
 	q_endian.obj &
 	byteordr.obj &
-	util_io.obj &
-	pathutil.obj &
-	bspfile.obj &
-	bspinfo.obj
+	crchash.obj &
+	expr.obj &
+	hcc.obj &
+	pr_comp.obj &
+	pr_lex.obj &
+	stmt.obj
 
-all: $(BSPINFO)
+all: $(BINARY)
 
-$(BSPINFO): $(OBJECTS)
+$(BINARY): $(OBJECTS)
 	wlink N $@ SYS NT OP q F {$(OBJECTS)}
 
-!ifdef __UNIX__
-INCLUDES+= -I$(OSLIBS)/windows/misc/include
+INCLUDES+= -I"$(OSLIBS)/windows/misc/include"
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
-	rm -f $(BSPINFO)
-!else
-INCLUDES+= -I$(OSLIBS)\windows\misc\include
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(BSPINFO) del $(BSPINFO)
-!endif
+	rm -f $(BINARY)

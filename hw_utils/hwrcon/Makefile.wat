@@ -1,5 +1,5 @@
-# makefile to build hwmquery for Win32 using OpenWatcom:
-# wmake -f OWMakefile.win32
+# makefile to build hwrcon and hwterm for Win32 using Open Watcom:
+#   wmake -f Makefile.wat
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -23,7 +23,8 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
 USE_WINSOCK2=no
 
 # Names of the binaries
-HWMQUERY=hwmquery.exe
+HWRCON=hwrcon.exe
+HWTERM=hwterm.exe
 
 # Compiler flags
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
@@ -53,24 +54,21 @@ LIBS = $(LIBWINSOCK) winmm.lib
 	wcc386 $(INCLUDES) $(CFLAGS) $(CPPFLAGS) -fo=$^@ $<
 
 # Objects
-OBJECTS = qsnprint.obj hwmquery.obj
+COMMONOBJ =qsnprint.obj
+HUFF_OBJS = huffman.obj
+RCON_OBJS = hwrcon.obj
+TERM_OBJS = hwterm.obj
 
-all: $(HWMQUERY)
+all: $(HWRCON) $(HWTERM)
 
-$(HWMQUERY): $(OBJECTS)
-	wlink N $@ SYS NT OP q LIBR {$(LIBS)} F {$(OBJECTS)}
+$(HWRCON) : $(COMMONOBJ) $(RCON_OBJS)
+	wlink N $@ SYS NT OP q LIBR {$(LIBS)} F {$(COMMONOBJ) $(RCON_OBJS)}
 
-!ifdef __UNIX__
-INCLUDES+= -I$(OSLIBS)/windows/misc/include
+$(HWTERM) : $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)
+	wlink N $@ SYS NT OP q LIBR {$(LIBS)} F {$(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)}
+
+INCLUDES+= -I"$(OSLIBS)/windows/misc/include"
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
-	rm -f $(HWMQUERY)
-!else
-INCLUDES+= -I$(OSLIBS)\windows\misc\include
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(HWMQUERY) del $(HWMQUERY)
-!endif
+	rm -f $(HWRCON) $(HWTERM)

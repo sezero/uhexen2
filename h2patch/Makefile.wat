@@ -1,5 +1,5 @@
 # makefile to build h2patch.exe for Win32 using OpenWatcom:
-# wmake -f OWMakefile.win32
+# wmake -f Makefile.wat
 
 !ifdef __UNIX__
 PATH_SEP=/
@@ -63,15 +63,7 @@ h2patch.exe: $(OBJECTS) h2patch.res
 	wlink N $@ SYS NT OP q F {$(OBJECTS)}
 	wrc -q $^*.res
 
-!ifdef __UNIX__
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
 	rm -f $(BINARY)
-!else
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(BINARY) del $(BINARY)
-!endif

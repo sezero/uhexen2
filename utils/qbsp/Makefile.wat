@@ -1,5 +1,5 @@
 # makefile to build hexen2 mapping tools for Win32 using Open Watcom:
-#   wmake -f OWMakefile.win32
+#   wmake -f Makefile.wat
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -70,21 +70,12 @@ OBJ_QBSP= brush.obj &
 
 all: $(QBSP)
 
-# 1 MB stack size
+# 1 MB stack.
 $(QBSP): $(OBJ_COMMON) $(OBJ_QBSP)
 	wlink N $@ SYS NT OPTION q OPTION STACK=0x100000 F {$(OBJ_COMMON) $(OBJ_QBSP)}
 
-!ifdef __UNIX__
-INCLUDES+= -I$(OSLIBS)/windows/misc/include
+INCLUDES+= -I"$(OSLIBS)/windows/misc/include"
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
 	rm -f $(QBSP)
-!else
-INCLUDES+= -I$(OSLIBS)\windows\misc\include
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(QBSP) del $(QBSP)
-!endif

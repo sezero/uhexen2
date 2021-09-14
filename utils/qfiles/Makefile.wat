@@ -1,5 +1,5 @@
-# makefile to build hexen2 pak tools for Win32 using Open Watcom:
-#   wmake -f OWMakefile.win32
+# makefile to build hexen2 qfiles tool for Win32 using Open Watcom:
+#   wmake -f Makefile.wat
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -21,8 +21,7 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
 !endif
 
 # Names of the binaries
-PAKX=pakx.exe
-PAKLIST=paklist.exe
+BINARY=qfiles.exe
 
 # Compiler flags
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
@@ -43,39 +42,24 @@ INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 	wcc386 $(INCLUDES) $(CFLAGS) -fo=$^@ $<
 
 # Objects
-OBJ_COMMON= qsnprint.obj &
+OBJECTS= qsnprint.obj &
 	strlcat.obj &
 	strlcpy.obj &
 	cmdlib.obj &
 	util_io.obj &
+	qdir.obj &
 	crc.obj &
 	q_endian.obj &
 	byteordr.obj &
-	pakfile.obj
-OBJ_PAKX= pakx.obj
-OBJ_PAKL= paklist.obj
+	qfiles.obj
 
-all: $(PAKX) $(PAKLIST)
+all: $(BINARY)
 
-$(PAKX): $(OBJ_COMMON) $(OBJ_PAKX)
-	wlink N $@ SYS NT OP q F {$(OBJ_COMMON) $(OBJ_PAKX)}
+$(BINARY): $(OBJECTS)
+	wlink N $@ SYS NT OP q F {$(OBJECTS)}
 
-$(PAKLIST): $(OBJ_COMMON) $(OBJ_PAKL)
-	wlink N $@ SYS NT OP q F {$(OBJ_COMMON) $(OBJ_PAKL)}
-
-!ifdef __UNIX__
-INCLUDES+= -I$(OSLIBS)/windows/misc/include
+INCLUDES+= -I"$(OSLIBS)/windows/misc/include"
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
-	rm -f $(PAKX) $(PAKLIST)
-!else
-INCLUDES+= -I$(OSLIBS)\windows\misc\include
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(PAKLIST) del $(PAKLIST)
-	@if exist $(PAKX) del $(PAKX)
-!endif
-
+	rm -f $(BINARY)

@@ -1,14 +1,12 @@
-# makefile to build hwsv for Windows using Open Watcom:
-#    wmake -f OWMakefile.win32
+# makefile to build h2ded for Windows using Open Watcom:
+#    wmake -f Makefile.wat
 
 # PATH SETTINGS:
 !ifndef __UNIX__
 PATH_SEP=\
 UHEXEN2_TOP=..\..\..
 ENGINE_TOP=..\..
-HW_TOP=..
 COMMONDIR=$(ENGINE_TOP)\h2shared
-COMMON_HW=$(HW_TOP)\shared
 UHEXEN2_SHARED=$(UHEXEN2_TOP)\common
 LIBS_DIR=$(UHEXEN2_TOP)\libs
 OSLIBS=$(UHEXEN2_TOP)\oslibs
@@ -16,9 +14,7 @@ OSLIBS=$(UHEXEN2_TOP)\oslibs
 PATH_SEP=/
 UHEXEN2_TOP=../../..
 ENGINE_TOP=../..
-HW_TOP=..
 COMMONDIR=$(ENGINE_TOP)/h2shared
-COMMON_HW=$(HW_TOP)/shared
 UHEXEN2_SHARED=$(UHEXEN2_TOP)/common
 LIBS_DIR=$(UHEXEN2_TOP)/libs
 OSLIBS=$(UHEXEN2_TOP)/oslibs
@@ -31,7 +27,7 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
 USE_WINSOCK2=no
 
 # Names of the binaries
-BINARY=hwsv.exe
+BINARY=h2ded.exe
 
 #############################################################
 # Compiler flags
@@ -40,7 +36,7 @@ BINARY=hwsv.exe
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
 
 # compiler includes
-INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
+INCLUDES= -I. -I.. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 
 # end of compiler flags
 #############################################################
@@ -50,7 +46,7 @@ INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 # Other build flags
 #############################################################
 
-CPPFLAGS+= -DH2W -DSERVERONLY
+CPPFLAGS+= -DSERVERONLY
 
 !ifdef DEMO
 CPPFLAGS+= -DDEMOBUILD
@@ -85,13 +81,14 @@ LIBS += $(LIBWINSOCK) winmm.lib
 
 #############################################################
 
-.c: $(COMMON_HW);$(COMMONDIR);$(UHEXEN2_SHARED)
+.c: ..;$(COMMONDIR);$(UHEXEN2_SHARED)
 
 .c.obj:
 	wcc386 $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -fo=$^@ $<
 
 # Objects
 
+SYSOBJ_NET = net_win.obj net_wins.obj net_wipx.obj
 SYSOBJ_SYS = sys_win.obj
 
 # Final list of objects
@@ -104,31 +101,27 @@ OBJECTS = &
 	qsnprint.obj &
 	msg_io.obj &
 	common.obj &
+	debuglog.obj &
 	quakefs.obj &
-	info_str.obj &
 	cmd.obj &
 	crc.obj &
 	cvar.obj &
-	host_string.obj &
 	mathlib.obj &
 	zone.obj &
-	huffman.obj &
-	net_udp.obj &
-	net_chan.obj &
-	pmove.obj &
-	pmovetst.obj &
+	$(SYSOBJ_NET) &
+	net_dgrm.obj &
+	net_main.obj &
 	sv_model.obj &
+	host.obj &
+	host_cmd.obj &
 	pr_cmds.obj &
 	pr_edict.obj &
 	pr_exec.obj &
+	host_string.obj &
 	sv_effect.obj &
-	sv_ccmds.obj &
-	sv_ents.obj &
-	sv_init.obj &
 	sv_main.obj &
 	sv_move.obj &
 	sv_phys.obj &
-	sv_send.obj &
 	sv_user.obj &
 	world.obj &
 	$(SYSOBJ_SYS)
@@ -140,15 +133,7 @@ h2ded: $(BINARY)
 $(BINARY): $(OBJECTS)
 	wlink N $@ SYS NT OPTION q OPTION STACK=0x80000 LIBR {$(LIBS)} F {$(OBJECTS)}
 
-!ifdef __UNIX__
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
 	rm -f $(BINARY)
-!else
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(BINARY) del $(BINARY)
-!endif

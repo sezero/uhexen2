@@ -1,5 +1,5 @@
-# makefile to build hexen2 mapping tools for Win32 using Open Watcom:
-#   wmake -f OWMakefile.win32
+# makefile to build hexen2 genmodel tool for Win32 using Open Watcom:
+#   wmake -f Makefile.wat
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -21,7 +21,7 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
 !endif
 
 # Names of the binaries
-VIS=vis.exe
+BINARY=genmodel.exe
 
 # Compiler flags
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
@@ -30,7 +30,6 @@ CFLAGS+= -d2
 !else
 CFLAGS+= -DNDEBUG=1
 !endif
-CFLAGS+= -DDOUBLEVEC_T
 CFLAGS+= -DWIN32_LEAN_AND_MEAN
 
 INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
@@ -43,7 +42,7 @@ INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 	wcc386 $(INCLUDES) $(CFLAGS) -fo=$^@ $<
 
 # Objects
-OBJ_COMMON= qsnprint.obj &
+OBJECTS = qsnprint.obj &
 	strlcat.obj &
 	strlcpy.obj &
 	cmdlib.obj &
@@ -51,31 +50,20 @@ OBJ_COMMON= qsnprint.obj &
 	byteordr.obj &
 	util_io.obj &
 	pathutil.obj &
+	scriplib.obj &
+	qdir.obj &
 	mathlib.obj &
-	bspfile.obj
+	loadtri.obj &
+	token.obj &
+	genmodel.obj
 
-OBJ_VIS= threads.obj &
-	flow.obj &
-	soundpvs.obj &
-	vis.obj
+all: $(BINARY)
 
-all: $(VIS)
+$(BINARY): $(OBJECTS)
+	wlink N $@ SYS NT OP q F {$(OBJECTS)}
 
-# 1 MB stack size
-$(VIS): $(OBJ_COMMON) $(OBJ_VIS)
-	wlink N $@ SYS NT OPTION q OPTION STACK=0x100000 F {$(OBJ_COMMON) $(OBJ_VIS)}
-
-!ifdef __UNIX__
-INCLUDES+= -I$(OSLIBS)/windows/misc/include
+INCLUDES+= -I"$(OSLIBS)/windows/misc/include"
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
-	rm -f $(VIS)
-!else
-INCLUDES+= -I$(OSLIBS)\windows\misc\include
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(VIS) del $(VIS)
-!endif
+	rm -f $(BINARY)

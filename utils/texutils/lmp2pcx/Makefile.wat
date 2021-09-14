@@ -1,19 +1,19 @@
-# makefile to build hexen2 mapping tools for Win32 using Open Watcom:
-#   wmake -f OWMakefile.win32
+# makefile to build hexen2 lmp2pcx tool for Win32 using Open Watcom:
+#   wmake -f Makefile.wat
 
 # PATH SETTINGS:
 !ifndef __UNIX__
 PATH_SEP=\
-UHEXEN2_TOP=..\..
-UTILS_TOP=..
+UHEXEN2_TOP=..\..\..
+UTILS_TOP=..\..
 COMMONDIR=$(UTILS_TOP)\common
 UHEXEN2_SHARED=$(UHEXEN2_TOP)\common
 LIBS_DIR=$(UHEXEN2_TOP)\libs
 OSLIBS=$(UHEXEN2_TOP)\oslibs
 !else
 PATH_SEP=/
-UHEXEN2_TOP=../..
-UTILS_TOP=..
+UHEXEN2_TOP=../../..
+UTILS_TOP=../..
 COMMONDIR=$(UTILS_TOP)/common
 UHEXEN2_SHARED=$(UHEXEN2_TOP)/common
 LIBS_DIR=$(UHEXEN2_TOP)/libs
@@ -21,7 +21,7 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
 !endif
 
 # Names of the binaries
-BSP2MAP=bsp2map.exe
+BINARY=lmp2pcx.exe
 
 # Compiler flags
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
@@ -42,34 +42,23 @@ INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 	wcc386 $(INCLUDES) $(CFLAGS) -fo=$^@ $<
 
 # Objects
-OBJECTS = qsnprint.obj &
+OBJECTS= qsnprint.obj &
 	strlcat.obj &
 	strlcpy.obj &
 	cmdlib.obj &
-	q_endian.obj &
-	byteordr.obj &
 	util_io.obj &
 	pathutil.obj &
-	mathlib.obj &
-	bspfile.obj &
-	bsp2map.obj
+	q_endian.obj &
+	byteordr.obj &
+	lmp2pcx.obj
 
-all: $(BSP2MAP)
+all: $(BINARY)
 
-$(BSP2MAP): $(OBJECTS)
+$(BINARY): $(OBJECTS)
 	wlink N $@ SYS NT OP q F {$(OBJECTS)}
 
-!ifdef __UNIX__
-INCLUDES+= -I$(OSLIBS)/windows/misc/include
+INCLUDES+= -I"$(OSLIBS)/windows/misc/include"
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
-	rm -f $(BSP2MAP)
-!else
-INCLUDES+= -I$(OSLIBS)\windows\misc\include
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(BSP2MAP) del $(BSP2MAP)
-!endif
+	rm -f $(BINARY)

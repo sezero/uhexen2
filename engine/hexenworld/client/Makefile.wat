@@ -1,23 +1,27 @@
-# makefile to build h2.exe for Windows using Open Watcom:
-#    wmake -f OWMakefile.win32
+# makefile to build hwcl.exe for Windows using Open Watcom:
+#    wmake -f Makefile.wat
 #
-# to build opengl version (glh2.exe) :
-#    wmake -f OWMakefile.win32 BUILDGL=1
+# to build opengl version glhw.exe :
+#    wmake -f Makefile.wat BUILDGL=1
 
 # PATH SETTINGS:
 !ifndef __UNIX__
 PATH_SEP=\
-UHEXEN2_TOP=..\..
-ENGINE_TOP=..
+UHEXEN2_TOP=..\..\..
+ENGINE_TOP=..\..
+HW_TOP=..
 COMMONDIR=$(ENGINE_TOP)\h2shared
+COMMON_HW=$(HW_TOP)\shared
 UHEXEN2_SHARED=$(UHEXEN2_TOP)\common
 LIBS_DIR=$(UHEXEN2_TOP)\libs
 OSLIBS=$(UHEXEN2_TOP)\oslibs
 !else
 PATH_SEP=/
-UHEXEN2_TOP=../..
-ENGINE_TOP=..
+UHEXEN2_TOP=../../..
+ENGINE_TOP=../..
+HW_TOP=..
 COMMONDIR=$(ENGINE_TOP)/h2shared
+COMMON_HW=$(HW_TOP)/shared
 UHEXEN2_SHARED=$(UHEXEN2_TOP)/common
 LIBS_DIR=$(UHEXEN2_TOP)/libs
 OSLIBS=$(UHEXEN2_TOP)/oslibs
@@ -81,8 +85,8 @@ MP3LIB=mad
 VORBISLIB=tremor
 
 # Names of the binaries
-SW_NAME=h2
-GL_NAME=glh2
+SW_NAME=hwcl
+GL_NAME=glhwcl
 SW_BINARY=$(SW_NAME).exe
 GL_BINARY=$(GL_NAME).exe
 
@@ -93,11 +97,11 @@ GL_BINARY=$(GL_NAME).exe
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
 
 # compiler includes
-INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
+INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 # nasm includes: the trailing directory separator matters
-NASM_INC= -I.$(PATH_SEP) -I$(COMMONDIR)$(PATH_SEP)
+NASM_INC= -I.$(PATH_SEP) -I$(COMMON_HW)$(PATH_SEP) -I$(COMMONDIR)$(PATH_SEP)
 # windows resource compiler includes
-RC_INC  = -I. -I$(COMMONDIR)
+RC_INC  = -I. -I$(COMMON_HW) -I$(COMMONDIR)
 
 # end of compiler flags
 #############################################################
@@ -106,6 +110,8 @@ RC_INC  = -I. -I$(COMMONDIR)
 #############################################################
 # Other build flags
 #############################################################
+
+CPPFLAGS+= -DH2W
 
 !ifdef DEMO
 CPPFLAGS+= -DDEMOBUILD
@@ -288,9 +294,9 @@ BUILD_TARGET=$(GL_BINARY)
 
 .EXTENSIONS: .res .rc
 
-.c: $(COMMONDIR);$(UHEXEN2_SHARED)
-.asm: $(COMMONDIR)
-.rc: $(COMMONDIR)
+.c: $(COMMON_HW);$(COMMONDIR);$(UHEXEN2_SHARED)
+.asm: $(COMMON_HW);$(COMMONDIR)
+.rc: $(COMMON_HW);$(COMMONDIR)
 
 .c.obj:
 	wcc386 $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -fo=$^@ $<
@@ -332,14 +338,12 @@ SOFT_ASM = &
 	surf16.obj
 
 SOUND_ASM = snd_mixa.obj
-WORLD_ASM = worlda.obj
 
 !else
 
 SOFT_ASM =
 COMMON_ASM =
 SOUND_ASM =
-WORLD_ASM =
 
 !endif
 
@@ -390,7 +394,6 @@ SYSOBJ_SOFT_VID= vid_mgl4.obj
 !else
 SYSOBJ_SOFT_VID= vid_win.obj
 !endif
-SYSOBJ_NET = net_win.obj net_wins.obj net_wipx.obj
 SYSOBJ_SYS = sys_win.obj
 SYSOBJ_RES = $(TARGET_NAME).res
 
@@ -432,6 +435,7 @@ GLOBJS = &
 	gl_rlight.obj &
 	gl_rmain.obj &
 	gl_rmisc.obj &
+	gl_ngraph.obj &
 	r_part.obj &
 	gl_rsurf.obj &
 	gl_screen.obj &
@@ -447,24 +451,25 @@ COMMONOBJS = &
 	$(SYSOBJ_SND) &
 	$(SYSOBJ_CDA) &
 	$(SYSOBJ_MIDI) &
-	$(SYSOBJ_NET) &
-	net_dgrm.obj &
-	net_loop.obj &
-	net_main.obj &
-	chase.obj &
+	huffman.obj &
+	net_udp.obj &
+	net_chan.obj &
+	cl_cam.obj &
 	cl_demo.obj &
 	cl_effect.obj &
+	cl_ents.obj &
 	cl_inlude.obj &
 	cl_input.obj &
 	cl_main.obj &
 	cl_parse.obj &
-	cl_string.obj &
+	cl_pred.obj &
 	cl_tent.obj &
 	cl_cmd.obj &
 	console.obj &
 	keys.obj &
 	menu.obj &
 	sbar.obj &
+	skin.obj &
 	view.obj &
 	wad.obj &
 	cmd.obj &
@@ -478,23 +483,14 @@ COMMONOBJS = &
 	common.obj &
 	debuglog.obj &
 	quakefs.obj &
+	info_str.obj &
 	crc.obj &
 	cvar.obj &
 	cfgfile.obj &
-	host.obj &
-	host_cmd.obj &
 	host_string.obj &
 	mathlib.obj &
-	pr_cmds.obj &
-	pr_edict.obj &
-	pr_exec.obj &
-	sv_effect.obj &
-	sv_main.obj &
-	sv_move.obj &
-	sv_phys.obj &
-	sv_user.obj &
-	$(WORLD_ASM) &
-	world.obj &
+	pmove.obj &
+	pmovetst.obj &
 	zone.obj &
 	$(SYSOBJ_SYS)
 
@@ -514,16 +510,7 @@ $(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(SYSOBJ_RES)
 $(GL_BINARY): $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(SYSOBJ_RES)
 	wlink N $@ SYS NT_WIN OPTION q OPTION STACK=0x100000 OPTION RESOURCE=$^*.res LIBR {$(LIBS) $(GL_LIBS)} F {$(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)}
 
-!ifdef __UNIX__
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
 	rm -f $(SW_BINARY) $(GL_BINARY)
-!else
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(SW_BINARY) del $(SW_BINARY)
-	@if exist $(GL_BINARY) del $(GL_BINARY)
-!endif

@@ -1,5 +1,5 @@
-# makefile to build hexen2 lmp2pcx tool for Win32 using Open Watcom:
-#   wmake -f OWMakefile.win32
+# makefile to build hexen2 bsp2wal tool for Win32 using Open Watcom:
+#   wmake -f Makefile.wat
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -21,7 +21,7 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
 !endif
 
 # Names of the binaries
-BINARY=lmp2pcx.exe
+BINARY=bsp2wal.exe
 
 # Compiler flags
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
@@ -46,28 +46,20 @@ OBJECTS= qsnprint.obj &
 	strlcat.obj &
 	strlcpy.obj &
 	cmdlib.obj &
-	util_io.obj &
-	pathutil.obj &
 	q_endian.obj &
 	byteordr.obj &
-	lmp2pcx.obj
+	util_io.obj &
+	pathutil.obj &
+	bspfile.obj &
+	bsp2wal.obj
 
 all: $(BINARY)
 
 $(BINARY): $(OBJECTS)
 	wlink N $@ SYS NT OP q F {$(OBJECTS)}
 
-!ifdef __UNIX__
-INCLUDES+= -I$(OSLIBS)/windows/misc/include
+INCLUDES+= -I"$(OSLIBS)/windows/misc/include"
 clean: .symbolic
 	rm -f *.obj *.res
 distclean: clean .symbolic
 	rm -f $(BINARY)
-!else
-INCLUDES+= -I$(OSLIBS)\windows\misc\include
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(BINARY) del $(BINARY)
-!endif
