@@ -56,11 +56,6 @@ LINK_DIRECTX=no
 # enable startup splash screens? (windows)
 WITH_SPLASHES=yes
 
-# use SciTech MGL for Win32 software video driver? (auto-disabled
-# for Win64. if disabled, the DIB-only software video driver will
-# be used)
-USE_MGL=no
-
 # use WinSock2 instead of WinSock-1.1? (disabled for w32 for compat.
 # with old Win95 machines.) (enabled for Win64 in the win64 section.)
 USE_WINSOCK2=no
@@ -279,11 +274,6 @@ GL_LIBS+= $(GL_LINK)
 !ifndef BUILDGL
 TARGET_NAME=$(SW_NAME)
 BUILD_TARGET=$(SW_BINARY)
-!ifeq USE_MGL yes
-CPPFLAGS+= -DMGL_DLL
-INCLUDES+= -I$(OSLIBS)/windows/scitech/include
-LIBS+= $(OSLIBS)/windows/scitech/watcom/mglfxi.lib
-!endif
 !else
 CPPFLAGS+= $(GL_DEFS)
 TARGET_NAME=$(GL_NAME)
@@ -389,11 +379,7 @@ SYSOBJ_CDA = cd_win.obj
 
 SYSOBJ_INPUT = in_win.obj
 SYSOBJ_GL_VID= gl_vidnt.obj
-!ifeq USE_MGL yes
-SYSOBJ_SOFT_VID= vid_mgl4.obj
-!else
 SYSOBJ_SOFT_VID= vid_win.obj
-!endif
 SYSOBJ_SYS = sys_win.obj
 SYSOBJ_RES = $(TARGET_NAME).res
 

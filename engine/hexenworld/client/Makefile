@@ -107,11 +107,6 @@ LINK_DIRECTX=no
 # enable startup splash screens? (windows)
 WITH_SPLASHES=yes
 
-# use SciTech MGL for Win32 software video driver? (auto-disabled
-# for Win64. if disabled, the DIB-only software video driver will
-# be used)
-USE_MGL=no
-
 # use WinSock2 instead of WinSock-1.1? (disabled for w32 for compat.
 # with old Win95 machines.) (enabled for Win64 in the win64 section.)
 USE_WINSOCK2=no
@@ -724,8 +719,6 @@ endif
 USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 
-# cant use MGL for Win64
-USE_MGL=no
 # use winsock2 for win64
 USE_WINSOCK2=yes
 
@@ -1363,11 +1356,7 @@ endif
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_INPUT := in_win.o
 SYSOBJ_GL_VID:= gl_vidnt.o
-ifeq ($(USE_MGL),yes)
-SYSOBJ_SOFT_VID:= vid_mgl4.o
-else
 SYSOBJ_SOFT_VID:= vid_win.o
-endif
 SYSOBJ_SYS := sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),win64)
@@ -1585,13 +1574,6 @@ help: report
 hw: $(SW_BINARY)
 glhw: $(GL_BINARY)
 
-ifeq ($(TARGET_OS),win32)
-ifeq ($(USE_MGL),yes)
-$(SW_BINARY): CPPFLAGS+= -DMGL_DLL
-$(SW_BINARY): INCLUDES+= -I$(OSLIBS)/windows/scitech/include
-$(SW_BINARY): LDFLAGS += -L$(OSLIBS)/windows/scitech/x86 -lmglfx
-endif
-endif
 $(GL_BINARY): CPPFLAGS+= $(GL_DEFS)
 
 ifeq ($(TARGET_OS),amigaos)

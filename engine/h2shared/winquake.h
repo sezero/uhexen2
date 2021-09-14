@@ -52,7 +52,6 @@ extern	int		global_nCmdShow;
 #endif
 
 
-extern qboolean		DDActive;
 extern qboolean		dinput_init;
 
 extern HWND		mainwindow;

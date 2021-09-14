@@ -53,7 +53,6 @@ byte		globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte		*lastsourcecolormap = NULL;
 
 HWND		mainwindow;
-qboolean	DDActive;
 qboolean	msg_suppress_1 = false;
 
 static int	DIBWidth, DIBHeight;

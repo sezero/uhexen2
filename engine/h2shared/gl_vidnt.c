@@ -107,7 +107,6 @@ static RECT	WindowRect;
 int		window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT		window_rect;
 static LONG	WindowStyle, ExWindowStyle;
-qboolean	DDActive;
 
 static PIXELFORMATDESCRIPTOR pfd =
 {
