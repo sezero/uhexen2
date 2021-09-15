@@ -6,7 +6,7 @@ Changes in v1.5.10: (Sep. 11, 2021.)
 
 This is a minor bug fix and maintenance release:
 
-- Added BSP2 format support, based on an initial patch by Spoike.
+- Added BSP2 format support, thanks to an initial patch by Spike.
 
 - Fixed possible crash in effects code (thanks to Jonathan Bergeron).
 
@@ -27,6 +27,10 @@ This is a minor bug fix and maintenance release:
 
 - Updated third-party libraries (music codecs, SDL, etc.) Other minor
   fixes, tidy-ups, and protability tweaks.
+
+- Windows: removed the long-obsoleted Scitech MGL video driver.
+
+- DOS: removed the long-obsoleted MPATH and BW-TCP network drivers.
 
 - Source repository moved to git.
 
@@ -52,7 +56,7 @@ This is a minor bug fix and maintenance release:
 
 - Several optimized assembler sources for m68k-amigaos.
 
-- gcc is now supported to target m68k-amigaos.
+- GCC is now supported to target m68k-amigaos.
 
 - Software renderer: Reduced some 2D overdraw. Faster model lighting.
 
@@ -656,8 +660,8 @@ Changes in v1.5.0: (Sep. 15, 2011.)
 
 - improved soul spheres' HexenC code.
 
-- fixed a HexenC where medusa's gaze attack sound would persist when she
-  is dead.
+- fixed a HexenC bug where medusa's gaze attack sound would persist when
+  she is dead.
 
 - fixed an Eidolon/imp HexenC bug which used to render Eidolon idle.
 

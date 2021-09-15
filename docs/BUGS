@@ -6,11 +6,11 @@ Known issues:
 - Unix (SDL) client: Hitting the ESC key to open the menu several times
   or opening and closing the game console several times may result in a
   freeze or an endless loop.
-  This is not a uhexen2 bug, it is most likely SDL X11 bug #2325:
-  https://bugzilla.libsdl.org/show_bug.cgi?id=2325
-  The issue triggers if you have an IME running and XMODIFIERS is set
-  to the value proper for that IME.  The bug is already fixed in the
-  mainstream SDL repo:  http://hg.libsdl.org/SDL/rev/0aade9c0203f
+  This is NOT a uhexen2 bug, but an SDL-1.2 bug in its X11 backend:
+  https://github.com/libsdl-org/SDL-1.2/issues/744
+  The issue triggers if you have an IME running and XMODIFIERS is set.
+  The bug is already fixed in the mainstream SDL repo:
+  https://github.com/libsdl-org/SDL-1.2/commit/0332e2bb18dc68d6892c3b653b2547afe323854b
   To solve the problem: either recompile SDL to incorporate the fix, or
   unset XMODIFIERS to work around it.
 
@@ -36,4 +36,3 @@ Known issues:
 - 3dfx Voodoo, Windows:  3dfx minigl drivers shall not work properly,
   because their glGenTextures() implementation is broken and we rely
   on that function. Use 3dfx OpenGL ICD or "MesaFX" drivers, instead.
-

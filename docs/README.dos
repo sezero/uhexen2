@@ -29,19 +29,17 @@ Things not tested, but should work:
 
 * NETWORKING:  Neither of modem or direct connection is tested.
   The code is almost exactly the same as the quake dos network code,
-  therefore they should work the same way they do with dos-quake.  On
-  the other hand, IPX has been reported to work fine.
+  therefore they should work the same way they do with dos-quake.
+  On the other hand, IPX has been reported to work fine.
 
   In addition, uHexen2 includes WatTCP (WATT-32) support for internet
   play, which has been reported to work without issues.  See WatTCP
-  documentation to setup WatTCP (see http://www.watt-32.net/).
-
-  - Note: WatTCP won't initialize if IPX is running.
-
-  - Note: WatTCP was observed not to work with H2DOS as a dedicated or
-    listen server, i.e. clients can't connect to it. Same with H2DED.
-
-  - Note: The Hexen II dedicated server application H2DED is not tested.
+  documentation at http://www.watt-32.net for help in configuring it.
+  Notes:
+  - WatTCP won't initialize if IPX is running.
+  - WatTCP was observed not to work properly with H2DOS as a dedicated
+    or listen server, i.e. clients can't connect to it.
+  - H2DED (the Hexen II dedicated server application) is not tested.
 
   In case you want to disable some or all network functionality, here
   are the related command line switches:
@@ -113,10 +111,10 @@ NOTES:
   cards such as AC97, VIA, CMedia, ES1371, Intel HDA, etc.  You must run
   the game with -sndpci command line switch in order to activate it.
   Tested with CMedia and SB PCI (ES1371). Seemed to work best at 44100
-  and 48000 sampling rates (e.g. run with -sndspeed 48000 .)
+  and 48000 sampling rates (e.g. run with -sndspeed 48000 )
 
-* CDAUDIO:  The cdrom driver (cdrom.sys, xcdrom.sys, etc.) must be
-  loaded and mscdex 2.0 or compatible (such as shsucdx) must be running.
+* CDAUDIO:  The cdrom device driver (cdrom.sys, etc.) must be loaded,
+  and mscdex 2.0 or compatible (such as shsucdx) must be running.
   If you have more than one cdrom drives, use the -cddev command line
   switch with a single drive letter as the argument, like:
 

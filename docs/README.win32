@@ -15,11 +15,11 @@ driver for old Voodoo cards only and you want to delete this file
 unless you are using one of those very old cards. If you get an error
 message like "glide2x.dll not found", then this is the reason!
 
-Now unzip the Hammer of Thyrion package into your installation
+Now extract the Hammer of Thyrion package into your installation
 folder. You must allow overwriting the existing files. It contains
-all of the updated program files and gamedata. You no longer need
-the h2mp and glh2mp exe files: they are obsoleted, you can delete
-them. Run the game as you normally would.
+all of the updated program files and gamedata.  You no longer need
+h2mp.exe and glh2mp.exe: they are obsoleted, you can delete them.
+Run the game as you normally would.
 
 To play the mission pack, run the game with a "-portals" commandline
 switch (without the quotes, of course). For example:
@@ -32,4 +32,3 @@ If you want to automate this, change the mission pack game entries in
 your windows start menu, by using the "properties" right-click option
 on them: Change all "glh2mp.exe" into "glh2.exe -portals" and all of
 "h2mp.exe" into "h2.exe -portals".
-
