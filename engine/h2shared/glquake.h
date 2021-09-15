@@ -1,5 +1,4 @@
-/*
- * glquake.h -- common glquake header
+/* glquake.h -- common glquake header
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>
@@ -238,7 +237,7 @@ extern	cvar_t	r_texture_external;
 extern	cvar_t	r_netgraph;
 extern	cvar_t	r_entdistance;
 extern	cvar_t	r_teamcolor;
-#endif	/* H2W */
+#endif
 
 extern	cvar_t	gl_playermip;
 
@@ -322,7 +321,7 @@ void R_StoreEfrags (efrag_t **ppefrag);
 void R_LoadSkys (void);
 void R_DrawSkyBox (void);
 void R_ClearSkyBox (void);
-#endif	/* QUAKE2 */
+#endif
 void GL_SubdivideSurface (msurface_t *fa);
 void EmitWaterPolys (msurface_t *fa);
 void EmitBothSkyLayers (msurface_t *fa);
