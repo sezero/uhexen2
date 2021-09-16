@@ -41,7 +41,7 @@ static cvar_t	external_ents = {"external_ents", "1", CVAR_ARCHIVE};
 
 static byte	mod_novis[MAX_MAP_LEAFS/8];
 
-#define	MAX_MOD_KNOWN	4096
+#define	MAX_MOD_KNOWN	2048
 static qmodel_t	mod_known[MAX_MOD_KNOWN];
 static int	mod_numknown;
 

@@ -39,7 +39,7 @@ static byte	mod_novis[MAX_MAP_LEAFS/8];
 static int	*surfedges;
 static medge_t	*edges;
 
-#define	MAX_MOD_KNOWN	4096
+#define	MAX_MOD_KNOWN	2048
 static qmodel_t	mod_known[MAX_MOD_KNOWN];
 static int	mod_numknown;
 
