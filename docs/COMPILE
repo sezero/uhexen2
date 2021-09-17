@@ -261,16 +261,14 @@ For AROS, only ABIv0 is tested: we build against AROS snapshot from
 https://trac.aros.org/trac/browser/AROS/branches/ABI_V0
 or https://github.com/sezero/AROS-mirror.git
 
-For AmigaOS 3.x (m68k-amigaos), you can use gcc or vbcc.  We tested
-using the following cross-toolchains:
+For AmigaOS 3.x (m68k-amigaos), we use the following cross-toolchains:
 https://github.com/adtools/amigaos-cross-toolchain.git
 https://github.com/sezero/amigaos-cross-toolchain.git
 - gcc:  gcc-2.95.3 and gcc-2.95.4 were tested.  Building against clib2
   is recommended, which is the default. (libnix builds had experienced
   stdio brokenness issues: might or might not be fixed in newer libnix
   versions.)
-- vbcc: vbcc 0.9f patch1, vasm 1.8l, and vlink 0.16h are tested.
-  Note: vbcc builds run slower: using gcc is recommended.
+- vasm: needed to build m68k assembler sources.  vasm-1.8l is tested.
 
 
 Links:
@@ -290,8 +288,7 @@ ALSA homepage		: http://www.alsa-project.org/
 GCC homepage		: http://gcc.gnu.org/
 Binutils homepage	: http://sourceware.org/binutils/
 clang homepage		: http://clang.llvm.org/
-VBCC homepage		: http://sun.hasenbraten.de/vbcc/
-			  http://www.compilers.de/vbcc.html
+VASM homepage		: http://sun.hasenbraten.de/vasm/
 NASM homepage		: https://nasm.us/
 YASM homepage		: http://yasm.tortall.net/
 			  https://github.com/yasm/yasm

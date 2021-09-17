@@ -32,6 +32,8 @@ This is a minor bug fix and maintenance release:
 
 - DOS: removed the long-obsoleted MPATH and BW-TCP network drivers.
 
+- Amiga (m68k): dropped support for VBCC compiler.
+
 - Source repository moved to git.
 
 
