@@ -1250,7 +1250,7 @@ index 7fa6d6b..8775038 100644
  		modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
  		if (is_fullscreen)
 diff --git a/engine/hexen2/Makefile b/engine/hexen2/Makefile
-index bee9fb0..dcb3962 100644
+index 37b9ec3..66a618c 100644
 --- a/engine/hexen2/Makefile
 +++ b/engine/hexen2/Makefile
 @@ -47,8 +47,17 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
@@ -1271,7 +1271,7 @@ index bee9fb0..dcb3962 100644
  SDL_CFLAGS = $(shell $(SDL_CONFIG) --cflags 2> /dev/null)
  SDL_LIBS   = $(shell $(SDL_CONFIG) --libs 2> /dev/null)
  
-@@ -291,10 +300,17 @@ CPUFLAGS=
+@@ -282,10 +291,17 @@ CPUFLAGS=
  # @rpath can be used when targeting 10.5+
  USE_RPATH=no
  ifeq ($(MACH_TYPE),x86)
@@ -1289,7 +1289,7 @@ index bee9fb0..dcb3962 100644
  ifeq ($(MACH_TYPE),ppc)
  # require 10.2 for ppc builds (midi_osx.c requirement.)
  CFLAGS  +=-mmacosx-version-min=10.2
-@@ -347,7 +363,7 @@ endif
+@@ -338,7 +354,7 @@ endif
  
  # Unix builds rely on SDL:
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1298,7 +1298,7 @@ index bee9fb0..dcb3962 100644
  # not relying on sdl-config command and assuming
  # /Library/Frameworks/SDL.framework is available
  SDL_CFLAGS =-D_GNU_SOURCE=1 -D_THREAD_SAFE
-@@ -359,7 +375,12 @@ ifneq ($(SDL_FRAMEWORK_PATH),)
+@@ -350,7 +366,12 @@ ifneq ($(SDL_FRAMEWORK_PATH),)
  SDL_LIBS  +=-F$(SDL_FRAMEWORK_PATH)
  SDL_CFLAGS+=-F$(SDL_FRAMEWORK_PATH)
  endif
@@ -1312,7 +1312,7 @@ index bee9fb0..dcb3962 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -455,7 +476,7 @@ endif
+@@ -446,7 +467,7 @@ endif
  
  # Unix builds rely on SDL:
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1321,7 +1321,7 @@ index bee9fb0..dcb3962 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -488,8 +509,16 @@ LDFLAGS += -s
+@@ -479,8 +500,16 @@ LDFLAGS += -s
  CFLAGS  += -fno-omit-frame-pointer
  endif
  # using SDL for now:
@@ -1340,7 +1340,7 @@ index bee9fb0..dcb3962 100644
  USE_SDLCD=yes
  USE_SDLAUDIO=yes
  
-@@ -513,7 +542,7 @@ endif
+@@ -504,7 +533,7 @@ endif
  endif
  
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1349,7 +1349,7 @@ index bee9fb0..dcb3962 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -840,6 +869,8 @@ ifeq ($(TARGET_OS),morphos)
+@@ -823,6 +852,8 @@ ifeq ($(TARGET_OS),morphos)
  
  # MorphOS builds can use SDL or native code
  USE_SDL=no
@@ -1358,7 +1358,7 @@ index bee9fb0..dcb3962 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -899,7 +930,7 @@ endif
+@@ -882,7 +913,7 @@ endif
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1367,7 +1367,7 @@ index bee9fb0..dcb3962 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -916,6 +947,8 @@ ifeq ($(TARGET_OS),aros)
+@@ -899,6 +930,8 @@ ifeq ($(TARGET_OS),aros)
  
  # AROS builds can use SDL or native code
  USE_SDL=no
@@ -1376,7 +1376,7 @@ index bee9fb0..dcb3962 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -981,7 +1014,7 @@ endif
+@@ -964,7 +997,7 @@ endif
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1385,7 +1385,7 @@ index bee9fb0..dcb3962 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -1001,6 +1034,8 @@ USE_CLIB2=yes
+@@ -984,6 +1017,8 @@ USE_CLIB2=yes
  
  # Don't use SDL on AmigaOS
  USE_SDL=no
@@ -1394,7 +1394,7 @@ index bee9fb0..dcb3962 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -1083,7 +1118,7 @@ endif
+@@ -1066,7 +1101,7 @@ endif
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1403,7 +1403,7 @@ index bee9fb0..dcb3962 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -1493,8 +1528,10 @@ SYSOBJ_SOFT_VID:= vid_sdl.o
+@@ -1461,8 +1496,10 @@ SYSOBJ_SOFT_VID:= vid_sdl.o
  SYSOBJ_NET := net_bsd.o net_udp.o
  SYSOBJ_SYS := sys_unix.o
  SYSOBJ_SYS += sys_osx.o
@@ -1501,7 +1501,7 @@ index cfe91b8..a4d413e 100644
  	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
  	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
 diff --git a/engine/hexenworld/client/Makefile b/engine/hexenworld/client/Makefile
-index 5f266cc..886ceb3 100644
+index c4878c0..ccf4b67 100644
 --- a/engine/hexenworld/client/Makefile
 +++ b/engine/hexenworld/client/Makefile
 @@ -49,8 +49,17 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
@@ -1522,7 +1522,7 @@ index 5f266cc..886ceb3 100644
  SDL_CFLAGS = $(shell $(SDL_CONFIG) --cflags 2> /dev/null)
  SDL_LIBS   = $(shell $(SDL_CONFIG) --libs 2> /dev/null)
  
-@@ -252,10 +261,17 @@ CPUFLAGS=
+@@ -247,10 +256,17 @@ CPUFLAGS=
  # @rpath can be used when targeting 10.5+
  USE_RPATH=no
  ifeq ($(MACH_TYPE),x86)
@@ -1540,7 +1540,7 @@ index 5f266cc..886ceb3 100644
  ifeq ($(MACH_TYPE),ppc)
  # require 10.2 for ppc builds (midi_osx.c requirement.)
  CFLAGS  +=-mmacosx-version-min=10.2
-@@ -308,7 +324,7 @@ endif
+@@ -303,7 +319,7 @@ endif
  
  # Unix builds rely on SDL:
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1549,7 +1549,7 @@ index 5f266cc..886ceb3 100644
  # not relying on sdl-config command and assuming
  # /Library/Frameworks/SDL.framework is available
  SDL_CFLAGS =-D_GNU_SOURCE=1 -D_THREAD_SAFE
-@@ -320,7 +336,12 @@ ifneq ($(SDL_FRAMEWORK_PATH),)
+@@ -315,7 +331,12 @@ ifneq ($(SDL_FRAMEWORK_PATH),)
  SDL_LIBS  +=-F$(SDL_FRAMEWORK_PATH)
  SDL_CFLAGS+=-F$(SDL_FRAMEWORK_PATH)
  endif
@@ -1563,7 +1563,7 @@ index 5f266cc..886ceb3 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -416,7 +437,7 @@ endif
+@@ -411,7 +432,7 @@ endif
  
  # Unix builds rely on SDL:
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1572,7 +1572,7 @@ index 5f266cc..886ceb3 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -449,8 +470,16 @@ LDFLAGS += -s
+@@ -444,8 +465,16 @@ LDFLAGS += -s
  CFLAGS  += -fno-omit-frame-pointer
  endif
  # using SDL for now:
@@ -1591,7 +1591,7 @@ index 5f266cc..886ceb3 100644
  USE_SDLCD=yes
  USE_SDLAUDIO=yes
  
-@@ -474,7 +503,7 @@ endif
+@@ -469,7 +498,7 @@ endif
  endif
  
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1600,7 +1600,7 @@ index 5f266cc..886ceb3 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -791,6 +820,8 @@ ifeq ($(TARGET_OS),morphos)
+@@ -784,6 +813,8 @@ ifeq ($(TARGET_OS),morphos)
  
  # MorphOS builds can use SDL or native code
  USE_SDL=no
@@ -1609,7 +1609,7 @@ index 5f266cc..886ceb3 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -850,7 +881,7 @@ endif
+@@ -843,7 +874,7 @@ endif
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1618,7 +1618,7 @@ index 5f266cc..886ceb3 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -867,6 +898,8 @@ ifeq ($(TARGET_OS),aros)
+@@ -860,6 +891,8 @@ ifeq ($(TARGET_OS),aros)
  
  # AROS builds can use SDL or native code
  USE_SDL=no
@@ -1627,7 +1627,7 @@ index 5f266cc..886ceb3 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -932,7 +965,7 @@ endif
+@@ -925,7 +958,7 @@ endif
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1636,7 +1636,7 @@ index 5f266cc..886ceb3 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -952,6 +985,8 @@ USE_CLIB2=yes
+@@ -945,6 +978,8 @@ USE_CLIB2=yes
  
  # Don't use SDL on AmigaOS
  USE_SDL=no
@@ -1645,7 +1645,7 @@ index 5f266cc..886ceb3 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -1034,7 +1069,7 @@ endif
+@@ -1027,7 +1062,7 @@ endif
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1654,7 +1654,7 @@ index 5f266cc..886ceb3 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -1424,8 +1459,10 @@ SYSOBJ_GL_VID:= gl_vidsdl.o
+@@ -1413,8 +1448,10 @@ SYSOBJ_GL_VID:= gl_vidsdl.o
  SYSOBJ_SOFT_VID:= vid_sdl.o
  SYSOBJ_SYS := sys_unix.o
  SYSOBJ_SYS += sys_osx.o
@@ -1751,3 +1751,4 @@ index 9bf5f30..bfab683 100644
  	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
  	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
  	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
+

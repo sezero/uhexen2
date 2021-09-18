@@ -1196,7 +1196,7 @@ index a759e6a..49449ff 100644
  		x += 8;
  	}
 diff --git a/engine/h2shared/vid_sdl.c b/engine/h2shared/vid_sdl.c
-index a0bd35f..4a2b228 100644
+index 7fa6d6b..62abb5b 100644
 --- a/engine/h2shared/vid_sdl.c
 +++ b/engine/h2shared/vid_sdl.c
 @@ -524,8 +524,10 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
@@ -1213,10 +1213,10 @@ index a0bd35f..4a2b228 100644
  	vid.rowbytes = vid.conrowbytes = screen->pitch;
  	vid.numpages = 1;
 diff --git a/engine/h2shared/vid_win.c b/engine/h2shared/vid_win.c
-index 42c6775..47647ad 100644
+index a95fe45..14bc32a 100644
 --- a/engine/h2shared/vid_win.c
 +++ b/engine/h2shared/vid_win.c
-@@ -777,8 +777,10 @@ static qboolean VID_SetWindowedMode (int modenum)
+@@ -776,8 +776,10 @@ static qboolean VID_SetWindowedMode (int modenum)
  	vid.numpages = 1;
  	vid.maxwarpwidth = WARP_WIDTH;
  	vid.maxwarpheight = WARP_HEIGHT;
@@ -1229,7 +1229,7 @@ index 42c6775..47647ad 100644
  	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
  
  	SendMessage (mainwindow, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
-@@ -840,8 +842,10 @@ static qboolean VID_SetFullDIBMode (int modenum)
+@@ -839,8 +841,10 @@ static qboolean VID_SetFullDIBMode (int modenum)
  	vid.numpages = 1;
  	vid.maxwarpwidth = WARP_WIDTH;
  	vid.maxwarpheight = WARP_HEIGHT;
@@ -1280,7 +1280,7 @@ index 4f7cf0b..ccc63e2 100644
  	}
  
 diff --git a/engine/hexen2/menu.c b/engine/hexen2/menu.c
-index 925251d..2fa0dc3 100644
+index 9759186..bc96af7 100644
 --- a/engine/hexen2/menu.c
 +++ b/engine/hexen2/menu.c
 @@ -207,7 +207,7 @@ Draws one solid graphics character, centered, on line
@@ -1340,7 +1340,7 @@ index 925251d..2fa0dc3 100644
  }
  
  static void M_Setup_Draw (void)
-@@ -2729,7 +2729,7 @@ static void M_Menu_Help_f (void)
+@@ -2721,7 +2721,7 @@ static void M_Menu_Help_f (void)
  #		define	Draw_HelpPic_FN(X,Y,Z)	Draw_IntermissionPic((Z))
  #	else
  #		define	Load_HelpPic_FN(X,Y,Z)	Draw_CachePicResize((X),(Y),(Z))
@@ -1349,7 +1349,7 @@ index 925251d..2fa0dc3 100644
  #	endif
  #else
  #	ifdef GLQUAKE
-@@ -2743,7 +2743,7 @@ static void M_Menu_Help_f (void)
+@@ -2735,7 +2735,7 @@ static void M_Menu_Help_f (void)
  
  static void M_Help_Draw (void)
  {

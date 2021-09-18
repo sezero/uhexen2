@@ -64,10 +64,10 @@ index 788eed3..2bc6824 100644
  
  
 diff --git a/engine/h2shared/glquake.h b/engine/h2shared/glquake.h
-index c6d9ccf..09b0bce 100644
+index c481a99..0ab9dce 100644
 --- a/engine/h2shared/glquake.h
 +++ b/engine/h2shared/glquake.h
-@@ -254,6 +254,16 @@ extern	cvar_t	gl_glows;
+@@ -259,6 +259,16 @@ extern	cvar_t	gl_glows;
  extern	cvar_t	gl_other_glows;
  extern	cvar_t	gl_missile_glows;
  
@@ -85,7 +85,7 @@ index c6d9ccf..09b0bce 100644
  extern	cvar_t	gl_colored_dynamic_lights;
  extern	cvar_t	gl_extra_dynamic_lights;
 diff --git a/engine/hexen2/gl_rmain.c b/engine/hexen2/gl_rmain.c
-index 2c22881..c960b1f 100644
+index be86e29..c2ce842 100644
 --- a/engine/hexen2/gl_rmain.c
 +++ b/engine/hexen2/gl_rmain.c
 @@ -44,6 +44,8 @@ mplane_t	*mirror_plane;
