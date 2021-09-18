@@ -441,7 +441,7 @@
 		707D57770AA9F6EE00313A9F /* adivtab.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = adivtab.h; path = ../../../common/adivtab.h; sourceTree = SOURCE_ROOT; };
 		707D57790AA9F6EE00313A9F /* anorm_dots.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = anorm_dots.h; path = ../../h2shared/anorm_dots.h; sourceTree = SOURCE_ROOT; };
 		707D577A0AA9F6EE00313A9F /* anorms.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = anorms.h; path = ../../../common/anorms.h; sourceTree = SOURCE_ROOT; };
-		707D577B0AA9F6EE00313A9F /* bspfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = bspfile.h; path = ../bspfile.h; sourceTree = SOURCE_ROOT; };
+		707D577B0AA9F6EE00313A9F /* bspfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = bspfile.h; path = ../../../common/bspfile.h; sourceTree = SOURCE_ROOT; };
 		707D577C0AA9F6EE00313A9F /* cd_sdl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cd_sdl.c; path = ../../h2shared/cd_sdl.c; sourceTree = SOURCE_ROOT; };
 		707D577D0AA9F6EE00313A9F /* cd_unix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cd_unix.h; path = ../../h2shared/cd_unix.h; sourceTree = SOURCE_ROOT; };
 		707D577E0AA9F6EE00313A9F /* cdaudio.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cdaudio.h; path = ../../h2shared/cdaudio.h; sourceTree = SOURCE_ROOT; };
