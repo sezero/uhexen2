@@ -45,7 +45,6 @@ CFLAGS += -O2 -DNDEBUG=1 -ffast-math
 else
 CFLAGS += -g
 endif
-CFLAGS += -DDOUBLEVEC_T
 
 LDFLAGS =
 LDLIBS  =
