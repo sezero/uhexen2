@@ -49,6 +49,7 @@ OBJECTS = qsnprint.obj &
 	util_io.obj &
 	q_endian.obj &
 	byteordr.obj &
+	crc.obj &
 	crchash.obj &
 	expr.obj &
 	hcc.obj &

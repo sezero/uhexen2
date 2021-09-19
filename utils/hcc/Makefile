@@ -136,6 +136,7 @@ OBJECTS= qsnprint.o \
 	util_io.o \
 	q_endian.o \
 	byteordr.o \
+	crc.o \
 	crchash.o \
 	expr.o \
 	hcc.o \

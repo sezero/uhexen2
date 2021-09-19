@@ -19,14 +19,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "q_stdinc.h"
+#include "crc.h"
 #include "crchash.h"
-#include "crc.c"
 
-/*
-==============
-COM_Hash
-==============
-*/
 int COM_Hash (const char *key)
 {
 	int		i;
@@ -36,21 +32,17 @@ int COM_Hash (const char *key)
 
 	length = strlen (key);
 	keyBack = key + length - 1;
-	hash = CRC_INIT_VALUE;
+	CRC_Init (&hash);
 
-	if (length > 20)
-	{
+	if (length > 20) {
 		length = 20;
 	}
-
-	for (i = 0; i < length; i++)
+	for (i = 0; i < length; i++, key++, keyBack--)
 	{
-		hash = (hash<<8)^crctable[(hash>>8)^*key++];
+		CRC_ProcessByte(&hash, *key);
 		if (++i >= length)
-		{
 			break;
-		}
-		hash = (hash<<8)^crctable[(hash>>8)^*keyBack--];
+		CRC_ProcessByte(&hash, *keyBack);
 	}
 
 	return hash % HASH_TABLE_SIZE;
