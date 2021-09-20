@@ -258,6 +258,9 @@ void Draw_Init (void)
 		Z_Free (draw_chars);
 	draw_chars = FS_LoadZoneFile ("gfx/menu/conchars.lmp", Z_SECZONE, NULL);
 	Draw_PicCheckError (draw_chars, "gfx/menu/conchars.lmp");
+	if (fs_filesize != 256*128) {
+		Sys_Error ("gfx/menu/conchars.lmp: bad size.");
+	}
 
 	draw_smallchars = (byte *) W_GetLumpName("tinyfont");
 

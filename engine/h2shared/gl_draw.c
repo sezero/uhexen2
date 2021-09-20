@@ -505,6 +505,9 @@ void Draw_Init (void)
 	// load the charset: 8*8 graphic characters
 	chars = FS_LoadTempFile ("gfx/menu/conchars.lmp", NULL);
 	Draw_PicCheckError (chars, "gfx/menu/conchars.lmp");
+	if (fs_filesize != 256*128) {
+		Sys_Error ("gfx/menu/conchars.lmp: bad size.");
+	}
 	for (i = 0; i < 256*128; i++)
 	{
 		if (chars[i] == 0)
