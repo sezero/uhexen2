@@ -19,8 +19,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __HX2_WAD_H
-#define __HX2_WAD_H
+#ifndef WAD_H_
+#define WAD_H_
 
 //===============
 //   TYPES
@@ -69,8 +69,8 @@ extern	byte		*wad_base;
 
 void	W_LoadWadFile (const char *filename);
 void	*W_GetLumpName (const char *name);
-void	*W_GetLumpNum (int num);
+lumpinfo_t	*W_GetLumpinfo (const char *name);
 
 void	SwapPic (qpic_t *pic);
 
-#endif	/* __HX2_WAD_H */
+#endif	/* WAD_H_ */
