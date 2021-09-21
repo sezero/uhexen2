@@ -15,6 +15,10 @@ This is a minor bug fix and maintenance release:
 
 - OpenGL: Fixed graphical artifacts with scaled UI (sf.net bug 59.)
 
+- OpenGL: Changed glClearColor to black so that gl_clear 1 doesn't
+  look weird. (Setting gl_clear to 1 is useful to remove HOM effects
+  especially in noclip mode.)
+
 - Windows, midi: Fixed volume reseting after loop (sf.net bug 66.)
 
 - Improvements to mp3 tag detection / skipping.

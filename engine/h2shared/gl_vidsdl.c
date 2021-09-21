@@ -979,7 +979,7 @@ static void GL_Init (void)
 	CheckNonPowerOfTwoTextures();
 	CheckStencilBuffer();
 
-	glClearColor_fp (1,0,0,0);
+	glClearColor_fp(0,0,0,0);/* was 1,0,0,0 (red) */
 	glCullFace_fp(GL_FRONT);
 	glEnable_fp(GL_TEXTURE_2D);
 
