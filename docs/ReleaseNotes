@@ -15,9 +15,9 @@ This is a minor bug fix and maintenance release:
 
 - OpenGL: Fixed graphical artifacts with scaled UI (sf.net bug 59.)
 
-- OpenGL: Changed glClearColor to black so that gl_clear 1 doesn't
-  look weird. (Setting gl_clear to 1 is useful to remove HOM effects
-  especially in noclip mode.)
+- OpenGL: gl_clear now defaults to 1 and glClearColor is black. The
+  new cvar r_clearcolor (palette index from 0 to 255, default is 0)
+  can be used to change the clear color (from fitzquake.)
 
 - Windows, midi: Fixed volume reseting after loop (sf.net bug 66.)
 

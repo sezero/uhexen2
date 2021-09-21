@@ -85,6 +85,7 @@ cvar_t	r_skyalpha = {"r_skyalpha", "0.67", CVAR_ARCHIVE};
 cvar_t	r_dynamic = {"r_dynamic", "1", CVAR_NONE};
 cvar_t	r_novis = {"r_novis", "0", CVAR_NONE};
 cvar_t	r_wholeframe = {"r_wholeframe", "1", CVAR_ARCHIVE};
+cvar_t	r_clearcolor = {"r_clearcolor", "0", CVAR_ARCHIVE};
 cvar_t	r_texture_external = {"r_texture_external", "0", CVAR_ARCHIVE};
 
 cvar_t	gl_clear = {"gl_clear", "1", CVAR_NONE};

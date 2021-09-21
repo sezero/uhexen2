@@ -231,6 +231,7 @@ extern	cvar_t	r_skyalpha;
 extern	cvar_t	r_dynamic;
 extern	cvar_t	r_novis;
 extern	cvar_t	r_wholeframe;
+extern	cvar_t	r_clearcolor;
 extern	cvar_t	r_texture_external;
 
 #if defined(H2W)

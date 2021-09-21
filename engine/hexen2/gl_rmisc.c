@@ -186,6 +186,18 @@ static void R_TimeRefresh_f (void)
 }
 
 /*
+====================
+R_SetClearColor_f -- johnfitz
+====================
+*/
+static void R_SetClearColor_f (cvar_t *var)
+{
+	int s = var->integer & 0xFF;
+	byte *rgb = (byte *)(d_8to24table + s);
+	glClearColor_fp(rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0, 0);
+}
+
+/*
 ===============
 R_Init
 ===============
@@ -209,6 +221,8 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_novis);
 	Cvar_RegisterVariable (&r_speeds);
 	Cvar_RegisterVariable (&r_wholeframe);
+	Cvar_RegisterVariable (&r_clearcolor);
+	Cvar_SetCallback (&r_clearcolor, R_SetClearColor_f);
 	Cvar_RegisterVariable (&r_texture_external);
 
 	Cvar_RegisterVariable (&gl_clear);
@@ -241,6 +255,8 @@ void R_Init (void)
 	R_InitParticles ();
 	R_InitParticleTexture ();
 	R_InitExtraTextures ();
+
+	R_SetClearColor_f (&r_clearcolor);
 
 	playerTranslation = (byte *)FS_LoadHunkFile ("gfx/player.lmp", NULL);
 	if (!playerTranslation)
