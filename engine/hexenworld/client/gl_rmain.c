@@ -92,7 +92,7 @@ cvar_t	r_entdistance = {"r_entdistance", "0", CVAR_ARCHIVE};
 cvar_t	r_netgraph = {"r_netgraph", "0", CVAR_NONE};
 cvar_t	r_teamcolor = {"r_teamcolor", "187", CVAR_ARCHIVE};
 
-cvar_t	gl_clear = {"gl_clear", "0", CVAR_NONE};
+cvar_t	gl_clear = {"gl_clear", "1", CVAR_NONE};
 cvar_t	gl_cull = {"gl_cull", "1", CVAR_NONE};
 cvar_t	gl_ztrick = {"gl_ztrick", "0", CVAR_ARCHIVE};
 cvar_t	gl_zfix = {"gl_zfix", "1", CVAR_ARCHIVE};

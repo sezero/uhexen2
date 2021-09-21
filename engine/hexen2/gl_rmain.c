@@ -87,7 +87,7 @@ cvar_t	r_novis = {"r_novis", "0", CVAR_NONE};
 cvar_t	r_wholeframe = {"r_wholeframe", "1", CVAR_ARCHIVE};
 cvar_t	r_texture_external = {"r_texture_external", "0", CVAR_ARCHIVE};
 
-cvar_t	gl_clear = {"gl_clear", "0", CVAR_NONE};
+cvar_t	gl_clear = {"gl_clear", "1", CVAR_NONE};
 cvar_t	gl_cull = {"gl_cull", "1", CVAR_NONE};
 cvar_t	gl_ztrick = {"gl_ztrick", "0", CVAR_ARCHIVE};
 cvar_t	gl_zfix = {"gl_zfix", "1", CVAR_ARCHIVE};
