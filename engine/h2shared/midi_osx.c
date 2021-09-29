@@ -394,7 +394,7 @@ static void MIDI_Stop (void **handle)
 	CHECK_MIDI_ALIVE();
 	currentsong = NULL;
 	MusicPlayerStop(song->player);
-	MusicPlayerSetSequence(song->player, NULL); /* see: https://bugzilla.libsdl.org/show_bug.cgi?id=4573 */
+//	MusicPlayerSetSequence(song->player, NULL); /* see: https://bugzilla.libsdl.org/show_bug.cgi?id=4573 */
 	DisposeMusicSequence(song->sequence);
 	DisposeMusicPlayer(song->player);
 	Z_Free(song);
