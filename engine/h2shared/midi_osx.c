@@ -1,5 +1,4 @@
-/*
- * based on an SDL_mixer code:
+/* based on an SDL_mixer code:
  * native_midi_macosx:  Native Midi support on Mac OS X for the SDL_mixer library
  * Copyright (C) 2009  Ryan C. Gordon <icculus@icculus.org>
  *
@@ -390,14 +389,15 @@ static void MIDI_Resume (void **handle)
 
 static void MIDI_Stop (void **handle)
 {
-	CHECK_MIDI_ALIVE();
+	CoreMidiSong *song = currentsong;
 
-	MusicPlayerStop(currentsong->player);
-	MusicPlayerSetSequence(currentsong->player, NULL); /* see: https://bugzilla.libsdl.org/show_bug.cgi?id=4573 */
-	DisposeMusicSequence(currentsong->sequence);
-	DisposeMusicPlayer(currentsong->player);
-	Z_Free(currentsong);
+	CHECK_MIDI_ALIVE();
 	currentsong = NULL;
+	MusicPlayerStop(song->player);
+	MusicPlayerSetSequence(song->player, NULL); /* see: https://bugzilla.libsdl.org/show_bug.cgi?id=4573 */
+	DisposeMusicSequence(song->sequence);
+	DisposeMusicPlayer(song->player);
+	Z_Free(song);
 }
 
 void MIDI_Cleanup(void)
@@ -409,4 +409,3 @@ void MIDI_Cleanup(void)
 		midi_mac_core.available = false;
 	}
 }
-
