@@ -125,8 +125,8 @@ typedef uint32_t xoff_t;
 
 /* TODO: probably should do something better here. */
 #ifndef UNALIGNED_OK
-#if defined(__i386__) || defined(__i486__) || defined(__i586__) || \
-  defined(__i686__) || defined(_X86_) || defined(__x86_64__)
+#if defined(__i386__) || defined(__386__) || defined(_M_IX86) || \
+   defined(__amd64) || defined(__x86_64__) || defined(_M_X64)
 #define UNALIGNED_OK 1
 #else
 #define UNALIGNED_OK 0
