@@ -103,13 +103,6 @@
 #error	__func__ or __FUNCTION__ compiler token not supported? define one...
 #endif
 
-/* Some compilers, such as OpenWatcom, and possibly other compilers
- * from the DOS universe, define __386__ but not __i386__
- */
-#if defined(__386__) && !defined(__i386__)
-#define __i386__		1
-#endif
-
 /* inline keyword: */
 #if defined(_MSC_VER) && !defined(__cplusplus)
 #define inline __inline
