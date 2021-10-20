@@ -938,12 +938,17 @@ static void R_DrawAliasModel (entity_t *e)
 		tmatrix[2][3] += sin(e->origin[0] + e->origin[1] + (cl.time*3)) * 5.5;
 	}
 
-// [0][3] [1][3] [2][3]
-//	glTranslatef_fp (paliashdr->scale_origin[0], paliashdr->scale_origin[1], paliashdr->scale_origin[2]);
-	glTranslatef_fp (tmatrix[0][3],tmatrix[1][3],tmatrix[2][3]);
-// [0][0] [1][1] [2][2]
-//	glScalef_fp (paliashdr->scale[0], paliashdr->scale[1], paliashdr->scale[2]);
-	glScalef_fp (tmatrix[0][0],tmatrix[1][1],tmatrix[2][2]);
+	if (e == &cl.viewent && scr_fov.integer > 90) /* compensate viewmodel distortion at fov>90 */
+	{
+		float fovscale = tan(scr_fov.value * (0.5 * M_PI / 180));
+		glTranslatef_fp (tmatrix[0][3], tmatrix[1][3] * fovscale, tmatrix[2][3] * fovscale);	// paliashdr->scale_origin[0..2]
+		glScalef_fp (tmatrix[0][0], tmatrix[1][1] * fovscale, tmatrix[2][2] * fovscale);	// paliashdr->scale[0..2]
+	}
+	else
+	{
+		glTranslatef_fp (tmatrix[0][3], tmatrix[1][3], tmatrix[2][3]);	// paliashdr->scale_origin[0..2]
+		glScalef_fp (tmatrix[0][0], tmatrix[1][1], tmatrix[2][2]);	// paliashdr->scale[0..2]
+	}
 
 	if (e->model->flags & EF_SPECIAL_TRANS)
 	{
