@@ -325,13 +325,13 @@ void R_AliasClipTriangle (mtriangle_t *ptri)
 	{
 		mtri.vertindex[1] = i;
 		mtri.vertindex[2] = i+1;
-		if ((currententity->model->flags & EF_SPECIAL_TRANS))
+		if (currententity->model->flags & EF_SPECIAL_TRANS)
 			D_PolysetDrawT5 ();
 		else if (currententity->drawflags & DRF_TRANSLUCENT)
 			D_PolysetDrawT ();
-		else if ((currententity->model->flags & EF_TRANSPARENT))
+		else if (currententity->model->flags & EF_TRANSPARENT)
 			D_PolysetDrawT2 ();
-		else if ((currententity->model->flags & EF_HOLEY))
+		else if (currententity->model->flags & EF_HOLEY)
 			D_PolysetDrawT3 ();
 		else
 			D_PolysetDraw ();

@@ -1763,13 +1763,13 @@ void D_RasterizeAliasPolySmooth (void)
 // set the s, t, and light gradients, which are consistent across the triangle
 // because being a triangle, things are affine
 //
-	if ((currententity->model->flags & EF_SPECIAL_TRANS))
+	if (currententity->model->flags & EF_SPECIAL_TRANS)
 		D_PolysetCalcGradientsT5 (r_affinetridesc.skinwidth);
 	else if (currententity->drawflags & DRF_TRANSLUCENT)
 		D_PolysetCalcGradientsT (r_affinetridesc.skinwidth);
-	else if ((currententity->model->flags & EF_TRANSPARENT))
+	else if (currententity->model->flags & EF_TRANSPARENT)
 		D_PolysetCalcGradientsT2 (r_affinetridesc.skinwidth);
-	else if ((currententity->model->flags & EF_HOLEY))
+	else if (currententity->model->flags & EF_HOLEY)
 		D_PolysetCalcGradientsT3 (r_affinetridesc.skinwidth);
 	else
 		D_PolysetCalcGradients (r_affinetridesc.skinwidth);
@@ -1867,13 +1867,13 @@ void D_RasterizeAliasPolySmooth (void)
 		d_lightextrastep = d_lightbasestep + working_lstepx;
 		d_ziextrastep = d_zibasestep + r_zistepx;
 
-		if ((currententity->model->flags & EF_SPECIAL_TRANS))
+		if (currententity->model->flags & EF_SPECIAL_TRANS)
 			D_PolysetScanLeftEdgeT5 (initialleftheight);
 		else if (currententity->drawflags & DRF_TRANSLUCENT)
 			D_PolysetScanLeftEdgeT (initialleftheight);
-		else if ((currententity->model->flags & EF_TRANSPARENT))
+		else if (currententity->model->flags & EF_TRANSPARENT)
 			D_PolysetScanLeftEdgeT2 (initialleftheight);
-		else if ((currententity->model->flags & EF_HOLEY))
+		else if (currententity->model->flags & EF_HOLEY)
 			D_PolysetScanLeftEdgeT3 (initialleftheight);
 		else
 			D_PolysetScanLeftEdge (initialleftheight);
@@ -1966,13 +1966,13 @@ void D_RasterizeAliasPolySmooth (void)
 			d_lightextrastep = d_lightbasestep + working_lstepx;
 			d_ziextrastep = d_zibasestep + r_zistepx;
 
-			if ((currententity->model->flags & EF_SPECIAL_TRANS))
+			if (currententity->model->flags & EF_SPECIAL_TRANS)
 				D_PolysetScanLeftEdgeT5 (height);
 			else if (currententity->drawflags & DRF_TRANSLUCENT)
 				D_PolysetScanLeftEdgeT (height);
-			else if ((currententity->model->flags & EF_TRANSPARENT))
+			else if (currententity->model->flags & EF_TRANSPARENT)
 				D_PolysetScanLeftEdgeT2 (height);
-			else if ((currententity->model->flags & EF_HOLEY))
+			else if (currententity->model->flags & EF_HOLEY)
 				D_PolysetScanLeftEdgeT3 (height);
 			else
 				D_PolysetScanLeftEdge (height);
@@ -1989,13 +1989,13 @@ void D_RasterizeAliasPolySmooth (void)
 	originalcount = a_spans[initialrightheight].count;
 	a_spans[initialrightheight].count = -999999; // mark end of the spanpackages
 
-	if ((currententity->model->flags & EF_SPECIAL_TRANS))
+	if (currententity->model->flags & EF_SPECIAL_TRANS)
 		D_PolysetDrawSpans8T5 (a_spans);
 	else if (currententity->drawflags & DRF_TRANSLUCENT)
 		D_PolysetDrawSpans8T (a_spans);
-	else if ((currententity->model->flags & EF_TRANSPARENT))
+	else if (currententity->model->flags & EF_TRANSPARENT)
 		D_PolysetDrawSpans8T2 (a_spans);
-	else if ((currententity->model->flags & EF_HOLEY))
+	else if (currententity->model->flags & EF_HOLEY)
 		D_PolysetDrawSpans8T3 (a_spans);
 	else
 		D_PolysetDrawSpans8 (a_spans);
@@ -2021,13 +2021,13 @@ void D_RasterizeAliasPolySmooth (void)
 		d_countextrastep = ubasestep + 1;
 		a_spans[initialrightheight + height].count = -999999;
 											// mark end of the spanpackages
-		if ((currententity->model->flags & EF_SPECIAL_TRANS))
+		if (currententity->model->flags & EF_SPECIAL_TRANS)
 			D_PolysetDrawSpans8T5 (pstart);
 		else if (currententity->drawflags & DRF_TRANSLUCENT)
 			D_PolysetDrawSpans8T (pstart);
-		else if ((currententity->model->flags & EF_TRANSPARENT))
+		else if (currententity->model->flags & EF_TRANSPARENT)
 			D_PolysetDrawSpans8T2 (pstart);
-		else if ((currententity->model->flags & EF_HOLEY))
+		else if (currententity->model->flags & EF_HOLEY)
 			D_PolysetDrawSpans8T3 (pstart);
 		else
 			D_PolysetDrawSpans8 (pstart);

@@ -357,13 +357,13 @@ static void R_AliasPreparePoints (void)
 			r_affinetridesc.pfinalverts = pfinalverts;
 			r_affinetridesc.ptriangles = ptri;
 
-			if ((currententity->model->flags & EF_SPECIAL_TRANS))
+			if (currententity->model->flags & EF_SPECIAL_TRANS)
 				D_PolysetDrawT5 ();
 			else if (currententity->drawflags & DRF_TRANSLUCENT)
 				D_PolysetDrawT ();
-			else if ((currententity->model->flags & EF_TRANSPARENT))
+			else if (currententity->model->flags & EF_TRANSPARENT)
 				D_PolysetDrawT2 ();
-			else if ((currententity->model->flags & EF_HOLEY))
+			else if (currententity->model->flags & EF_HOLEY)
 				D_PolysetDrawT3 ();
 			else
 				D_PolysetDraw ();
@@ -712,7 +712,7 @@ void R_AliasPrepareUnclippedPoints (void)
 
 		if (r_affinetridesc.drawtype)
 		{
-			if ((currententity->model->flags & EF_SPECIAL_TRANS))
+			if (currententity->model->flags & EF_SPECIAL_TRANS)
 			{
 				D_PolysetDrawFinalVertsT5 (pfv[0],pfv[1],pfv[2]);
 				D_PolysetDrawT5 ();
@@ -722,12 +722,12 @@ void R_AliasPrepareUnclippedPoints (void)
 				D_PolysetDrawFinalVertsT (pfv[0],pfv[1],pfv[2]);
 				D_PolysetDrawT ();
 			}
-			else if ((currententity->model->flags & EF_TRANSPARENT))
+			else if (currententity->model->flags & EF_TRANSPARENT)
 			{
 				D_PolysetDrawFinalVertsT2 (pfv[0],pfv[1],pfv[2]);
 				D_PolysetDrawT2 ();
 			}
-			else if ((currententity->model->flags & EF_HOLEY))
+			else if (currententity->model->flags & EF_HOLEY)
 			{
 				D_PolysetDrawFinalVertsT3 (pfv[0],pfv[1],pfv[2]);
 				D_PolysetDrawT3 ();
@@ -740,13 +740,13 @@ void R_AliasPrepareUnclippedPoints (void)
 		}
 		else
 		{
-			if ((currententity->model->flags & EF_SPECIAL_TRANS))
+			if (currententity->model->flags & EF_SPECIAL_TRANS)
 				D_PolysetDrawT5 ();
 			else if (currententity->drawflags & DRF_TRANSLUCENT)
 				D_PolysetDrawT ();
-			else if ((currententity->model->flags & EF_TRANSPARENT))
+			else if (currententity->model->flags & EF_TRANSPARENT)
 				D_PolysetDrawT2 ();
-			else if ((currententity->model->flags & EF_HOLEY))
+			else if (currententity->model->flags & EF_HOLEY)
 				D_PolysetDrawT3 ();
 			else
 				D_PolysetDraw ();

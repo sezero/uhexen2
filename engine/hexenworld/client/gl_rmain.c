@@ -945,7 +945,7 @@ static void R_DrawAliasModel (entity_t *e)
 //	glScalef_fp (paliashdr->scale[0], paliashdr->scale[1], paliashdr->scale[2]);
 	glScalef_fp (tmatrix[0][0],tmatrix[1][1],tmatrix[2][2]);
 
-	if ((e->model->flags & EF_SPECIAL_TRANS))
+	if (e->model->flags & EF_SPECIAL_TRANS)
 	{
 		glEnable_fp (GL_BLEND);
 		glBlendFunc_fp (GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
@@ -959,13 +959,13 @@ static void R_DrawAliasModel (entity_t *e)
 	//	glColor4f_fp (1,1,1,r_wateralpha.value);
 		model_constant_alpha = r_wateralpha.value;
 	}
-	else if ((e->model->flags & EF_TRANSPARENT))
+	else if (e->model->flags & EF_TRANSPARENT)
 	{
 		glEnable_fp (GL_BLEND);
 	//	glColor3f_fp (1,1,1);
 		model_constant_alpha = 1.0f;
 	}
-	else if ((e->model->flags & EF_HOLEY))
+	else if (e->model->flags & EF_HOLEY)
 	{
 		glEnable_fp (GL_BLEND);
 	//	glColor3f_fp (1,1,1);
@@ -1055,7 +1055,7 @@ static void R_DrawAliasModel (entity_t *e)
 		glDisable_fp (GL_BLEND);
 	}
 
-	if ((e->model->flags & EF_SPECIAL_TRANS))
+	if (e->model->flags & EF_SPECIAL_TRANS)
 	{
 		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable_fp (GL_CULL_FACE);
@@ -1150,7 +1150,7 @@ static void R_DrawEntitiesOnList (void)
 			break;
 
 		case mod_brush:
-			item_trans = ((e->drawflags & DRF_TRANSLUCENT)) != 0;
+			item_trans = (e->drawflags & DRF_TRANSLUCENT) != 0;
 			if (!item_trans)
 				R_DrawBrushModel (e,false);
 			break;
