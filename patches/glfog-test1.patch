@@ -64,10 +64,10 @@ index 788eed3..2bc6824 100644
  
  
 diff --git a/engine/h2shared/glquake.h b/engine/h2shared/glquake.h
-index c481a99..0ab9dce 100644
+index 128aeb0..cc73912 100644
 --- a/engine/h2shared/glquake.h
 +++ b/engine/h2shared/glquake.h
-@@ -259,6 +259,16 @@ extern	cvar_t	gl_glows;
+@@ -260,6 +260,16 @@ extern	cvar_t	gl_glows;
  extern	cvar_t	gl_other_glows;
  extern	cvar_t	gl_missile_glows;
  
@@ -85,7 +85,7 @@ index c481a99..0ab9dce 100644
  extern	cvar_t	gl_colored_dynamic_lights;
  extern	cvar_t	gl_extra_dynamic_lights;
 diff --git a/engine/hexen2/gl_rmain.c b/engine/hexen2/gl_rmain.c
-index be86e29..c2ce842 100644
+index 89d2f82..f7fae66 100644
 --- a/engine/hexen2/gl_rmain.c
 +++ b/engine/hexen2/gl_rmain.c
 @@ -44,6 +44,8 @@ mplane_t	*mirror_plane;
@@ -97,7 +97,7 @@ index be86e29..c2ce842 100644
  static float	r_time1;
  static float	r_lasttime1 = 0;
  
-@@ -103,6 +105,14 @@ cvar_t	gl_waterripple = {"gl_waterripple", "2", CVAR_ARCHIVE};
+@@ -104,6 +106,14 @@ cvar_t	gl_waterripple = {"gl_waterripple", "2", CVAR_ARCHIVE};
  cvar_t	gl_glows = {"gl_glows", "0", CVAR_ARCHIVE};	// torch glows
  cvar_t	gl_other_glows = {"gl_other_glows", "0", CVAR_ARCHIVE};
  cvar_t	gl_missile_glows = {"gl_missile_glows", "1", CVAR_ARCHIVE};
@@ -112,7 +112,7 @@ index be86e29..c2ce842 100644
  
  cvar_t	gl_coloredlight = {"gl_coloredlight", "0", CVAR_ARCHIVE};
  cvar_t	gl_colored_dynamic_lights = {"gl_colored_dynamic_lights", "0", CVAR_ARCHIVE};
-@@ -1332,6 +1342,9 @@ static void R_DrawAllGlows (void)
+@@ -1338,6 +1348,9 @@ static void R_DrawAllGlows (void)
  	if (!r_drawentities.integer)
  		return;
  
@@ -122,7 +122,7 @@ index be86e29..c2ce842 100644
  	glDepthMask_fp (0);
  	glDisable_fp (GL_TEXTURE_2D);
  	glShadeModel_fp (GL_SMOOTH);
-@@ -1352,6 +1365,9 @@ static void R_DrawAllGlows (void)
+@@ -1358,6 +1371,9 @@ static void R_DrawAllGlows (void)
  		}
  	}
  
@@ -132,7 +132,7 @@ index be86e29..c2ce842 100644
  	glDisable_fp (GL_BLEND);
  	glEnable_fp (GL_TEXTURE_2D);
  	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-@@ -1778,6 +1794,23 @@ static void R_RenderScene (void)
+@@ -1784,6 +1800,23 @@ static void R_RenderScene (void)
  
  	R_MarkLeaves ();	// done here so we know if we're in water
  
@@ -156,7 +156,7 @@ index be86e29..c2ce842 100644
  	R_DrawWorld ();		// adds static entities to the list
  
  	S_ExtraUpdate ();	// don't let sound get messed up if going slow
-@@ -1786,6 +1819,8 @@ static void R_RenderScene (void)
+@@ -1792,6 +1825,8 @@ static void R_RenderScene (void)
  
  	R_DrawAllGlows();
  
@@ -165,7 +165,7 @@ index be86e29..c2ce842 100644
  	R_RenderDlights ();
  }
  
-@@ -1981,6 +2016,39 @@ void R_RenderView (void)
+@@ -1987,6 +2022,39 @@ void R_RenderView (void)
  
  	R_Clear ();
  
@@ -205,7 +205,7 @@ index be86e29..c2ce842 100644
  	// render normal view
  	R_RenderScene ();
  
-@@ -1996,6 +2064,9 @@ void R_RenderView (void)
+@@ -2002,6 +2070,9 @@ void R_RenderView (void)
  
  	R_DrawViewModel();
  
@@ -215,7 +215,7 @@ index be86e29..c2ce842 100644
  	// render mirror view
  	R_Mirror ();
  
-@@ -2003,5 +2074,7 @@ void R_RenderView (void)
+@@ -2009,5 +2080,7 @@ void R_RenderView (void)
  
  	if (r_speeds.integer)
  		R_PrintTimes ();
@@ -224,10 +224,10 @@ index be86e29..c2ce842 100644
  }
  
 diff --git a/engine/hexen2/gl_rmisc.c b/engine/hexen2/gl_rmisc.c
-index a7dce61..054bb12 100644
+index 2876490..cb76c37 100644
 --- a/engine/hexen2/gl_rmisc.c
 +++ b/engine/hexen2/gl_rmisc.c
-@@ -232,6 +232,15 @@ void R_Init (void)
+@@ -246,6 +246,15 @@ void R_Init (void)
  	Cvar_RegisterVariable (&gl_missile_glows);
  	Cvar_RegisterVariable (&gl_other_glows);
  
