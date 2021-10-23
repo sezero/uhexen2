@@ -1303,24 +1303,10 @@ void Memory_Init (void *buf, int size)
 #endif	/* SERVERONLY */
 
 	p = COM_CheckParm ("-zone");
-	if (p && p < com_argc-1)
-	{
+	if (p && p < com_argc-1) {
 		zonesize = atoi (com_argv[p+1]) * 1024;
-		if (zonesize < ZONE_MINSIZE && !COM_CheckParm ("-forcemem"))
-		{
-			Sys_Printf ("Requested zone size (%d Kb) too little, using %d Kb.\n",
-					zonesize / 1024, (ZONE_MINSIZE / 1024));
-			Sys_Printf ("If you are sure, use the -forcemem switch.\n");
-			zonesize = ZONE_MINSIZE;
-		}
-		else if (zonesize > ZONE_MAXSIZE && !COM_CheckParm ("-forcemem"))
-		{
-			Sys_Printf ("Requested zone size (%d Kb) too large, using %d Kb.\n",
-					zonesize / 1024, (ZONE_MAXSIZE / 1024));
-			Sys_Printf ("If you are sure, use the -forcemem switch.\n");
-			zonesize = ZONE_MAXSIZE;
-		}
 	}
+
 	Memory_InitZone (mainzone, Z_MAINZONE, ZMAGIC, zonesize);
 
 #if (SECZONE_SIZE > 0)
