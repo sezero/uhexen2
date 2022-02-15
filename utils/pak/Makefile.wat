@@ -26,6 +26,8 @@ PAKLIST=paklist.exe
 
 # Compiler flags
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
+# newer OpenWatcom versions enable W303 by default
+CFLAGS+= -wcd=303
 !ifdef DEBUG
 CFLAGS+= -d2
 !else
@@ -65,7 +67,6 @@ $(PAKLIST): $(OBJ_COMMON) $(OBJ_PAKL)
 
 INCLUDES+= -I"$(OSLIBS)/windows/misc/include"
 clean: .symbolic
-	rm -f *.obj *.res
+	rm -f *.obj *.res *.err
 distclean: clean .symbolic
 	rm -f $(PAKX) $(PAKLIST)
-

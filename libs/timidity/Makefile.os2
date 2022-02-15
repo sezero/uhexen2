@@ -1,4 +1,4 @@
-# Makefile for OS/2 using Watcom compiler. builds a static timidity.lib:
+# Makefile for OS/2 using Watcom compiler.
 # wmake -f Makefile.os2
 
 INCLUDES=-I.
@@ -31,4 +31,4 @@ $(LIBSTATIC): $(OBJ)
 distclean: clean .symbolic
 	rm -f $(LIBSTATIC)
 clean: .symbolic
-	rm -f *.obj
+	rm -f *.obj *.err

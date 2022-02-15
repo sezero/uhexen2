@@ -90,6 +90,8 @@ GL_BINARY=$(GL_NAME).exe
 #############################################################
 
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
+# newer OpenWatcom versions enable W303 by default
+CFLAGS+= -wcd=303
 
 # compiler includes
 INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
@@ -497,6 +499,8 @@ $(GL_BINARY): $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(SYSOBJ_RES)
 	wlink N $@ SYS NT_WIN OPTION q OPTION STACK=0x100000 OPTION RESOURCE=$^*.res LIBR {$(LIBS) $(GL_LIBS)} F {$(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)}
 
 clean: .symbolic
-	rm -f *.obj *.res
+	rm -f *.obj *.res *.err
+
 distclean: clean .symbolic
 	rm -f $(SW_BINARY) $(GL_BINARY)
+

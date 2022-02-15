@@ -18,6 +18,8 @@ XDELTA_DIR= $(LIBS_DIR)\xdelta3
 !endif
 
 CFLAGS  = -zq -bm -bt=nt -5s -fp5 -fpi87 -sg -otexan -wx -ei -j -zp8
+# newer OpenWatcom versions enable W303 by default
+CFLAGS+= -wcd=303
 CFLAGS += -DWIN32_LEAN_AND_MEAN
 !ifndef DEBUG
 CFLAGS += -DNDEBUG=1
@@ -64,6 +66,6 @@ h2patch.exe: $(OBJECTS) h2patch.res
 	wlink N $@ SYS NT OP q OP RESOURCE=$^*.res F {$(OBJECTS)}
 
 clean: .symbolic
-	rm -f *.obj *.res
+	rm -f *.obj *.res *.err
 distclean: clean .symbolic
 	rm -f $(BINARY)

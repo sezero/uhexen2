@@ -1,5 +1,5 @@
 # makefile to build h2patch.exe for OS/2 using Open Watcom:
-#   wmake -f Makefile.os2
+# wmake -f Makefile.os2
 
 !ifdef __UNIX__
 PATH_SEP=/
@@ -18,6 +18,8 @@ XDELTA_DIR= $(LIBS_DIR)\xdelta3
 !endif
 
 CFLAGS  = -zq -bm -bt=os2 -5s -fp5 -fpi87 -sg -otexan -wx -ei -j -zp8
+# newer OpenWatcom versions enable W303 by default
+CFLAGS+= -wcd=303
 !ifndef DEBUG
 CFLAGS += -DNDEBUG=1
 !else
@@ -53,15 +55,7 @@ xdelta3.obj: $(XD3DEPS)
 h2patch.exe: $(OBJECTS)
 	wlink N $@ SYS OS2V2 OP q F {$(OBJECTS)}
 
-!ifdef __UNIX__
 clean: .symbolic
-	rm -f *.obj *.res
+	rm -f *.obj *.res *.err
 distclean: clean .symbolic
 	rm -f $(BINARY)
-!else
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(BINARY) del $(BINARY)
-!endif

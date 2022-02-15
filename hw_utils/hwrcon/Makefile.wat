@@ -1,5 +1,5 @@
 # makefile to build hwrcon and hwterm for Win32 using Open Watcom:
-#   wmake -f Makefile.wat
+# wmake -f Makefile.wat
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -19,7 +19,7 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
 !endif
 
 # use WinSock2 instead of WinSock-1.1? (disabled for w32 for compat.
-# with old Win95 machines.) (enabled for Win64 in the win64 section.)
+# with old Win95 machines.)
 USE_WINSOCK2=no
 
 # Names of the binaries
@@ -28,6 +28,8 @@ HWTERM=hwterm.exe
 
 # Compiler flags
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
+# newer OpenWatcom versions enable W303 by default
+CFLAGS+= -wcd=303
 !ifdef DEBUG
 CFLAGS+= -d2
 !else
@@ -69,6 +71,6 @@ $(HWTERM) : $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)
 
 INCLUDES+= -I"$(OSLIBS)/windows/misc/include"
 clean: .symbolic
-	rm -f *.obj *.res
+	rm -f *.obj *.res *.err
 distclean: clean .symbolic
 	rm -f $(HWRCON) $(HWTERM)

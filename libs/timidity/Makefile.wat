@@ -31,4 +31,4 @@ $(LIBSTATIC): $(OBJ)
 distclean: clean .symbolic
 	rm -f $(LIBSTATIC)
 clean: .symbolic
-	rm -f *.obj
+	rm -f *.obj *.err

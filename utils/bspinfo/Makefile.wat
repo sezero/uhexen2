@@ -1,5 +1,5 @@
 # makefile to build hexen2 mapping tools for Win32 using Open Watcom:
-#   wmake -f Makefile.wat
+# wmake -f Makefile.wat
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -25,6 +25,8 @@ BSPINFO=bspinfo.exe
 
 # Compiler flags
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
+# newer OpenWatcom versions enable W303 by default
+CFLAGS+= -wcd=303
 !ifdef DEBUG
 CFLAGS+= -d2
 !else
@@ -60,6 +62,6 @@ $(BSPINFO): $(OBJECTS)
 
 INCLUDES+= -I"$(OSLIBS)/windows/misc/include"
 clean: .symbolic
-	rm -f *.obj *.res
+	rm -f *.obj *.res *.err
 distclean: clean .symbolic
 	rm -f $(BSPINFO)

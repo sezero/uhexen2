@@ -38,6 +38,8 @@ BINARY=hwsv.exe
 #############################################################
 
 CFLAGS = -zq -wx -bm -bt=nt -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
+# newer OpenWatcom versions enable W303 by default
+CFLAGS+= -wcd=303
 
 # compiler includes
 INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
@@ -141,6 +143,7 @@ $(BINARY): $(OBJECTS)
 	wlink N $@ SYS NT OPTION q OPTION STACK=0x80000 LIBR {$(LIBS)} F {$(OBJECTS)}
 
 clean: .symbolic
-	rm -f *.obj *.res
+	rm -f *.obj *.res *.err
 distclean: clean .symbolic
 	rm -f $(BINARY)
+

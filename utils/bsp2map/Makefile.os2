@@ -1,5 +1,5 @@
 # makefile to build hexen2 mapping tools for OS/2 using Open Watcom:
-#   wmake -f Makefile.os2
+# wmake -f Makefile.os2
 
 # PATH SETTINGS:
 !ifndef __UNIX__
@@ -25,6 +25,8 @@ BSP2MAP=bsp2map.exe
 
 # Compiler flags
 CFLAGS = -zq -wx -bm -bt=os2 -5s -sg -otexan -fp5 -fpi87 -ei -j -zp8
+# newer OpenWatcom versions enable W303 by default
+CFLAGS+= -wcd=303
 !ifdef DEBUG
 CFLAGS+= -d2
 !else
@@ -58,15 +60,7 @@ all: $(BSP2MAP)
 $(BSP2MAP): $(OBJECTS)
 	wlink N $@ SYS OS2V2 OP q F {$(OBJECTS)}
 
-!ifdef __UNIX__
 clean: .symbolic
-	rm -f *.obj *.res
+	rm -f *.obj *.res *.err
 distclean: clean .symbolic
 	rm -f $(BSP2MAP)
-!else
-clean: .symbolic
-	@if exist *.obj del *.obj
-	@if exist *.res del *.res
-distclean: clean .symbolic
-	@if exist $(BSP2MAP) del $(BSP2MAP)
-!endif
