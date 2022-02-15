@@ -191,6 +191,7 @@ static void load_instrument(MidSong *song, const char *name,
   if (!name || !*name) return;
 
   /* Open patch file */
+  i = -1;
   if ((fp=timi_openfile(name)) == NULL)
     {
       /* Try with various extensions */
@@ -209,7 +210,7 @@ static void load_instrument(MidSong *song, const char *name,
       return;
     }
 
-  DEBUG_MSG("Loading instrument %s\n", tmp);
+  DEBUG_MSG("Loading instrument %s\n", (i < 0)? name : tmp);
 
   /* Read some headers and do cursory sanity checks. There are loads
      of magic offsets. This could be rewritten... */
