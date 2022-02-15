@@ -104,6 +104,8 @@ static int read_meta_data(MidIStream *stream, MidSong *song, sint32 len, uint8 t
   timi_free(s);
   return 0;
 #else
+  TIMI_UNUSED(song);
+  TIMI_UNUSED(type);
   return mid_istream_skip(stream, len);
 #endif
 }
