@@ -5,7 +5,7 @@ Things seem to work but needs some polishing and tidy-up before applying:
 One of the most important things is handling SDL2 text input mode.
 
 diff --git a/engine/h2shared/gl_vidsdl.c b/engine/h2shared/gl_vidsdl.c
-index aae3f21..3432864 100644
+index aea2e7a..8a123e0 100644
 --- a/engine/h2shared/gl_vidsdl.c
 +++ b/engine/h2shared/gl_vidsdl.c
 @@ -115,8 +115,13 @@ typedef struct {
@@ -1415,7 +1415,7 @@ index 37b9ec3..66a618c 100644
  ifeq ($(USE_SDL),yes)
  SYSOBJ_INPUT := in_sdl.o
 diff --git a/engine/hexen2/Makefile.os2 b/engine/hexen2/Makefile.os2
-index 4965648..088f479 100644
+index 83c685d..ade62b5 100644
 --- a/engine/hexen2/Makefile.os2
 +++ b/engine/hexen2/Makefile.os2
 @@ -25,6 +25,9 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
@@ -1428,7 +1428,7 @@ index 4965648..088f479 100644
  # link to the opengl libraries at compile time? (defaults
  # to no, so the binaries will dynamically load the necessary
  # libraries and functions at runtime.)
-@@ -124,20 +127,28 @@ USE_CODEC_OPUS=no
+@@ -126,20 +129,28 @@ USE_CODEC_OPUS=no
  
  NASMFLAGS=-f obj -d__OS2__ -d_NO_PREFIX
  
@@ -1666,7 +1666,7 @@ index c4878c0..ccf4b67 100644
  ifeq ($(USE_SDL),yes)
  SYSOBJ_INPUT := in_sdl.o
 diff --git a/engine/hexenworld/client/Makefile.os2 b/engine/hexenworld/client/Makefile.os2
-index 708230c..c00d35f 100644
+index d5204c0..6579db1 100644
 --- a/engine/hexenworld/client/Makefile.os2
 +++ b/engine/hexenworld/client/Makefile.os2
 @@ -29,6 +29,9 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
@@ -1679,7 +1679,7 @@ index 708230c..c00d35f 100644
  # link to the opengl libraries at compile time? (defaults
  # to no, so the binaries will dynamically load the necessary
  # libraries and functions at runtime.)
-@@ -130,20 +133,28 @@ USE_CODEC_OPUS=no
+@@ -132,20 +135,28 @@ USE_CODEC_OPUS=no
  
  NASMFLAGS=-f obj -d__OS2__ -d_NO_PREFIX
  
