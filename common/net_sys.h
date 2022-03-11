@@ -273,7 +273,14 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
 #include <netdb.h>
 #include <tcp.h>		/* for select_s(), sock_init() & friends. */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+/* For controlling whether to terminate the app if a PKT-DRVR is not found: */
 extern int	_watt_do_exit;	/* in sock_ini.h, but not in public headers. */
+#ifdef __cplusplus
+}
+#endif
 
 #define	selectsocket	select_s
 #define	IOCTLARG_P(x)	(char *)x
