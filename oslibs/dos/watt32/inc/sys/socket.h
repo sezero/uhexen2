@@ -71,6 +71,18 @@
  * Definitions related to sockets: types, address families, options.
  */
 
+/* The following constants should be used for the second parameter,
+   the "how" field, of `shutdown'.  */
+enum
+{
+  SHUT_RD = 0,          /* Further receives are disallowed */
+#define SHUT_RD         SHUT_RD
+  SHUT_WR,              /* Further sends are disallowed */
+#define SHUT_WR         SHUT_WR
+  SHUT_RDWR             /* Further sends and receives are disallowed */
+#define SHUT_RDWR       SHUT_RDWR
+};
+
 /*
  * This is used instead of -1, since the socket type is signed.
  */

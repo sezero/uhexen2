@@ -60,7 +60,7 @@ __BEGIN_DECLS
    */
   /*@unused@*/ _W32_EXTERN_INLINE unsigned long __ntohl (unsigned long x)
   {
-    __asm__ __volatile (
+    __asm__ __volatile__ (
              "xchgb %b0, %h0\n\t"   /* swap lower bytes  */
              "rorl  $16, %0\n\t"    /* swap words        */
              "xchgb %b0, %h0"       /* swap higher bytes */
