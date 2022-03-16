@@ -30,7 +30,7 @@ NOIXEMUL= 1
 
 ifeq ($(AOS3),1)
 # crt: libnix or clib2:
-USE_CLIB2=yes
+USE_CLIB2=no
 ifeq ($(USE_CLIB2),yes)
 NOIXEMUL= 0
 CFLAGS += -mcrt=clib2

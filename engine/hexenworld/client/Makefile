@@ -941,7 +941,7 @@ endif
 ifeq ($(TARGET_OS),amigaos)
 
 # crt: libnix or clib2:
-USE_CLIB2=yes
+USE_CLIB2=no
 
 # Don't use SDL on AmigaOS
 USE_SDL=no

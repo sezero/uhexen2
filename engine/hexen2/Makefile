@@ -980,7 +980,7 @@ endif
 ifeq ($(TARGET_OS),amigaos)
 
 # crt: libnix or clib2:
-USE_CLIB2=yes
+USE_CLIB2=no
 
 # Don't use SDL on AmigaOS
 USE_SDL=no
@@ -992,9 +992,11 @@ USE_CDAUDIO=no
 endif
 
 ifndef DEBUG
-CFLAGS  += -O3
+#CFLAGS  += -O3
 # -fomit-frame-pointer / -ffast-math causes trouble with gcc2.95
-CFLAGS  += -fno-omit-frame-pointer
+#CFLAGS  += -fno-omit-frame-pointer
+# these break the game with GCC6
+CFLAGS  += -fbbb=- -fno-tree-forwprop
 endif
 ifeq ($(USE_CLIB2),yes)
 CRT_FLAGS=-mcrt=clib2
@@ -1015,7 +1017,7 @@ endif
 # for extra missing headers
 INCLUDES += -I$(OSLIBS)/amigaos/include
 # AmiTCP SDK
-NET_INC   = -I$(OSLIBS)/amigaos/netinclude
+#NET_INC   = -I$(OSLIBS)/amigaos/netinclude
 
 # Build for which Amiga GL implementation:
 # Either amesa (StormMesa), or minigl (Hyperion's MiniGL 1.2)
@@ -1034,7 +1036,10 @@ endif
 # dynamic loading of ogl functions doesn't work
 LINK_GL_LIBS=yes
 
+USE_CODEC_TIMIDITY=no
 USE_CODEC_FLAC=no
+USE_CODEC_MP3=no
+USE_CODEC_VORBIS=no
 USE_CODEC_OPUS=no
 USE_CODEC_MIKMOD=no
 USE_CODEC_UMX=no

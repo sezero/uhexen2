@@ -264,7 +264,7 @@ endif
 ifeq ($(TARGET_OS),amigaos)
 
 # crt: libnix or clib2:
-USE_CLIB2=yes
+USE_CLIB2=no
 
 ifndef DEBUG
 CFLAGS  += -O3

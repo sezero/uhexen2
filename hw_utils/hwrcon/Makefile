@@ -135,7 +135,7 @@ endif
 
 ifeq ($(TARGET_OS),amigaos)
 # crt: libnix or clib2:
-USE_CLIB2=yes
+USE_CLIB2=no
 ifeq ($(USE_CLIB2),yes)
 CRT_FLAGS=-mcrt=clib2
 else

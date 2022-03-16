@@ -1,4 +1,4 @@
-#ifdef __CLIB2__
+#if defined(__CLIB2__) || defined(__libnix__)
 #include_next <stdint.h> /* clib2 provides a stdint.h already */
 
 #else

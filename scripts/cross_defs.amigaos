@@ -4,7 +4,7 @@
 # Change this script to meet your needs and/or environment.
 
 TARGET=m68k-amigaos
-PREFIX=/opt/m68k-amigaos
+PREFIX=/opt/amiga
 
 PATH="$PREFIX/bin:$PATH"
 export PATH
