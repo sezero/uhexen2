@@ -263,13 +263,21 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),amigaos)
 
+# use Bebbo's GCC6 toolchain
+BEBBO_TOOLCHAIN=yes
+
 # crt: libnix or clib2:
 USE_CLIB2=no
 
 ifndef DEBUG
-CFLAGS  += -O3
+#CFLAGS  += -O3
+ifneq ($(BEBBO_TOOLCHAIN),yes)
 # -fomit-frame-pointer / -ffast-math causes trouble with gcc2.95
 CFLAGS  += -fno-omit-frame-pointer
+else
+# these break the game with GCC6
+CFLAGS  += -fbbb=- -fno-tree-forwprop
+endif
 endif
 ifeq ($(USE_CLIB2),yes)
 CRT_FLAGS=-mcrt=clib2
@@ -283,7 +291,9 @@ SYSLIBS += -lm
 # for extra missing headers
 INCLUDES += -I$(OSLIBS)/amigaos/include
 # AmiTCP SDK
+ifneq ($(BEBBO_TOOLCHAIN),yes)
 NET_INC   = -I$(OSLIBS)/amigaos/netinclude
+endif
 
 endif
 # End of AmigaOS settings
