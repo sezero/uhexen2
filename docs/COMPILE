@@ -261,14 +261,11 @@ For AROS, only ABIv0 is tested: we build against AROS snapshot from
 https://trac.aros.org/trac/browser/AROS/branches/ABI_V0
 or https://github.com/sezero/AROS-mirror.git
 
-For AmigaOS 3.x (m68k-amigaos), we use the following cross-toolchains:
-https://github.com/adtools/amigaos-cross-toolchain.git
-https://github.com/sezero/amigaos-cross-toolchain.git
-- gcc:  gcc-2.95.3 and gcc-2.95.4 were tested.  Building against clib2
-  is recommended, which is the default. (libnix builds had experienced
-  stdio brokenness issues: might or might not be fixed in newer libnix
-  versions.)
-- vasm: needed to build m68k assembler sources.  vasm-1.8l is tested.
+For AmigaOS 3.x (m68k-amigaos), we use either bebbo's gcc6/libnix-based
+toolchain from https://github.com/bebbo/amiga-gcc, or the gcc2.95-based
+toolchain from https://github.com/sezero/amigaos-cross-toolchain.git
+vasm is needed to build m68k assembler sources. vasm-1.8l is tested to
+work.
 
 
 Links:
