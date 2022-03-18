@@ -145,6 +145,8 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
 
 #ifndef PLATFORM_AMIGAOS3
 #include <sys/param.h>
+#else
+#define __NO_NET_API
 #endif
 #include <sys/ioctl.h>
 #ifdef PLATFORM_AMIGAOS3

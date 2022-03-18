@@ -85,8 +85,13 @@ CFLAGS  += -noixemul
 LDFLAGS += -noixemul
 endif
 ifeq ($(TARGET_OS),amigaos)
+# use Bebbo's GCC6 toolchain
+BEBBO_TOOLCHAIN=yes
 # crt: libnix or clib2:
 USE_CLIB2=yes
+ifeq ($(BEBBO_TOOLCHAIN),yes)
+USE_CLIB2=no
+endif
 ifeq ($(USE_CLIB2),yes)
 CRT_FLAGS=-mcrt=clib2
 else

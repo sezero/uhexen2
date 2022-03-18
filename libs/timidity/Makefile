@@ -78,8 +78,13 @@ ifeq ($(TARGET_OS),aros)
 endif
 
 ifeq ($(TARGET_OS),amigaos)
+# use Bebbo's GCC6 toolchain
+BEBBO_TOOLCHAIN=yes
 # crt: libnix or clib2
 USE_CLIB2=yes
+ifeq ($(BEBBO_TOOLCHAIN),yes)
+USE_CLIB2=no
+endif
 ifeq ($(USE_CLIB2),yes)
 CRT_FLAGS=-mcrt=clib2
 else
@@ -88,7 +93,6 @@ endif
 
 CFLAGS += $(CRT_FLAGS) -m68060 -m68881
 ifndef DEBUG
-CFLAGS += -O3
 CFLAGS += -fno-omit-frame-pointer
 endif
 # for extra missing headers

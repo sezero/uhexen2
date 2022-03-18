@@ -72,12 +72,18 @@ typedef u_int64_t uint_fast64_t;
 #define UINT_FAST64_MAX ULLONG_MAX
 
 
+#ifndef _INTPTR_T_DECLARED
 typedef long intptr_t;
 #define INTPTR_MIN LONG_MIN
 #define INTPTR_MAX LONG_MAX
+#define _INTPTR_T_DECLARED
+#endif
 
+#ifndef _UINTPTR_T_DECLARED
 typedef unsigned long uintptr_t;
 #define UINTPTR_MAX ULONG_MAX
+#define _UINTPTR_T_DECLARED
+#endif
 
 typedef long long intmax_t;
 #define INTMAX_MIN LLONG_MIN
