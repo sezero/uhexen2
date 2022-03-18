@@ -30,11 +30,6 @@
 #endif
 #include <libraries/lowlevel.h>
 #include <intuition/intuition.h>
-#ifdef __AROS__
-#include <proto/alib.h>
-#else
-#include <clib/alib_protos.h>
-#endif
 #include <proto/intuition.h>
 #include <proto/exec.h>
 #include <proto/keymap.h>
@@ -256,19 +251,16 @@ void IN_ClearStates (void)
 IN_KeyboardHandler
 ===================
 */
-static qboolean IN_AddEvent(struct InputEvent *coin)
+static void IN_AddEvent(struct InputEvent *coin)
 {
 	if ((imsghigh > imsglow && !(imsghigh == MAXIMSGS - 1 && imsglow == 0)) ||
 		(imsghigh < imsglow && imsghigh != imsglow - 1) ||
 		(imsglow == imsghigh))
 	{
-		CopyMem(coin, &imsgs[imsghigh], sizeof(struct InputEvent));
+		memcpy(&imsgs[imsghigh], coin, sizeof(struct InputEvent));
 		imsghigh++;
 		imsghigh %= MAXIMSGS;
-		return true;
 	}
-
-	return false;
 }
 
 static struct InputEvent *IN_GetNextEvent(void)
@@ -303,7 +295,7 @@ HANDLERPROTO(IN_KeyboardHandler, struct InputEvent *, struct InputEvent *moo, AP
 #endif
 	struct InputEvent *coin;
 
-	ULONG screeninfront;
+	qboolean screeninfront, handlemouse;
 
 	if (!window || !(window->Flags & WFLG_WINDOWACTIVE))
 		return moo;
@@ -318,7 +310,9 @@ HANDLERPROTO(IN_KeyboardHandler, struct InputEvent *, struct InputEvent *moo, AP
 			screeninfront = (window->WScreen == IntuitionBase->FirstScreen);
 	}
 	else
-		screeninfront = 1;
+		screeninfront = true;
+
+	handlemouse = screeninfront && mouseactive;
 
 	for (coin = moo; coin; coin = coin->ie_NextEvent)
 	{
@@ -342,26 +336,29 @@ HANDLERPROTO(IN_KeyboardHandler, struct InputEvent *, struct InputEvent *moo, AP
 				IN_AddEvent(coin);
 			}
 		}
-		else if (coin->ie_Class == IECLASS_RAWMOUSE && mouseactive && screeninfront)
+		else if (handlemouse)
 		{
-			// mouse buttons 1-3
-			if (coin->ie_Code != IECODE_NOBUTTON)
+			if (coin->ie_Class == IECLASS_RAWMOUSE)
 			{
+				// mouse buttons 1-3
+				if (coin->ie_Code != IECODE_NOBUTTON)
+				{
+					IN_AddEvent(coin);
+					coin->ie_Code = IECODE_NOBUTTON;
+				}
+
+				// mouse movement
+				mx += coin->ie_position.ie_xy.ie_x;
+				my += coin->ie_position.ie_xy.ie_y;
+				coin->ie_position.ie_xy.ie_x = 0;
+				coin->ie_position.ie_xy.ie_y = 0;
+			}
+			else if (coin->ie_Class == IECLASS_NEWMOUSE)
+			{
+				// mouse button 4, mouse wheel
 				IN_AddEvent(coin);
 				coin->ie_Code = IECODE_NOBUTTON;
 			}
-
-			// mouse movement
-			mx += coin->ie_position.ie_xy.ie_x;
-			my += coin->ie_position.ie_xy.ie_y;
-			coin->ie_position.ie_xy.ie_x = 0;
-			coin->ie_position.ie_xy.ie_y = 0;
-		}
-		else if (coin->ie_Class == IECLASS_NEWMOUSE && mouseactive && screeninfront)
-		{
-			// mouse button 4, mouse wheel
-			IN_AddEvent(coin);
-			coin->ie_Code = IECODE_NOBUTTON;
 		}
 	}
 
@@ -399,8 +396,7 @@ void IN_Init (void)
 	inputport = CreateMsgPort();
 	if (inputport)
 	{
-		//inputreq = (struct IOStdReq *) CreateIORequest(inputport, sizeof(*inputreq));
-		inputreq = CreateStdIO(inputport);
+		inputreq = (struct IOStdReq *) CreateIORequest(inputport, sizeof(*inputreq));
 		if (inputreq)
 		{
 			if (!OpenDevice("input.device", 0, (struct IORequest *)inputreq, 0))
@@ -414,8 +410,7 @@ void IN_Init (void)
 				DoIO((struct IORequest *)inputreq);
 				return;
 			}
-			//DeleteIORequest(inputreq);
-			DeleteStdIO(inputreq);
+			DeleteIORequest(inputreq);
 		}
 		DeleteMsgPort(inputport);
 	}
@@ -437,8 +432,7 @@ void IN_Shutdown (void)
 		DoIO((struct IORequest *)inputreq);
 
 		CloseDevice((struct IORequest *)inputreq);
-		//DeleteIORequest(inputreq);
-		DeleteStdIO(inputreq);
+		DeleteIORequest(inputreq);
 	}
 
 	if (inputport)
@@ -652,11 +646,13 @@ static void IN_StartupJoystick (void)
 	}
 	*/
 
-	Con_Printf ("lowlevel.library: %d devices are reported:\n", joy_available);
+	Con_Printf ("lowlevel.library: %d devices are reported\n", joy_available);
+#ifndef PLATFORM_AMIGAOS3
 	for (i = 0; i < joy_available; i++)
 	{
 		Con_Printf("#%d: \"%s\"\n", i, JoystickName(i));
 	}
+#endif
 
 	if (in_joystick.integer)
 		IN_Callback_JoyIndex(&joy_index);
@@ -720,33 +716,18 @@ static void IN_HandleJoystick (void)
 
 	if (joyflag != oldjoyflag)
 	{
-		switch (joyflag & JP_TYPE_MASK)
-		{
-		case JP_TYPE_GAMECTLR:
-			Check_Joy_Event(K_JOY1, joyflag, oldjoyflag, JPF_BUTTON_BLUE);
-			Check_Joy_Event(K_JOY2, joyflag, oldjoyflag, JPF_BUTTON_RED);
-			Check_Joy_Event(K_JOY3, joyflag, oldjoyflag, JPF_BUTTON_YELLOW);
-			Check_Joy_Event(K_JOY4, joyflag, oldjoyflag, JPF_BUTTON_GREEN);
-			Check_Joy_Event(K_AUX1, joyflag, oldjoyflag, JPF_BUTTON_FORWARD);
-			Check_Joy_Event(K_AUX2, joyflag, oldjoyflag, JPF_BUTTON_REVERSE);
-			Check_Joy_Event(K_AUX3, joyflag, oldjoyflag, JPF_BUTTON_PLAY);
-			Check_Joy_Event(K_AUX29, joyflag, oldjoyflag, JPF_JOY_UP);
-			Check_Joy_Event(K_AUX30, joyflag, oldjoyflag, JPF_JOY_DOWN);
-			Check_Joy_Event(K_AUX31, joyflag, oldjoyflag, JPF_JOY_LEFT);
-			Check_Joy_Event(K_AUX32, joyflag, oldjoyflag, JPF_JOY_RIGHT);
-			break;
-		case JP_TYPE_JOYSTK:
-			Check_Joy_Event(K_JOY1, joyflag, oldjoyflag, JPF_BUTTON_BLUE);
-			Check_Joy_Event(K_JOY2, joyflag, oldjoyflag, JPF_BUTTON_RED);
-			Check_Joy_Event(K_AUX29, joyflag, oldjoyflag, JPF_JOY_UP);
-			Check_Joy_Event(K_AUX30, joyflag, oldjoyflag, JPF_JOY_DOWN);
-			Check_Joy_Event(K_AUX31, joyflag, oldjoyflag, JPF_JOY_LEFT);
-			Check_Joy_Event(K_AUX32, joyflag, oldjoyflag, JPF_JOY_RIGHT);
-			break;
-		default:
-			/* nothing to do here */
-			break;
-		}
+		ULONG oldflag = oldjoyflag;
+		Check_Joy_Event(K_JOY1, joyflag, oldflag, JPF_BUTTON_BLUE);
+		Check_Joy_Event(K_JOY2, joyflag, oldflag, JPF_BUTTON_RED);
+		Check_Joy_Event(K_JOY3, joyflag, oldflag, JPF_BUTTON_YELLOW);
+		Check_Joy_Event(K_JOY4, joyflag, oldflag, JPF_BUTTON_GREEN);
+		Check_Joy_Event(K_AUX1, joyflag, oldflag, JPF_BUTTON_FORWARD);
+		Check_Joy_Event(K_AUX2, joyflag, oldflag, JPF_BUTTON_REVERSE);
+		Check_Joy_Event(K_AUX3, joyflag, oldflag, JPF_BUTTON_PLAY);
+		Check_Joy_Event(K_AUX29, joyflag, oldflag, JPF_JOY_UP);
+		Check_Joy_Event(K_AUX30, joyflag, oldflag, JPF_JOY_DOWN);
+		Check_Joy_Event(K_AUX31, joyflag, oldflag, JPF_JOY_LEFT);
+		Check_Joy_Event(K_AUX32, joyflag, oldflag, JPF_JOY_RIGHT);
 		oldjoyflag = joyflag;
 	}
 }
