@@ -29,8 +29,13 @@ endif
 NOIXEMUL= 1
 
 ifeq ($(AOS3),1)
+# use Bebbo's GCC6 toolchain
+BEBBO_TOOLCHAIN=yes
 # crt: libnix or clib2:
+USE_CLIB2=yes
+ifeq ($(BEBBO_TOOLCHAIN),yes)
 USE_CLIB2=no
+endif
 ifeq ($(USE_CLIB2),yes)
 NOIXEMUL= 0
 CFLAGS += -mcrt=clib2

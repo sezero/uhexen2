@@ -944,7 +944,10 @@ ifeq ($(TARGET_OS),amigaos)
 BEBBO_TOOLCHAIN=yes
 
 # crt: libnix or clib2:
+USE_CLIB2=yes
+ifeq ($(BEBBO_TOOLCHAIN),yes)
 USE_CLIB2=no
+endif
 
 # Don't use SDL on AmigaOS
 USE_SDL=no
@@ -956,7 +959,6 @@ USE_CDAUDIO=no
 endif
 
 ifndef DEBUG
-#CFLAGS  += -O3
 ifneq ($(BEBBO_TOOLCHAIN),yes)
 # -fomit-frame-pointer / -ffast-math causes trouble with gcc2.95
 CFLAGS  += -fno-omit-frame-pointer
@@ -983,8 +985,8 @@ endif
 
 # for extra missing headers
 INCLUDES += -I$(OSLIBS)/amigaos/include
-# AmiTCP SDK
 ifneq ($(BEBBO_TOOLCHAIN),yes)
+# Roadshow SDK
 NET_INC   = -I$(OSLIBS)/amigaos/netinclude
 endif
 

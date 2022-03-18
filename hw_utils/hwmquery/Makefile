@@ -133,8 +133,13 @@ LDFLAGS += -noixemul
 endif
 
 ifeq ($(TARGET_OS),amigaos)
+# use Bebbo's GCC6 toolchain
+BEBBO_TOOLCHAIN=yes
 # crt: libnix or clib2:
+USE_CLIB2=yes
+ifeq ($(BEBBO_TOOLCHAIN),yes)
 USE_CLIB2=no
+endif
 ifeq ($(USE_CLIB2),yes)
 CRT_FLAGS=-mcrt=clib2
 else
@@ -147,8 +152,10 @@ CFLAGS  += -fno-omit-frame-pointer
 endif
 # for extra missing headers
 INCLUDES += -I$(OSLIBS)/amigaos/include
-# AmiTCP SDK
+ifneq ($(BEBBO_TOOLCHAIN),yes)
+# Roadshow SDK
 NET_INC   = -I$(OSLIBS)/amigaos/netinclude
+endif
 endif
 
 
