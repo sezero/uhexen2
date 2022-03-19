@@ -285,7 +285,7 @@ ifneq ($(BEBBO_TOOLCHAIN),yes)
 CFLAGS  += -fno-omit-frame-pointer
 else
 # these break the game with GCC6
-CFLAGS  += -fbbb=- -fno-tree-forwprop
+CFLAGS  += -fbbb=- -fno-tree-forwprop -fno-tree-ter -fno-move-loop-invariants
 endif
 endif
 ifeq ($(USE_CLIB2),yes)
