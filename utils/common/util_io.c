@@ -428,8 +428,7 @@ int Q_FileType (const char *path)
 
 #elif defined(PLATFORM_AMIGA)
 
-#define PATH_SIZE 1024
-static struct AnchorPath *apath;
+static struct AnchorPath apath;
 static BPTR oldcurrentdir;
 static STRPTR pattern_str;
 
@@ -473,33 +472,23 @@ const char *Q_FindFirstFile (const char *path, const char *pattern)
 {
 	BPTR newdir;
 
-	if (apath)
+	if (apath.ap_Base)
 		COM_Error ("FindFirst without FindClose");
 
-	apath = (struct AnchorPath *) AllocVec (sizeof(struct AnchorPath) + PATH_SIZE, MEMF_CLEAR);
-	if (!apath)
-		return NULL;
-
-	apath->ap_Strlen = PATH_SIZE;
-	apath->ap_BreakBits = 0;
-	apath->ap_Flags = 0;  /* APF_DOWILD */
+	memset(&apath, 0, sizeof(apath));
 
 	newdir = Lock((const STRPTR) path, SHARED_LOCK);
 	if (newdir)
 		oldcurrentdir = CurrentDir(newdir);
 	else
-	{
-		FreeVec(apath);
-		apath = NULL;
 		return NULL;
-	}
 
 	pattern_str = pattern_helper (pattern);
 
-	if (MatchFirst((const STRPTR) pattern_str, apath) == 0)
+	if (MatchFirst((const STRPTR) pattern_str, &apath) == 0)
 	{
-	    if (apath->ap_Info.fib_DirEntryType < 0)
-		return (const char *) (apath->ap_Info.fib_FileName);
+	    if (apath.ap_Info.fib_DirEntryType < 0)
+		return (const char *) (apath.ap_Info.fib_FileName);
 	}
 
 	return Q_FindNextFile();
@@ -507,13 +496,13 @@ const char *Q_FindFirstFile (const char *path, const char *pattern)
 
 const char *Q_FindNextFile (void)
 {
-	if (!apath)
+	if (!apath.ap_Base)
 		return NULL;
 
-	while (MatchNext(apath) == 0)
+	while (MatchNext(&apath) == 0)
 	{
-	    if (apath->ap_Info.fib_DirEntryType < 0)
-		return (const char *) (apath->ap_Info.fib_FileName);
+	    if (apath.ap_Info.fib_DirEntryType < 0)
+		return (const char *) (apath.ap_Info.fib_FileName);
 	}
 
 	return NULL;
@@ -521,13 +510,11 @@ const char *Q_FindNextFile (void)
 
 void Q_FindClose (void)
 {
-	if (apath == NULL)
+	if (!apath.ap_Base)
 		return;
-	MatchEnd(apath);
-	FreeVec(apath);
+	MatchEnd(&apath);
 	UnLock(CurrentDir(oldcurrentdir));
 	oldcurrentdir = 0;
-	apath = NULL;
 	free (pattern_str);
 	pattern_str = NULL;
 }
