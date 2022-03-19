@@ -280,7 +280,7 @@ const char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
 	BPTR newdir;
 
-	if (apath.ap_Base)
+	if (pattern_str)
 		Sys_Error ("Sys_FindFirst without FindClose");
 
 	memset(&apath, 0, sizeof(apath));
@@ -304,7 +304,7 @@ const char *Sys_FindFirstFile (const char *path, const char *pattern)
 
 const char *Sys_FindNextFile (void)
 {
-	if (!apath.ap_Base)
+	if (!pattern_str)
 		return NULL;
 
 	while (MatchNext(&apath) == 0)
@@ -318,8 +318,8 @@ const char *Sys_FindNextFile (void)
 
 void Sys_FindClose (void)
 {
-	/*if (!apath.ap_Base)
-		return;*/
+	if (!pattern_str)
+		return;
 	MatchEnd(&apath);
 	UnLock(CurrentDir(oldcurrentdir));
 	oldcurrentdir = 0;
