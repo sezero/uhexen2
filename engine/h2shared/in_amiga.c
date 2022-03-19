@@ -288,14 +288,14 @@ static struct EmulLibEntry IN_KeyboardHandler =
 static struct InputEvent *IN_KeyboardHandlerFunc()
 {
 	struct InputEvent *moo = (struct InputEvent *)REG_A0;
-	struct inputdata *id = (struct inputdata *)REG_A1;
+	//struct inputdata *id = (struct inputdata *)REG_A1;
 #else
 HANDLERPROTO(IN_KeyboardHandler, struct InputEvent *, struct InputEvent *moo, APTR id)
 {
 #endif
 	struct InputEvent *coin;
 
-	qboolean screeninfront, handlemouse;
+	ULONG screeninfront, handlemouse;
 
 	if (!window || !(window->Flags & WFLG_WINDOWACTIVE))
 		return moo;
@@ -310,7 +310,7 @@ HANDLERPROTO(IN_KeyboardHandler, struct InputEvent *, struct InputEvent *moo, AP
 			screeninfront = (window->WScreen == IntuitionBase->FirstScreen);
 	}
 	else
-		screeninfront = true;
+		screeninfront = 1;
 
 	handlemouse = screeninfront && mouseactive;
 
