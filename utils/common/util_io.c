@@ -510,8 +510,8 @@ const char *Q_FindNextFile (void)
 
 void Q_FindClose (void)
 {
-	if (!apath.ap_Base)
-		return;
+	/*if (!apath.ap_Base)
+		return;*/
 	MatchEnd(&apath);
 	UnLock(CurrentDir(oldcurrentdir));
 	oldcurrentdir = 0;
