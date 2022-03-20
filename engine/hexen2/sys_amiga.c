@@ -349,9 +349,9 @@ void Sys_FindClose (void)
 qboolean Sys_PathExistsQuiet(const char *name)
 {
 	struct Process *self = (struct Process *) FindTask(NULL);
-	APTR oldwinptr; BPTR lock;
+	APTR oldwinptr = self->pr_WindowPtr;
+	BPTR lock;
 
-	oldwinptr = self->pr_WindowPtr;
 	self->pr_WindowPtr = (APTR) -1;
 	lock = Lock((const STRPTR) name, ACCESS_READ);
 	self->pr_WindowPtr = oldwinptr;
@@ -712,25 +712,24 @@ char *Sys_GetClipboardData (void)
 	LONG readbytes;
 	char *chunk_buffer = NULL;
 
-	if (!IFFParseBase)
+	if (!IFFParseBase) {
 		return NULL;
-
-	if ((IFFHandle = AllocIFF())) {
-	    if ((IFFHandle->iff_Stream = (IPTR) OpenClipboard(0))) {
+	}
+	IFFHandle = AllocIFF();
+	if (IFFHandle) {
+	    IFFHandle->iff_Stream = (IPTR) OpenClipboard(0);
+	    if (IFFHandle->iff_Stream) {
 		InitIFFasClip(IFFHandle);
 		if (!OpenIFF(IFFHandle, IFFF_READ)) {
 		    if (!StopChunk(IFFHandle, ID_FTXT, ID_CHRS)) {
 			if (!ParseIFF(IFFHandle, IFFPARSE_SCAN)) {
 			    cn = CurrentChunk(IFFHandle);
-			    if (cn && (cn->cn_Type == ID_FTXT) &&
-					(cn->cn_ID == ID_CHRS)) {
-				chunk_buffer = (char *)
-					  Z_Malloc(MAX_CLIPBOARDTXT, Z_MAINZONE);
-				readbytes = ReadChunkBytes(IFFHandle,
-							   chunk_buffer,
-							   MAX_CLIPBOARDTXT - 1);
-				if (readbytes < 0)
+			    if (cn && (cn->cn_Type == ID_FTXT) && (cn->cn_ID == ID_CHRS)) {
+				chunk_buffer = (char *) Z_Malloc(MAX_CLIPBOARDTXT, Z_MAINZONE);
+				readbytes = ReadChunkBytes(IFFHandle, chunk_buffer, MAX_CLIPBOARDTXT - 1);
+				if (readbytes < 0) {
 				    readbytes = 0;
+				}
 				chunk_buffer[readbytes] = '\0';
 			    }
 			}
