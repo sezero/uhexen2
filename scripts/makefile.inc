@@ -97,6 +97,13 @@ TARGET_OS=aros
 # override MACH_TYPE on the make command-line, if necessary
 MACH_TYPE=x86
 endif
+ifdef AROS_X64
+# cross compilation for aros
+CROSS_COMPILE=y
+TARGET_OS=aros
+# override MACH_TYPE on the make command-line, if necessary
+MACH_TYPE=x86_64
+endif
 ifdef AMIGABUILD
 # cross compilation for amigaos
 CROSS_COMPILE=y
