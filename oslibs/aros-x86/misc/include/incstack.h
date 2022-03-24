@@ -14,15 +14,15 @@
 extern "C" {
 #endif
 
-int real_main(int argc, char *argv[]);
+int real_main(int argc, char **argv);
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
     struct Task *mytask = FindTask(NULL);
-    ULONG stacksize = (UBYTE *)mytask->tc_SPUpper - (UBYTE *)mytask->tc_SPLower;
+    SIPTR stacksize = (UBYTE *)mytask->tc_SPUpper - (UBYTE *)mytask->tc_SPLower;
     int rc = 1;
 
-    if (stacksize >= (ULONG)__stack)
+    if (stacksize >= (SIPTR)__stack)
     {
         rc = real_main(argc, argv);
     }
@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
         if ((stack.stk_Lower = AllocVec(__stack, MEMF_PUBLIC)) != NULL)
         {
-            stack.stk_Upper = (APTR)((IPTR)stack.stk_Lower + __stack);
+            stack.stk_Upper = (APTR)((IPTR)stack.stk_Lower + (IPTR)__stack);
             stack.stk_Pointer = stack.stk_Upper;
 
             rc = NewStackSwap(&stack, (void *)real_main, &swapargs);
@@ -57,6 +57,6 @@ int main(int argc, char *argv[])
 }
 #endif
 
-#define main(x,y) real_main(x,y)
+#define main real_main
 
 #endif /* INCSTACK_H */
