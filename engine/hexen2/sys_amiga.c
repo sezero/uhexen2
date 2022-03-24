@@ -35,7 +35,12 @@
 #include "sdl_inc.h"
 #endif
 
+#if defined(__LP64__)
+#define MIN_STACK_SIZE 0x200000 /* 2 MB stack */
+#else
 #define MIN_STACK_SIZE 0x100000 /* 1 MB stack */
+#endif
+
 #ifdef __CLIB2__
 int __stack_size = MIN_STACK_SIZE;
 #else
