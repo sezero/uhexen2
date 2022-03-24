@@ -75,6 +75,10 @@ IPTR EffectFuncTramp()
 	struct Hook *hook = (struct Hook *)REG_A0;
 	struct AHIEffChannelInfo *aeci = (struct AHIEffChannelInfo *)REG_A1;
 #else
+#if defined(__AROS__) && !defined(HOOKPROTO) /* ABIv1 ? */
+#define HOOKPROTO(name, ret, obj, param) static SAVEDS ret \
+                  name(struct Hook *hook, obj, param)
+#endif
 HOOKPROTO(EffectFunc, IPTR, struct AHIAudioCtrl *aac, struct AHIEffChannelInfo *aeci)
 {
 #endif

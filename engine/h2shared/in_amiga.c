@@ -290,6 +290,10 @@ static struct InputEvent *IN_KeyboardHandlerFunc()
 	struct InputEvent *moo = (struct InputEvent *)REG_A0;
 	//struct inputdata *id = (struct inputdata *)REG_A1;
 #else
+#if defined(__AROS__) && !defined(HANDLERPROTO) /* ABIv1 ? */
+#define HANDLERPROTO(name, ret, obj, data)     \
+        SAVEDS ASM ret name(REG(a0, obj), REG(a1, data))
+#endif
 HANDLERPROTO(IN_KeyboardHandler, struct InputEvent *, struct InputEvent *moo, APTR id)
 {
 #endif
