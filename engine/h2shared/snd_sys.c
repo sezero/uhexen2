@@ -33,6 +33,7 @@
 #include "snd_gus.h"
 #include "snd_pci.h"
 #include "snd_ahi.h"
+#include "snd_paula.h"
 
 static qboolean	snd_sys_inited = false;
 
@@ -137,6 +138,11 @@ void S_DriversInit (void)
 #if HAVE_AHI_SOUND
 	S_RegisterDriver(&snddrv_ahi);
 	if (COM_CheckParm ("-sndahi"))
+		snd_drivers->userpreferred = true;
+#endif
+#if HAVE_PAULA_SOUND
+	S_RegisterDriver(&snddrv_paula);
+	if (COM_CheckParm ("-sndpaula"))
 		snd_drivers->userpreferred = true;
 #endif
 /* if sdl audio is compiled for any supported platform, then

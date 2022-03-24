@@ -99,6 +99,14 @@ static void S_TransferPaintBuffer (int endtime)
 		return;
 	}
 
+#if id68k
+	if (shm->channels == 2 && ((shm->samplebits == 8 && (shm->signed8 & 2)) || shm->samplebits == 16))
+	{
+		S_TransferStereoAmiga (endtime);
+		return;
+	}
+#endif
+
 	p = (int *) paintbuffer;
 	count = (endtime - paintedtime) * shm->channels;
 	out_mask = shm->samples - 1;

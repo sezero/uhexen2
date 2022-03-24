@@ -171,6 +171,9 @@ ASM_LINKAGE_BEGIN
 void Snd_WriteLinearBlastStereo16 (void);
 void SND_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int endtime);
 #endif
+#if id68k
+void S_TransferStereoAmiga (int endtime);
+#endif
 ASM_LINKAGE_END
 
 #endif	/* __HX2_SOUND_H */

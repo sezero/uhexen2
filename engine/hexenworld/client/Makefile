@@ -1230,7 +1230,7 @@ SOFT_ASM = \
 	amiga_r_68k.o
 
 COMMON_ASM = swap_68k.o
-SOUND_ASM =
+SOUND_ASM = snd_mixamiga68k.o
 
 else
 
@@ -1288,7 +1288,7 @@ ifeq ($(TARGET_OS),morphos)
 SYSOBJ_SND := snd_ahi.o snd_sdl.o
 endif
 ifeq ($(TARGET_OS),amigaos)
-SYSOBJ_SND := snd_ahi.o snd_sdl.o
+SYSOBJ_SND := snd_ahi.o snd_paula.o snd_sdl.o
 endif
 # end of Sound objects
 endif
