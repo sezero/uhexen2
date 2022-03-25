@@ -1,0 +1,21 @@
+# This file contains all common x86-AROS cross compilation definitions for
+# use with all other build_cross_aros.sh scripts for the uhexen2 tree.
+
+# Change this script to meet your needs and/or environment.
+
+TARGET=x86_64-aros
+PREFIX=/opt/cross_aros-x86_64
+
+PATH="$PREFIX/bin:$PATH"
+export PATH
+
+AROS_X64=1
+
+CC="$TARGET-gcc"
+AS="$TARGET-as"
+RANLIB="$TARGET-ranlib"
+AR="$TARGET-ar"
+
+export CC AS RANLIB AR AROS_X64
+
+STRIPPER="$TARGET-strip"
