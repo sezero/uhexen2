@@ -258,6 +258,7 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),aros)
 
+CFLAGS += -fno-common
 INCLUDES+= -I$(OSLIBS)/aros-$(MACH_TYPE)/misc/include
 
 endif

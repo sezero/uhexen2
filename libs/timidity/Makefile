@@ -74,7 +74,7 @@ CFLAGS += -noixemul
 endif
 
 ifeq ($(TARGET_OS),aros)
-# nothing extra is needed
+CFLAGS += -fno-common
 endif
 
 ifeq ($(TARGET_OS),amigaos)

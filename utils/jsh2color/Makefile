@@ -83,7 +83,7 @@ LDFLAGS += -m64 -mconsole
 LDFLAGS += -Wl,--stack,4194304
 endif
 ifeq ($(TARGET_OS),aros)
-# nothing extra is needed
+CFLAGS += -fno-common
 endif
 ifeq ($(TARGET_OS),morphos)
 CFLAGS  += -noixemul

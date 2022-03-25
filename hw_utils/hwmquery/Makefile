@@ -125,6 +125,7 @@ LDFLAGS += -lsocket
 endif
 
 ifeq ($(TARGET_OS),aros)
+CFLAGS += -fno-common
 endif
 
 ifeq ($(TARGET_OS),morphos)

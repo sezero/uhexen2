@@ -858,6 +858,8 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),aros)
 
+CFLAGS += -fno-common
+
 # AROS builds can use SDL or native code
 USE_SDL=no
 ifneq ($(USE_SDL),yes)
