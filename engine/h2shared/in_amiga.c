@@ -47,6 +47,8 @@
 #ifdef PLATFORM_AMIGAOS3
 #include <devices/gameport.h>
 #include <psxport.h>
+#else
+#include <libraries/lowlevel_ext.h>
 #endif
 
 struct Library *LowLevelBase = NULL;
@@ -101,7 +103,6 @@ static int gameport_is_open = FALSE;
 
 static	cvar_t	in_joystick = {"joystick", "1", CVAR_ARCHIVE};		/* enable/disable joystick */
 static	cvar_t	joy_index = {"joy_index", "1", CVAR_NONE};		/* joystick to use when have multiple */
-#ifdef PLATFORM_AMIGAOS3
 static	cvar_t	joy_axisforward = {"joy_axisforward", "1", CVAR_NONE};	/* axis for forward/backward movement */
 static	cvar_t	joy_axisside = {"joy_axisside", "0", CVAR_NONE};	/* axis for right/left movement */
 static	cvar_t	joy_axisup = {"joy_axisup", "-1", CVAR_NONE};		/* axis for up/down movement */
@@ -117,7 +118,6 @@ static	cvar_t	joy_sensitivityside = {"joy_sensitivityside", "1", CVAR_NONE};		/*
 static	cvar_t	joy_sensitivityup = {"joy_sensitivityup", "1", CVAR_NONE};		/* movement multiplier */
 static	cvar_t	joy_sensitivitypitch = {"joy_sensitivitypitch", "1", CVAR_NONE};	/* movement multiplier */
 static	cvar_t	joy_sensitivityyaw = {"joy_sensitivityyaw", "-1", CVAR_NONE};		/* movement multiplier */
-#endif
 
 /* forward-referenced functions */
 static void IN_StartupJoystick (void);
@@ -422,7 +422,6 @@ void IN_Init (void)
 	/* joystick variables */
 	Cvar_RegisterVariable (&in_joystick);
 	Cvar_RegisterVariable (&joy_index);
-#ifdef PLATFORM_AMIGAOS3
 	Cvar_RegisterVariable (&joy_axisforward);
 	Cvar_RegisterVariable (&joy_axisside);
 	Cvar_RegisterVariable (&joy_axisup);
@@ -438,7 +437,6 @@ void IN_Init (void)
 	Cvar_RegisterVariable (&joy_sensitivityup);
 	Cvar_RegisterVariable (&joy_sensitivitypitch);
 	Cvar_RegisterVariable (&joy_sensitivityyaw);
-#endif
 
 	Cvar_SetCallback (&in_joystick, IN_Callback_JoyEnable);
 	Cvar_SetCallback (&joy_index, IN_Callback_JoyIndex);
@@ -517,9 +515,9 @@ void IN_Shutdown (void)
 
 #ifdef PLATFORM_AMIGAOS3
 	if (gameport_is_open) {
+		BYTE gameport_ct = GPCT_NOCONTROLLER;
 		AbortIO((struct IORequest *)gameport_io);
 		WaitIO((struct IORequest *)gameport_io);
-		BYTE gameport_ct = GPCT_NOCONTROLLER;
 		gameport_io->io_Command = GPD_SETCTYPE;
 		gameport_io->io_Length = 1;
 		gameport_io->io_Data = &gameport_ct;
@@ -824,6 +822,10 @@ static void IN_StartupJoystick (void)
 		}
 		*/
 		joynumaxes = 0;
+#ifndef PLATFORM_AMIGAOS3
+		if (LowLevelBase->lib_Version > 50 || (LowLevelBase->lib_Version >= 50 && LowLevelBase->lib_Revision >= 17))
+			joynumaxes = 2;
+#endif
 		joy_available = 4;
 	}
 	else
@@ -989,6 +991,18 @@ static void IN_HandleJoystick (void)
 		Check_Joy_Event(K_AUX32, joyflag, oldflag, JPF_JOY_RIGHT);
 		oldjoyflag = joyflag;
 	}
+
+#ifndef PLATFORM_AMIGAOS3
+	if (joynumaxes > 0)
+	{
+		joyflag = ReadJoyPort(joy_port + JP_ANALOGUE_PORT_MAGIC);
+		if (joyflag & JP_TYPE_ANALOGUE)
+		{
+			joyaxis[0] = (int)(joyflag & JP_XAXIS_MASK) - 128;
+			joyaxis[1] = (int)((joyflag & JP_YAXIS_MASK) >> 8) - 128;
+		}
+	}
+#endif
 }
 
 /*
