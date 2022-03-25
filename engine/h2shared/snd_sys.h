@@ -93,7 +93,9 @@
 
 #if defined(PLATFORM_AMIGA)
 #define HAVE_AHI_SOUND		1
+#ifdef PLATFORM_AMIGAOS3
 #define HAVE_PAULA_SOUND		1
+#endif
 #else
 #define HAVE_AHI_SOUND		0
 #define HAVE_PAULA_SOUND		0
