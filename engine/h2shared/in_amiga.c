@@ -44,6 +44,10 @@
 #endif
 
 #include "quakedef.h"
+#ifdef PLATFORM_AMIGAOS3
+#include <devices/gameport.h>
+#include <psxport.h>
+#endif
 
 struct Library *LowLevelBase = NULL;
 #ifdef __CLIB2__
@@ -77,9 +81,43 @@ static qboolean	mouseactivatetoggle = false;
 static int joy_port = -1;
 static int joy_available = 0;
 static ULONG oldjoyflag = 0;
+static int joynumaxes = 0;
+static int joyaxis[4];
+#ifdef PLATFORM_AMIGAOS3
+static int analog_centered=FALSE;
+static int analog_clx, analog_cly;
+static int analog_crx, analog_cry;
+static struct GamePortTrigger gameport_gpt = {
+	GPTF_UPKEYS | GPTF_DOWNKEYS,	/* gpt_Keys */
+	0,				/* gpt_Timeout */
+	1,				/* gpt_XDelta */
+	1				/* gpt_YDelta */
+};
+static struct MsgPort *gameport_mp = NULL;
+static struct IOStdReq *gameport_io = NULL;
+static struct InputEvent gameport_ie;
+static int gameport_is_open = FALSE;
+#endif
 
 static	cvar_t	in_joystick = {"joystick", "1", CVAR_ARCHIVE};		/* enable/disable joystick */
 static	cvar_t	joy_index = {"joy_index", "1", CVAR_NONE};		/* joystick to use when have multiple */
+#ifdef PLATFORM_AMIGAOS3
+static	cvar_t	joy_axisforward = {"joy_axisforward", "1", CVAR_NONE};	/* axis for forward/backward movement */
+static	cvar_t	joy_axisside = {"joy_axisside", "0", CVAR_NONE};	/* axis for right/left movement */
+static	cvar_t	joy_axisup = {"joy_axisup", "-1", CVAR_NONE};		/* axis for up/down movement */
+static	cvar_t	joy_axispitch = {"joy_axispitch", "3", CVAR_NONE};	/* axis for looking up/down" */
+static	cvar_t	joy_axisyaw = {"joy_axisyaw", "2", CVAR_NONE};		/* axis for looking right/left */
+static	cvar_t	joy_deadzoneforward = {"joy_deadzoneforward", "0", CVAR_NONE};	/* deadzone tolerance, suggested 0 to 0.01 */
+static	cvar_t	joy_deadzoneside = {"joy_deadzoneside", "0", CVAR_NONE};	/* deadzone tolerance */
+static	cvar_t	joy_deadzoneup = {"joy_deadzoneup", "0", CVAR_NONE};		/* deadzone tolerance */
+static	cvar_t	joy_deadzonepitch = {"joy_deadzonepitch", "0", CVAR_NONE};	/* deadzone tolerance */
+static	cvar_t	joy_deadzoneyaw = {"joy_deadzoneyaw", "0", CVAR_NONE};		/* deadzone tolerance */
+static	cvar_t	joy_sensitivityforward = {"joy_sensitivityforward", "-1", CVAR_NONE};	/* movement multiplier */
+static	cvar_t	joy_sensitivityside = {"joy_sensitivityside", "1", CVAR_NONE};		/* movement multiplier */
+static	cvar_t	joy_sensitivityup = {"joy_sensitivityup", "1", CVAR_NONE};		/* movement multiplier */
+static	cvar_t	joy_sensitivitypitch = {"joy_sensitivitypitch", "1", CVAR_NONE};	/* movement multiplier */
+static	cvar_t	joy_sensitivityyaw = {"joy_sensitivityyaw", "-1", CVAR_NONE};		/* movement multiplier */
+#endif
 
 /* forward-referenced functions */
 static void IN_StartupJoystick (void);
@@ -384,6 +422,23 @@ void IN_Init (void)
 	/* joystick variables */
 	Cvar_RegisterVariable (&in_joystick);
 	Cvar_RegisterVariable (&joy_index);
+#ifdef PLATFORM_AMIGAOS3
+	Cvar_RegisterVariable (&joy_axisforward);
+	Cvar_RegisterVariable (&joy_axisside);
+	Cvar_RegisterVariable (&joy_axisup);
+	Cvar_RegisterVariable (&joy_axispitch);
+	Cvar_RegisterVariable (&joy_axisyaw);
+	Cvar_RegisterVariable (&joy_deadzoneforward);
+	Cvar_RegisterVariable (&joy_deadzoneside);
+	Cvar_RegisterVariable (&joy_deadzoneup);
+	Cvar_RegisterVariable (&joy_deadzonepitch);
+	Cvar_RegisterVariable (&joy_deadzoneyaw);
+	Cvar_RegisterVariable (&joy_sensitivityforward);
+	Cvar_RegisterVariable (&joy_sensitivityside);
+	Cvar_RegisterVariable (&joy_sensitivityup);
+	Cvar_RegisterVariable (&joy_sensitivitypitch);
+	Cvar_RegisterVariable (&joy_sensitivityyaw);
+#endif
 
 	Cvar_SetCallback (&in_joystick, IN_Callback_JoyEnable);
 	Cvar_SetCallback (&joy_index, IN_Callback_JoyIndex);
@@ -459,6 +514,28 @@ void IN_Shutdown (void)
 		CloseLibrary(LowLevelBase);
 		LowLevelBase = NULL;
 	}
+
+#ifdef PLATFORM_AMIGAOS3
+	if (gameport_is_open) {
+		AbortIO((struct IORequest *)gameport_io);
+		WaitIO((struct IORequest *)gameport_io);
+		BYTE gameport_ct = GPCT_NOCONTROLLER;
+		gameport_io->io_Command = GPD_SETCTYPE;
+		gameport_io->io_Length = 1;
+		gameport_io->io_Data = &gameport_ct;
+		DoIO((struct IORequest *)gameport_io);
+		CloseDevice((struct IORequest *)gameport_io);
+		gameport_is_open = FALSE;
+	}
+	if (gameport_io != NULL) {
+		DeleteIORequest((struct IORequest *)gameport_io);
+		gameport_io = NULL;
+	}
+	if (gameport_mp != NULL) {
+		DeleteMsgPort(gameport_mp);
+		gameport_mp = NULL;
+	}
+#endif
 
 	joy_port = -1;
 	joy_available = 0;
@@ -555,6 +632,69 @@ static void IN_DiscardMove (void)
 	}
 }
 
+static float IN_JoystickGetAxis (int axis, float sensitivity, float deadzone)
+{
+	float value;
+	if (axis < 0 || axis >= joynumaxes)
+		return 0; /* no such axis on this joystick */
+	value = joyaxis[axis] * (1.0f / 128.0f);
+	if (value < -1)		value = -1;
+	else if (value > 1)	value =  1;
+	if (fabs(value) < deadzone)
+		return 0; /* within deadzone around center */
+	return value * sensitivity;
+}
+
+/*
+===========
+IN_JoyMove
+===========
+*/
+static void IN_JoyMove (usercmd_t *cmd)
+{
+	float	speed, aspeed;
+	float	value;
+
+	if (window->WScreen != IntuitionBase->FirstScreen)
+		return;
+
+	if (!joynumaxes)
+		return;
+
+	if (in_speed.state & 1)
+		speed = cl_movespeedkey.value;
+	else	speed = 1;
+	aspeed = speed * host_frametime;
+
+	/* axes */
+	value  = IN_JoystickGetAxis(joy_axisforward.integer, joy_sensitivityforward.value, joy_deadzoneforward.value);
+	value *= speed * 200;	/*cl_forwardspeed.value*/
+	cmd->forwardmove += value;
+
+	value  = IN_JoystickGetAxis(joy_axisside.integer, joy_sensitivityside.value, joy_deadzoneside.value);
+	value *= speed * 225;	/*cl_sidespeed.value*/
+	cmd->sidemove += value;
+
+	value  = IN_JoystickGetAxis(joy_axisup.integer, joy_sensitivityup.value, joy_deadzoneup.value);
+	value *= speed * 200;	/*cl_upspeed.value*/
+	cmd->upmove += value;
+
+	value  = IN_JoystickGetAxis(joy_axispitch.integer, joy_sensitivitypitch.value, joy_deadzonepitch.value);
+	value *= aspeed * cl_pitchspeed.value;
+	cl.viewangles[PITCH] += value;
+	if (value) V_StopPitchDrift ();
+
+	value  = IN_JoystickGetAxis(joy_axisyaw.integer, joy_sensitivityyaw.value, joy_deadzoneyaw.value);
+	value *= aspeed * cl_yawspeed.value;
+	cl.viewangles[YAW] += value;
+
+	/* bounds check pitch */
+	if (cl.viewangles[PITCH] > 80.0)
+		cl.viewangles[PITCH] = 80.0;
+	if (cl.viewangles[PITCH] < -70.0)
+		cl.viewangles[PITCH] = -70.0;
+}
+
 /*
 ===========
 IN_Move
@@ -576,6 +716,8 @@ void IN_Move (usercmd_t *cmd)
 		IN_MouseMove (cmd/*, x, y*/);
 		mx = my = 0;
 	}
+
+	IN_JoyMove (cmd);
 }
 
 static const char *JoystickName(int port)
@@ -615,6 +757,55 @@ static void IN_StartupJoystick (void)
 	KeymapBase = OpenLibrary("keymap.library", 37);
 #endif
 
+#ifdef PLATFORM_AMIGAOS3
+	if ((gameport_mp = CreateMsgPort())) {
+		if ((gameport_io = (struct IOStdReq *)CreateIORequest(gameport_mp, sizeof(struct IOStdReq)))) {
+			BYTE gameport_ct;
+			for (i=0; i<4; i++) {
+				if (!OpenDevice((STRPTR)"psxport.device", i, (struct IORequest *)gameport_io, 0)) {
+					Con_Printf("psxport.device unit %d opened.\n", i);
+					Forbid();
+					gameport_io->io_Command = GPD_ASKCTYPE;
+					gameport_io->io_Length = 1;
+					gameport_io->io_Data = &gameport_ct;
+					DoIO((struct IORequest *)gameport_io);
+					if (gameport_ct == GPCT_NOCONTROLLER) {
+						gameport_ct = GPCT_ALLOCATED;
+						gameport_io->io_Command = GPD_SETCTYPE;
+						gameport_io->io_Length = 1;
+						gameport_io->io_Data = &gameport_ct;
+						DoIO((struct IORequest *)gameport_io);
+
+						Permit();
+
+						gameport_io->io_Command = GPD_SETTRIGGER;
+						gameport_io->io_Length = sizeof(struct GamePortTrigger);
+						gameport_io->io_Data = &gameport_gpt;
+						DoIO((struct IORequest *)gameport_io);
+
+						gameport_io->io_Command = GPD_READEVENT;
+						gameport_io->io_Length = sizeof(struct InputEvent);
+						gameport_io->io_Data = &gameport_ie;
+						SendIO((struct IORequest *)gameport_io);
+						gameport_is_open = TRUE;
+
+						joynumaxes = 4;
+						joy_available = 1;
+
+						break;
+					} else {
+						Permit();
+						Con_Printf("psxport.device unit %d in use.\n", i);
+						CloseDevice((struct IORequest *)gameport_io);
+					}
+				} else {
+					Con_Printf("psxport.device unit %d won't open.\n", i);
+				}
+			}
+		}
+	}
+#endif
+
 	if (!LowLevelBase)
 		LowLevelBase = OpenLibrary("lowlevel.library", 37);
 
@@ -632,6 +823,7 @@ static void IN_StartupJoystick (void)
 			joy_available++;
 		}
 		*/
+		joynumaxes = 0;
 		joy_available = 4;
 	}
 	else
@@ -712,6 +904,69 @@ static void IN_Callback_JoyIndex (cvar_t *var)
 static void IN_HandleJoystick (void)
 {
 	ULONG joyflag;
+
+	if (window->WScreen != IntuitionBase->FirstScreen)
+		return;
+
+#ifdef PLATFORM_AMIGAOS3
+	if (gameport_is_open) {
+		if (GetMsg(gameport_mp) != NULL) {
+			if ((PSX_CLASS(gameport_ie) == PSX_CLASS_JOYPAD) || (PSX_CLASS(gameport_ie) == PSX_CLASS_WHEEL))
+				analog_centered = FALSE;
+
+			if (PSX_CLASS(gameport_ie) != PSX_CLASS_MOUSE) {
+				ULONG joyflag = ~PSX_BUTTONS(gameport_ie);
+				if (joyflag != oldjoyflag)
+				{
+					ULONG oldflag = oldjoyflag;
+					Check_Joy_Event(K_JOY1, joyflag, oldflag, PSX_TRIANGLE);
+					Check_Joy_Event(K_JOY2, joyflag, oldflag, PSX_CIRCLE);
+					Check_Joy_Event(K_JOY3, joyflag, oldflag, PSX_CROSS);
+					Check_Joy_Event(K_JOY4, joyflag, oldflag, PSX_SQUARE);
+					Check_Joy_Event(K_AUX1, joyflag, oldflag, PSX_START);
+					Check_Joy_Event(K_AUX2, joyflag, oldflag, PSX_SELECT);
+					Check_Joy_Event(K_AUX3, joyflag, oldflag, PSX_L1);
+					Check_Joy_Event(K_AUX4, joyflag, oldflag, PSX_R1);
+					Check_Joy_Event(K_AUX5, joyflag, oldflag, PSX_L2);
+					Check_Joy_Event(K_AUX6, joyflag, oldflag, PSX_R2);
+					Check_Joy_Event(K_AUX7, joyflag, oldflag, PSX_L3);
+					Check_Joy_Event(K_AUX8, joyflag, oldflag, PSX_R3);
+					Check_Joy_Event(K_AUX29, joyflag, oldflag, PSX_UP);
+					Check_Joy_Event(K_AUX30, joyflag, oldflag, PSX_DOWN);
+					Check_Joy_Event(K_AUX31, joyflag, oldflag, PSX_LEFT);
+					Check_Joy_Event(K_AUX32, joyflag, oldflag, PSX_RIGHT);
+					oldjoyflag = joyflag;
+				}
+			}
+
+			if ((PSX_CLASS(gameport_ie) == PSX_CLASS_ANALOG) || (PSX_CLASS(gameport_ie) == PSX_CLASS_ANALOG2) || (PSX_CLASS(gameport_ie) == PSX_CLASS_ANALOG_MODE2)) {
+				int analog_lx = PSX_LEFTX(gameport_ie);
+				int analog_ly = PSX_LEFTY(gameport_ie);
+				int analog_rx = PSX_RIGHTX(gameport_ie);
+				int analog_ry = PSX_RIGHTY(gameport_ie);
+
+				if (!analog_centered) {
+					analog_clx = analog_lx;
+					analog_cly = analog_ly;
+					analog_crx = analog_rx;
+					analog_cry = analog_ry;
+					analog_centered = TRUE;
+				}
+
+				joyaxis[0] = analog_lx - analog_clx;
+				joyaxis[1] = analog_ly - analog_cly;
+				joyaxis[2] = analog_rx - analog_crx;
+				joyaxis[3] = analog_ry - analog_cry;
+			}
+
+			gameport_io->io_Command = GPD_READEVENT;
+			gameport_io->io_Length = sizeof(struct InputEvent);
+			gameport_io->io_Data = &gameport_ie;
+			SendIO((struct IORequest *)gameport_io);
+		}
+		return;
+	}
+#endif
 
 	if (!LowLevelBase || joy_port == -1)
 		return;
