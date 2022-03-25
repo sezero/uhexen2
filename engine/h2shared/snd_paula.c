@@ -50,10 +50,10 @@ static char s_paula_driver[] = "Paula";
 #define NSAMPLES 0x8000
 
 /* custom chip base address */
-extern struct Custom custom;
+static volatile struct Custom *custom = (struct Custom *)0xdff000;
 
 /* CIA A base address */
-extern struct CIA ciaa;
+static volatile struct CIA *ciaa = (struct CIA *)0xbfe001;
 
 static unsigned char *dmabuf = NULL;
 static BYTE audio_dev = -1;
@@ -68,7 +68,7 @@ static double aud_start_time;
 static void AudioIntCode(void)
 {
 	aud_start_time = Sys_DoubleTime();
-	custom.intreq = INTF_AUD0;
+	custom->intreq = INTF_AUD0;
 }
 
 static qboolean S_PAULA_Init(dma_t *dma)
@@ -124,9 +124,9 @@ static qboolean S_PAULA_Init(dma_t *dma)
 	}
 
 	/* disable the DMA and interrupts */
-	custom.dmacon = DMAF_AUD0|DMAF_AUD1;
-	custom.intena = INTF_AUD0;
-	custom.intreq = INTF_AUD0;
+	custom->dmacon = DMAF_AUD0|DMAF_AUD1;
+	custom->intena = INTF_AUD0;
+	custom->intreq = INTF_AUD0;
 
 	/* set up audio interrupt */
 	AudioInt.is_Node.ln_Type = NT_INTERRUPT;
@@ -145,25 +145,25 @@ static qboolean S_PAULA_Init(dma_t *dma)
 	}
 
 	/* set up left channel */
-	custom.aud[0].ac_len = length;
-	custom.aud[0].ac_per = period;
-	custom.aud[0].ac_vol = 64;
-	custom.aud[0].ac_ptr = leftptr;
+	custom->aud[0].ac_len = length;
+	custom->aud[0].ac_per = period;
+	custom->aud[0].ac_vol = 64;
+	custom->aud[0].ac_ptr = leftptr;
 
 	/* set up right channel */
-	custom.aud[1].ac_len = length;
-	custom.aud[1].ac_per = period;
-	custom.aud[1].ac_vol = 64;
-	custom.aud[1].ac_ptr = rightptr;
+	custom->aud[1].ac_len = length;
+	custom->aud[1].ac_per = period;
+	custom->aud[1].ac_vol = 64;
+	custom->aud[1].ac_ptr = rightptr;
 
 	aud_start_time = 0;
 
 	/* enable the DMA and interrupts */
-	custom.intena = INTF_SETCLR|INTF_INTEN|INTF_AUD0;
-	custom.dmacon = DMAF_SETCLR|DMAF_AUD0|DMAF_AUD1;
+	custom->intena = INTF_SETCLR|INTF_INTEN|INTF_AUD0;
+	custom->dmacon = DMAF_SETCLR|DMAF_AUD0|DMAF_AUD1;
 
-	saved_filter = ciaa.ciapra & CIAF_LED;
-	ciaa.ciapra |= CIAF_LED;
+	saved_filter = ciaa->ciapra & CIAF_LED;
+	ciaa->ciapra |= CIAF_LED;
 	Con_Printf ("Paula initialized\n");
 
 	return true;
@@ -180,11 +180,11 @@ static int S_PAULA_GetDMAPos(void)
 static void S_PAULA_Shutdown(void)
 {
 	if (!saved_filter) {
-		ciaa.ciapra &= ~CIAF_LED;
+		ciaa->ciapra &= ~CIAF_LED;
 	}
 	if (OldInt) {
-		custom.dmacon = DMAF_AUD0|DMAF_AUD1;
-		custom.intena = INTF_AUD0;
+		custom->dmacon = DMAF_AUD0|DMAF_AUD1;
+		custom->intena = INTF_AUD0;
 		SetIntVector(INTB_AUD0,OldInt);
 		OldInt = NULL;
 	}
