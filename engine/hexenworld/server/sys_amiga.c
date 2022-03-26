@@ -28,6 +28,8 @@
 
 #if defined(__LP64__)
 #define MIN_STACK_SIZE 0x200000 /* 2 MB stack */
+#elif defined(PLATFORM_AMIGAOS3)
+#define MIN_STACK_SIZE 0x40000 /* 256 KB stack */
 #else
 #define MIN_STACK_SIZE 0x100000 /* 1 MB stack */
 #endif
@@ -36,6 +38,11 @@
 int __stack_size = MIN_STACK_SIZE;
 #else
 int __stack = MIN_STACK_SIZE;
+#ifdef PLATFORM_AMIGAOS3
+/* this pulls in stackswap.o */
+extern void __stkinit(void);
+void * __x = __stkinit;
+#endif
 #endif
 #ifdef __AROS__
 #include "incstack.h"
