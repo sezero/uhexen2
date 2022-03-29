@@ -3287,7 +3287,7 @@ static const char *CreditTextMP[MAX_LINES_MP] =
    "making of this game!"
 };
 
-#define	MAX_LINES2_MP	150
+#define	MAX_LINES2_MP	151
 
 static const char *Credit2TextMP[MAX_LINES2_MP] =
 {
@@ -3372,7 +3372,7 @@ static const char *Credit2TextMP[MAX_LINES2_MP] =
    "   Chad Bordwell,",
    "   David 'Spice Girl' Baker,",
    "   Error Casillas, Damien Fischer,",
-   "   Winnie Lee,"
+   "   Winnie Lee,",
    "   Ygor Krynytyskyy,",
    "   Samantha (Crusher) Lee, John Park",
    "   Ian Stevens, Chris Toft",
