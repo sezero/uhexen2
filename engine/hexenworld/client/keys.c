@@ -476,8 +476,9 @@ static void Key_Console (int key)
 		if (history_line == edit_line)
 			history_line = history_line_last;
 
-		strcpy(workline, key_lines[history_line]);
-		key_linepos = strlen(workline);
+		len = strlen(key_lines[history_line]);
+		memmove(workline, key_lines[history_line], len+1);
+		key_linepos = (int)len;
 		return;
 
 	case K_DOWNARROW:
@@ -496,8 +497,9 @@ static void Key_Console (int key)
 		}
 		else
 		{
-			strcpy(workline, key_lines[history_line]);
-			key_linepos = strlen(workline);
+			len = strlen(key_lines[history_line]);
+			memmove(workline, key_lines[history_line], len+1);
+			key_linepos = (int)len;
 		}
 		return;
 
