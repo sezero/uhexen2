@@ -511,7 +511,7 @@ void	*Mod_Extradata (qmodel_t *mod);	// handles caching
 void	Mod_TouchModel (const char *name);
 void	Mod_ReloadTextures (void);
 
-mleaf_t *Mod_PointInLeaf (float *p, qmodel_t *model);
+mleaf_t *Mod_PointInLeaf (vec3_t p, qmodel_t *model);
 byte	*Mod_LeafPVS (mleaf_t *leaf, qmodel_t *model);
 
 #endif	/* GL_MODEL_H */
