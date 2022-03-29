@@ -424,7 +424,6 @@ net_main.o: INCLUDES+= $(NET_INC)
 endif
 
 # deps for *.c including another *.c
-dos/mplpc.o: ../dos/mplib.c
 dos/net_ser.o: ../dos/net_comx.c
 
 clean:
