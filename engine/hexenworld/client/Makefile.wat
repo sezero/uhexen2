@@ -66,9 +66,10 @@ USE_CODEC_FLAC=no
 USE_CODEC_MP3=yes
 USE_CODEC_VORBIS=yes
 USE_CODEC_OPUS=no
-# either mikmod or xmp
+# either xmp or mikmod (or modplug)
 USE_CODEC_MIKMOD=no
 USE_CODEC_XMP=no
+USE_CODEC_MODPLUG=no
 USE_CODEC_UMX=no
 # either timidity (preferred) or wildmidi (both possible
 # but not needed nor meaningful)
@@ -137,6 +138,7 @@ USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_MIKMOD=no
 USE_CODEC_XMP=no
+USE_CODEC_MODPLUG=no
 USE_CODEC_UMX=no
 USE_CODEC_MP3=no
 USE_CODEC_VORBIS=no
@@ -243,6 +245,11 @@ CPPFLAGS+= -DUSE_CODEC_XMP
 # for static linkage
 CPPFLAGS+= -DXMP_NO_DLL
 LIBS    += $(CODECLIBS)libxmp.lib
+!endif
+!ifeq USE_CODEC_MODPLUG yes
+CPPFLAGS+= -DUSE_CODEC_MODPLUG
+CPPFLAGS+= -DMODPLUG_STATIC
+LIBS    += $(CODECLIBS)modplug.lib
 !endif
 !ifeq USE_CODEC_UMX yes
 CPPFLAGS+= -DUSE_CODEC_UMX
@@ -356,6 +363,7 @@ MUSIC_OBJS= bgmusic.obj &
 	$(mp3_obj).obj &
 	snd_mp3tag.obj &
 	snd_mikmod.obj &
+	snd_modplug.obj &
 	snd_xmp.obj &
 	snd_umx.obj &
 	snd_timidity.obj &

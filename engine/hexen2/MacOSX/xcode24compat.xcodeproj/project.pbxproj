@@ -32,6 +32,8 @@
 		48E2EC7E15FB507A00B8D476 /* libogg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7A15FB507A00B8D476 /* libogg.dylib */; };
 		48E2EC7F15FB507A00B8D476 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */; };
 		48E2EC8015FB507A00B8D476 /* libvorbisfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */; };
+		631478E727F1B38A0023B20A /* snd_modplug.c in Sources */ = {isa = PBXBuildFile; fileRef = 631478E627F1B38A0023B20A /* snd_modplug.c */; };
+		631478E827F1B38A0023B20A /* snd_modplug.c in Sources */ = {isa = PBXBuildFile; fileRef = 631478E627F1B38A0023B20A /* snd_modplug.c */; };
 		6398924923A25461003C5801 /* snd_mp3tag.c in Sources */ = {isa = PBXBuildFile; fileRef = 6398924823A25461003C5801 /* snd_mp3tag.c */; };
 		6398924A23A25461003C5801 /* snd_mp3tag.c in Sources */ = {isa = PBXBuildFile; fileRef = 6398924823A25461003C5801 /* snd_mp3tag.c */; };
 		63CA72B31963FA25005A8397 /* SDL.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59200AAA071800313A9F /* SDL.framework */; };
@@ -385,6 +387,8 @@
 		48E2EC7A15FB507A00B8D476 /* libogg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.dylib; path = ../../../oslibs/macosx/codecs/lib/libogg.dylib; sourceTree = "<group>"; };
 		48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.dylib; path = ../../../oslibs/macosx/codecs/lib/libvorbis.dylib; sourceTree = "<group>"; };
 		48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbisfile.dylib; path = ../../../oslibs/macosx/codecs/lib/libvorbisfile.dylib; sourceTree = "<group>"; };
+		631478E327F1B36F0023B20A /* snd_mpg123.c */ = {isa = PBXFileReference; comments = "NOTE: snd_mp3.c and snd_mpg123.c are mutually exclusive - build only one."; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_mpg123.c; path = ../../h2shared/snd_mpg123.c; sourceTree = SOURCE_ROOT; };
+		631478E627F1B38A0023B20A /* snd_modplug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_modplug.c; path = ../../h2shared/snd_modplug.c; sourceTree = SOURCE_ROOT; };
 		6398924823A25461003C5801 /* snd_mp3tag.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_mp3tag.c; path = ../../h2shared/snd_mp3tag.c; sourceTree = SOURCE_ROOT; };
 		70158B710AAF3B3600F6437C /* d_edge.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_edge.c; path = ../../h2shared/d_edge.c; sourceTree = SOURCE_ROOT; };
 		70158B720AAF3B3600F6437C /* d_fill.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_fill.c; path = ../../h2shared/d_fill.c; sourceTree = SOURCE_ROOT; };
@@ -560,7 +564,7 @@
 		B0E74B27144E802B0043F808 /* strlcpy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strlcpy.c; path = ../../../common/strlcpy.c; sourceTree = SOURCE_ROOT; };
 		B0E74B2C144E80540043F808 /* snd_wave.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_wave.c; path = ../../h2shared/snd_wave.c; sourceTree = SOURCE_ROOT; };
 		B0E74B31144E806D0043F808 /* snd_vorbis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_vorbis.c; path = ../../h2shared/snd_vorbis.c; sourceTree = SOURCE_ROOT; };
-		B0E74B36144E807F0043F808 /* snd_mp3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_mp3.c; path = ../../h2shared/snd_mp3.c; sourceTree = SOURCE_ROOT; };
+		B0E74B36144E807F0043F808 /* snd_mp3.c */ = {isa = PBXFileReference; comments = "NOTE: snd_mp3.c and snd_mpg123.c are mutually exclusive - build only one."; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_mp3.c; path = ../../h2shared/snd_mp3.c; sourceTree = SOURCE_ROOT; };
 		B0E74B3B144E80960043F808 /* snd_opus.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_opus.c; path = ../../h2shared/snd_opus.c; sourceTree = SOURCE_ROOT; };
 		F5F5DE80017CB4370103A810 /* libmikmod.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmikmod.dylib; path = ../../../oslibs/macosx/codecs/lib/libmikmod.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -618,6 +622,7 @@
 		707D57580AA9F4B100313A9F = {
 			isa = PBXGroup;
 			children = (
+				631478E627F1B38A0023B20A /* snd_modplug.c */,
 				6398924823A25461003C5801 /* snd_mp3tag.c */,
 				48281305179C4055004E1D61 /* snd_flac.c */,
 				48281306179C4055004E1D61 /* snd_flac.h */,
@@ -636,6 +641,7 @@
 				483A78640D2EEAF000CB2E4C /* snd_mikmod.c */,
 				4818B0B012D5BA1A006DD66E /* snd_umx.c */,
 				B0E74B36144E807F0043F808 /* snd_mp3.c */,
+				631478E327F1B36F0023B20A /* snd_mpg123.c */,
 				B0E74B31144E806D0043F808 /* snd_vorbis.c */,
 				B0E74B2C144E80540043F808 /* snd_wave.c */,
 				B0E74B27144E802B0043F808 /* strlcpy.c */,
@@ -1112,6 +1118,7 @@
 				32CA4F630368D1EE00C91783 /* snd_umx.c in Sources */,
 				483A78780D2EEAF000CB2E4C /* snd_mikmod.c in Sources */,
 				6398924A23A25461003C5801 /* snd_mp3tag.c in Sources */,
+				631478E827F1B38A0023B20A /* snd_modplug.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1201,6 +1208,7 @@
 				4818B0B612D5BA1A006DD66E /* snd_umx.c in Sources */,
 				48305B530D8AF8EC00A29C24 /* snd_mikmod.c in Sources */,
 				6398924923A25461003C5801 /* snd_mp3tag.c in Sources */,
+				631478E727F1B38A0023B20A /* snd_modplug.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
