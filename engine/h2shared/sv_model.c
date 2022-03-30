@@ -508,8 +508,8 @@ static void CalcSurfaceExtents (msurface_t *s, int firstedge, int numedges)
 	mtexinfo_t	*tex;
 	int		bmins[2], bmaxs[2];
 
-	mins[0] = mins[1] = 99999999;
-	maxs[0] = maxs[1] = -99999999;
+	mins[0] = mins[1] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+	maxs[0] = maxs[1] = -9999999;
 
 	tex = s->texinfo;
 
