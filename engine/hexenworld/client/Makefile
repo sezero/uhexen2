@@ -981,8 +981,6 @@ USE_SDL=no
 ifneq ($(USE_SDL),yes)
 USE_SDLCD=no
 USE_SDLAUDIO=no
-# no native cdaudio code yet
-USE_CDAUDIO=no
 endif
 
 ifndef DEBUG
@@ -1395,7 +1393,7 @@ ifeq ($(TARGET_OS),morphos)
 SYSOBJ_CDA := cd_sdl.o
 endif
 ifeq ($(TARGET_OS),amigaos)
-SYSOBJ_CDA := cd_sdl.o
+SYSOBJ_CDA := cd_amiga.o
 endif
 # end of CDAudio objects
 endif
