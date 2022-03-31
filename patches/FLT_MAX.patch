@@ -1,0 +1,473 @@
+Instead of just assuming that 9999 or similar is "big enough", use the
+implementation defined type limits:  Similar changes are in quakespasm,
+tyrquake, and tyrutils.
+
+diff --git a/engine/h2shared/d_sprite.c b/engine/h2shared/d_sprite.c
+index 21ca81f..bc99863 100644
+--- a/engine/h2shared/d_sprite.c
++++ b/engine/h2shared/d_sprite.c
+@@ -558,8 +558,8 @@ void D_DrawSprite (void)
+ 
+ // find the top and bottom vertices, and make sure there's at least one scan to
+ // draw
+-	ymin = 999999.9;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+-	ymax = -999999.9;
++	ymin = FLT_MAX;
++	ymax = -FLT_MAX;
+ 	pverts = r_spritedesc.pverts;
+ 
+ 	for (i = 0; i < r_spritedesc.nump; i++)
+diff --git a/engine/h2shared/gl_model.c b/engine/h2shared/gl_model.c
+index fbf3671..cfad3b6 100644
+--- a/engine/h2shared/gl_model.c
++++ b/engine/h2shared/gl_model.c
+@@ -1073,8 +1073,8 @@ static void CalcSurfaceExtents (msurface_t *s)
+ 	mtexinfo_t	*tex;
+ 	int		bmins[2], bmaxs[2];
+ 
+-	mins[0] = mins[1] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+-	maxs[0] = maxs[1] = -9999999;
++	mins[0] = mins[1] = FLT_MAX;
++	maxs[0] = maxs[1] = -FLT_MAX;
+ 
+ 	tex = s->texinfo;
+ 
+diff --git a/engine/h2shared/gl_warp.c b/engine/h2shared/gl_warp.c
+index 6ecfd11..9c27d7f 100644
+--- a/engine/h2shared/gl_warp.c
++++ b/engine/h2shared/gl_warp.c
+@@ -36,8 +36,8 @@ static void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
+ 	int		i, j;
+ 	float	*v;
+ 
+-	mins[0] = mins[1] = mins[2] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+-	maxs[0] = maxs[1] = maxs[2] = -9999999;
++	mins[0] = mins[1] = mins[2] = FLT_MAX;
++	maxs[0] = maxs[1] = maxs[2] = -FLT_MAX;
+ 	v = verts;
+ 	for (i = 0; i < numverts; i++)
+ 	{
+@@ -1009,8 +1009,8 @@ void R_ClearSkyBox (void)
+ 
+ 	for (i = 0; i < 6; i++)
+ 	{
+-		skymins[0][i] = skymins[1][i] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+-		skymaxs[0][i] = skymaxs[1][i] = -9999999;
++		skymins[0][i] = skymins[1][i] = FLT_MAX;
++		skymaxs[0][i] = skymaxs[1][i] = -FLT_MAX;
+ 	}
+ }
+ 
+diff --git a/engine/h2shared/mathlib.h b/engine/h2shared/mathlib.h
+index f790f33..269eea3 100644
+--- a/engine/h2shared/mathlib.h
++++ b/engine/h2shared/mathlib.h
+@@ -23,6 +23,7 @@
+ #ifndef __MATHLIB_H
+ #define __MATHLIB_H
+ 
++#include <float.h>
+ #include <math.h>
+ 
+ #ifndef M_PI
+diff --git a/engine/h2shared/model.c b/engine/h2shared/model.c
+index fa11368..a6427d5 100644
+--- a/engine/h2shared/model.c
++++ b/engine/h2shared/model.c
+@@ -870,8 +870,8 @@ static void CalcSurfaceExtents (msurface_t *s)
+ 	mtexinfo_t	*tex;
+ 	int		bmins[2], bmaxs[2];
+ 
+-	mins[0] = mins[1] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+-	maxs[0] = maxs[1] = -9999999;
++	mins[0] = mins[1] = FLT_MAX;
++	maxs[0] = maxs[1] = -FLT_MAX;
+ 
+ 	tex = s->texinfo;
+ 
+diff --git a/engine/h2shared/sv_model.c b/engine/h2shared/sv_model.c
+index b52216e..51f0bb1 100644
+--- a/engine/h2shared/sv_model.c
++++ b/engine/h2shared/sv_model.c
+@@ -508,8 +508,8 @@ static void CalcSurfaceExtents (msurface_t *s, int firstedge, int numedges)
+ 	mtexinfo_t	*tex;
+ 	int		bmins[2], bmaxs[2];
+ 
+-	mins[0] = mins[1] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+-	maxs[0] = maxs[1] = -9999999;
++	mins[0] = mins[1] = FLT_MAX;
++	maxs[0] = maxs[1] = -FLT_MAX;
+ 
+ 	tex = s->texinfo;
+ 
+diff --git a/engine/hexen2/pr_cmds.c b/engine/hexen2/pr_cmds.c
+index 78947a2..0bc5253 100644
+--- a/engine/hexen2/pr_cmds.c
++++ b/engine/hexen2/pr_cmds.c
+@@ -207,8 +207,8 @@ static void SetMinMaxSize (edict_t *e, float *minvec, float *maxvec, qboolean ro
+ 		VectorCopy (minvec, bounds[0]);
+ 		VectorCopy (maxvec, bounds[1]);
+ 
+-		rmin[0] = rmin[1] = rmin[2] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+-		rmax[0] = rmax[1] = rmax[2] = -9999999;
++		rmin[0] = rmin[1] = rmin[2] = FLT_MAX;
++		rmax[0] = rmax[1] = rmax[2] = -FLT_MAX;
+ 
+ 		for (i = 0; i <= 1; i++)
+ 		{
+diff --git a/engine/hexen2/r_main.c b/engine/hexen2/r_main.c
+index 23ef4f8..4ad8ef4 100644
+--- a/engine/hexen2/r_main.c
++++ b/engine/hexen2/r_main.c
+@@ -945,8 +945,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
+ 
+ 	for (i = 0; i < 3; i++)
+ 	{
+-		tmins[i] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+-		tmaxs[i] = -9999999;
++		tmins[i] = FLT_MAX;
++		tmaxs[i] = -FLT_MAX;
+ 	}
+ 
+ 	AngleVectors (angles, forward, right, up);
+diff --git a/engine/hexen2/world.c b/engine/hexen2/world.c
+index 9a13cd3..779f23d 100644
+--- a/engine/hexen2/world.c
++++ b/engine/hexen2/world.c
+@@ -1006,8 +1006,8 @@ static void SV_MoveBounds (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, v
+ {
+ #if 0
+ 	// debug to test against everything
+-	boxmins[0] = boxmins[1] = boxmins[2] = -9999999;	//FIXME: change to FLT_MAX/-FLT_MAX
+-	boxmaxs[0] = boxmaxs[1] = boxmaxs[2] = 9999999;
++	boxmins[0] = boxmins[1] = boxmins[2] = -FLT_MAX;
++	boxmaxs[0] = boxmaxs[1] = boxmaxs[2] = FLT_MAX;
+ #else
+ 	int		i;
+ 
+diff --git a/engine/hexenworld/client/r_main.c b/engine/hexenworld/client/r_main.c
+index 2126952..4ea30ca 100644
+--- a/engine/hexenworld/client/r_main.c
++++ b/engine/hexenworld/client/r_main.c
+@@ -974,8 +974,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
+ 
+ 	for (i = 0; i < 3; i++)
+ 	{
+-		tmins[i] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+-		tmaxs[i] = -9999999;
++		tmins[i] = FLT_MAX;
++		tmaxs[i] = -FLT_MAX;
+ 	}
+ 
+ 	AngleVectors (angles, forward, right, up);
+diff --git a/engine/hexenworld/server/pr_cmds.c b/engine/hexenworld/server/pr_cmds.c
+index 8d792a5..44fa7b0 100644
+--- a/engine/hexenworld/server/pr_cmds.c
++++ b/engine/hexenworld/server/pr_cmds.c
+@@ -210,8 +210,8 @@ static void SetMinMaxSize (edict_t *e, float *minvec, float *maxvec, qboolean ro
+ 		VectorCopy (minvec, bounds[0]);
+ 		VectorCopy (maxvec, bounds[1]);
+ 
+-		rmin[0] = rmin[1] = rmin[2] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+-		rmax[0] = rmax[1] = rmax[2] = -9999999;
++		rmin[0] = rmin[1] = rmin[2] = FLT_MAX;
++		rmax[0] = rmax[1] = rmax[2] = -FLT_MAX;
+ 
+ 		for (i = 0; i <= 1; i++)
+ 		{
+diff --git a/engine/hexenworld/server/world.c b/engine/hexenworld/server/world.c
+index d943d7d..e417533 100644
+--- a/engine/hexenworld/server/world.c
++++ b/engine/hexenworld/server/world.c
+@@ -962,8 +962,8 @@ static void SV_MoveBounds (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, v
+ {
+ #if 0
+ 	// debug to test against everything
+-	boxmins[0] = boxmins[1] = boxmins[2] = -9999999;	//FIXME: change to FLT_MAX/-FLT_MAX
+-	boxmaxs[0] = boxmaxs[1] = boxmaxs[2] = 9999999;
++	boxmins[0] = boxmins[1] = boxmins[2] = -FLT_MAX;
++	boxmaxs[0] = boxmaxs[1] = boxmaxs[2] = FLT_MAX;
+ #else
+ 	int		i;
+ 
+
+diff --git a/utils/common/mathlib.h b/utils/common/mathlib.h
+index 43ad98c..c4da3f0 100644
+--- a/utils/common/mathlib.h
++++ b/utils/common/mathlib.h
+@@ -22,6 +22,7 @@
+ #ifndef __MATHLIB_H
+ #define __MATHLIB_H
+ 
++#include <float.h>
+ #include <math.h>
+ 
+ #define	SIDE_FRONT		0
+@@ -34,6 +35,12 @@
+ #endif
+ #define	Q_PI		M_PI
+ 
++#if defined(DOUBLEVEC_T)
++#define VECT_MAX	DBL_MAX
++#else
++#define VECT_MAX	FLT_MAX
++#endif
++
+ #define	EQUAL_EPSILON	0.001
+ 
+ extern vec3_t vec3_origin;
+diff --git a/utils/genmodel/genmodel.c b/utils/genmodel/genmodel.c
+index e5f1f75..9b360c3 100644
+--- a/utils/genmodel/genmodel.c
++++ b/utils/genmodel/genmodel.c
+@@ -246,8 +246,8 @@ int main(int argc, char **argv)
+ 	// Init
+ 	for (i = 0; i < 3; i++)
+ 	{
+-		framesmins[i] = 9999999;
+-		framesmaxs[i] = -9999999;
++		framesmins[i] = VECT_MAX;
++		framesmaxs[i] = -VECT_MAX;
+ 	}
+ 	ClearModel();
+ 
+@@ -1019,8 +1019,8 @@ static void SetSkinValues (void)
+ 
+ 	for (i = 0 ; i < 3 ; i++)
+ 	{
+-		mins[i] = 9999999;
+-		maxs[i] = -9999999;
++		mins[i] = VECT_MAX;
++		maxs[i] = -VECT_MAX;
+ 	}
+ 
+ 	for (i = 0 ; i < model.numverts ; i++)
+diff --git a/utils/jsh2color/ltface.c b/utils/jsh2color/ltface.c
+index 31801ec..c0d3e45 100644
+--- a/utils/jsh2color/ltface.c
++++ b/utils/jsh2color/ltface.c
+@@ -200,8 +200,8 @@ static void CalcFaceExtents (lightinfo_t *l, const vec3_t faceoffset, qboolean f
+ 
+ 	s = l->face;
+ 
+-	mins[0] = mins[1] = 999999;
+-	maxs[0] = maxs[1] = -99999;
++	mins[0] = mins[1] = VECT_MAX;
++	maxs[0] = maxs[1] = -VECT_MAX;
+ 
+ 	tex = &texinfo[s->texinfo];
+ 
+diff --git a/utils/light/ltface.c b/utils/light/ltface.c
+index bc8f128..08eabbc 100644
+--- a/utils/light/ltface.c
++++ b/utils/light/ltface.c
+@@ -186,8 +186,8 @@ static void CalcFaceExtents (lightinfo_t *l)
+ 
+ 	s = l->face;
+ 
+-	mins[0] = mins[1] = 999999;
+-	maxs[0] = maxs[1] = -99999;
++	mins[0] = mins[1] = VECT_MAX;
++	maxs[0] = maxs[1] = -VECT_MAX;
+ 
+ 	tex = &texinfo[s->texinfo];
+ 
+diff --git a/utils/qbsp/brush.c b/utils/qbsp/brush.c
+index 012087e..60ac921 100644
+--- a/utils/qbsp/brush.c
++++ b/utils/qbsp/brush.c
+@@ -113,8 +113,8 @@ void ClearBounds (brushset_t *bs)
+ 	{
+ 		for (i = 0 ; i < 3 ; i++)
+ 		{
+-			bs->mins[i] = 99999;
+-			bs->maxs[i] = -99999;
++			bs->mins[i] = VECT_MAX;
++			bs->maxs[i] = -VECT_MAX;
+ 		}
+ 	}
+ }
+@@ -389,8 +389,8 @@ static void CreateBrushFaces (void)
+ 	plane_t		plane;
+ 	mface_t		*mf;
+ 
+-	brush_mins[0] = brush_mins[1] = brush_mins[2] = 99999;
+-	brush_maxs[0] = brush_maxs[1] = brush_maxs[2] = -99999;
++	brush_mins[0] = brush_mins[1] = brush_mins[2] = VECT_MAX;
++	brush_maxs[0] = brush_maxs[1] = brush_maxs[2] = -VECT_MAX;
+ 
+ 	brush_faces = NULL;
+ 
+@@ -499,8 +499,10 @@ static void AddBrushPlane (plane_t *plane)
+ 	float	l;
+ 
+ 	if (numbrushfaces == MAX_FACES)
++	{
+ 		printf ("%s: numbrushfaces == MAX_FACES\n", __thisfunc__);
+ //		COM_Error ("%s: numbrushfaces == MAX_FACES", __thisfunc__);
++	}
+ 
+ 	l = VectorLength (plane->normal);
+ 	if (l < 0.999 || l > 1.001)
+diff --git a/utils/qbsp/region.c b/utils/qbsp/region.c
+index b3aa18b..28edc36 100644
+--- a/utils/qbsp/region.c
++++ b/utils/qbsp/region.c
+@@ -65,8 +65,8 @@ static void AddPointToRegion (vec3_t p)
+ 
+ static void ClearRegionSize (void)
+ {
+-	region_mins[0] = region_mins[1] = region_mins[2] = 9999;
+-	region_maxs[0] = region_maxs[1] = region_maxs[2] = -9999;
++	region_mins[0] = region_mins[1] = region_mins[2] = VECT_MAX;
++	region_maxs[0] = region_maxs[1] = region_maxs[2] = -VECT_MAX;
+ }
+ 
+ static void AddFaceToRegionSize (face_t *f)
+diff --git a/utils/qbsp/solidbsp.c b/utils/qbsp/solidbsp.c
+index 6f52d5b..bd8c14c 100644
+--- a/utils/qbsp/solidbsp.c
++++ b/utils/qbsp/solidbsp.c
+@@ -182,18 +182,18 @@ The real BSP hueristic
+ */
+ static surface_t *ChoosePlaneFromList (surface_t *surfaces, vec3_t mins, vec3_t maxs, qboolean usefloors)
+ {
+-	int			j, k, l;
++	int			j, k, l, bestvalue;
+ 	surface_t	*p, *p2, *bestsurface;
+-	double		bestvalue, bestdistribution, value, dist;
++	double		bestdistribution, value, dist;
+ 	plane_t		*plane;
+ 	face_t		*f;
+ 
+ //
+ // pick the plane that splits the least
+ //
+-	bestvalue = 99999;
++	bestvalue = INT_MAX-1;
+ 	bestsurface = NULL;
+-	bestdistribution = 9e30;
++	bestdistribution = VECT_MAX;
+ 
+ 	for (p = surfaces ; p ; p = p->next)
+ 	{
+@@ -310,8 +310,8 @@ static surface_t *SelectPartition (surface_t *surfaces)
+ //
+ 	for (i = 0 ; i < 3 ; i++)
+ 	{
+-		mins[i] = 99999;
+-		maxs[i] = -99999;
++		mins[i] = VECT_MAX;
++		maxs[i] = -VECT_MAX;
+ 	}
+ 
+ 	for (p = surfaces ; p ; p = p->next)
+@@ -357,8 +357,8 @@ void CalcSurfaceInfo (surface_t *surf)
+ //
+ 	for (i = 0 ; i < 3 ; i++)
+ 	{
+-		surf->mins[i] = 99999;
+-		surf->maxs[i] = -99999;
++		surf->mins[i] = VECT_MAX;
++		surf->maxs[i] = -VECT_MAX;
+ 	}
+ 
+ 	for (f = surf->faces ; f ; f = f->next)
+diff --git a/utils/qbsp/surfaces.c b/utils/qbsp/surfaces.c
+index 8a99e83..8a44376 100644
+--- a/utils/qbsp/surfaces.c
++++ b/utils/qbsp/surfaces.c
+@@ -61,8 +61,8 @@ void SubdivideFace (face_t *f, face_t **prevptr)
+ 
+ 	do
+ 	{
+-		mins[0] = mins[1] = mins[2] = 9999;
+-		maxs[0] = maxs[1] = maxs[2] = -9999;
++		mins[0] = mins[1] = mins[2] = VECT_MAX;
++		maxs[0] = maxs[1] = maxs[2] = -VECT_MAX;
+ 
+ 		for (i = 0 ; i < f->numpoints ; i++)
+ 		{
+@@ -126,7 +126,7 @@ piece off and insert the remainder in the next link
+ */
+ void SubdivideFace (face_t *f, face_t **prevptr)
+ {
+-	float		mins, maxs;
++	vec_t		mins, maxs;
+ 	double		v;
+ 	int			axis, i;
+ 	plane_t		plane;
+@@ -143,8 +143,8 @@ void SubdivideFace (face_t *f, face_t **prevptr)
+ 	{
+ 		while (1)
+ 		{
+-			mins = 9999;
+-			maxs = -9999;
++			mins = VECT_MAX;
++			maxs = -VECT_MAX;
+ 
+ 			for (i = 0 ; i < f->numpoints ; i++)
+ 			{
+diff --git a/utils/qbsp/tjunc.c b/utils/qbsp/tjunc.c
+index 75e717d..b5f5f6e 100644
+--- a/utils/qbsp/tjunc.c
++++ b/utils/qbsp/tjunc.c
+@@ -29,7 +29,7 @@
+ 
+ typedef struct wvert_s
+ {
+-	double	t;
++	vec_t	t;
+ 	struct wvert_s *prev, *next;
+ } wvert_t;
+ 
+@@ -200,7 +200,7 @@ static wedge_t *FindEdge (vec3_t p1, vec3_t p2, double *t1, double *t2)
+ 	VectorCopy (origin, w->origin);
+ 	VectorCopy (dir, w->dir);
+ 	w->head.next = w->head.prev = &w->head;
+-	w->head.t = 99999;
++	w->head.t = VECT_MAX;
+ 	return w;
+ }
+ 
+@@ -520,4 +520,3 @@ void tjunc (node_t *headnode)
+ 	qprintf ("%i edges added by tjunctions\n", tjuncs);
+ 	qprintf ("%i faces added by tjunctions\n", tjuncfaces);
+ }
+-
+diff --git a/utils/vis/soundpvs.c b/utils/vis/soundpvs.c
+index b3a9035..c3c6996 100644
+--- a/utils/vis/soundpvs.c
++++ b/utils/vis/soundpvs.c
+@@ -48,8 +48,8 @@ static void SurfaceBBox (dface_t *s, vec3_t mins, vec3_t maxs)
+ 	int		vi;
+ 	float	*v;
+ 
+-	mins[0] = mins[1] = 999999;
+-	maxs[0] = maxs[1] = -99999;
++	mins[0] = mins[1] = VECT_MAX;
++	maxs[0] = maxs[1] = -VECT_MAX;
+ 
+ 	for (i = 0 ; i < s->numedges ; i++)
+ 	{
+@@ -71,7 +71,6 @@ static void SurfaceBBox (dface_t *s, vec3_t mins, vec3_t maxs)
+ }
+ #endif
+ 
+-
+ /*
+ ====================
+ CalcAmbientSounds
+diff --git a/utils/vis/vis.c b/utils/vis/vis.c
+index 8dcccc1..52ede75 100644
+--- a/utils/vis/vis.c
++++ b/utils/vis/vis.c
+@@ -323,7 +323,7 @@ static portal_t *GetNextPortal (void)
+ 
+ 	ThreadLock();
+ 
+-	minsee = 99999;
++	minsee = INT_MAX;
+ 	p = NULL;
+ 
+ 	for (j = 0, tp = portals ; j < num2 ; j++, tp++)
