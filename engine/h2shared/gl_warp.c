@@ -1009,8 +1009,8 @@ void R_ClearSkyBox (void)
 
 	for (i = 0; i < 6; i++)
 	{
-		skymins[0][i] = skymins[1][i] = 9999;
-		skymaxs[0][i] = skymaxs[1][i] = -9999;
+		skymins[0][i] = skymins[1][i] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+		skymaxs[0][i] = skymaxs[1][i] = -9999999;
 	}
 }
 
@@ -1095,7 +1095,6 @@ void R_DrawSkyBox (void)
 	glEnable_fp (GL_DEPTH_TEST);
 #endif
 }
-
 
 #endif	/* end of Quake2 sky */
 

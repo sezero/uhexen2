@@ -974,8 +974,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins, 
 
 	for (i = 0; i < 3; i++)
 	{
-		tmins[i] = 99999;
-		tmaxs[i] = -99999;
+		tmins[i] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+		tmaxs[i] = -9999999;
 	}
 
 	AngleVectors (angles, forward, right, up);

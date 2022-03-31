@@ -558,7 +558,7 @@ void D_DrawSprite (void)
 
 // find the top and bottom vertices, and make sure there's at least one scan to
 // draw
-	ymin = 999999.9;
+	ymin = 999999.9;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
 	ymax = -999999.9;
 	pverts = r_spritedesc.pverts;
 

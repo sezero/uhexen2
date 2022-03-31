@@ -210,8 +210,8 @@ static void SetMinMaxSize (edict_t *e, float *minvec, float *maxvec, qboolean ro
 		VectorCopy (minvec, bounds[0]);
 		VectorCopy (maxvec, bounds[1]);
 
-		rmin[0] = rmin[1] = rmin[2] = 9999;
-		rmax[0] = rmax[1] = rmax[2] = -9999;
+		rmin[0] = rmin[1] = rmin[2] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+		rmax[0] = rmax[1] = rmax[2] = -9999999;
 
 		for (i = 0; i <= 1; i++)
 		{
