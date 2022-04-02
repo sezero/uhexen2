@@ -203,7 +203,7 @@ void R_ReadPointFile_f (void)
 	if (cls.state != ca_connected)
 		return; // need an active map.
 
-	color = (byte)Cvar_VariableValue("leak_color");
+	color = (byte)leak_color.integer;
 	q_snprintf (name, sizeof(name), "maps/%s.pts", cl.mapname);
 
 	FS_OpenFile (name, &f, NULL);
@@ -1255,7 +1255,7 @@ void R_SnowEffect (vec3_t org1, vec3_t org2, int flags, vec3_t alldir, int count
 	particle_t	*p;
 	mleaf_t		*l;
 
-	count *= Cvar_VariableValue("snow_active");
+	count *= snow_active.integer;
 	for (i = 0; i < count; i++)
 	{
 		p = AllocParticle();
@@ -1638,7 +1638,7 @@ void R_UpdateParticles (void)
 			// increments of 4 & check solid
 				mleaf_t		*l;
 
-				if (Cvar_VariableValue("snow_flurry") == 1)
+				if (snow_flurry.integer == 1)
 				{
 				    if (rand() & 31)
 				    {
