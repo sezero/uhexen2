@@ -1291,7 +1291,8 @@ ifeq ($(USE_M68K_ASM),yes)
 SOFT_ASM = \
 	amiga_d_68k.o \
 	amiga_d_polyse68k.o \
-	amiga_r_68k.o
+	amiga_r_68k.o \
+	d_part68k.o
 
 COMMON_ASM = swap_68k.o
 SOUND_ASM = snd_mixamiga68k.o
