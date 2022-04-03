@@ -536,7 +536,7 @@ static void CL_ParseUpdate (int bits)
 		if (model)
 		{
 			if (model->synctype == ST_RAND)
-				ent->syncbase = rand() * (1.0 / RAND_MAX);//(float)(rand() & 0x7fff) / 0x7fff;
+				ent->syncbase = rand() * (1.0 / RAND_MAX);
 			else	ent->syncbase = 0.0;
 		}
 		else	forcelink = true;	// hack to make null model players work

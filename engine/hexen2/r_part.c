@@ -605,7 +605,6 @@ void R_RunParticleEffect2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, ptyp
 		p->ramp = 0;
 		for (j = 0; j < 3; j++)
 		{
-		//	num = (rand() & 0x7fff) / ((float)0x7fff);
 			num = rand() * (1.0 / RAND_MAX);
 			p->org[j] = org[j] + ((rand() & 8) - 4); //added randomness to org
 			p->vel[j] = dmin[j] + ((dmax[j] - dmin[j]) * num);
@@ -638,7 +637,6 @@ void R_RunParticleEffect3 (vec3_t org, vec3_t box, int color, ptype_t effect, in
 		p->ramp = 0;
 		for (j = 0; j < 3; j++)
 		{
-		//	num = (rand() & 0x7fff) / ((float)0x7fff);
 			num = rand() * (1.0 / RAND_MAX);
 			p->org[j] = org[j] + ((rand() & 15) - 8);
 			p->vel[j] = (box[j] * num * 2) - box[j];
@@ -671,7 +669,6 @@ void R_RunParticleEffect4 (vec3_t org, float radius, int color, ptype_t effect, 
 		p->ramp = 0;
 		for (j = 0; j < 3; j++)
 		{
-		//	num = (rand() & 0x7fff) / ((float)0x7fff);
 			num = rand() * (1.0 / RAND_MAX);
 			p->org[j] = org[j] + ((rand() & 15) - 8);
 			p->vel[j] = (radius * num * 2) - radius;
@@ -788,25 +785,19 @@ void R_RunQuakeEffect (vec3_t org, float distance)
 		p->type = pt_quake;
 		p->ramp = 0;
 
-	//	num = (rand() & 0x7fff) / ((float)0x7fff);
 		num = rand() * (1.0 / RAND_MAX);
 		num2 = distance * num;
-	//	num = (rand() & 0x7fff) / ((float)0x7fff);
 		num = rand() * (1.0 / RAND_MAX);
 		p->org[0] = org[0] + cos(num * 2 * M_PI)*num2;
 		p->org[1] = org[1] + sin(num * 2 * M_PI)*num2;
-	//	num = (rand() & 0x7fff) / ((float)0x7fff);
 		num = rand() * (1.0 / RAND_MAX);
 		p->org[2] = org[2] + 15*num;
 		p->org[2] = org[2];
 
-	//	num = (rand() & 0x7fff) / ((float)0x7fff);
 		num = rand() * (1.0 / RAND_MAX);
 		p->vel[0] = (num * 40) - 20;
-	//	num = (rand() & 0x7fff) / ((float)0x7fff);
 		num = rand() * (1.0 / RAND_MAX);
 		p->vel[1] = (num * 40) - 20;
-	//	num = (rand() & 0x7fff) / ((float)0x7fff);
 		num = rand() * (1.0 / RAND_MAX);
 		p->vel[2] = 65*num + 80;
 	}
@@ -1440,7 +1431,9 @@ void R_DrawParticles (void)
 	glDisable_fp (GL_BLEND);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
+
 #else	/* !GLQUAKE */
+
 void R_DrawParticles (void)
 {
 	particle_t	*p;
