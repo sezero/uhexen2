@@ -507,10 +507,10 @@
 		707D57B90AA9F6EE00313A9F /* net_udp.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = net_udp.c; path = ../net_udp.c; sourceTree = SOURCE_ROOT; };
 		707D57BA0AA9F6EE00313A9F /* net_udp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = net_udp.h; path = ../net_udp.h; sourceTree = SOURCE_ROOT; };
 		707D57BD0AA9F6EE00313A9F /* snd_codec.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_codec.c; path = ../../h2shared/snd_codec.c; sourceTree = SOURCE_ROOT; };
-		707D57BE0AA9F6EE00313A9F /* pr_cmds.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_cmds.c; path = ../pr_cmds.c; sourceTree = SOURCE_ROOT; };
+		707D57BE0AA9F6EE00313A9F /* pr_cmds.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_cmds.c; path = ../../h2shared/pr_cmds.c; sourceTree = SOURCE_ROOT; };
 		707D57BF0AA9F6EE00313A9F /* pr_comp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pr_comp.h; path = ../../../common/pr_comp.h; sourceTree = SOURCE_ROOT; };
-		707D57C00AA9F6EE00313A9F /* pr_edict.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_edict.c; path = ../pr_edict.c; sourceTree = SOURCE_ROOT; };
-		707D57C10AA9F6EE00313A9F /* pr_exec.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_exec.c; path = ../pr_exec.c; sourceTree = SOURCE_ROOT; };
+		707D57C00AA9F6EE00313A9F /* pr_edict.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_edict.c; path = ../../h2shared/pr_edict.c; sourceTree = SOURCE_ROOT; };
+		707D57C10AA9F6EE00313A9F /* pr_exec.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_exec.c; path = ../../h2shared/pr_exec.c; sourceTree = SOURCE_ROOT; };
 		707D57C20AA9F6EE00313A9F /* cl_string.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cl_string.c; path = ../cl_string.c; sourceTree = SOURCE_ROOT; };
 		707D57C30AA9F6EE00313A9F /* host_string.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = host_string.c; path = ../../h2shared/host_string.c; sourceTree = SOURCE_ROOT; };
 		707D57C40AA9F6EE00313A9F /* progdefs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = progdefs.h; path = ../progdefs.h; sourceTree = SOURCE_ROOT; };
