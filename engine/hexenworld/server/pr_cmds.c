@@ -553,7 +553,6 @@ static void PF_centerprint (void)
 	MSG_WriteString (&client->netchan.message, s);
 }
 
-
 /*
 =================
 PF_bcenterprint2
@@ -2732,9 +2731,9 @@ static void PF_setclass (void)
 	old = host_client;
 	host_client = client;
 
-	if (newclass > CLASS_DEMON && (dmMode.integer != DM_SIEGE || !SV_PROGS_HAVE_SIEGE))
+	if (newclass > CLASS_DEMON && (dmMode.integer != DM_SIEGE || !SV_PROGS_HAVE_SIEGE)) {
 		newclass = CLASS_PALADIN;
-
+	}
 	e->v.playerclass = newclass;
 	host_client->playerclass = newclass;
 
@@ -2744,7 +2743,7 @@ static void PF_setclass (void)
 	host_client->sendinfo = true;
 
 	// process any changed values
-//	SV_ExtractFromUserinfo (host_client);
+	//SV_ExtractFromUserinfo (host_client);
 
 	//update everyone else about playerclass change
 	MSG_WriteByte (&sv.reliable_datagram, svc_updatepclass);

@@ -2908,7 +2908,7 @@ static void PF_setclass (void)
 
 	if (entnum < 1 || entnum > svs.maxclients)
 	{
-		Con_Printf ("tried to sprint to a non-client\n");
+		Con_Printf ("tried to change class of a non-client\n");
 		return;
 	}
 
