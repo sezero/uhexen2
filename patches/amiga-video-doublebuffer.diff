@@ -3,13 +3,13 @@ Initial implementation for Amiga CyberGraphx double buffered video
 
 - screenshot freezes the game.
 - enabling r_speeds or r_dspeeds freezes the game.
-- extensive re-testing needed in uhexen2-v1.5.9 .
+- extensive re-testing needed in uhexen2-v1.5.10.
 
 diff --git a/engine/h2shared/vid_cgx.c b/engine/h2shared/vid_cgx.c
-index 9ca979d..ab59018 100644
+index ae19031..0b2cf9b 100644
 --- a/engine/h2shared/vid_cgx.c
 +++ b/engine/h2shared/vid_cgx.c
-@@ -91,6 +91,16 @@ ASM_LINKAGE_END
+@@ -83,6 +83,16 @@ ASM_LINKAGE_END
  #endif /* USE_C2P */
  #endif /* PLATFORM_AMIGAOS3 */
  
@@ -26,7 +26,7 @@ index 9ca979d..ab59018 100644
  /* ----------------------------------------- */
  
  static unsigned char	vid_curpal[256*3];	/* save for mode changes */
-@@ -529,6 +539,35 @@ static void VID_DestroyWindow (void)
+@@ -521,6 +531,35 @@ static void VID_DestroyWindow (void)
  	}
  #endif
  
@@ -62,7 +62,7 @@ index 9ca979d..ab59018 100644
  	if (screen)
  	{
  		CloseScreen(screen);
-@@ -569,6 +608,8 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
+@@ -561,6 +600,8 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
  
  	flags = WFLG_ACTIVATE | WFLG_RMBTRAP;
  
@@ -71,8 +71,8 @@ index 9ca979d..ab59018 100644
  	if (vid_config_fscr.integer)
  	{
  		ULONG ModeID;
-@@ -591,6 +632,46 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
- 			SA_Quiet, TRUE,
+@@ -592,6 +633,46 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
+ 			SA_VideoControl, (IPTR)vctl,
  			TAG_DONE);
  
 +		if (CyberGfxBase && screen &&
@@ -118,7 +118,7 @@ index 9ca979d..ab59018 100644
  		#if defined(PLATFORM_AMIGAOS3) && defined(USE_C2P)
  		currentBitMap = 0;
  		bm = screen->RastPort.BitMap;
-@@ -637,12 +718,13 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
+@@ -635,12 +716,13 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
  		if (pointermem) {*/
  			vid.height = vid.conheight = modelist[modenum].height;
  			vid.rowbytes = vid.conrowbytes = vid.width = vid.conwidth = modelist[modenum].width;
@@ -135,7 +135,7 @@ index 9ca979d..ab59018 100644
  				vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
  
  				if (VID_AllocBuffers (vid.width, vid.height))
-@@ -736,10 +818,58 @@ static void VID_Restart_f (void)
+@@ -734,10 +816,58 @@ static void VID_Restart_f (void)
  
  void VID_LockBuffer(void)
  {
@@ -194,7 +194,7 @@ index 9ca979d..ab59018 100644
  }
  
  
-@@ -1028,6 +1158,20 @@ static void FlipScreen (vrect_t *rects)
+@@ -1008,6 +1138,20 @@ static void FlipScreen (vrect_t *rects)
  	}
  #endif
  
@@ -215,7 +215,7 @@ index 9ca979d..ab59018 100644
  	while (rects)
  	{
  #ifdef PLATFORM_AMIGAOS3
-@@ -1129,7 +1273,22 @@ void D_EndDirectRect (int x, int y, int width, int height)
+@@ -1109,7 +1253,22 @@ void D_EndDirectRect (int x, int y, int width, int height)
  
  	if (screen)
  	{
@@ -239,6 +239,3 @@ index 9ca979d..ab59018 100644
  	}
  	else
  	{
-
--- 
-1.7.1

@@ -3,10 +3,10 @@ Change PR_ExecuteProgram() to use computed GOTOs - by Szilard Biro.
 Gives a slight performance increase.
 Requires: GCC or compatibles, like clang.
 
-diff --git a/engine/hexen2/pr_exec.c b/engine/hexen2/pr_exec.c
-index 7e1dbe2..18e9807 100644
---- a/engine/hexen2/pr_exec.c
-+++ b/engine/hexen2/pr_exec.c
+diff --git a/engine/h2shared/pr_exec.c b/engine/h2shared/pr_exec.c
+index d6d0833..ff028a9 100644
+--- a/engine/h2shared/pr_exec.c
++++ b/engine/h2shared/pr_exec.c
 @@ -147,6 +147,17 @@ static const char *pr_opnames[] =
  #define OPC ((eval_t *)&pr_globals[st->c])
  #endif
@@ -846,7 +846,3 @@ index 7e1dbe2..18e9807 100644
  	}
      }	/* end of while(1) loop */
  }
-
--- 
-1.7.1
-
