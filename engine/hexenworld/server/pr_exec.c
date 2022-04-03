@@ -702,44 +702,44 @@ void PR_ExecuteProgram (func_t fnum)
 
 	case OP_RAND0:
 	  {	float val;
-		val = (rand() & 0x7fff) / ((float)0x7fff);
+		val = rand() * (1.0 / RAND_MAX);
 		G_FLOAT(OFS_RETURN) = val;
 	  }	break;
 	case OP_RAND1:
 	  {	float val;
-		val = (rand() & 0x7fff) / ((float)0x7fff) * a->_float;
+		val = rand() * (1.0 / RAND_MAX) * a->_float;
 		G_FLOAT(OFS_RETURN) = val;
 	  }	break;
 	case OP_RAND2:
 	  {	float val;
 		if (a->_float < b->_float)
 		{
-			val = a->_float + ((rand() & 0x7fff) / ((float)0x7fff) * (b->_float - a->_float));
+			val = a->_float + (rand() * (1.0 / RAND_MAX) * (b->_float - a->_float));
 		}
 		else
 		{
-			val = b->_float + ((rand() & 0x7fff) / ((float)0x7fff) * (a->_float - b->_float));
+			val = b->_float + (rand() * (1.0 / RAND_MAX) * (a->_float - b->_float));
 		}
 		G_FLOAT(OFS_RETURN) = val;
 	  }	break;
 	case OP_RANDV0:
 	  {	float val;
 		float *retptr = &G_FLOAT(OFS_RETURN);
-		val = (rand() & 0x7fff) / ((float)0x7fff);
+		val = rand() * (1.0 / RAND_MAX);
 		*retptr++ = val;
-		val = (rand() & 0x7fff) / ((float)0x7fff);
+		val = rand() * (1.0 / RAND_MAX);
 		*retptr++ = val;
-		val = (rand() & 0x7fff) / ((float)0x7fff);
+		val = rand() * (1.0 / RAND_MAX);
 		*retptr   = val;
 	  }	break;
 	case OP_RANDV1:
 	  {	float val;
 		float *retptr = &G_FLOAT(OFS_RETURN);
-		val = (rand() & 0x7fff) / ((float)0x7fff) * a->vector[0];
+		val = rand() * (1.0 / RAND_MAX) * a->vector[0];
 		*retptr++ = val;
-		val = (rand() & 0x7fff) / ((float)0x7fff) * a->vector[1];
+		val = rand() * (1.0 / RAND_MAX) * a->vector[1];
 		*retptr++ = val;
-		val = (rand() & 0x7fff) / ((float)0x7fff) * a->vector[2];
+		val = rand() * (1.0 / RAND_MAX) * a->vector[2];
 		*retptr   = val;
 	  }	break;
 	case OP_RANDV2:
@@ -750,7 +750,7 @@ void PR_ExecuteProgram (func_t fnum)
 		{
 			if (a->vector[i] < b->vector[i])
 			{
-				val = a->vector[i] + ((rand() & 0x7fff) / ((float)0x7fff) * (b->vector[i] - a->vector[i]));
+				val = a->vector[i] + (rand() * (1.0 / RAND_MAX) * (b->vector[i] - a->vector[i]));
 			}
 			else
 			{

@@ -766,7 +766,7 @@ static void PF_random (void)
 {
 	float		num;
 
-	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 
 	G_FLOAT(OFS_RETURN) = num;
 }
@@ -2960,7 +2960,7 @@ static void PF_randomrange(void)
 	minv = G_FLOAT(OFS_PARM0);
 	maxv = G_FLOAT(OFS_PARM1);
 
-	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 
 	G_FLOAT(OFS_RETURN) = ((maxv-minv) * num) + minv;
 }
@@ -2971,7 +2971,7 @@ static void PF_randomvalue(void)
 
 	range = G_FLOAT(OFS_PARM0);
 
-	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 
 	G_FLOAT(OFS_RETURN) = range * num;
 }
@@ -2984,11 +2984,11 @@ static void PF_randomvrange(void)
 	minv = G_VECTOR(OFS_PARM0);
 	maxv = G_VECTOR(OFS_PARM1);
 
-	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 	result[0] = ((maxv[0] - minv[0]) * num) + minv[0];
-	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 	result[1] = ((maxv[1] - minv[1]) * num) + minv[1];
-	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 	result[2] = ((maxv[2] - minv[2]) * num) + minv[2];
 
 	VectorCopy (result, G_VECTOR(OFS_RETURN));
@@ -3001,11 +3001,11 @@ static void PF_randomvvalue(void)
 
 	range = G_VECTOR(OFS_PARM0);
 
-	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 	result[0] = range[0] * num;
-	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 	result[1] = range[1] * num;
-	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 	result[2] = range[2] * num;
 
 	VectorCopy (result, G_VECTOR(OFS_RETURN));
@@ -3083,11 +3083,11 @@ static void PF_v_factorrange(void)
 	minv = G_VECTOR(OFS_PARM0);
 	maxv = G_VECTOR(OFS_PARM1);
 
-	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 	result[0] = ((maxv[0] - minv[0]) * num) + minv[0];
-	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 	result[1] = ((maxv[1] - minv[1]) * num) + minv[1];
-	num = (rand() & 0x7fff) / ((float)0x7fff);
+	num = rand() * (1.0 / RAND_MAX);
 	result[2] = ((maxv[2] - minv[2]) * num) + minv[2];
 
 	r2[0] = ((*sv_globals.v_right)[0] * result[0]) +
