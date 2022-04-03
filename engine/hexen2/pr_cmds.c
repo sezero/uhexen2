@@ -52,6 +52,7 @@ static int	d_lightstylevalue[256];
 #else
 extern int	d_lightstylevalue[256];
 #endif
+static sizebuf_t *WriteDest (void);
 
 
 /*
@@ -340,9 +341,9 @@ static void PF_setpuzzlemodel (void)
 			m = (const char *)Hunk_Strdup(m, "puzzlemodel");
 			sv.model_precache[i] = m;
 			e->v.model = PR_SetEngineString(m);
-#if !defined(SERVERONLY)
+			#ifndef SERVERONLY
 			sv.models[i] = Mod_ForName (m, true);
-#endif	/* SERVERONLY */
+			#endif
 		}
 		else
 		{
@@ -402,7 +403,6 @@ static void PF_sprint (void)
 	}
 
 	client = &svs.clients[entnum-1];
-
 	MSG_WriteChar (&client->message,svc_print);
 	MSG_WriteString (&client->message, s );
 }
@@ -502,7 +502,7 @@ scalar vhlen(vector)
 static void PF_vhlen (void)
 {
 	float	*value1;
-	float	new_temp;
+	double	new_temp;
 
 	value1 = G_VECTOR(OFS_PARM0);
 
@@ -540,7 +540,6 @@ static void PF_vectoyaw (void)
 
 	G_FLOAT(OFS_RETURN) = yaw;
 }
-
 
 /*
 =================
@@ -620,7 +619,6 @@ static void PF_particle (void)
 	SV_StartParticle (org, dir, color, count);
 }
 
-
 /*
 =================
 PF_particle2
@@ -643,7 +641,6 @@ static void PF_particle2 (void)
 	count = G_FLOAT(OFS_PARM5);
 	SV_StartParticle2 (org, dmin, dmax, color, effect, count);
 }
-
 
 /*
 =================
@@ -703,7 +700,9 @@ static void PF_ambientsound (void)
 	float		*pos;
 	float		vol, attenuation;
 	int		i, soundnum;
-	int		SOUNDS_MAX; /* just to be on the safe side */
+	/* just to be on the safe side */
+	const int SOUNDS_MAX = (sv_protocol == PROTOCOL_RAVEN_111) ?
+					MAX_SOUNDS_OLD : MAX_SOUNDS;
 
 	pos = G_VECTOR (OFS_PARM0);
 	samp = G_STRING(OFS_PARM1);
@@ -711,7 +710,6 @@ static void PF_ambientsound (void)
 	attenuation = G_FLOAT(OFS_PARM3);
 
 // check to see if samp was properly precached
-	SOUNDS_MAX = (sv_protocol == PROTOCOL_RAVEN_111) ? MAX_SOUNDS_OLD : MAX_SOUNDS;
 	for (soundnum = 0, check = sv.sound_precache;
 	     soundnum < SOUNDS_MAX && *check; soundnum++, check++)
 	{
@@ -808,15 +806,6 @@ static void PF_sound (void)
 	volume = G_FLOAT(OFS_PARM3) * 255;
 	attenuation = G_FLOAT(OFS_PARM4);
 
-	if (volume < 0 || volume > 255)
-		Host_Error ("%s: volume = %i", __thisfunc__, volume);
-
-	if (attenuation < 0 || attenuation > 4)
-		Host_Error ("%s: attenuation = %f", __thisfunc__, attenuation);
-
-	if (channel < 0 || channel > 7)
-		Host_Error ("%s: channel = %i", __thisfunc__, channel);
-
 	SV_StartSound (entity, channel, sample, volume, attenuation);
 }
 
@@ -893,7 +882,6 @@ static void PF_traceline (void)
 	ent->v.hull = save_hull;
 
 	PR_SetTrace (&trace);
-
 }
 
 #ifdef QUAKE2
@@ -1043,12 +1031,10 @@ static void FindPath (float *StartV, float *EndV, float *Mins, float *Maxs, int 
 		    {
 			for (x = 0; x < XSize; x++, Pos++)
 			{
-			    if (Pos->Found == c)
-			    {
+			    if (Pos->Found == c) {
 				for (zs = -1; zs <= 1; zs++)
 				{
-				    switch (zs)
-				    {
+				    switch (zs) {
 				    case -1:
 					ZPos = 0;
 					if (z == ZPos)
@@ -1066,8 +1052,7 @@ static void FindPath (float *StartV, float *EndV, float *Mins, float *Maxs, int 
 
 				    for (ys = -1; ys <= 1; ys++)
 				    {
-					switch (ys)
-					{
+					switch (ys) {
 					case -1:
 						YPos = 0;
 						if (y == YPos)
@@ -1085,10 +1070,8 @@ static void FindPath (float *StartV, float *EndV, float *Mins, float *Maxs, int 
 
 					for (xs = -1; xs <= 1; xs++)
 					{
-					    if (zs || ys || xs)
-					    {
-						switch (xs)
-						{
+					    if (zs || ys || xs) {
+						switch (xs) {
 						case -1:
 							XPos = 0;
 							if (x == XPos)
@@ -1129,8 +1112,7 @@ static void FindPath (float *StartV, float *EndV, float *Mins, float *Maxs, int 
 						nz = z;
 						Diff = 0;
 
-						do
-						{
+						do {
 							Diff++;
 							nx += xs;
 							ny += ys;
@@ -1138,24 +1120,21 @@ static void FindPath (float *StartV, float *EndV, float *Mins, float *Maxs, int 
 
 							EndPos = &PI[POINT_POS(nx,ny,nz)];
 
-						//	if (EndPos < PI || EndPos >= &PI[MAX_POINT])
-						//	{
+						//	if (EndPos < PI || EndPos >= &PI[MAX_POINT]) {
 						//		Diff = 0;
 						//		Con_Printf("ERROR2\n");
 						//		break;
 						//	}
 						} while (!EndPos->Found && Diff != OrigDiff);
 
-						if (Diff != OrigDiff || EndPos->Found)
-						{
+						if (Diff != OrigDiff || EndPos->Found) {
 							nx -= xs;
 							ny -= ys;
 							nz -= zs;
 							Diff--;
 						}
 
-						if (!Diff)
-						{
+						if (!Diff) {
 							continue;
 						}
 
@@ -1259,9 +1238,7 @@ static void PF_FindPath(void)
 	FindPath(v1, v2, mins, maxs, nomonsters,ent);
 	Con_Printf("Time is %10.4f\n", Sys_DoubleTime() - b);
 }
-
 #endif	/* not used */
-
 
 
 /*
@@ -1765,8 +1742,10 @@ static void PF_precache_file (void)
 static void PF_precache_sound (void)
 {
 	const char	*s;
-	int		SOUNDS_MAX; /* just to be on the safe side */
 	int		i;
+	/* just to be on the safe side */
+	const int SOUNDS_MAX = (sv_protocol == PROTOCOL_RAVEN_111) ?
+					MAX_SOUNDS_OLD : MAX_SOUNDS;
 
 	if (sv.state != ss_loading && !ignore_precache)
 		PR_RunError ("%s: Precache can only be done in spawn functions", __thisfunc__);
@@ -1775,7 +1754,6 @@ static void PF_precache_sound (void)
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
 	PR_CheckEmptyString (s);
 
-	SOUNDS_MAX = (sv_protocol == PROTOCOL_RAVEN_111) ? MAX_SOUNDS_OLD : MAX_SOUNDS;
 	for (i = 0; i < SOUNDS_MAX; i++)
 	{
 		if (!sv.sound_precache[i])
@@ -1830,9 +1808,9 @@ static void PF_precache_model (void)
 		if (!sv.model_precache[i])
 		{
 			sv.model_precache[i] = s;
-#if !defined(SERVERONLY)
+			#ifndef SERVERONLY
 			sv.models[i] = Mod_ForName (s, true);
-#endif	/* SERVERONLY */
+			#endif
 			return;
 		}
 		if (!strcmp(sv.model_precache[i], s))
@@ -1884,9 +1862,9 @@ static void PF_precache_puzzle_model (void)
 		{
 			s = (const char *)Hunk_Strdup(temp, "puzzlemodel");
 			sv.model_precache[i] = s;
-#if !defined(SERVERONLY)
+			#ifndef SERVERONLY
 			sv.models[i] = Mod_ForName (s, true);
-#endif	/* SERVERONLY */
+			#endif
 			return;
 		}
 		if (!strcmp(sv.model_precache[i], temp))
@@ -2089,14 +2067,12 @@ static void PF_lightstylestatic(void)
 
 	// Change the string in sv
 	sv.lightstyles[styleNumber] = styleString;
-#if defined(SERVERONLY)
+	#ifdef SERVERONLY
 	d_lightstylevalue[styleNumber] = value;
-#endif	/* SERVERONLY */
+	#endif
 
 	if (sv.state != ss_active)
-	{
 		return;
-	}
 
 	// Send message to all clients on this server
 	for (i = 0, client = svs.clients; i < svs.maxclients; i++, client++)
@@ -2115,10 +2091,7 @@ static void PF_rint (void)
 	float	f;
 
 	f = G_FLOAT(OFS_PARM0);
-	if (f > 0)
-		G_FLOAT(OFS_RETURN) = (int)(f + 0.1);
-	else
-		G_FLOAT(OFS_RETURN) = (int)(f - 0.1);
+	G_FLOAT(OFS_RETURN) = (f > 0) ? (int)(f + 0.1) : (int)(f - 0.1);
 }
 
 static void PF_floor (void)
@@ -2749,8 +2722,6 @@ static void PF_rain_go (void)
 	MSG_WriteAngle (&sv.datagram, y_dir);
 	MSG_WriteShort (&sv.datagram, color);
 	MSG_WriteShort (&sv.datagram, count);
-
-//	SV_Multicast (org, MULTICAST_PVS);
 }
 
 static void PF_particleexplosion (void)
@@ -3198,8 +3169,7 @@ static void PF_updateInfoPlaque (void)
 
 static void PF_doWhiteFlash(void)
 {
-/* called from mission pack's buddha.hc::buddha_die().  original code
- * used to do V_WhiteFlash_f() here affecting the local client only. */
+	/* buddha.hc::buddha_die() */
 	MSG_WriteByte (&sv.reliable_datagram, svc_stufftext);
 	MSG_WriteString (&sv.reliable_datagram, "wf\n");
 }

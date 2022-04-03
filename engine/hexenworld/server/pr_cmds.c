@@ -343,9 +343,9 @@ static void PF_setpuzzlemodel (void)
 			m = (const char *)Hunk_Strdup(m, "puzzlemodel");
 			sv.model_precache[i] = m;
 			e->v.model = PR_SetEngineString(m);
-#if !defined(SERVERONLY)
+			#ifndef SERVERONLY
 			sv.models[i] = Mod_ForName (m, true);
-#endif	/* SERVERONLY */
+			#endif
 		}
 		else
 		{
@@ -378,12 +378,9 @@ static void PF_bprint (void)
 	int	level;
 
 	level = G_FLOAT(OFS_PARM0);
-
 	s = PF_VarString(1);
-
 	if (spartanPrint.integer && level < 2)
 		return;
-
 	SV_BroadcastPrintf (level, "%s", s);
 }
 
@@ -405,7 +402,6 @@ static void PF_sprint (void)
 
 	entnum = G_EDICTNUM(OFS_PARM0);
 	level = G_FLOAT(OFS_PARM1);
-
 	s = PF_VarString(2);
 
 	if (entnum < 1 || entnum > MAX_CLIENTS)
@@ -415,10 +411,8 @@ static void PF_sprint (void)
 	}
 
 	client = &svs.clients[entnum-1];
-
 	if (spartanPrint.integer && level < 2)
 		return;
-
 	SV_ClientPrintf (client, level, "%s", s);
 }
 
@@ -528,7 +522,6 @@ static void PF_print_indexed (void)
 	MSG_WriteByte (WriteDest(), style);
 	MSG_WriteShort (WriteDest(), idx);
 }
-
 
 /*
 =================
@@ -685,6 +678,8 @@ static void PF_vhlen (void)
 
 	value1 = G_VECTOR(OFS_PARM0);
 
+	/* using double here so that 64 bit/sse2 builds' precision matches that
+	 * of x87 floating point.  from QuakeSpasm, patch by Eric Wasylishen.  */
 	new_temp = (double)value1[0] * (double)value1[0] +
 		   (double)value1[1] * (double)value1[1];
 	new_temp = sqrt(new_temp);
@@ -717,7 +712,6 @@ static void PF_vectoyaw (void)
 
 	G_FLOAT(OFS_RETURN) = yaw;
 }
-
 
 /*
 =================
@@ -797,7 +791,6 @@ static void PF_particle (void)
 	SV_StartParticle (org, dir, color, count);
 }
 
-
 /*
 =================
 PF_particle2
@@ -820,7 +813,6 @@ static void PF_particle2 (void)
 	count = G_FLOAT(OFS_PARM5);
 	SV_StartParticle2 (org, dmin, dmax, color, effect, count);
 }
-
 
 /*
 =================
@@ -1056,7 +1048,6 @@ static void PF_traceline (void)
 	ent->v.hull = save_hull;
 
 	PR_SetTrace (&trace);
-
 }
 
 #ifdef QUAKE2
@@ -1670,9 +1661,9 @@ static void PF_precache_model (void)
 		if (!sv.model_precache[i])
 		{
 			sv.model_precache[i] = s;
-#if !defined(SERVERONLY)
+			#ifndef SERVERONLY
 			sv.models[i] = Mod_ForName (s, true);
-#endif	/* SERVERONLY */
+			#endif
 			return;
 		}
 		if (!strcmp(sv.model_precache[i], s))
@@ -1717,9 +1708,9 @@ static void PF_precache_puzzle_model (void)
 		{
 			s = (const char *)Hunk_Strdup(temp, "puzzlemodel");
 			sv.model_precache[i] = s;
-#if !defined(SERVERONLY)
+			#ifndef SERVERONLY
 			sv.models[i] = Mod_ForName (s, true);
-#endif	/* SERVERONLY */
+			#endif
 			return;
 		}
 		if (!strcmp(sv.model_precache[i], temp))
@@ -1923,21 +1914,21 @@ static void PF_lightstylestatic(void)
 
 	// Change the string in sv
 	sv.lightstyles[styleNumber] = styleString;
+	#ifdef SERVERONLY
 	d_lightstylevalue[styleNumber] = value;
+	#endif
 
 	if (sv.state != ss_active)
-	{
 		return;
-	}
 
 	// Send message to all clients on this server
 	for (i = 0, client = svs.clients; i < MAX_CLIENTS; i++, client++)
 	{
 		if (client->state == cs_spawned)
 		{
-			MSG_WriteChar (&client->netchan.message, svc_lightstyle);
-			MSG_WriteChar (&client->netchan.message, styleNumber);
-			MSG_WriteString (&client->netchan.message, styleString);
+			MSG_WriteChar(&client->netchan.message, svc_lightstyle);
+			MSG_WriteChar(&client->netchan.message, styleNumber);
+			MSG_WriteString(&client->netchan.message, styleString);
 		}
 	}
 }
@@ -1947,10 +1938,7 @@ static void PF_rint (void)
 	float	f;
 
 	f = G_FLOAT(OFS_PARM0);
-	if (f > 0)
-		G_FLOAT(OFS_RETURN) = (int)(f + 0.5);
-	else
-		G_FLOAT(OFS_RETURN) = (int)(f - 0.5);
+	G_FLOAT(OFS_RETURN) = (f > 0) ? (int)(f + 0.5) : (int)(f - 0.5);
 }
 
 static void PF_floor (void)
@@ -2510,7 +2498,8 @@ static void PF_rain_go (void)
 {
 	float	*min_org, *max_org, *e_size;
 	float	*dir;
-	vec3_t	org, org2;
+	vec3_t	org;
+	vec3_t	org2;
 	int	color, count, x_dir, y_dir;
 
 	min_org = G_VECTOR (OFS_PARM0);
