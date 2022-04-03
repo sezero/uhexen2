@@ -923,6 +923,9 @@ void PR_RunError (const char *error, ...)
 	PrintStatement(pr_statements + pr_xstatement);
 	PrintCallHistory();
 
+#ifdef H2W
+	fprintf(stderr, "%s\n", string);
+#endif
 	Con_Printf("%s\n", string);
 
 	pr_depth = 0;	// dump the stack so host_error can shutdown functions
@@ -1037,8 +1040,11 @@ void PR_Profile_f (void)
 	int		tally;
 	const char	*s;
 
-	if (!sv.active)
-		return;
+#ifndef H2W
+	if (!sv.active) return;
+#else
+	if (sv.state != ss_active) return;
+#endif
 
 	byHC = false;
 	funcCount = 10;
