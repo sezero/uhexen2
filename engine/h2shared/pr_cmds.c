@@ -29,6 +29,23 @@
 #endif
 
 
+#if defined(H2W) && !defined(SERVERONLY)
+#error SERVERONLY not defined for HW server
+#endif
+
+#if !defined(H2W)
+#define SV_MAXCLIENTS	svs.maxclients
+#define SV_NETMSG(_c)	(_c)->message
+#define SV_CHECKCLTIME	0.1
+#define SV_CL_OK(_c)	(_c)->active || (_c)->spawned
+#else
+#define SV_MAXCLIENTS MAX_CLIENTS
+#define SV_NETMSG(_c)	(_c)->netchan.message
+#define SV_MAXSOUNDS	MAX_SOUNDS
+#define SV_CHECKCLTIME	HX_FRAME_TIME
+#define SV_CL_OK(_c)	(_c)->state == cs_spawned
+#endif
+
 #define	STRINGTEMP_BUFFERS		16
 #define	STRINGTEMP_LENGTH		1024
 static	char	pr_string_temp[STRINGTEMP_BUFFERS][STRINGTEMP_LENGTH];
@@ -40,11 +57,15 @@ static char *PR_GetTempString (void)
 }
 
 #define	RETURN_EDICT(e) (((int *)pr_globals)[OFS_RETURN] = EDICT_TO_PROG(e))
+#define	RETURN_STRING(s) (((int *)pr_globals)[OFS_RETURN] = PR_SetEngineString(s))
 
 #define	MSG_BROADCAST	0		// unreliable to all
 #define	MSG_ONE		1		// reliable to one (msg_entity)
 #define	MSG_ALL		2		// reliable to all
 #define	MSG_INIT	3		// write to the init string
+#if defined(H2W)
+#define	MSG_MULTICAST	4		// for multicast()
+#endif
 
 
 #if defined(SERVERONLY)
@@ -370,6 +391,7 @@ broadcast print to everyone on server
 bprint(value)
 =================
 */
+#ifndef H2W
 static void PF_bprint (void)
 {
 	char		*s;
@@ -377,6 +399,19 @@ static void PF_bprint (void)
 	s = PF_VarString(0);
 	SV_BroadcastPrintf ("%s", s);
 }
+#else
+static void PF_bprint (void)
+{
+	char		*s;
+	int	level;
+
+	level = G_FLOAT(OFS_PARM0);
+	s = PF_VarString(1);
+	if (spartanPrint.integer && level < 2)
+		return;
+	SV_BroadcastPrintf (level, "%s", s);
+}
+#endif
 
 /*
 =================
@@ -387,6 +422,7 @@ single print to a specific client
 sprint(clientent, value)
 =================
 */
+#ifndef H2W
 static void PF_sprint (void)
 {
 	char		*s;
@@ -396,17 +432,145 @@ static void PF_sprint (void)
 	entnum = G_EDICTNUM(OFS_PARM0);
 	s = PF_VarString(1);
 
-	if (entnum < 1 || entnum > svs.maxclients)
+	if (entnum < 1 || entnum > SV_MAXCLIENTS)
 	{
 		Con_Printf ("tried to sprint to a non-client\n");
 		return;
 	}
-
 	client = &svs.clients[entnum-1];
-	MSG_WriteChar (&client->message,svc_print);
-	MSG_WriteString (&client->message, s );
+	MSG_WriteChar (&SV_NETMSG(client),svc_print);
+	MSG_WriteString (&SV_NETMSG(client), s);
+}
+#else
+static void PF_sprint (void)
+{
+	char		*s;
+	client_t	*client;
+	int	entnum;
+	int	level;
+
+	entnum = G_EDICTNUM(OFS_PARM0);
+	level = G_FLOAT(OFS_PARM1);
+	s = PF_VarString(2);
+
+	if (entnum < 1 || entnum > SV_MAXCLIENTS)
+	{
+		Con_Printf ("tried to sprint to a non-client\n");
+		return;
+	}
+	client = &svs.clients[entnum-1];
+	if (spartanPrint.integer && level < 2)
+		return;
+	SV_ClientPrintf (client, level, "%s", s);
 }
 
+/*
+=================
+PF_name_print
+
+print player's name
+
+name_print(to, level, who)
+=================
+*/
+static void PF_name_print (void)
+{
+	int idx, style;
+
+	idx = (int) G_EDICTNUM(OFS_PARM2);
+	style = (int) G_FLOAT(OFS_PARM1);
+
+	if (spartanPrint.integer && style < 2)
+		return;
+
+	if (idx < 1 || idx > SV_MAXCLIENTS)
+		PR_RunError ("%s: unexpected index %d", __thisfunc__, idx);
+
+	if ((int)G_FLOAT(OFS_PARM0) == MSG_BROADCAST)
+	{/* broadcast message--send like bprint, print it out on server too. */
+		client_t	*cl;
+		int			i;
+
+		Sys_Printf("%s", svs.clients[idx - 1].name);
+
+		for (i = 0, cl = svs.clients; i < SV_MAXCLIENTS; i++, cl++)
+		{
+			if (style < cl->messagelevel)
+				continue;
+			if (cl->state != cs_spawned)
+			{//should i be checking cs_connected too?
+				if (cl->state)
+				{//not fully in so won't know name yet, explicitly say the name
+					MSG_WriteByte (&SV_NETMSG(cl), svc_print);
+					MSG_WriteByte (&SV_NETMSG(cl), style);
+					MSG_WriteString (&SV_NETMSG(cl), svs.clients[idx - 1].name);
+				}
+				continue;
+			}
+			MSG_WriteByte (&SV_NETMSG(cl), svc_name_print);
+			MSG_WriteByte (&SV_NETMSG(cl), style);
+			//knows the name, send the index.
+			MSG_WriteByte (&SV_NETMSG(cl), idx - 1);
+		}
+		return;
+	}
+
+	MSG_WriteByte (WriteDest(), svc_name_print);
+	MSG_WriteByte (WriteDest(), style);
+	MSG_WriteByte (WriteDest(), idx - 1);//heh, don't need a short here.
+}
+
+
+/*
+=================
+PF_print_indexed
+
+print string from strings.txt
+
+print_indexed(to, level, index)
+=================
+*/
+static void PF_print_indexed (void)
+{
+	int idx, style;
+
+	idx = (int) G_FLOAT(OFS_PARM2);
+	style = (int) G_FLOAT(OFS_PARM1);
+
+	if (spartanPrint.integer && style < 2)
+		return;
+
+	if (idx < 1 || idx > host_string_count)
+	{
+		PR_RunError ("%s: unexpected index %d (host_string_count: %d)",
+					__thisfunc__, idx, host_string_count);
+	}
+
+	if ((int)G_FLOAT(OFS_PARM0) == MSG_BROADCAST)
+	{/* broadcast message--send like bprint, print it out on server too. */
+		client_t	*cl;
+		int			i;
+
+		Sys_Printf("%s", Host_GetString(idx - 1));
+
+		for (i = 0, cl = svs.clients; i < SV_MAXCLIENTS; i++, cl++)
+		{
+			if (style < cl->messagelevel)
+				continue;
+			if (!cl->state)
+				continue;
+			MSG_WriteByte (&SV_NETMSG(cl), svc_indexed_print);
+			MSG_WriteByte (&SV_NETMSG(cl), style);
+			MSG_WriteShort (&SV_NETMSG(cl), idx);
+		}
+		return;
+	}
+
+	MSG_WriteByte (WriteDest(), svc_indexed_print);
+	MSG_WriteByte (WriteDest(), style);
+	MSG_WriteShort (WriteDest(), idx);
+}
+#endif /* H2W */
 
 /*
 =================
@@ -426,7 +590,7 @@ static void PF_centerprint (void)
 	entnum = G_EDICTNUM(OFS_PARM0);
 	s = PF_VarString(1);
 
-	if (entnum < 1 || entnum > svs.maxclients)
+	if (entnum < 1 || entnum > SV_MAXCLIENTS)
 	{
 		Con_Printf ("tried to sprint to a non-client\n");
 		return;
@@ -434,9 +598,67 @@ static void PF_centerprint (void)
 
 	client = &svs.clients[entnum-1];
 
-	MSG_WriteChar (&client->message,svc_centerprint);
-	MSG_WriteString (&client->message, s);
+	MSG_WriteChar (&SV_NETMSG(client),svc_centerprint);
+	MSG_WriteString (&SV_NETMSG(client), s);
 }
+
+#if defined(H2W)
+/*
+=================
+PF_bcenterprint2
+
+single print to all
+
+bcenterprint2(value, value)
+=================
+*/
+static void PF_bcenterprint2 (void)
+{
+	char		*s;
+	client_t	*cl;
+	int	i;
+
+	s = PF_VarString(0);
+
+	for (i = 0, cl = svs.clients; i < SV_MAXCLIENTS; i++, cl++)
+	{
+		if (!cl->state)
+			continue;
+		MSG_WriteByte (&SV_NETMSG(cl), svc_centerprint);
+		MSG_WriteString (&SV_NETMSG(cl), s);
+	}
+}
+
+/*
+=================
+PF_centerprint2
+
+single print to a specific client
+
+centerprint(clientent, value, value)
+=================
+*/
+static void PF_centerprint2 (void)
+{
+	char		*s;
+	client_t	*client;
+	int	entnum;
+
+	entnum = G_EDICTNUM(OFS_PARM0);
+	s = PF_VarString(1);
+
+	if (entnum < 1 || entnum > SV_MAXCLIENTS)
+	{
+		Con_Printf ("tried to sprint to a non-client\n");
+		return;
+	}
+
+	client = &svs.clients[entnum-1];
+
+	MSG_WriteChar (&SV_NETMSG(client),svc_centerprint);
+	MSG_WriteString (&SV_NETMSG(client), s);
+}
+#endif /* H2W */
 
 
 /*
@@ -700,9 +922,10 @@ static void PF_ambientsound (void)
 	float		*pos;
 	float		vol, attenuation;
 	int		i, soundnum;
-	/* just to be on the safe side */
-	const int SOUNDS_MAX = (sv_protocol == PROTOCOL_RAVEN_111) ?
-					MAX_SOUNDS_OLD : MAX_SOUNDS;
+	#ifndef H2W /* just to be on the safe side */
+	const int SV_MAXSOUNDS = (sv_protocol == PROTOCOL_RAVEN_111) ?
+					 MAX_SOUNDS_OLD : MAX_SOUNDS;
+	#endif
 
 	pos = G_VECTOR (OFS_PARM0);
 	samp = G_STRING(OFS_PARM1);
@@ -711,13 +934,13 @@ static void PF_ambientsound (void)
 
 // check to see if samp was properly precached
 	for (soundnum = 0, check = sv.sound_precache;
-	     soundnum < SOUNDS_MAX && *check; soundnum++, check++)
+	     soundnum < SV_MAXSOUNDS && *check; soundnum++, check++)
 	{
 		if (!strcmp(*check, samp))
 			break;
 	}
 
-	if (soundnum == SOUNDS_MAX || !*check)
+	if (soundnum == SV_MAXSOUNDS || !*check)
 	{
 		Con_Printf ("no precache: %s\n", samp);
 		return;
@@ -728,10 +951,14 @@ static void PF_ambientsound (void)
 	for (i = 0; i < 3; i++)
 		MSG_WriteCoord(&sv.signon, pos[i]);
 
+	#ifndef H2W
 	if (sv_protocol == PROTOCOL_RAVEN_111)
 		MSG_WriteByte (&sv.signon, soundnum);
 	else
 		MSG_WriteShort(&sv.signon, soundnum);
+	#else
+	MSG_WriteByte (&sv.signon, soundnum);
+	#endif
 
 	MSG_WriteByte (&sv.signon, vol*255);
 	MSG_WriteByte (&sv.signon, attenuation*64);
@@ -935,7 +1162,6 @@ static void PF_tracearea (void)
 
 	PR_SetTrace (&trace);
 }
-
 
 #if 0	/* not used */
 
@@ -1238,8 +1464,6 @@ static void PF_FindPath(void)
 	FindPath(v1, v2, mins, maxs, nomonsters,ent);
 	Con_Printf("Time is %10.4f\n", Sys_DoubleTime() - b);
 }
-#endif	/* not used */
-
 
 /*
 =================
@@ -1251,11 +1475,10 @@ FIXME: make work...
 scalar checkpos (entity, vector)
 =================
 */
-#if 0
 static void PF_checkpos (void)
 {
 }
-#endif
+#endif	/* not used */
 
 //============================================================================
 
@@ -1273,17 +1496,17 @@ static int PF_newcheckclient (int check)
 
 	if (check < 1)
 		check = 1;
-	if (check > svs.maxclients)
-		check = svs.maxclients;
+	if (check > SV_MAXCLIENTS)
+		check = SV_MAXCLIENTS;
 
-	if (check == svs.maxclients)
+	if (check == SV_MAXCLIENTS)
 		i = 1;
 	else
 		i = check + 1;
 
 	for ( ;  ; i++)
 	{
-		if (i == svs.maxclients+1)
+		if (i == SV_MAXCLIENTS+1)
 			i = 1;
 
 		ent = EDICT_NUM(i);
@@ -1336,7 +1559,7 @@ static void PF_checkclient (void)
 	vec3_t	view;
 
 // find a new check if on a new frame
-	if (sv.time - sv.lastchecktime >= 0.1)
+	if (sv.time - sv.lastchecktime >= SV_CHECKCLTIME)
 	{
 		sv.lastcheck = PF_newcheckclient (sv.lastcheck);
 		sv.lastchecktime = sv.time;
@@ -1386,13 +1609,18 @@ static void PF_stuffcmd (void)
 	client_t	*old;
 
 	entnum = G_EDICTNUM(OFS_PARM0);
-	if (entnum < 1 || entnum > svs.maxclients)
+	if (entnum < 1 || entnum > SV_MAXCLIENTS)
 		PR_RunError ("Parm 0 not a client");
 	str = G_STRING(OFS_PARM1);
 
 	old = host_client;
 	host_client = &svs.clients[entnum-1];
+	#ifndef H2W
 	Host_ClientCommands ("%s", str);
+	#else
+	MSG_WriteByte (&SV_NETMSG(host_client), svc_stufftext);
+	MSG_WriteString (&SV_NETMSG(host_client), str);
+	#endif
 	host_client = old;
 }
 
@@ -1605,7 +1833,7 @@ static void PF_Remove (void)
 	}
 
 	i = NUM_FOR_EDICT(ed);
-	if (i <= svs.maxclients)
+	if (i <= SV_MAXCLIENTS)
 	{
 		Con_DPrintf("Tried to remove a client at %s in %s!\n",
 				PR_GetString(pr_xfunction->s_name), PR_GetString(pr_xfunction->s_file));
@@ -1743,9 +1971,10 @@ static void PF_precache_sound (void)
 {
 	const char	*s;
 	int		i;
-	/* just to be on the safe side */
-	const int SOUNDS_MAX = (sv_protocol == PROTOCOL_RAVEN_111) ?
-					MAX_SOUNDS_OLD : MAX_SOUNDS;
+	#ifndef H2W /* just to be on the safe side */
+	const int SV_MAXSOUNDS = (sv_protocol == PROTOCOL_RAVEN_111) ?
+					 MAX_SOUNDS_OLD : MAX_SOUNDS;
+	#endif
 
 	if (sv.state != ss_loading && !ignore_precache)
 		PR_RunError ("%s: Precache can only be done in spawn functions", __thisfunc__);
@@ -1754,7 +1983,7 @@ static void PF_precache_sound (void)
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
 	PR_CheckEmptyString (s);
 
-	for (i = 0; i < SOUNDS_MAX; i++)
+	for (i = 0; i < SV_MAXSOUNDS; i++)
 	{
 		if (!sv.sound_precache[i])
 		{
@@ -1783,6 +2012,7 @@ static void PF_precache_sound3 (void)
 	PF_precache_sound();
 }
 
+#ifndef H2W
 static void PF_precache_sound4 (void)
 {//mission pack only
 	if (!registered.integer)
@@ -1790,6 +2020,7 @@ static void PF_precache_sound4 (void)
 
 	PF_precache_sound();
 }
+#endif
 
 static void PF_precache_model (void)
 {
@@ -1835,12 +2066,14 @@ static void PF_precache_model3 (void)
 	PF_precache_model();
 }
 
+#ifndef H2W
 static void PF_precache_model4 (void)
 {
 	if (!registered.integer)
 		return;
 	PF_precache_model();
 }
+#endif
 
 static void PF_precache_puzzle_model (void)
 {
@@ -1998,13 +2231,13 @@ static void PF_lightstyle (void)
 	if (sv.state != ss_active)
 		return;
 
-	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
+	for (j = 0, client = svs.clients; j < SV_MAXCLIENTS; j++, client++)
 	{
-		if (client->active || client->spawned)
+		if (SV_CL_OK(client))
 		{
-			MSG_WriteChar (&client->message, svc_lightstyle);
-			MSG_WriteChar (&client->message, style);
-			MSG_WriteString (&client->message, val);
+			MSG_WriteChar (&SV_NETMSG(client), svc_lightstyle);
+			MSG_WriteChar (&SV_NETMSG(client), style);
+			MSG_WriteString (&SV_NETMSG(client), val);
 		}
 	}
 }
@@ -2028,7 +2261,12 @@ static void PF_lightstylevalue(void)
 		return;
 	}
 
+	#ifndef H2W
 	G_FLOAT(OFS_RETURN) = (int)((float)d_lightstylevalue[style]/22.0);
+	#else
+//	G_FLOAT(OFS_RETURN) = 0;
+	G_FLOAT(OFS_RETURN) = (int)d_lightstylevalue[style];
+	#endif
 }
 
 //==========================================================================
@@ -2075,13 +2313,13 @@ static void PF_lightstylestatic(void)
 		return;
 
 	// Send message to all clients on this server
-	for (i = 0, client = svs.clients; i < svs.maxclients; i++, client++)
+	for (i = 0, client = svs.clients; i < SV_MAXCLIENTS; i++, client++)
 	{
-		if (client->active || client->spawned)
+		if (SV_CL_OK(client))
 		{
-			MSG_WriteChar(&client->message, svc_lightstyle);
-			MSG_WriteChar(&client->message, styleNumber);
-			MSG_WriteString(&client->message, styleString);
+			MSG_WriteChar(&SV_NETMSG(client), svc_lightstyle);
+			MSG_WriteChar(&SV_NETMSG(client), styleNumber);
+			MSG_WriteString(&SV_NETMSG(client), styleString);
 		}
 	}
 }
@@ -2091,7 +2329,14 @@ static void PF_rint (void)
 	float	f;
 
 	f = G_FLOAT(OFS_PARM0);
+	#ifndef H2W
+	/* H2 version differs from H2W (and) Quake versions.
+	 * Maybe a change done with mission pack?  (because
+	 * H2W seem to have derived from H2 v1.11 code...) */
 	G_FLOAT(OFS_RETURN) = (f > 0) ? (int)(f + 0.1) : (int)(f - 0.1);
+	#else
+	G_FLOAT(OFS_RETURN) = (f > 0) ? (int)(f + 0.5) : (int)(f - 0.5);
+	#endif
 }
 
 static void PF_floor (void)
@@ -2377,15 +2622,24 @@ static sizebuf_t *WriteDest (void)
 	case MSG_ONE:
 		ent = PROG_TO_EDICT(*sv_globals.msg_entity);
 		entnum = NUM_FOR_EDICT(ent);
-		if (entnum < 1 || entnum > svs.maxclients)
+		if (entnum < 1 || entnum > SV_MAXCLIENTS)
 			PR_RunError ("%s: not a client", __thisfunc__);
-		return &svs.clients[entnum-1].message;
+		return &SV_NETMSG(svs.clients + (entnum - 1));
 
 	case MSG_ALL:
 		return &sv.reliable_datagram;
 
 	case MSG_INIT:
+		#ifdef H2W
+		if (sv.state != ss_loading)
+			PR_RunError ("%s: MSG_INIT can only be written in spawn functions", __thisfunc__);
+		#endif
 		return &sv.signon;
+
+	#ifdef H2W
+	case MSG_MULTICAST:
+		return &sv.multicast;
+	#endif
 
 	default:
 		PR_RunError ("%s: bad destination", __thisfunc__);
@@ -2480,11 +2734,12 @@ static void PF_setspawnparms (void)
 
 	ent = G_EDICT(OFS_PARM0);
 	i = NUM_FOR_EDICT(ent);
-	if (i < 1 || i > svs.maxclients)
+	if (i < 1 || i > SV_MAXCLIENTS)
 		PR_RunError ("Entity is not a client");
 
 	// copy spawn parms out of the client_t
 	client = svs.clients + (i-1);
+
 	for (i = 0; i < NUM_SPAWN_PARMS; i++)
 		sv_globals.parm[i] = client->spawn_parms[i];
 }
@@ -2506,7 +2761,11 @@ static void PF_changelevel (void)
 	s2 = G_STRING(OFS_PARM1);
 
 	if ((int)*sv_globals.serverflags & (SFL_NEW_UNIT | SFL_NEW_EPISODE))
+	#ifndef H2W
 		Cbuf_AddText (va("changelevel %s %s\n",s1, s2));
+	#else
+		Cbuf_AddText (va("map %s %s\n",s1, s2));
+	#endif
 	else
 		Cbuf_AddText (va("changelevel2 %s %s\n",s1, s2));
 }
@@ -2663,6 +2922,109 @@ static void PF_cos (void)
 }
 #endif	/* QUAKE2 */
 
+#ifdef H2W
+/*
+==============
+PF_logfrag
+
+logfrag (killer, killee)
+==============
+*/
+static void PF_logfrag (void)
+{
+	edict_t	*ent1, *ent2;
+	int		e1, e2;
+	char	*s;
+
+	ent1 = G_EDICT(OFS_PARM0);
+	ent2 = G_EDICT(OFS_PARM1);
+
+	e1 = NUM_FOR_EDICT(ent1);
+	e2 = NUM_FOR_EDICT(ent2);
+
+	if (e1 < 1 || e1 > SV_MAXCLIENTS ||
+	    e2 < 1 || e2 > SV_MAXCLIENTS)
+		return;
+
+	s = va("\\%s\\%s\\\n",svs.clients[e1-1].name, svs.clients[e2-1].name);
+
+	SZ_Print (&svs.log[svs.logsequence&1], s);
+	if (sv_fraglogfile)
+	{
+		fprintf (sv_fraglogfile, "%s", s);
+		fflush (sv_fraglogfile);
+	}
+}
+
+
+/*
+==============
+PF_infokey
+
+string(entity e, string key) infokey
+==============
+*/
+static void PF_infokey (void)
+{
+	edict_t		*e;
+	int		e1;
+	const char	*value;
+	const char	*key;
+
+	e = G_EDICT(OFS_PARM0);
+	e1 = NUM_FOR_EDICT(e);
+	key = G_STRING(OFS_PARM1);
+
+	if (e1 == 0)
+	{
+		value = Info_ValueForKey (svs.info, key);
+		if (!*value)
+			value = Info_ValueForKey(localinfo, key);
+	}
+	else if (e1 <= SV_MAXCLIENTS)
+		value = Info_ValueForKey (svs.clients[e1-1].userinfo, key);
+	else
+		value = "";
+
+	RETURN_STRING(value);
+}
+
+/*
+==============
+PF_stof
+
+float(string s) stof
+==============
+*/
+static void PF_stof (void)
+{
+	const char	*s;
+
+	s = G_STRING(OFS_PARM0);
+
+	G_FLOAT(OFS_RETURN) = atof(s);
+}
+
+
+/*
+==============
+PF_multicast
+
+void(vector where, float set) multicast
+==============
+*/
+static void PF_multicast (void)
+{
+	float	*o;
+	int		to;
+
+	o = G_VECTOR(OFS_PARM0);
+	to = G_FLOAT(OFS_PARM1);
+
+	SV_Multicast (o, to);
+}
+#endif /* H2W */
+
 static void PF_sqrt (void)
 {
 	G_FLOAT(OFS_RETURN) = sqrt(G_FLOAT(OFS_PARM0));
@@ -2695,6 +3057,9 @@ static void PF_rain_go (void)
 	float	*min_org, *max_org, *e_size;
 	float	*dir;
 	vec3_t	org;
+	#ifdef H2W
+	vec3_t	org2;
+	#endif
 	int	color, count, x_dir, y_dir;
 
 	min_org = G_VECTOR (OFS_PARM0);
@@ -2708,9 +3073,16 @@ static void PF_rain_go (void)
 	org[1] = min_org[1];
 	org[2] = max_org[2];
 
+	#ifdef H2W
+	org2[0] = e_size[0];
+	org2[1] = e_size[1];
+	org2[2] = e_size[2];
+	#endif
+
 	x_dir = dir[0];
 	y_dir = dir[1];
 
+	#ifndef H2W
 	MSG_WriteByte (&sv.datagram, svc_raineffect);
 	MSG_WriteCoord (&sv.datagram, org[0]);
 	MSG_WriteCoord (&sv.datagram, org[1]);
@@ -2722,6 +3094,9 @@ static void PF_rain_go (void)
 	MSG_WriteAngle (&sv.datagram, y_dir);
 	MSG_WriteShort (&sv.datagram, color);
 	MSG_WriteShort (&sv.datagram, count);
+	#else
+	SV_StartRainEffect (org,org2,x_dir,y_dir,color,count);
+	#endif
 }
 
 static void PF_particleexplosion (void)
@@ -2769,6 +3144,7 @@ static void PF_movestep (void)
 	*sv_globals.self = oldself;
 }
 
+
 static void PF_Cos (void)
 {
 	float angle;
@@ -2800,7 +3176,15 @@ static void PF_AdvanceFrame (void)
 	start = G_FLOAT(OFS_PARM0);
 	end = G_FLOAT(OFS_PARM1);
 
+	#ifndef H2W
+	/* H2 and H2W versions differ from each other: Maybe
+	 * a change done with mission pack? (Because the H2W
+	 * code seem to have derived from H2 v1.11 code...) */
 	if (ent->v.frame < start || ent->v.frame > end)
+	#else
+	if ( (start < end && (ent->v.frame < start || ent->v.frame > end)) ||
+		(start > end && (ent->v.frame > start || ent->v.frame < end)) )
+	#endif
 	{ // Didn't start in the range
 		ent->v.frame = start;
 		result = 0;
@@ -2811,6 +3195,9 @@ static void PF_AdvanceFrame (void)
 		result = 1;
 	}
 	else
+	#ifdef H2W /* see comment above */
+	 if (end > start)
+	#endif
 	{  // Regular Advance
 		ent->v.frame++;
 		if (ent->v.frame == end)
@@ -2818,6 +3205,21 @@ static void PF_AdvanceFrame (void)
 		else
 			result = 0;
 	}
+	#ifdef H2W /* see comment above */
+	else if (end < start)
+	{  // Reverse Advance
+		ent->v.frame--;
+		if (ent->v.frame == end)
+			result = 2;
+		else
+			result = 0;
+	}
+	else
+	{
+		ent->v.frame = end;
+		result = 1;
+	}
+	#endif /**/
 
 	G_FLOAT(OFS_RETURN) = result;
 }
@@ -2901,12 +3303,15 @@ static void PF_setclass (void)
 	int			entnum;
 	edict_t	*e;
 	client_t	*client, *old;
+	#ifdef H2W
+	char		temp[1024];
+	#endif
 
 	entnum = G_EDICTNUM(OFS_PARM0);
 	e = G_EDICT(OFS_PARM0);
 	newclass = G_FLOAT(OFS_PARM1);
 
-	if (entnum < 1 || entnum > svs.maxclients)
+	if (entnum < 1 || entnum > SV_MAXCLIENTS)
 	{
 		Con_Printf ("tried to change class of a non-client\n");
 		return;
@@ -2916,6 +3321,7 @@ static void PF_setclass (void)
 
 	old = host_client;
 	host_client = client;
+	#ifndef H2W
 	Host_ClientCommands ("playerclass %i\n", (int)newclass);
 	host_client = old;
 
@@ -2923,11 +3329,95 @@ static void PF_setclass (void)
 	// but it wouldn't take affect right away
 	e->v.playerclass = newclass;
 	client->playerclass = newclass;
+	#else
+	if (newclass > CLASS_DEMON && (dmMode.integer != DM_SIEGE || !SV_PROGS_HAVE_SIEGE)) {
+		newclass = CLASS_PALADIN;
+	}
+	e->v.playerclass = newclass;
+	host_client->playerclass = newclass;
+
+	sprintf(temp,"%d",(int)newclass);
+	Info_SetValueForKey (host_client->userinfo, "playerclass", temp, MAX_INFO_STRING);
+	q_strlcpy (host_client->name, Info_ValueForKey(host_client->userinfo, "name"), sizeof(host_client->name));
+	host_client->sendinfo = true;
+
+	// process any changed values
+	//SV_ExtractFromUserinfo (host_client);
+
+	//update everyone else about playerclass change
+	MSG_WriteByte (&sv.reliable_datagram, svc_updatepclass);
+	MSG_WriteByte (&sv.reliable_datagram, entnum - 1);
+	MSG_WriteByte (&sv.reliable_datagram, ((host_client->playerclass<<5)|((int)e->v.level&31)));
+	host_client = old;
+	#endif      /* H2W */
 }
+
+#if defined(H2W)
+static void PF_setsiegeteam (void)
+{
+	float		newteam;
+	int		entnum;
+	edict_t		*e;
+	client_t	*client,*old;
+//	char		temp[1024];
+
+	if (! SV_PROGS_HAVE_SIEGE)	/* paranoia? */
+		return;
+
+	entnum = G_EDICTNUM(OFS_PARM0);
+	e = G_EDICT(OFS_PARM0);
+	newteam = G_FLOAT(OFS_PARM1);
+
+	if (entnum < 1 || entnum > SV_MAXCLIENTS)
+	{
+		Con_Printf ("tried to change siege_team of a non-client\n");
+		return;
+	}
+
+	client = &svs.clients[entnum-1];
+
+	old = host_client;
+	host_client = client;
+
+	e->v.siege_team = newteam;
+	host_client->siege_team = newteam;
+
+//???
+//	sprintf(temp,"%d",(int)newteam);
+//	Info_SetValueForKey (host_client->userinfo, "playerclass", temp, MAX_INFO_STRING);
+//	q_strlcpy (host_client->name, Info_ValueForKey(host_client->userinfo, "name"), sizeof(host_client->name));
+//	host_client->sendinfo = true;
+
+	//update everyone else about playerclass change
+	MSG_WriteByte (&sv.reliable_datagram, svc_updatesiegeteam);
+	MSG_WriteByte (&sv.reliable_datagram, entnum - 1);
+	MSG_WriteByte (&sv.reliable_datagram, host_client->siege_team);
+	host_client = old;
+}
+
+static void PF_updateSiegeInfo (void)
+{
+	int			j;
+	client_t	*client;
+
+	for (j = 0, client = svs.clients; j < SV_MAXCLIENTS; j++, client++)
+	{
+		if (client->state < cs_connected)
+			continue;
+		MSG_WriteByte (&SV_NETMSG(client), svc_updatesiegeinfo);
+		MSG_WriteByte (&SV_NETMSG(client), (int)ceil(timelimit.value));
+		MSG_WriteByte (&SV_NETMSG(client), (int)ceil(fraglimit.value));
+	}
+}
+#endif /* H2W */
 
 static void PF_starteffect (void)
 {
+	#ifndef H2W
 	SV_ParseEffect(&sv.reliable_datagram);
+	#else
+	SV_ParseEffect(NULL);
+	#endif
 }
 
 static void PF_endeffect (void)
@@ -2941,9 +3431,138 @@ static void PF_endeffect (void)
 		return;
 
 	sv.Effects[idx].type = 0;
+	#ifndef H2W
 	MSG_WriteByte (&sv.reliable_datagram, svc_end_effect);
 	MSG_WriteByte (&sv.reliable_datagram, idx);
+	#else
+	MSG_WriteByte (&sv.multicast, svc_end_effect);
+	MSG_WriteByte (&sv.multicast, idx);
+	SV_Multicast (vec3_origin, MULTICAST_ALL_R);
+	#endif
 }
+
+#if defined(H2W)
+static void PF_turneffect (void)
+{
+	float *dir, *pos;
+	int idx;
+
+	idx = G_FLOAT(OFS_PARM0);
+	pos = G_VECTOR(OFS_PARM1);
+	dir = G_VECTOR(OFS_PARM2);
+
+	if (!sv.Effects[idx].type)
+		return;
+	VectorCopy(pos, sv.Effects[idx].ef.Missile.origin);
+	VectorCopy(dir, sv.Effects[idx].ef.Missile.velocity);
+
+	MSG_WriteByte (&sv.multicast, svc_turn_effect);
+	MSG_WriteByte (&sv.multicast, idx);
+	MSG_WriteFloat(&sv.multicast, sv.time);
+	MSG_WriteCoord(&sv.multicast, pos[0]);
+	MSG_WriteCoord(&sv.multicast, pos[1]);
+	MSG_WriteCoord(&sv.multicast, pos[2]);
+	MSG_WriteCoord(&sv.multicast, dir[0]);
+	MSG_WriteCoord(&sv.multicast, dir[1]);
+	MSG_WriteCoord(&sv.multicast, dir[2]);
+
+	SV_MulticastSpecific (sv.Effects[idx].client_list, true);
+}
+
+static void PF_updateeffect (void)
+//type-specific what this will send
+{
+	int idx, type, cmd;
+	vec3_t tvec;
+
+	// the effect we're lookin to change is parm 0
+	idx = G_FLOAT(OFS_PARM0);
+	// the type of effect that it had better be is parm 1
+	type = G_FLOAT(OFS_PARM1);
+
+	if (!sv.Effects[idx].type)
+		return;
+
+	if (sv.Effects[idx].type != type)
+		return;
+
+	//common writing--PLEASE use sent type when determining
+	// how much and what to read, so it's safe
+	MSG_WriteByte (&sv.multicast, svc_update_effect);
+	MSG_WriteByte (&sv.multicast, idx);
+	//paranoia alert--make sure client reads the correct number of bytes
+	MSG_WriteByte (&sv.multicast, type);
+
+	switch (type)
+	{
+	case CE_SCARABCHAIN:
+		//new ent to be attached to--pass in 0 for chain retract
+		sv.Effects[idx].ef.Chain.owner = G_INT(OFS_PARM2) & 0x0fff;
+		sv.Effects[idx].ef.Chain.material = G_INT(OFS_PARM2) >> 12;
+
+		if (sv.Effects[idx].ef.Chain.owner)
+			sv.Effects[idx].ef.Chain.state = 1;
+		else
+			sv.Effects[idx].ef.Chain.state = 2;
+
+		MSG_WriteShort (&sv.multicast, G_EDICTNUM(OFS_PARM2));
+		break;
+	case CE_HWSHEEPINATOR:
+	case CE_HWXBOWSHOOT:
+		cmd = G_FLOAT(OFS_PARM2);
+		MSG_WriteByte (&sv.multicast, cmd);
+		if (cmd & 1)
+		{
+			sv.Effects[idx].ef.Xbow.activebolts &= ~(1 << ((cmd >> 4) & 7));
+			MSG_WriteCoord (&sv.multicast, G_FLOAT(OFS_PARM3));
+		}
+		else
+		{
+			sv.Effects[idx].ef.Xbow.vel[(cmd >> 4) & 7][0] = G_FLOAT(OFS_PARM3);
+			sv.Effects[idx].ef.Xbow.vel[(cmd >> 4) & 7][1] = G_FLOAT(OFS_PARM4);
+			sv.Effects[idx].ef.Xbow.vel[(cmd >> 4) & 7][2] = 0;
+
+			MSG_WriteAngle (&sv.multicast, G_FLOAT(OFS_PARM3));
+			MSG_WriteAngle (&sv.multicast, G_FLOAT(OFS_PARM4));
+			if (cmd & 128)//send origin too
+			{
+				sv.Effects[idx].ef.Xbow.turnedbolts |= 1 << ((cmd >> 4) & 7);
+				VectorCopy(G_VECTOR(OFS_PARM5), sv.Effects[idx].ef.Xbow.origin[(cmd >> 4) & 7]);
+				MSG_WriteCoord (&sv.multicast, sv.Effects[idx].ef.Xbow.origin[(cmd >> 4) & 7][0]);
+				MSG_WriteCoord (&sv.multicast, sv.Effects[idx].ef.Xbow.origin[(cmd >> 4) & 7][1]);
+				MSG_WriteCoord (&sv.multicast, sv.Effects[idx].ef.Xbow.origin[(cmd >> 4) & 7][2]);
+			}
+		}
+		break;
+	case CE_HWDRILLA:
+		cmd = G_FLOAT(OFS_PARM2);
+		MSG_WriteByte(&sv.multicast, cmd);
+		if (cmd == 0)
+		{
+			VectorCopy(G_VECTOR(OFS_PARM3), tvec);
+			MSG_WriteCoord (&sv.multicast, tvec[0]);
+			MSG_WriteCoord (&sv.multicast, tvec[1]);
+			MSG_WriteCoord (&sv.multicast, tvec[2]);
+			MSG_WriteByte (&sv.multicast, G_FLOAT(OFS_PARM4));
+		}
+		else
+		{
+			sv.Effects[idx].ef.Missile.angle[0] = G_FLOAT(OFS_PARM3);
+			MSG_WriteAngle (&sv.multicast, G_FLOAT(OFS_PARM3));
+			sv.Effects[idx].ef.Missile.angle[1] = G_FLOAT(OFS_PARM4);
+			MSG_WriteAngle (&sv.multicast, G_FLOAT(OFS_PARM4));
+
+			VectorCopy(G_VECTOR(OFS_PARM5), sv.Effects[idx].ef.Missile.origin);
+			MSG_WriteCoord (&sv.multicast, sv.Effects[idx].ef.Missile.origin[0]);
+			MSG_WriteCoord (&sv.multicast, sv.Effects[idx].ef.Missile.origin[1]);
+			MSG_WriteCoord (&sv.multicast, sv.Effects[idx].ef.Missile.origin[2]);
+		}
+		break;
+	}
+
+	SV_MulticastSpecific (sv.Effects[idx].client_list, true);
+}
+#endif /* H2W */
 
 #if 0	/* not used */
 static void PF_randomrange(void)
@@ -3098,6 +3717,7 @@ static void PF_v_factorrange(void)
 	VectorCopy (r2, G_VECTOR(OFS_RETURN));
 }
 
+#if !defined(H2W)
 static void PF_matchAngleToSlope(void)
 {
 	edict_t	*actor;
@@ -3174,6 +3794,57 @@ static void PF_doWhiteFlash(void)
 	MSG_WriteString (&sv.reliable_datagram, "wf\n");
 }
 
+#else  /* H2W: */
+
+extern void SV_setseed(int seed);
+extern float SV_seedrand(void);
+extern float SV_GetMultiEffectId(void);
+extern void SV_ParseMultiEffect(sizebuf_t *sb);
+
+static void PF_setseed(void)
+{
+	SV_setseed(G_FLOAT(OFS_PARM0));
+}
+
+static void PF_seedrand(void)
+{
+	G_FLOAT(OFS_RETURN) = SV_seedrand();
+}
+
+static void PF_multieffect(void)
+{
+	SV_ParseMultiEffect(&sv.reliable_datagram);
+}
+
+static void PF_getmeid(void)
+{
+	G_FLOAT(OFS_RETURN) = SV_GetMultiEffectId();
+}
+
+static void PF_weapon_sound(void)
+{
+	edict_t	*entity;
+	int	sound_num;
+	const char	*sample;
+
+	entity = G_EDICT(OFS_PARM0);
+	sample = G_STRING(OFS_PARM1);
+
+	for (sound_num = 1; sound_num < MAX_SOUNDS && sv.sound_precache[sound_num]; sound_num++)
+	{
+		if (!strcmp(sample, sv.sound_precache[sound_num]))
+			break;
+	}
+
+	if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num])
+	{
+		Con_Printf ("%s: %s not precached\n", __thisfunc__, sample);
+		return;
+	}
+	entity->v.wpn_sound = sound_num;
+}
+#endif /* H2W */
+
 
 static builtin_t pr_builtin[] =
 {
@@ -3242,7 +3913,9 @@ static builtin_t pr_builtin[] =
 	PF_WriteString,		// 58
 	PF_WriteEntity,		// 59
 
+#ifndef H2W
 //	PF_FindPath,		// 60
+#endif
 	PF_dprintf,		// void(string s1, string s2) dprint	= #60
 	PF_Cos,			// 61
 	PF_Sin,			// 62
@@ -3293,6 +3966,7 @@ static builtin_t pr_builtin[] =
 	PF_precache_sound3,	// 96
 	PF_precache_model3,	// 97
 	PF_precache_file,	// 98
+#if !defined(H2W)
 	PF_matchAngleToSlope,	// 99
 	PF_updateInfoPlaque,	// 100
 
@@ -3322,6 +3996,32 @@ static builtin_t pr_builtin[] =
 	PF_Fixme,
 #endif
 
+#else  /* H2W: */
+	PF_logfrag,		// 99
+
+	PF_infokey,		// 100
+	PF_stof,		// 101
+	PF_multicast,		// 102
+	PF_turneffect,		// 103
+	PF_updateeffect,	// 104
+	PF_setseed,		// 105
+	PF_seedrand,		// 106
+	PF_multieffect,		// 107
+	PF_getmeid,		// 108
+	PF_weapon_sound,	// 109
+	PF_bcenterprint2,	// 110
+	PF_print_indexed,	// 111
+	PF_centerprint2,	// 112
+	PF_name_print,		// 113
+	PF_StopSound,		// 114
+	PF_UpdateSoundPos,	// 115
+
+	PF_precache_sound,	// 116
+	PF_precache_model,	// 117
+	PF_precache_file,	// 118
+	PF_setsiegeteam,	// 119
+	PF_updateSiegeInfo,	// 120
+#endif /* H2W */
 };
 
 builtin_t *pr_builtins = pr_builtin;
