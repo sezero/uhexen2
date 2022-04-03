@@ -21,6 +21,20 @@
 
 #include "quakedef.h"
 
+#if defined(H2W) && !defined(SERVERONLY)
+#error SERVERONLY not defined for HW server
+#endif
+
+#if !defined(H2W)
+#define SV_MAXCLIENTS	svs.maxclients
+#define SV_ACTIVE	sv.active
+#define SV_CURSKILL	current_skill
+#else
+#define SV_MAXCLIENTS MAX_CLIENTS
+#define SV_ACTIVE	(sv.state == ss_active)
+#define SV_CURSKILL	sv.current_skill
+#endif
+
 dprograms_t		*progs;
 dfunction_t		*pr_functions;
 
@@ -61,6 +75,8 @@ typedef struct sv_def_s
 	int		offset;
 	void		*field;
 } sv_def_t;
+
+#if !defined(H2W) /* HEXEN2 PROGS: */
 
 #define OFS_V103(m)	(int)offsetof(globalvars_v103_t,m)/4
 #define OFS_V111(m)	(int)offsetof(globalvars_v111_t,m)/4
@@ -236,6 +252,318 @@ static sv_def_t globals_v112[] = {
 	{ev_void,	0,				NULL }
 };
 
+#else /* HEXENWORLD PROGS: */
+
+#define OFS_V009(m)	(int)offsetof(globalvars_v009_t,m)/4
+#define OFS_V011(m)	(int)offsetof(globalvars_v011_t,m)/4
+#define OFS_V014(m)	(int)offsetof(globalvars_v014_t,m)/4
+#define OFS_V015(m)	(int)offsetof(globalvars_v015_t,m)/4
+
+#if 0
+COMPILE_TIME_ASSERT(v009_gofs, offsetof(globalvars_v009_t,SetChangeParms) == 464);
+static sv_def_t globals_v009[] = {
+	{ev_entity,	OFS_V009(self),			&sv_globals.self},
+	{ev_entity,	OFS_V009(other),		&sv_globals.other},
+	{ev_entity,	OFS_V009(world),		&sv_globals.world},
+	{ev_float,	OFS_V009(time),			&sv_globals.time},
+	{ev_float,	OFS_V009(frametime),		&sv_globals.frametime},
+	{ev_entity,	OFS_V009(newmis),		&sv_globals.newmis},
+	{ev_float,	OFS_V009(force_retouch),	&sv_globals.force_retouch},
+	{ev_string,	OFS_V009(mapname),		&sv_globals.mapname},
+	{ev_string,	OFS_V009(startspot),		&sv_globals.startspot},
+	{ev_float,	OFS_V009(deathmatch),		&sv_globals.deathmatch},
+	{ev_float,	OFS_V009(randomclass),		&sv_globals.randomclass},
+	{ev_float,	OFS_V009(damageScale),		&sv_globals.damageScale},
+	{ev_float,	OFS_V009(manaScale),		&sv_globals.manaScale},
+	{ev_float,	OFS_V009(tomeMode),		&sv_globals.tomeMode},
+	{ev_float,	OFS_V009(tomeRespawn),		&sv_globals.tomeRespawn},
+	{ev_float,	OFS_V009(w2Respawn),		&sv_globals.w2Respawn},
+	{ev_float,	OFS_V009(altRespawn),		&sv_globals.altRespawn},
+	{ev_float,	OFS_V009(fixedLevel),		&sv_globals.fixedLevel},
+	{ev_float,	OFS_V009(autoItems),		&sv_globals.autoItems},
+	{ev_float,	OFS_V009(dmMode),		&sv_globals.dmMode},
+	{ev_float,	OFS_V009(coop),			&sv_globals.coop},
+	{ev_float,	OFS_V009(teamplay),		&sv_globals.teamplay},
+	{ev_float,	OFS_V009(serverflags),		&sv_globals.serverflags},
+	{ev_float,	OFS_V009(total_secrets),	&sv_globals.total_secrets},
+	{ev_float,	OFS_V009(total_monsters),	&sv_globals.total_monsters},
+	{ev_float,	OFS_V009(found_secrets),	&sv_globals.found_secrets},
+	{ev_float,	OFS_V009(killed_monsters),	&sv_globals.killed_monsters},
+	{ev_float,	OFS_V009(chunk_cnt),		&sv_globals.chunk_cnt},
+	{ev_float,	OFS_V009(done_precache),	&sv_globals.done_precache},
+	{ev_float,	OFS_V009(parm1),		&sv_globals.parm},
+	{ev_vector,	OFS_V009(v_forward),		&sv_globals.v_forward},
+	{ev_vector,	OFS_V009(v_up),			&sv_globals.v_up},
+	{ev_vector,	OFS_V009(v_right),		&sv_globals.v_right},
+	{ev_float,	OFS_V009(trace_allsolid),	&sv_globals.trace_allsolid},
+	{ev_float,	OFS_V009(trace_startsolid),	&sv_globals.trace_startsolid},
+	{ev_float,	OFS_V009(trace_fraction),	&sv_globals.trace_fraction},
+	{ev_vector,	OFS_V009(trace_endpos),		&sv_globals.trace_endpos},
+	{ev_vector,	OFS_V009(trace_plane_normal),	&sv_globals.trace_plane_normal},
+	{ev_float,	OFS_V009(trace_plane_dist),	&sv_globals.trace_plane_dist},
+	{ev_entity,	OFS_V009(trace_ent),		&sv_globals.trace_ent},
+	{ev_float,	OFS_V009(trace_inopen),		&sv_globals.trace_inopen},
+	{ev_float,	OFS_V009(trace_inwater),	&sv_globals.trace_inwater},
+	{ev_entity,	OFS_V009(msg_entity),		&sv_globals.msg_entity},
+	{ev_float,	OFS_V009(cycle_wrapped),	&sv_globals.cycle_wrapped},
+	{ev_float,	OFS_V009(crouch_cnt),		&sv_globals.crouch_cnt},
+	{ev_float,	OFS_V009(modelindex_assassin),	&sv_globals.modelindex_assassin},
+	{ev_float,	OFS_V009(modelindex_crusader),	&sv_globals.modelindex_crusader},
+	{ev_float,	OFS_V009(modelindex_paladin),	&sv_globals.modelindex_paladin},
+	{ev_float,	OFS_V009(modelindex_necromancer),&sv_globals.modelindex_necromancer},
+	{ev_float,	OFS_V009(modelindex_sheep),	&sv_globals.modelindex_sheep},
+	{ev_float,	OFS_V009(num_players),		&sv_globals.num_players},
+	{ev_float,	OFS_V009(exp_mult),		&sv_globals.exp_mult},
+
+	{ev_function,	OFS_V009(main),			&sv_globals.main},
+	{ev_function,	OFS_V009(StartFrame),		&sv_globals.StartFrame},
+	{ev_function,	OFS_V009(PlayerPreThink),	&sv_globals.PlayerPreThink},
+	{ev_function,	OFS_V009(PlayerPostThink),	&sv_globals.PlayerPostThink},
+	{ev_function,	OFS_V009(ClientKill),		&sv_globals.ClientKill},
+	{ev_function,	OFS_V009(ClientConnect),	&sv_globals.ClientConnect},
+	{ev_function,	OFS_V009(PutClientInServer),	&sv_globals.PutClientInServer},
+	{ev_function,	OFS_V009(ClientReEnter),	&sv_globals.ClientReEnter},
+	{ev_function,	OFS_V009(ClientDisconnect),	&sv_globals.ClientDisconnect},
+	{ev_function,	OFS_V009(ClassChangeWeapon),	&sv_globals.ClassChangeWeapon},
+	{ev_function,	OFS_V009(SetNewParms),		&sv_globals.SetNewParms},
+	{ev_function,	OFS_V009(SetChangeParms),	&sv_globals.SetChangeParms},
+	{ev_void,	0,				NULL }
+};
+#endif
+
+COMPILE_TIME_ASSERT(v011_gofs, offsetof(globalvars_v011_t,SetChangeParms) == 480);
+static sv_def_t globals_v011[] = {
+	{ev_entity,	OFS_V011(self),			&sv_globals.self},
+	{ev_entity,	OFS_V011(other),		&sv_globals.other},
+	{ev_entity,	OFS_V011(world),		&sv_globals.world},
+	{ev_float,	OFS_V011(time),			&sv_globals.time},
+	{ev_float,	OFS_V011(frametime),		&sv_globals.frametime},
+	{ev_entity,	OFS_V011(newmis),		&sv_globals.newmis},
+	{ev_float,	OFS_V011(force_retouch),	&sv_globals.force_retouch},
+	{ev_string,	OFS_V011(mapname),		&sv_globals.mapname},
+	{ev_string,	OFS_V011(startspot),		&sv_globals.startspot},
+	{ev_float,	OFS_V011(deathmatch),		&sv_globals.deathmatch},
+	{ev_float,	OFS_V011(randomclass),		&sv_globals.randomclass},
+	{ev_float,	OFS_V011(damageScale),		&sv_globals.damageScale},
+	{ev_float,	OFS_V011(meleeDamScale),	&sv_globals.meleeDamScale},
+	{ev_float,	OFS_V011(shyRespawn),		&sv_globals.shyRespawn},
+	{ev_float,	OFS_V011(manaScale),		&sv_globals.manaScale},
+	{ev_float,	OFS_V011(tomeMode),		&sv_globals.tomeMode},
+	{ev_float,	OFS_V011(tomeRespawn),		&sv_globals.tomeRespawn},
+	{ev_float,	OFS_V011(w2Respawn),		&sv_globals.w2Respawn},
+	{ev_float,	OFS_V011(altRespawn),		&sv_globals.altRespawn},
+	{ev_float,	OFS_V011(fixedLevel),		&sv_globals.fixedLevel},
+	{ev_float,	OFS_V011(autoItems),		&sv_globals.autoItems},
+	{ev_float,	OFS_V011(dmMode),		&sv_globals.dmMode},
+	{ev_float,	OFS_V011(easyFourth),		&sv_globals.easyFourth},
+	{ev_float,	OFS_V011(patternRunner),	&sv_globals.patternRunner},
+	{ev_float,	OFS_V011(coop),			&sv_globals.coop},
+	{ev_float,	OFS_V011(teamplay),		&sv_globals.teamplay},
+	{ev_float,	OFS_V011(serverflags),		&sv_globals.serverflags},
+	{ev_float,	OFS_V011(total_secrets),	&sv_globals.total_secrets},
+	{ev_float,	OFS_V011(total_monsters),	&sv_globals.total_monsters},
+	{ev_float,	OFS_V011(found_secrets),	&sv_globals.found_secrets},
+	{ev_float,	OFS_V011(killed_monsters),	&sv_globals.killed_monsters},
+	{ev_float,	OFS_V011(chunk_cnt),		&sv_globals.chunk_cnt},
+	{ev_float,	OFS_V011(done_precache),	&sv_globals.done_precache},
+	{ev_float,	OFS_V011(parm1),		&sv_globals.parm},
+	{ev_vector,	OFS_V011(v_forward),		&sv_globals.v_forward},
+	{ev_vector,	OFS_V011(v_up),			&sv_globals.v_up},
+	{ev_vector,	OFS_V011(v_right),		&sv_globals.v_right},
+	{ev_float,	OFS_V011(trace_allsolid),	&sv_globals.trace_allsolid},
+	{ev_float,	OFS_V011(trace_startsolid),	&sv_globals.trace_startsolid},
+	{ev_float,	OFS_V011(trace_fraction),	&sv_globals.trace_fraction},
+	{ev_vector,	OFS_V011(trace_endpos),		&sv_globals.trace_endpos},
+	{ev_vector,	OFS_V011(trace_plane_normal),	&sv_globals.trace_plane_normal},
+	{ev_float,	OFS_V011(trace_plane_dist),	&sv_globals.trace_plane_dist},
+	{ev_entity,	OFS_V011(trace_ent),		&sv_globals.trace_ent},
+	{ev_float,	OFS_V011(trace_inopen),		&sv_globals.trace_inopen},
+	{ev_float,	OFS_V011(trace_inwater),	&sv_globals.trace_inwater},
+	{ev_entity,	OFS_V011(msg_entity),		&sv_globals.msg_entity},
+	{ev_float,	OFS_V011(cycle_wrapped),	&sv_globals.cycle_wrapped},
+	{ev_float,	OFS_V011(crouch_cnt),		&sv_globals.crouch_cnt},
+	{ev_float,	OFS_V011(modelindex_assassin),	&sv_globals.modelindex_assassin},
+	{ev_float,	OFS_V011(modelindex_crusader),	&sv_globals.modelindex_crusader},
+	{ev_float,	OFS_V011(modelindex_paladin),	&sv_globals.modelindex_paladin},
+	{ev_float,	OFS_V011(modelindex_necromancer),&sv_globals.modelindex_necromancer},
+	{ev_float,	OFS_V011(modelindex_sheep),	&sv_globals.modelindex_sheep},
+	{ev_float,	OFS_V011(num_players),		&sv_globals.num_players},
+	{ev_float,	OFS_V011(exp_mult),		&sv_globals.exp_mult},
+
+	{ev_function,	OFS_V011(main),			&sv_globals.main},
+	{ev_function,	OFS_V011(StartFrame),		&sv_globals.StartFrame},
+	{ev_function,	OFS_V011(PlayerPreThink),	&sv_globals.PlayerPreThink},
+	{ev_function,	OFS_V011(PlayerPostThink),	&sv_globals.PlayerPostThink},
+	{ev_function,	OFS_V011(ClientKill),		&sv_globals.ClientKill},
+	{ev_function,	OFS_V011(ClientConnect),	&sv_globals.ClientConnect},
+	{ev_function,	OFS_V011(PutClientInServer),	&sv_globals.PutClientInServer},
+	{ev_function,	OFS_V011(ClientReEnter),	&sv_globals.ClientReEnter},
+	{ev_function,	OFS_V011(ClientDisconnect),	&sv_globals.ClientDisconnect},
+	{ev_function,	OFS_V011(ClassChangeWeapon),	&sv_globals.ClassChangeWeapon},
+	{ev_function,	OFS_V011(SetNewParms),		&sv_globals.SetNewParms},
+	{ev_function,	OFS_V011(SetChangeParms),	&sv_globals.SetChangeParms},
+	{ev_void,	0,				NULL }
+};
+
+COMPILE_TIME_ASSERT(v014_gofs, offsetof(globalvars_v014_t,SetChangeParms) == 496);
+static sv_def_t globals_v014[] = {
+	{ev_entity,	OFS_V014(self),			&sv_globals.self},
+	{ev_entity,	OFS_V014(other),		&sv_globals.other},
+	{ev_entity,	OFS_V014(world),		&sv_globals.world},
+	{ev_float,	OFS_V014(time),			&sv_globals.time},
+	{ev_float,	OFS_V014(frametime),		&sv_globals.frametime},
+	{ev_entity,	OFS_V014(newmis),		&sv_globals.newmis},
+	{ev_float,	OFS_V014(force_retouch),	&sv_globals.force_retouch},
+	{ev_string,	OFS_V014(mapname),		&sv_globals.mapname},
+	{ev_string,	OFS_V014(startspot),		&sv_globals.startspot},
+	{ev_float,	OFS_V014(deathmatch),		&sv_globals.deathmatch},
+	{ev_float,	OFS_V014(randomclass),		&sv_globals.randomclass},
+	{ev_float,	OFS_V014(damageScale),		&sv_globals.damageScale},
+	{ev_float,	OFS_V014(meleeDamScale),	&sv_globals.meleeDamScale},
+	{ev_float,	OFS_V014(shyRespawn),		&sv_globals.shyRespawn},
+	{ev_float,	OFS_V014(spartanPrint),		&sv_globals.spartanPrint},
+	{ev_float,	OFS_V014(manaScale),		&sv_globals.manaScale},
+	{ev_float,	OFS_V014(tomeMode),		&sv_globals.tomeMode},
+	{ev_float,	OFS_V014(tomeRespawn),		&sv_globals.tomeRespawn},
+	{ev_float,	OFS_V014(w2Respawn),		&sv_globals.w2Respawn},
+	{ev_float,	OFS_V014(altRespawn),		&sv_globals.altRespawn},
+	{ev_float,	OFS_V014(fixedLevel),		&sv_globals.fixedLevel},
+	{ev_float,	OFS_V014(autoItems),		&sv_globals.autoItems},
+	{ev_float,	OFS_V014(dmMode),		&sv_globals.dmMode},
+	{ev_float,	OFS_V014(easyFourth),		&sv_globals.easyFourth},
+	{ev_float,	OFS_V014(patternRunner),	&sv_globals.patternRunner},
+	{ev_float,	OFS_V014(coop),			&sv_globals.coop},
+	{ev_float,	OFS_V014(teamplay),		&sv_globals.teamplay},
+	{ev_float,	OFS_V014(serverflags),		&sv_globals.serverflags},
+	{ev_float,	OFS_V014(total_secrets),	&sv_globals.total_secrets},
+	{ev_float,	OFS_V014(total_monsters),	&sv_globals.total_monsters},
+	{ev_float,	OFS_V014(found_secrets),	&sv_globals.found_secrets},
+	{ev_float,	OFS_V014(killed_monsters),	&sv_globals.killed_monsters},
+	{ev_float,	OFS_V014(chunk_cnt),		&sv_globals.chunk_cnt},
+	{ev_float,	OFS_V014(done_precache),	&sv_globals.done_precache},
+	{ev_float,	OFS_V014(parm1),		&sv_globals.parm},
+	{ev_vector,	OFS_V014(v_forward),		&sv_globals.v_forward},
+	{ev_vector,	OFS_V014(v_up),			&sv_globals.v_up},
+	{ev_vector,	OFS_V014(v_right),		&sv_globals.v_right},
+	{ev_float,	OFS_V014(trace_allsolid),	&sv_globals.trace_allsolid},
+	{ev_float,	OFS_V014(trace_startsolid),	&sv_globals.trace_startsolid},
+	{ev_float,	OFS_V014(trace_fraction),	&sv_globals.trace_fraction},
+	{ev_vector,	OFS_V014(trace_endpos),		&sv_globals.trace_endpos},
+	{ev_vector,	OFS_V014(trace_plane_normal),	&sv_globals.trace_plane_normal},
+	{ev_float,	OFS_V014(trace_plane_dist),	&sv_globals.trace_plane_dist},
+	{ev_entity,	OFS_V014(trace_ent),		&sv_globals.trace_ent},
+	{ev_float,	OFS_V014(trace_inopen),		&sv_globals.trace_inopen},
+	{ev_float,	OFS_V014(trace_inwater),	&sv_globals.trace_inwater},
+	{ev_entity,	OFS_V014(msg_entity),		&sv_globals.msg_entity},
+	{ev_float,	OFS_V014(cycle_wrapped),	&sv_globals.cycle_wrapped},
+	{ev_float,	OFS_V014(crouch_cnt),		&sv_globals.crouch_cnt},
+	{ev_float,	OFS_V014(modelindex_assassin),	&sv_globals.modelindex_assassin},
+	{ev_float,	OFS_V014(modelindex_crusader),	&sv_globals.modelindex_crusader},
+	{ev_float,	OFS_V014(modelindex_paladin),	&sv_globals.modelindex_paladin},
+	{ev_float,	OFS_V014(modelindex_necromancer),&sv_globals.modelindex_necromancer},
+	{ev_float,	OFS_V014(modelindex_sheep),	&sv_globals.modelindex_sheep},
+	{ev_float,	OFS_V014(num_players),		&sv_globals.num_players},
+	{ev_float,	OFS_V014(exp_mult),		&sv_globals.exp_mult},
+	{ev_float,	OFS_V014(max_players),		&sv_globals.max_players},
+	{ev_float,	OFS_V014(defLosses),		&sv_globals.defLosses},
+	{ev_float,	OFS_V014(attLosses),		&sv_globals.attLosses},
+
+	{ev_function,	OFS_V014(main),			&sv_globals.main},
+	{ev_function,	OFS_V014(StartFrame),		&sv_globals.StartFrame},
+	{ev_function,	OFS_V014(PlayerPreThink),	&sv_globals.PlayerPreThink},
+	{ev_function,	OFS_V014(PlayerPostThink),	&sv_globals.PlayerPostThink},
+	{ev_function,	OFS_V014(ClientKill),		&sv_globals.ClientKill},
+	{ev_function,	OFS_V014(ClientConnect),	&sv_globals.ClientConnect},
+	{ev_function,	OFS_V014(PutClientInServer),	&sv_globals.PutClientInServer},
+	{ev_function,	OFS_V014(ClientReEnter),	&sv_globals.ClientReEnter},
+	{ev_function,	OFS_V014(ClientDisconnect),	&sv_globals.ClientDisconnect},
+	{ev_function,	OFS_V014(ClassChangeWeapon),	&sv_globals.ClassChangeWeapon},
+	{ev_function,	OFS_V014(SetNewParms),		&sv_globals.SetNewParms},
+	{ev_function,	OFS_V014(SetChangeParms),	&sv_globals.SetChangeParms},
+	{ev_void,	0,				NULL }
+};
+
+COMPILE_TIME_ASSERT(v015_gofs, offsetof(globalvars_v015_t,SmitePlayer) == 500);
+static sv_def_t globals_v015[] = {
+	{ev_entity,	OFS_V015(self),			&sv_globals.self},
+	{ev_entity,	OFS_V015(other),		&sv_globals.other},
+	{ev_entity,	OFS_V015(world),		&sv_globals.world},
+	{ev_float,	OFS_V015(time),			&sv_globals.time},
+	{ev_float,	OFS_V015(frametime),		&sv_globals.frametime},
+	{ev_entity,	OFS_V015(newmis),		&sv_globals.newmis},
+	{ev_float,	OFS_V015(force_retouch),	&sv_globals.force_retouch},
+	{ev_string,	OFS_V015(mapname),		&sv_globals.mapname},
+	{ev_string,	OFS_V015(startspot),		&sv_globals.startspot},
+	{ev_float,	OFS_V015(deathmatch),		&sv_globals.deathmatch},
+	{ev_float,	OFS_V015(randomclass),		&sv_globals.randomclass},
+	{ev_float,	OFS_V015(damageScale),		&sv_globals.damageScale},
+	{ev_float,	OFS_V015(meleeDamScale),	&sv_globals.meleeDamScale},
+	{ev_float,	OFS_V015(shyRespawn),		&sv_globals.shyRespawn},
+	{ev_float,	OFS_V015(spartanPrint),		&sv_globals.spartanPrint},
+	{ev_float,	OFS_V015(manaScale),		&sv_globals.manaScale},
+	{ev_float,	OFS_V015(tomeMode),		&sv_globals.tomeMode},
+	{ev_float,	OFS_V015(tomeRespawn),		&sv_globals.tomeRespawn},
+	{ev_float,	OFS_V015(w2Respawn),		&sv_globals.w2Respawn},
+	{ev_float,	OFS_V015(altRespawn),		&sv_globals.altRespawn},
+	{ev_float,	OFS_V015(fixedLevel),		&sv_globals.fixedLevel},
+	{ev_float,	OFS_V015(autoItems),		&sv_globals.autoItems},
+	{ev_float,	OFS_V015(dmMode),		&sv_globals.dmMode},
+	{ev_float,	OFS_V015(easyFourth),		&sv_globals.easyFourth},
+	{ev_float,	OFS_V015(patternRunner),	&sv_globals.patternRunner},
+	{ev_float,	OFS_V015(coop),			&sv_globals.coop},
+	{ev_float,	OFS_V015(teamplay),		&sv_globals.teamplay},
+	{ev_float,	OFS_V015(serverflags),		&sv_globals.serverflags},
+	{ev_float,	OFS_V015(total_secrets),	&sv_globals.total_secrets},
+	{ev_float,	OFS_V015(total_monsters),	&sv_globals.total_monsters},
+	{ev_float,	OFS_V015(found_secrets),	&sv_globals.found_secrets},
+	{ev_float,	OFS_V015(killed_monsters),	&sv_globals.killed_monsters},
+	{ev_float,	OFS_V015(chunk_cnt),		&sv_globals.chunk_cnt},
+	{ev_float,	OFS_V015(done_precache),	&sv_globals.done_precache},
+	{ev_float,	OFS_V015(parm1),		&sv_globals.parm},
+	{ev_vector,	OFS_V015(v_forward),		&sv_globals.v_forward},
+	{ev_vector,	OFS_V015(v_up),			&sv_globals.v_up},
+	{ev_vector,	OFS_V015(v_right),		&sv_globals.v_right},
+	{ev_float,	OFS_V015(trace_allsolid),	&sv_globals.trace_allsolid},
+	{ev_float,	OFS_V015(trace_startsolid),	&sv_globals.trace_startsolid},
+	{ev_float,	OFS_V015(trace_fraction),	&sv_globals.trace_fraction},
+	{ev_vector,	OFS_V015(trace_endpos),		&sv_globals.trace_endpos},
+	{ev_vector,	OFS_V015(trace_plane_normal),	&sv_globals.trace_plane_normal},
+	{ev_float,	OFS_V015(trace_plane_dist),	&sv_globals.trace_plane_dist},
+	{ev_entity,	OFS_V015(trace_ent),		&sv_globals.trace_ent},
+	{ev_float,	OFS_V015(trace_inopen),		&sv_globals.trace_inopen},
+	{ev_float,	OFS_V015(trace_inwater),	&sv_globals.trace_inwater},
+	{ev_entity,	OFS_V015(msg_entity),		&sv_globals.msg_entity},
+	{ev_float,	OFS_V015(cycle_wrapped),	&sv_globals.cycle_wrapped},
+	{ev_float,	OFS_V015(crouch_cnt),		&sv_globals.crouch_cnt},
+	{ev_float,	OFS_V015(modelindex_assassin),	&sv_globals.modelindex_assassin},
+	{ev_float,	OFS_V015(modelindex_crusader),	&sv_globals.modelindex_crusader},
+	{ev_float,	OFS_V015(modelindex_paladin),	&sv_globals.modelindex_paladin},
+	{ev_float,	OFS_V015(modelindex_necromancer),&sv_globals.modelindex_necromancer},
+	{ev_float,	OFS_V015(modelindex_sheep),	&sv_globals.modelindex_sheep},
+	{ev_float,	OFS_V015(num_players),		&sv_globals.num_players},
+	{ev_float,	OFS_V015(exp_mult),		&sv_globals.exp_mult},
+	{ev_float,	OFS_V015(max_players),		&sv_globals.max_players},
+	{ev_float,	OFS_V015(defLosses),		&sv_globals.defLosses},
+	{ev_float,	OFS_V015(attLosses),		&sv_globals.attLosses},
+
+	{ev_function,	OFS_V015(main),			&sv_globals.main},
+	{ev_function,	OFS_V015(StartFrame),		&sv_globals.StartFrame},
+	{ev_function,	OFS_V015(PlayerPreThink),	&sv_globals.PlayerPreThink},
+	{ev_function,	OFS_V015(PlayerPostThink),	&sv_globals.PlayerPostThink},
+	{ev_function,	OFS_V015(ClientKill),		&sv_globals.ClientKill},
+	{ev_function,	OFS_V015(ClientConnect),	&sv_globals.ClientConnect},
+	{ev_function,	OFS_V015(PutClientInServer),	&sv_globals.PutClientInServer},
+	{ev_function,	OFS_V015(ClientReEnter),	&sv_globals.ClientReEnter},
+	{ev_function,	OFS_V015(ClientDisconnect),	&sv_globals.ClientDisconnect},
+	{ev_function,	OFS_V015(ClassChangeWeapon),	&sv_globals.ClassChangeWeapon},
+	{ev_function,	OFS_V015(SetNewParms),		&sv_globals.SetNewParms},
+	{ev_function,	OFS_V015(SetChangeParms),	&sv_globals.SetChangeParms},
+	{ev_function,	OFS_V015(SmitePlayer),		&sv_globals.SmitePlayer},
+	{ev_void,	0,				NULL }
+};
+
+#endif /* H2 / H2W PROGS */
+
 static ddef_t	*ED_FieldAtOfs (int ofs);
 static qboolean	ED_ParseEpair (void *base, ddef_t *key, const char *s);
 
@@ -258,6 +586,7 @@ static gefv_cache	gefvCache[GEFV_CACHESIZE] =
 
 cvar_t	max_temp_edicts = {"max_temp_edicts", "30", CVAR_ARCHIVE};
 
+#if !defined(H2W)
 // these actually are not used in hexen2, but mods may use them.
 cvar_t	nomonsters = {"nomonsters", "0", CVAR_NONE};
 cvar_t	gamecfg = {"gamecfg", "0", CVAR_NONE};
@@ -270,6 +599,11 @@ cvar_t	scratch1 = {"scratch1", "0", CVAR_NONE};
 cvar_t	scratch2 = {"scratch2", "0", CVAR_NONE};
 cvar_t	scratch3 = {"scratch3", "0", CVAR_NONE};
 cvar_t	scratch4 = {"scratch4", "0", CVAR_NONE};
+#else /* HexenWorld: */
+func_t SpectatorConnect;
+func_t SpectatorThink;
+func_t SpectatorDisconnect;
+#endif
 
 //===========================================================================
 
@@ -284,7 +618,9 @@ Sets everything to NULL
 void ED_ClearEdict (edict_t *e)
 {
 	memset (&e->v, 0, progs->entityfields * 4);
+	#ifndef H2W
 	memset (&e->baseline, 0, sizeof(e->baseline));
+	#endif
 	e->free = false;
 }
 
@@ -304,7 +640,7 @@ edict_t *ED_Alloc (void)
 	int			i;
 	edict_t		*e;
 
-	for (i = svs.maxclients + 1 + max_temp_edicts.integer; i < sv.num_edicts; i++)
+	for (i = SV_MAXCLIENTS + 1 + max_temp_edicts.integer; i < sv.num_edicts; i++)
 	{
 		e = EDICT_NUM(i);
 		// the first couple seconds of server time can involve a lot of
@@ -316,12 +652,22 @@ edict_t *ED_Alloc (void)
 		}
 	}
 
+#if !defined(H2W)
 	if (i == MAX_EDICTS)
 	{
 		SV_Edicts("edicts.txt");
 		Host_Error ("%s: no free edicts", __thisfunc__);
 	}
-
+#else
+	if (i == MAX_EDICTS)
+	{
+		Con_Printf ("WARNING: %s: no free edicts\n", __thisfunc__);
+		i--;	// step on whatever is the last edict
+		e = EDICT_NUM(i);
+		SV_UnlinkEdict(e);
+	}
+	else
+#endif
 	sv.num_edicts++;
 	e = EDICT_NUM(i);
 	ED_ClearEdict (e);
@@ -335,7 +681,7 @@ edict_t *ED_Alloc_Temp (void)
 	edict_t		*e, *Least;
 
 	Least = NULL;
-	for (i = svs.maxclients + 1, j = 0; j < max_temp_edicts.integer; i++, j++)
+	for (i = SV_MAXCLIENTS + 1, j = 0; j < max_temp_edicts.integer; i++, j++)
 	{
 		e = EDICT_NUM(i);
 		// the first couple seconds of server time can involve a lot of
@@ -822,7 +1168,7 @@ void ED_PrintEdicts (void)
 {
 	int		i;
 
-	if (!sv.active)
+	if (!SV_ACTIVE)
 		return;
 
 	Con_Printf ("%i entities\n", sv.num_edicts);
@@ -841,7 +1187,7 @@ static void ED_PrintEdict_f (void)
 {
 	int		i;
 
-	if (!sv.active)
+	if (!SV_ACTIVE)
 		return;
 
 	i = atoi (Cmd_Argv(1));
@@ -865,7 +1211,7 @@ static void ED_Count (void)
 	edict_t	*ent;
 	int	i, active, models, solid, step;
 
-	if (!sv.active)
+	if (!SV_ACTIVE)
 		return;
 
 	active = models = solid = step = 0;
@@ -1222,10 +1568,10 @@ void ED_LoadFromFile (const char *data)
 	dfunction_t	*func;
 	edict_t		*ent = NULL;
 	int		inhibit = 0;
-#if !defined(SERVERONLY)
+	#ifndef SERVERONLY
 	int		start_amount = current_loading_size;
 	const char	*orig = data;
-#endif	/* SERVERONLY */
+	#endif
 
 	*sv_globals.time = sv.time;
 
@@ -1237,13 +1583,13 @@ void ED_LoadFromFile (const char *data)
 		if (!data)
 			break;
 
-#if !defined(SERVERONLY)
+		#ifndef SERVERONLY
 		if (entity_file_size)
 		{
 			current_loading_size = start_amount + ((data - orig) * 80 / entity_file_size);
 			D_ShowLoadingSize();
 		}
-#endif	/* SERVERONLY */
+		#endif
 
 		if (com_token[0] != '{')
 			Host_Error ("%s: found %s when expecting {", __thisfunc__, com_token);
@@ -1295,39 +1641,35 @@ void ED_LoadFromFile (const char *data)
 
 			skip = 0;
 
-#if !defined(SERVERONLY)
+			#ifndef SERVERONLY
 			switch (cl_playerclass.integer)
 			{
 			case CLASS_PALADIN:
-				if ((int)ent->v.spawnflags & SPAWNFLAG_NOT_PALADIN)
-				{
+				if ((int)ent->v.spawnflags & SPAWNFLAG_NOT_PALADIN) {
 					skip = 1;
 				}
 				break;
 
 			case CLASS_CLERIC:
-				if ((int)ent->v.spawnflags & SPAWNFLAG_NOT_CLERIC)
-				{
+				if ((int)ent->v.spawnflags & SPAWNFLAG_NOT_CLERIC) {
 					skip = 1;
 				}
 				break;
 
 			case CLASS_DEMON:
 			case CLASS_NECROMANCER:
-				if ((int)ent->v.spawnflags & SPAWNFLAG_NOT_NECROMANCER)
-				{
+				if ((int)ent->v.spawnflags & SPAWNFLAG_NOT_NECROMANCER) {
 					skip = 1;
 				}
 				break;
 
 			case CLASS_THEIF:
-				if ((int)ent->v.spawnflags & SPAWNFLAG_NOT_THEIF)
-				{
+				if ((int)ent->v.spawnflags & SPAWNFLAG_NOT_THEIF) {
 					skip = 1;
 				}
 				break;
 			}
-#endif	/* !SERVERONLY */
+			#endif	/* !SERVERONLY */
 
 			if (skip)
 			{
@@ -1337,10 +1679,9 @@ void ED_LoadFromFile (const char *data)
 			}
 		}
 
-		if ((current_skill == 0 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_EASY))
-			|| (current_skill == 1 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_MEDIUM))
-			|| (current_skill >= 2 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_HARD)) )
-		{
+		if ((SV_CURSKILL == 0 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_EASY)) ||
+		    (SV_CURSKILL == 1 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
+		    (SV_CURSKILL >= 2 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_HARD)) ) {
 			ED_Free (ent);
 			inhibit++;
 			continue;
@@ -1370,6 +1711,9 @@ void ED_LoadFromFile (const char *data)
 
 		*sv_globals.self = EDICT_TO_PROG(ent);
 		PR_ExecuteProgram (func - pr_functions);
+		#ifdef H2W
+		SV_FlushSignon();
+		#endif
 	}
 
 	Con_DPrintf ("%i entities inhibited\n", inhibit);
@@ -1384,7 +1728,11 @@ return the correct progs filename based on map name
 by parsing maplist.txt
 ===============
 */
+#if !defined(H2W)
 static const char def_progname[] = "progs.dat";
+#else
+static const char def_progname[] = "hwprogs.dat";
+#endif
 static const char *PR_GetProgFilename (void)
 {
 #if !USE_MULTIPLE_PROGS
@@ -1537,6 +1885,10 @@ void PR_LoadProgs (void)
 	const char	*progname;
 	const char	*progvstr;
 	sv_def_t	*def;
+	#if defined(H2W)
+	char		num[32];
+	dfunction_t	*f;
+	#endif
 
 	// flush the non-C variable lookup cache
 	for (i = 0; i < GEFV_CACHESIZE; i++)
@@ -1549,13 +1901,16 @@ void PR_LoadProgs (void)
 	Con_DPrintf ("Programs occupy %luK.\n", (unsigned long)(fs_filesize/1024));
 
 	pr_crc = CRC_Block ((byte *)progs, fs_filesize);
+	#if defined(H2W) /* add prog crc to the serverinfo */
+	sprintf (num, "%u", pr_crc);
+	Info_SetValueForStarKey (svs.info, "*progs", num, MAX_SERVERINFO_STRING);
+	#endif
 
 	// byte swap the header
 	for (i = 0; i < (int) sizeof(*progs) / 4; i++)
 		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );
 
-	switch (progs->version)
-	{
+	switch (progs->version) {
 	case PROG_VERSION_V6:
 		is_progs_v6 = true;
 		break;
@@ -1567,8 +1922,9 @@ void PR_LoadProgs (void)
 			    progname, progs->version, PROG_VERSION_V6, PROG_VERSION_V7);
 		return; /* silence compiler */
 	}
-	switch (progs->crc)
-	{
+
+	switch (progs->crc) {
+	#if !defined(H2W) /* HEXEN2 PROGS: */
 	case PROGS_V103_CRC:
 		def = globals_v103;
 		progvstr = "H2/v1.03";
@@ -1581,6 +1937,26 @@ void PR_LoadProgs (void)
 		def = globals_v112;
 		progvstr = "H2MP/v1.12";
 		break;
+	#else /* HEXENWORLD PROGS: */
+	#if 0
+	case PROGS_V009_CRC:
+		def = globals_v009;
+		progvstr = "HW/v0.09";
+		break;
+	#endif
+	case PROGS_V011_CRC:
+		def = globals_v011;
+		progvstr = "HW/v0.11";
+		break;
+	case PROGS_V014_CRC:
+		def = globals_v014;
+		progvstr = "HW/v0.14";
+		break;
+	case PROGS_V015_CRC:
+		def = globals_v015;
+		progvstr = "HW/v0.15";
+		break;
+	#endif
 	default:
 		Host_Error ("Unexpected crc ( %d ) for %s", progs->crc, progname);
 		return; /* silence compiler */
@@ -1678,6 +2054,17 @@ void PR_LoadProgs (void)
 	if (sv_globals.cl_playerclass)
 		*sv_globals.cl_playerclass = cl_playerclass.value;
 #endif
+#if defined(H2W)
+	// Zoid, find the spectator functions
+	SpectatorConnect = SpectatorThink = SpectatorDisconnect = 0;
+
+	if ((f = ED_FindFunction ("SpectatorConnect")) != NULL)
+		SpectatorConnect = (func_t)(f - pr_functions);
+	if ((f = ED_FindFunction ("SpectatorThink")) != NULL)
+		SpectatorThink = (func_t)(f - pr_functions);
+	if ((f = ED_FindFunction ("SpectatorDisconnect")) != NULL)
+		SpectatorDisconnect = (func_t)(f - pr_functions);
+#endif
 }
 
 
@@ -1695,6 +2082,7 @@ void PR_Init (void)
 
 	Cvar_RegisterVariable (&max_temp_edicts);
 
+#if !defined(H2W)
 	Cvar_RegisterVariable (&nomonsters);
 	Cvar_RegisterVariable (&gamecfg);
 	Cvar_RegisterVariable (&savedgamecfg);
@@ -1706,6 +2094,7 @@ void PR_Init (void)
 	Cvar_RegisterVariable (&saved2);
 	Cvar_RegisterVariable (&saved3);
 	Cvar_RegisterVariable (&saved4);
+#endif
 }
 
 //===========================================================================
