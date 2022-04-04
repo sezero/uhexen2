@@ -12,6 +12,8 @@
 #  else
 #   include <inline/ahi.h>
 #  endif
+#elif defined(__VBCC__)
+#  include <inline/ahi_protos.h>
 # else
 #  include <pragmas/ahi_pragmas.h>
 # endif

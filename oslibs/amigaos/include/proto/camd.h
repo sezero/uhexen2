@@ -12,6 +12,8 @@
 #  else
 #   include <inline/camd.h>
 #  endif
+#elif defined(__VBCC__)
+#  include <inline/camd_protos.h>
 # else
 #  include <pragmas/camd_pragmas.h>
 # endif

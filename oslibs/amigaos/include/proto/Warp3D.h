@@ -12,6 +12,8 @@
 #  else
 #   include <inline/Warp3D.h>
 #  endif
+#elif defined(__VBCC__)
+#  include <inline/Warp3D_protos.h>
 # else
 #  include <pragmas/Warp3D_pragmas.h>
 # endif

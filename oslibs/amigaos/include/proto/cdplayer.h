@@ -12,6 +12,8 @@
 #  else
 #   include <inline/cdplayer.h>
 #  endif
+#elif defined(__VBCC__)
+#  include <inline/cdplayer_protos.h>
 # else
 #  include <pragmas/cdplayer_pragmas.h>
 # endif
