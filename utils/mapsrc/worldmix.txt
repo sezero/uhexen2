@@ -1,0 +1,80 @@
+===============================================================================
+Map Name               | Worldmix
+-------------------------------------------------------------------------------
+File Name              | worldmix.map
+-------------------------------------------------------------------------------
+Games                  | Hexen II v1.11, Portal of Praevus v1.12a, HexenWorld
+                       | v0.15
+-------------------------------------------------------------------------------
+Authors                | HaTe }MoD{ (original idea)
+                       | Pa3PyX (modifications and development)
+-------------------------------------------------------------------------------
+Date Created           | 10/21/2000
+-------------------------------------------------------------------------------
+Single Player          | Yes (not intended, but there are monsters and single
+                       | player entry point)
+-------------------------------------------------------------------------------
+Cooperative Game       | Yes (not intended, but there are monsters and coop
+                       | entry points)
+-------------------------------------------------------------------------------
+Deathmatch             | Yes
+-------------------------------------------------------------------------------
+Skill Settings         | Not Implemented
+-------------------------------------------------------------------------------
+Known Bugs             | 1) 'Sound not looped'. The map contains water ambience
+                       |    sound. Since this sound was not properly placed
+                       |    in original Hexen II, those who do not have Portal
+                       |    of Praevus will not hear the water ambience and
+                       |    will see the above error message on map start.
+                       |    The Mission Pack has correct looped version of this
+                       |    sound (water.wav) and will operate normally.
+                       | 2) Minor VIS-related Gil's optimizations glitches
+                       |    (polygons sometimes disappear where they should
+                       |    not). The cure would be to VIS this map with -nogil
+                       |    option, but this would increase the average number
+                       |    of visible leafs by approximately 15 and therefore
+                       |    not worth the performance decrease. You are
+                       |    unlikely to notice these glitches.
+-------------------------------------------------------------------------------
+Note                   | 1) This map was made by Pa3PyX on the base of HaTe's
+                       |    'darkroomdm', which also served as the base for his
+                       |    'modhwdm1'. The map is a mixture of all worlds
+                       |    encountered in Hexen II, so it was given a name
+                       |    'worldmix'.
+                       | 2) The map was tested with Hexen II, Portal of
+                       |    Praevus, GL Portal of Praevus, HexenWorld, and
+                       |    GL HexenWorld.
+                       | 3) This release includes the source .map; use it if
+                       |    you want to modify the map.
+                       | 4) Compiling Details: to compile the source, original
+                       |    H2_UTILS were used. Place the worldmix.map in the
+                       |    map utilities directory and execute the following
+                       |    command lines:
+                       |
+                       |    qbsp.exe -watervis -notjunc worldmix.map
+                       |    light.exe -extra worldmix.bsp
+                       |    vis.exe -level 4 worldmix.bsp
+                       |
+                       |    Also, you need to have the texture .wad file
+                       |    (hex2full.wad) in the same directory, this one can
+                       |    be found at BSP Headquarters
+                       |    (http://www.bsphq.com/).
+-------------------------------------------------------------------------------
+Permissions            | Do whatever you please with this map, but if you
+                       | modify world and/or brush entities, please give the
+                       | map a different filename! For if it happens to be
+                       | played in deathmatch, two maps with the same name are
+                       | assumed the same maps; if server and client have
+                       | different versions, this will cause weird game
+                       | behavior.
+-------------------------------------------------------------------------------
+Contacts               | HaTe }MoD{
+                       | email: ucdarkness@aol.com
+                       |
+                       | Pa3PyX
+                       | email: pa3pyx87405703@icqmail.com (direct bug reports
+                       |        here)
+                       | ICQ: 87405703
+                       | homepage: http://pa3pyx.come.to/ (the map itself and
+                       | its source are hosted here)
+===============================================================================
