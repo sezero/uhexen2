@@ -1287,7 +1287,7 @@
 				"SDKROOT[arch=ppc]" = macosx10.5;
 				"SDKROOT[arch=x86_64]" = macosx10.6;
 				SECTORDER_FLAGS = "";
-				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -1305,7 +1305,7 @@
 					i386,
 					ppc,
 				);
-				COPY_PHASE_STRIP = YES;
+				COPY_PHASE_STRIP = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G3;
@@ -1420,7 +1420,7 @@
 					i386,
 					ppc,
 				);
-				COPY_PHASE_STRIP = YES;
+				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../../oslibs/macosx,
 					"$(FRAMEWORK_SEARCH_PATHS)",
@@ -1530,7 +1530,7 @@
 				"SDKROOT[arch=ppc]" = macosx10.5;
 				"SDKROOT[arch=x86_64]" = macosx10.6;
 				SECTORDER_FLAGS = "";
-				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -1548,7 +1548,7 @@
 					i386,
 					ppc,
 				);
-				COPY_PHASE_STRIP = YES;
+				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					../../../oslibs/macosx,
 					"$(FRAMEWORK_SEARCH_PATHS)",
