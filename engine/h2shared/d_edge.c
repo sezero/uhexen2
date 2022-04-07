@@ -485,7 +485,7 @@ void D_DrawSurfaces (qboolean Translucent)
 					D_CalcGradients (pface);
 
 				//	(*d_drawspans) (s->spans);
-#if id386
+#if id386 || id68k
 					D_DrawSpans16T(s->spans);
 #else
 					D_DrawSpans8T(s->spans);

@@ -164,8 +164,11 @@ void R_TranPatch7 (void);
 #endif /* id386 */
 
 #if id68k
+void D_DrawTurbulent8 (espan_t *pspan);
+void D_DrawTurbulent8T (espan_t *pspan);
+void D_DrawSpans16 (espan_t *pspans);
+void D_DrawSpans16T (espan_t *pspans);
 void D_SpriteDrawSpans (sspan_t *pspan);
-void D_DrawTurbulent8Span (void);
 void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage);
 #endif /* id68k */
 
