@@ -48,8 +48,8 @@ int __stack_size = MIN_STACK_SIZE;
 #else
 int __stack = MIN_STACK_SIZE;
 #if defined(PLATFORM_AMIGAOS3) && defined(__libnix__)
-/* this pulls in stackswap.o */
-/* NOTE: stackswap.o was a stray object in old versions
+/* this pulls in swapstack.o */
+/* NOTE: swapstack.o was a stray object in old versions
  *       of libnix, need manually adding to libnix20.a */
 extern void __stkinit(void);
 void * __x = __stkinit;
