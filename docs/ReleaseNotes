@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.10: (Sep. 21, 2021.)
+Changes in v1.5.10: (Apr. 04, 2022.)
 ========================================================================
 
 This is a minor bug fix and maintenance release:
@@ -18,6 +18,8 @@ This is a minor bug fix and maintenance release:
 - OpenGL: gl_clear now defaults to 1 and glClearColor is black. The
   new cvar r_clearcolor (palette index from 0 to 255, default is 0)
   can be used to change the clear color (from fitzquake.)
+
+- OpenGL: compensate viewmodel distortion at fov > 90.
 
 - Windows, midi: Fixed volume reseting after loop (sf.net bug 66.)
 
@@ -36,7 +38,18 @@ This is a minor bug fix and maintenance release:
 
 - DOS: removed the long-obsoleted MPATH and BW-TCP network drivers.
 
-- Amiga (m68k): dropped support for VBCC compiler.
+- Amiga (m68k): multiple updates/optimizations thanks to Szilard Biro.
+
+- Amiga (m68k): support for PSX controller, cdplayer.library and Paula
+  audio support, thanks to Szilard Biro.
+
+- Amiga (m68k): added support for Bebbo's gcc6/libnix based toolchain,
+  dropped support for VBCC compiler.
+
+- AROS: initial x86_64 support.
+
+- Multiple minor fixes, tidy-ups, and protability tweaks, and updates
+  to third-party libraries.
 
 - Source repository moved to git.
 
