@@ -169,6 +169,8 @@ void D_DrawTurbulent8T (espan_t *pspan);
 void D_DrawSpans16 (espan_t *pspans);
 void D_DrawSpans16T (espan_t *pspans);
 void D_SpriteDrawSpans (sspan_t *pspan);
+void D_SpriteDrawSpansT (sspan_t *pspan);
+void D_SpriteDrawSpansT2 (sspan_t *pspan);
 void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage);
 void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage);
 void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage);

@@ -191,7 +191,7 @@ NextSpan:
 
 #endif
 
-#if	!id386
+#if	!id386 && !id68k
 
 #define D_SpriteDrawSpansT	D_SpriteDrawTransSpans
 #define D_SpriteDrawSpansT2	D_SpriteDrawTransSpans
