@@ -32,19 +32,9 @@ byte		*d_pcolormap;
 
 int		d_aflatcolor;
 int		d_xdenom;
-ASM_LINKAGE_END
 
-#if id68k
 edgetable_t	*pedgetable;
-#else
-static edgetable_t	*pedgetable;
-#endif
-
-#if id68k
 edgetable_t	edgetables[12] =
-#else
-static edgetable_t	edgetables[12] =
-#endif
 {
 	{ 0, 1, r_p0, r_p2, NULL, 2, r_p0, r_p1, r_p2 },
 	{ 0, 2, r_p1, r_p0, r_p2, 1, r_p1, r_p2, NULL },
@@ -60,15 +50,11 @@ static edgetable_t	edgetables[12] =
 	{ 0, 1, r_p0, r_p2, NULL, 1, r_p0, r_p1, NULL }
 };
 
-ASM_LINKAGE_BEGIN
 // FIXME: some of these can become statics
 int		a_sstepxfrac, a_tstepxfrac, r_lstepx, a_ststepxwhole;
 int		r_sstepx, r_tstepx, r_lstepy, r_sstepy, r_tstepy;
 int		r_zistepx, r_zistepy;
 int		d_aspancount, d_countextrastep;
-#if id68k
-void	(*d_polysetdrawspans) (spanpackage_t *pspanpackage);
-#endif
 
 spanpackage_t	*a_spans;
 spanpackage_t	*d_pedgespanpackage;
@@ -87,21 +73,21 @@ ASM_LINKAGE_END
 int		skinwidth;
 byte	*skinstart;
 
+#if !id68k
 static int	ystart;
+#endif
 
 typedef struct {
 	int		quotient;
 	int		remainder;
 } adivtab_t;
 
-#if id68k
+ASM_LINKAGE_BEGIN
 adivtab_t	adivtab[32*32] =
-#else
-static adivtab_t	adivtab[32*32] =
-#endif
 {
 #include "adivtab.h"
 };
+ASM_LINKAGE_END
 
 #if !id386
 static spanpackage_t	spans[DPS_MAXSPANS + 1 + ((CACHE_SIZE - 1) / sizeof(spanpackage_t)) + 1];
@@ -113,6 +99,12 @@ static void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage);
 #endif
+#endif
+
+#if id68k
+ASM_LINKAGE_BEGIN
+void	(*d_polysetdrawspans) (spanpackage_t *pspanpackage);
+ASM_LINKAGE_END
 #endif
 
 
@@ -1082,9 +1074,9 @@ void D_PolysetDraw (void)
 	}
 	else
 	{
-#if id68k
+		#if id68k
 		d_polysetdrawspans = D_PolysetDrawSpans8;
-#endif
+		#endif
 		D_DrawNonSubdiv ();
 	}
 }
@@ -1100,9 +1092,9 @@ void D_PolysetDrawT (void)
 	}
 	else
 	{
-#if id68k
+		#if id68k
 		d_polysetdrawspans = D_PolysetDrawSpans8T;
-#endif
+		#endif
 		D_DrawNonSubdiv ();
 	}
 }
@@ -1118,9 +1110,9 @@ void D_PolysetDrawT2 (void)
 	}
 	else
 	{
-#if id68k
+		#if id68k
 		d_polysetdrawspans = D_PolysetDrawSpans8T2;
-#endif
+		#endif
 		D_DrawNonSubdiv ();
 	}
 }
@@ -1136,9 +1128,9 @@ void D_PolysetDrawT3 (void)
 	}
 	else
 	{
-#if id68k
+		#if id68k
 		d_polysetdrawspans = D_PolysetDrawSpans8T3;
-#endif
+		#endif
 		D_DrawNonSubdiv ();
 	}
 }
@@ -1154,9 +1146,9 @@ void D_PolysetDrawT5 (void)
 	}
 	else
 	{
-#if id68k
+		#if id68k
 		d_polysetdrawspans = D_PolysetDrawSpans8T5;
-#endif
+		#endif
 		D_DrawNonSubdiv ();
 	}
 }
