@@ -422,10 +422,11 @@ _D_PolysetDrawSpans8T
 		move.b  0(a3,d2.l),d2           ;d2 = ((byte *)acolormap[d2]
 		lsl.w   #8,d2
 		move.b  (a0),d2                 ;d2 = (btemp<<8) + (*lpdest)
-		move.l  a1,-(sp)
-		move.l  _mainTransTable,a1
-		move.b  0(a1,d2.l),(a0)         ;*lpdest = mainTransTable[d2];
-		move.l  (sp)+,a1
+		;move.l  a1,-(sp)
+		;move.l  _mainTransTable,a1
+		;move.b  0(a1,d2.l),(a0)         ;*lpdest = mainTransTable[d2];
+		;move.l  (sp)+,a1
+		move.b	([_mainTransTable],d2.l),(a0) ;*lpdest = mainTransTable[d2]
 		;move    d0,-2(a1)               ;*lpz = lzi >> 16
 		move    d0,(a1)                 ;*lpz = lzi >> 16
 .cont
@@ -622,10 +623,11 @@ _D_PolysetDrawSpans8T2
 		move.b  0(a3,d2.l),d2           ;d2 = ((byte *)acolormap[d2]
 		lsl.w   #8,d2
 		move.b  (a0),d2                 ;d2 = (btemp<<8) + (*lpdest)
-		move.l  a1,-(sp)
-		move.l  _mainTransTable,a1
-		move.b  0(a1,d2.l),(a0)         ;*lpdest = mainTransTable[d2];
-		move.l  (sp)+,a1
+		;move.l  a1,-(sp)
+		;move.l  _mainTransTable,a1
+		;move.b  0(a1,d2.l),(a0)         ;*lpdest = mainTransTable[d2];
+		;move.l  (sp)+,a1
+		move.b	([_mainTransTable],d2.l),(a0) ;*lpdest = mainTransTable[d2]
 .writez
 		move    d0,(a1)                 ;*lpz = lzi >> 16
 .cont
@@ -980,7 +982,7 @@ _D_PolysetDrawSpans8T5
 		blt.b   .cont
 		lsl.w   #8,d2
 		move.b  (a0),d2                 ;d2 = (btemp<<8) + (*lpdest)
-		move.b  0(a3,d2.l),(a0)         ;*lpdest = mainTransTable[d2];
+		move.b  0(a3,d2.l),(a0)         ;*lpdest = transTable[d2]
 		move    d0,(a1)                 ;*lpz = lzi >> 16
 .cont
 		swap    d0
@@ -2175,7 +2177,7 @@ DoRecursionT5
 		move.l  0(a3,d5.l*4),d1         ;d_scantable[new[1]]
 		add.l   d4,d1                   ;+new[0]
 		move.l  _transTable,a3
-		move.b  0(a3,d2.l),0(a6,d1.l)   ;d_viewbuffer[d1] = mainTransTable[d2]
+		move.b  0(a3,d2.l),0(a6,d1.l)   ;d_viewbuffer[d1] = transTable[d2]
 .nodraw
 
 *// recursively continue
@@ -3263,7 +3265,7 @@ _D_RasterizeAliasPolySmooth
 ******************************************************************************
 		cnop    0,4
 _D_DrawNonSubdiv
-		;rts
+
 		movem.l d2-d7/a2-a6,-(sp)
 
 *        pfv = r_affinetridesc.pfinalverts;
@@ -3886,6 +3888,6 @@ do_PolysetDrawFinalVertsT5
 		lsl.w   #8,d2
 		move.b	0(a5,d0.l),d2			;d2 = (pix<<8) + pix2
 		move.l	_transTable,a0
-		move.b  0(a0,d2.l),0(a5,d0.l)	;d_viewbuffer[d0] = mainTransTable[d2]
+		move.b  0(a0,d2.l),0(a5,d0.l)	;d_viewbuffer[d0] = transTable[d2]
 .fvskip
 		rts
