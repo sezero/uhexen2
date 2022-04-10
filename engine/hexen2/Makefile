@@ -1290,9 +1290,9 @@ else
 ifeq ($(USE_M68K_ASM),yes)
 SOFT_ASM = \
 	amiga_d_68k.o \
-	amiga_d_polyse68k.o \
 	amiga_r_68k.o \
 	d_part68k.o \
+	d_polyse68k.o \
 	d_scan68k.o \
 	r_surf68k.o
 

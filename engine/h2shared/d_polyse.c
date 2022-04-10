@@ -34,9 +34,17 @@ int		d_aflatcolor;
 int		d_xdenom;
 ASM_LINKAGE_END
 
+#if id68k
+edgetable_t	*pedgetable;
+#else
 static edgetable_t	*pedgetable;
+#endif
 
+#if id68k
+edgetable_t	edgetables[12] =
+#else
 static edgetable_t	edgetables[12] =
+#endif
 {
 	{ 0, 1, r_p0, r_p2, NULL, 2, r_p0, r_p1, r_p2 },
 	{ 0, 2, r_p1, r_p0, r_p2, 1, r_p1, r_p2, NULL },
@@ -58,6 +66,9 @@ int		a_sstepxfrac, a_tstepxfrac, r_lstepx, a_ststepxwhole;
 int		r_sstepx, r_tstepx, r_lstepy, r_sstepy, r_tstepy;
 int		r_zistepx, r_zistepy;
 int		d_aspancount, d_countextrastep;
+#if id68k
+void	(*d_polysetdrawspans) (spanpackage_t *pspanpackage);
+#endif
 
 spanpackage_t	*a_spans;
 spanpackage_t	*d_pedgespanpackage;
@@ -83,7 +94,11 @@ typedef struct {
 	int		remainder;
 } adivtab_t;
 
+#if id68k
+adivtab_t	adivtab[32*32] =
+#else
 static adivtab_t	adivtab[32*32] =
+#endif
 {
 #include "adivtab.h"
 };
@@ -93,11 +108,11 @@ static spanpackage_t	spans[DPS_MAXSPANS + 1 + ((CACHE_SIZE - 1) / sizeof(spanpac
 						/* one extra because of cache line pretouching */
 #if !id68k
 static void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage);
-#endif
 static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage);
+#endif
 #endif
 
 
@@ -131,7 +146,6 @@ static inline void do_PolysetDrawFinalVerts (finalvert_t *pv)
 		}
 	}
 }
-#endif /* !id68k */
 
 static inline void do_PolysetDrawFinalVertsT (finalvert_t *pv)
 {
@@ -258,14 +272,12 @@ static inline void do_PolysetDrawFinalVertsT5 (finalvert_t *pv)
 	}
 }
 
-#if !id68k
 void D_PolysetDrawFinalVerts (finalvert_t *pv1, finalvert_t *pv2, finalvert_t *pv3)
 {
 	do_PolysetDrawFinalVerts (pv1);
 	do_PolysetDrawFinalVerts (pv2);
 	do_PolysetDrawFinalVerts (pv3);
 }
-#endif
 
 void D_PolysetDrawFinalVertsT (finalvert_t *pv1, finalvert_t *pv2, finalvert_t *pv3)
 {
@@ -294,6 +306,7 @@ void D_PolysetDrawFinalVertsT5 (finalvert_t *pv1, finalvert_t *pv2, finalvert_t 
 	do_PolysetDrawFinalVertsT5 (pv2);
 	do_PolysetDrawFinalVertsT5 (pv3);
 }
+#endif
 
 
 /*
@@ -377,7 +390,6 @@ nodraw:
 	D_PolysetRecursiveTriangle (lp3, lp1, new_p);
 	D_PolysetRecursiveTriangle (lp3, new_p, lp2);
 }
-#endif /* !id68k */
 
 static void D_PolysetRecursiveTriangleT (int *lp1, int *lp2, int *lp3)
 {
@@ -720,6 +732,7 @@ nodraw:
 	D_PolysetRecursiveTriangleT5 (lp3, lp1, new_p);
 	D_PolysetRecursiveTriangleT5 (lp3, new_p, lp2);
 }
+#endif /* !id68k */
 
 /*
 ================
@@ -985,6 +998,7 @@ static void D_DrawSubdivT5 (void)
 }
 
 
+#if !id68k
 /*
 ================
 D_DrawNonSubdiv
@@ -1049,6 +1063,7 @@ static void D_DrawNonSubdiv (void)
 		D_RasterizeAliasPolySmooth ();
 	}
 }
+#endif /* !id68k */
 
 
 /*
@@ -1067,6 +1082,9 @@ void D_PolysetDraw (void)
 	}
 	else
 	{
+#if id68k
+		d_polysetdrawspans = D_PolysetDrawSpans8;
+#endif
 		D_DrawNonSubdiv ();
 	}
 }
@@ -1082,6 +1100,9 @@ void D_PolysetDrawT (void)
 	}
 	else
 	{
+#if id68k
+		d_polysetdrawspans = D_PolysetDrawSpans8T;
+#endif
 		D_DrawNonSubdiv ();
 	}
 }
@@ -1097,6 +1118,9 @@ void D_PolysetDrawT2 (void)
 	}
 	else
 	{
+#if id68k
+		d_polysetdrawspans = D_PolysetDrawSpans8T2;
+#endif
 		D_DrawNonSubdiv ();
 	}
 }
@@ -1112,6 +1136,9 @@ void D_PolysetDrawT3 (void)
 	}
 	else
 	{
+#if id68k
+		d_polysetdrawspans = D_PolysetDrawSpans8T3;
+#endif
 		D_DrawNonSubdiv ();
 	}
 }
@@ -1127,6 +1154,9 @@ void D_PolysetDrawT5 (void)
 	}
 	else
 	{
+#if id68k
+		d_polysetdrawspans = D_PolysetDrawSpans8T5;
+#endif
 		D_DrawNonSubdiv ();
 	}
 }
@@ -1162,6 +1192,7 @@ void D_PolysetUpdateTables (void)
 #define D_PolysetScanLeftEdgeT2		D_PolysetScanLeftEdge
 #define D_PolysetScanLeftEdgeT3		D_PolysetScanLeftEdge
 #define D_PolysetScanLeftEdgeT5		D_PolysetScanLeftEdge
+#if !id68k
 /*
 ===================
 D_PolysetScanLeftEdge
@@ -1226,10 +1257,12 @@ static void D_PolysetScanLeftEdge (int height)
 		}
 	} while (--height);
 }
+#endif  /* !id68k */
 
 #endif	/* !id386 */
 
 
+#if !id68k
 /*
 ===================
 D_PolysetSetUpForLineScan
@@ -1267,14 +1300,16 @@ static void D_PolysetSetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
 		erroradjustdown = dn;
 	}
 }
+#endif  /* !id68k */
 
 
-#if	!id386 && !id68k
+#if	!id386
 
 #define D_PolysetCalcGradientsT		D_PolysetCalcGradients
 #define D_PolysetCalcGradientsT2	D_PolysetCalcGradients
 #define D_PolysetCalcGradientsT3	D_PolysetCalcGradients
 #define D_PolysetCalcGradientsT5	D_PolysetCalcGradients
+#if !id68k
 /*
 ================
 D_PolysetCalcGradients
@@ -1324,6 +1359,7 @@ static void D_PolysetCalcGradients (int skin_width)
 
 	a_ststepxwhole = skin_width * (r_tstepx >> 16) + (r_sstepx >> 16);
 }
+#endif	/* !id68k */
 
 #endif	/* !id386 */
 
@@ -1345,14 +1381,13 @@ void InitGel (byte *palette)
 #endif
 
 
-#if	!id386
+#if	!id386 && !id68k
 
 /*
 ================
 D_PolysetDrawSpans8
 ================
 */
-#if !id68k
 static void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage)
 {
 	int		lcount;
@@ -1417,7 +1452,6 @@ static void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage)
 		pspanpackage++;
 	} while (pspanpackage->count != -999999);
 }
-#endif /* !id68k */
 
 static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage)
 {
@@ -1699,7 +1733,7 @@ static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage)
 	} while (pspanpackage->count != -999999);
 }
 
-#endif	/* !id386 */
+#endif	/* !id386 && !id68k */
 
 
 /*
@@ -1739,6 +1773,7 @@ void D_PolysetFillSpans8 (spanpackage_t *pspanpackage)
 	}
 }
 
+#if !id68k
 /*
 ================
 D_RasterizeAliasPolySmooth
@@ -2033,8 +2068,10 @@ void D_RasterizeAliasPolySmooth (void)
 			D_PolysetDrawSpans8 (pstart);
 	}
 }
+#endif /* !id68k */
 
 
+#if !id68k
 /*
 ================
 D_PolysetSetEdgeTable
@@ -2095,6 +2132,7 @@ void D_PolysetSetEdgeTable (void)
 
 	pedgetable = &edgetables[edgetableindex];
 }
+#endif /* !id68k */
 
 
 #if 0

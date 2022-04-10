@@ -170,12 +170,14 @@ void D_DrawParticle1x1b (particle_t *pparticle);
 #endif
 
 #if id68k
+void D_DrawNonSubdiv (void);
 void D_PolysetCalcGradients (int skinwidth);
-void D_PolysetCalcGradientsT (int skinwidth);
-void D_PolysetCalcGradientsT2 (int skinwidth);
-void D_PolysetCalcGradientsT3 (int skinwidth);
-void D_PolysetCalcGradientsT5 (int skinwidth);
 void D_PolysetRecursiveTriangle (int *p1, int *p2, int *p3);
+void D_PolysetRecursiveTriangleT (int *p1, int *p2, int *p3);
+void D_PolysetRecursiveTriangleT2 (int *p1, int *p2, int *p3);
+void D_PolysetRecursiveTriangleT3 (int *p1, int *p2, int *p3);
+void D_PolysetRecursiveTriangleT5 (int *p1, int *p2, int *p3);
+//void D_PolysetScanLeftEdge (int height);
 #endif
 
 void D_DrawParticle (particle_t *pparticle);

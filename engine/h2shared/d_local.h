@@ -170,6 +170,10 @@ void D_DrawSpans16 (espan_t *pspans);
 void D_DrawSpans16T (espan_t *pspans);
 void D_SpriteDrawSpans (sspan_t *pspan);
 void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage);
+void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage);
+void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage);
+void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage);
+void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage);
 #endif /* id68k */
 
 /* C funcs called from asm code: */
