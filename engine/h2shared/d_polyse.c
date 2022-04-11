@@ -143,7 +143,6 @@ static inline void do_PolysetDrawFinalVertsT (finalvert_t *pv)
 {
 	int		z;
 	short		*zbuf;
-	unsigned int	color_map_idx;
 
 	// valid triangle coordinates for filling can include the bottom and
 	// right clip edges, due to the fill rule; these shouldn't be drawn
@@ -153,7 +152,7 @@ static inline void do_PolysetDrawFinalVertsT (finalvert_t *pv)
 		zbuf = zspantable[pv->v[1]] + pv->v[0];
 		if (z >= *zbuf)
 		{
-			color_map_idx = skintable[pv->v[3]>>16][pv->v[2]>>16];
+			const byte color_map_idx = skintable[pv->v[3]>>16][pv->v[2]>>16];
 
 			if (color_map_idx != 0)
 			{
@@ -173,7 +172,6 @@ static inline void do_PolysetDrawFinalVertsT2 (finalvert_t *pv)
 {
 	int		z;
 	short		*zbuf;
-	unsigned int	color_map_idx;
 
 	// valid triangle coordinates for filling can include the bottom and
 	// right clip edges, due to the fill rule; these shouldn't be drawn
@@ -183,7 +181,7 @@ static inline void do_PolysetDrawFinalVertsT2 (finalvert_t *pv)
 		zbuf = zspantable[pv->v[1]] + pv->v[0];
 		if (z >= *zbuf)
 		{
-			color_map_idx = skintable[pv->v[3]>>16][pv->v[2]>>16];
+			const byte color_map_idx = skintable[pv->v[3]>>16][pv->v[2]>>16];
 
 			if (color_map_idx != 0)
 			{
@@ -191,7 +189,7 @@ static inline void do_PolysetDrawFinalVertsT2 (finalvert_t *pv)
 
 				*zbuf = z;
 				pix = ((byte *)acolormap)[color_map_idx + (pv->v[4] & 0xFF00)];
-				if (color_map_idx % 2 == 0)
+				if (!(color_map_idx & 0x1))
 				{
 					d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]] = pix;
 				}
@@ -210,7 +208,6 @@ static inline void do_PolysetDrawFinalVertsT3 (finalvert_t *pv)
 {
 	int		z;
 	short		*zbuf;
-	unsigned int	color_map_idx;
 
 	// valid triangle coordinates for filling can include the bottom and
 	// right clip edges, due to the fill rule; these shouldn't be drawn
@@ -220,7 +217,7 @@ static inline void do_PolysetDrawFinalVertsT3 (finalvert_t *pv)
 		zbuf = zspantable[pv->v[1]] + pv->v[0];
 		if (z >= *zbuf)
 		{
-			color_map_idx = skintable[pv->v[3]>>16][pv->v[2]>>16];
+			const byte color_map_idx = skintable[pv->v[3]>>16][pv->v[2]>>16];
 
 			if (color_map_idx != 0)
 			{
@@ -238,7 +235,6 @@ static inline void do_PolysetDrawFinalVertsT5 (finalvert_t *pv)
 {
 	int		z;
 	short		*zbuf;
-	unsigned int	color_map_idx;
 
 	// valid triangle coordinates for filling can include the bottom and
 	// right clip edges, due to the fill rule; these shouldn't be drawn
@@ -248,16 +244,15 @@ static inline void do_PolysetDrawFinalVertsT5 (finalvert_t *pv)
 		zbuf = zspantable[pv->v[1]] + pv->v[0];
 		if (z >= *zbuf)
 		{
-			color_map_idx = skintable[pv->v[3]>>16][pv->v[2]>>16];
+			const byte color_map_idx = skintable[pv->v[3]>>16][pv->v[2]>>16];
 
 			if (color_map_idx != 0)
 			{
 				unsigned int	pix, pix2;
 
 				*zbuf = z;
-				pix = color_map_idx;
 				pix2 = d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]];
-				pix = transTable[(pix<<8) + pix2];
+				pix = transTable[(color_map_idx<<8) + pix2];
 				d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]] = pix;
 			}
 		}
@@ -390,7 +385,6 @@ static void D_PolysetRecursiveTriangleT (int *lp1, int *lp2, int *lp3)
 	int		new_p[6];
 	int		z;
 	short		*zbuf;
-	unsigned int	color_map_idx;
 
 	d = lp2[0] - lp1[0];
 	if (d < -1 || d > 1)
@@ -447,7 +441,7 @@ split:
 	zbuf = zspantable[new_p[1]] + new_p[0];
 	if (z >= *zbuf)
 	{
-		color_map_idx = skintable[new_p[3]>>16][new_p[2]>>16];
+		const byte color_map_idx = skintable[new_p[3]>>16][new_p[2]>>16];
 
 		if (color_map_idx != 0)
 		{
@@ -474,7 +468,6 @@ static void D_PolysetRecursiveTriangleT2 (int *lp1, int *lp2, int *lp3)
 	int		new_p[6];
 	int		z;
 	short		*zbuf;
-	unsigned int	color_map_idx;
 
 	d = lp2[0] - lp1[0];
 	if (d < -1 || d > 1)
@@ -531,7 +524,7 @@ split:
 	zbuf = zspantable[new_p[1]] + new_p[0];
 	if (z >= *zbuf)
 	{
-		color_map_idx = skintable[new_p[3]>>16][new_p[2]>>16];
+		const byte color_map_idx = skintable[new_p[3]>>16][new_p[2]>>16];
 
 		if (color_map_idx != 0)
 		{
@@ -540,7 +533,7 @@ split:
 			*zbuf = z;
 			pix = d_pcolormap[color_map_idx];
 
-			if (color_map_idx % 2 == 0)
+			if (!(color_map_idx & 0x1))
 			{
 				d_viewbuffer[d_scantable[new_p[1]] + new_p[0]] = pix;
 			}
@@ -566,7 +559,6 @@ static void D_PolysetRecursiveTriangleT3 (int *lp1, int *lp2, int *lp3)
 	int		new_p[6];
 	int		z;
 	short		*zbuf;
-	unsigned int	color_map_idx;
 
 	d = lp2[0] - lp1[0];
 	if (d < -1 || d > 1)
@@ -623,7 +615,7 @@ split:
 	zbuf = zspantable[new_p[1]] + new_p[0];
 	if (z >= *zbuf)
 	{
-		color_map_idx = skintable[new_p[3]>>16][new_p[2]>>16];
+		const byte color_map_idx = skintable[new_p[3]>>16][new_p[2]>>16];
 
 		if (color_map_idx != 0)
 		{
@@ -648,7 +640,6 @@ static void D_PolysetRecursiveTriangleT5 (int *lp1, int *lp2, int *lp3)
 	int		new_p[6];
 	int		z;
 	short		*zbuf;
-	unsigned int	color_map_idx;
 
 	d = lp2[0] - lp1[0];
 	if (d < -1 || d > 1)
@@ -705,16 +696,15 @@ split:
 	zbuf = zspantable[new_p[1]] + new_p[0];
 	if (z >= *zbuf)
 	{
-		color_map_idx = skintable[new_p[3]>>16][new_p[2]>>16];
+		const byte color_map_idx = skintable[new_p[3]>>16][new_p[2]>>16];
 
 		if (color_map_idx != 0)
 		{
 			unsigned int	pix, pix2;
 
 			*zbuf = z;
-			pix = color_map_idx;
 			pix2 = d_viewbuffer[d_scantable[new_p[1]] + new_p[0]];
-			pix = transTable[(pix<<8) + pix2];
+			pix = transTable[(color_map_idx<<8) + pix2];
 			d_viewbuffer[d_scantable[new_p[1]] + new_p[0]] = pix;
 		}
 	}
@@ -1454,7 +1444,7 @@ static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage)
 	int		llight;
 	int		lzi;
 	short		*lpz;
-	unsigned int	btemp, color_map_idx;
+	byte		btemp;
 
 	do
 	{
@@ -1483,12 +1473,12 @@ static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage)
 
 			do
 			{
-				color_map_idx = lptex[0];
+				const byte color_map_idx = lptex[0];
 				if (color_map_idx != 0)
 				{
 					if ((lzi >> 16) >= *lpz)
 					{
-						btemp = ((byte *) acolormap)[*lptex + (llight & 0xFF00)];
+						btemp = ((byte *) acolormap)[color_map_idx + (llight & 0xFF00)];
 						*lpdest = mainTransTable[(btemp<<8) + (*lpdest)];
 						*lpz = lzi >> 16;
 					}
@@ -1523,7 +1513,7 @@ static void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage)
 	int		llight;
 	int		lzi;
 	short		*lpz;
-	unsigned int	btemp, color_map_idx;
+	byte		btemp;
 
 	do
 	{
@@ -1552,23 +1542,14 @@ static void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage)
 
 			do
 			{
-				color_map_idx = lptex[0];
+				const byte color_map_idx = lptex[0];
 				if (color_map_idx != 0)
 				{
 					if ((lzi >> 16) >= *lpz)
 					{
-						if (color_map_idx % 2 == 0)
-						{
-							btemp = ((byte *) acolormap)[*lptex + (llight & 0xFF00)];
-							*lpdest = (byte) btemp;
-							*lpz = lzi >> 16;
-						}
-						else
-						{
-							btemp = ((byte *) acolormap)[*lptex + (llight & 0xFF00)];
-							*lpdest = mainTransTable[(btemp<<8) + (*lpdest)];
-							*lpz = lzi >> 16;
-						}
+						btemp = ((byte *) acolormap)[color_map_idx + (llight & 0xFF00)];
+						*lpdest = (color_map_idx & 0x1) ? mainTransTable[(btemp<<8) + (*lpdest)] : btemp;
+						*lpz = lzi >> 16;
 					}
 				}
 				lpdest++;
@@ -1601,7 +1582,6 @@ static void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage)
 	int		llight;
 	int		lzi;
 	short		*lpz;
-	unsigned int	color_map_idx;
 
 	do
 	{
@@ -1630,12 +1610,12 @@ static void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage)
 
 			do
 			{
-				color_map_idx = lptex[0];
+				const byte color_map_idx = lptex[0];
 				if (color_map_idx != 0)
 				{
 					if ((lzi >> 16) >= *lpz)
 					{
-						*lpdest = ((byte *) acolormap)[*lptex + (llight & 0xFF00)];
+						*lpdest = ((byte *) acolormap)[color_map_idx + (llight & 0xFF00)];
 						*lpz = lzi >> 16;
 					}
 				}
@@ -1668,7 +1648,6 @@ static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage)
 	int		lsfrac, ltfrac;
 	int		lzi;
 	short		*lpz;
-	unsigned int	color_map_idx;
 
 	do
 	{
@@ -1696,7 +1675,7 @@ static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage)
 
 			do
 			{
-				color_map_idx = lptex[0];
+				const byte color_map_idx = lptex[0];
 				if (color_map_idx != 0)
 				{
 					if ((lzi >> 16) >= *lpz)
