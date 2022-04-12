@@ -1293,6 +1293,7 @@ SOFT_ASM = \
 	d_part68k.o \
 	d_polyse68k.o \
 	d_scan68k.o \
+	d_sky68k.o \
 	d_sprite68k.o \
 	r_surf68k.o
 
