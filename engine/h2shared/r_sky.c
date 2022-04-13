@@ -36,6 +36,7 @@ int		r_skymade;
 
 // TODO: clean up these routines
 
+// these are global for amiga m68k asm
 ASM_LINKAGE_BEGIN
 byte	bottomsky[128*131];
 byte	bottommask[128*131];

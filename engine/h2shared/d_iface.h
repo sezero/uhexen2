@@ -210,12 +210,13 @@ void D_EndParticles (void);
 void D_PolysetUpdateTables (void);
 
 // these are currently for internal use only, and should not be used by drivers
+// FIXME: amiga m68k asm references this.
+ASM_LINKAGE_BEGIN
 extern byte				*r_skysource;
 
 // !!! must be kept the same as in quakeasm.h !!!
 #define TRANSPARENT_COLOR	0xFF
 
-ASM_LINKAGE_BEGIN
 extern void *acolormap;	// FIXME: should go away
 ASM_LINKAGE_END
 
@@ -254,8 +255,11 @@ void R_GenTile (msurface_t *psurf, void *pdest);
 #define	SKYSIZE		(1 << SKYSHIFT)
 #define SKYMASK		(SKYSIZE - 1)
 
+ASM_LINKAGE_BEGIN
+// amiga m68k asm references these :
 extern float	skyspeed, skyspeed2;
 extern float	skytime;
+ASM_LINKAGE_END
 
 extern int	c_surf;
 extern vrect_t	scr_vrect;

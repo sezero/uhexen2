@@ -141,15 +141,15 @@ extern	int	d_lightstylevalue[256];	// 8.8 frac of base light value
 
 ASM_LINKAGE_BEGIN
 extern	int	ubasestep, errorterm, erroradjustup, erroradjustdown;
-ASM_LINKAGE_END
 
+// m68k asm references this one.
 extern	int	r_skymade;
 
-ASM_LINKAGE_BEGIN
 void TransformVector (vec3_t in, vec3_t out);
-ASM_LINKAGE_END
 
+// this is in asm for m68k amiga
 void R_MakeSky (void);
+ASM_LINKAGE_END
 
 
 // flags in finalvert_t.flags
