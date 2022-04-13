@@ -90,7 +90,8 @@ static qboolean S_PAULA_Init(dma_t *dma)
 	period = (UWORD)((float)sysclock / (float)desired_speed + 0.5f);
 
 	/* allocate dma buffer */
-	if (!(dmabuf = AllocVec(NSAMPLES, MEMF_CHIP|MEMF_PUBLIC|MEMF_CLEAR))) {
+	dmabuf = (unsigned char *) AllocVec(NSAMPLES, MEMF_CHIP|MEMF_PUBLIC|MEMF_CLEAR);
+	if (!dmabuf) {
 		Con_Printf("Paula: Can't allocate the DMA buffer\n");
 		return false;
 	}
