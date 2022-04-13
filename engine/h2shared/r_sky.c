@@ -36,9 +36,11 @@ int		r_skymade;
 
 // TODO: clean up these routines
 
-static byte	bottomsky[128*131];
-static byte	bottommask[128*131];
-static byte	newsky[128*256];
+ASM_LINKAGE_BEGIN
+byte	bottomsky[128*131];
+byte	bottommask[128*131];
+byte	newsky[128*256];
+ASM_LINKAGE_END
 		// newsky and topsky both pack in here, 128 bytes
 		//  of newsky on the left of each scan, 128 bytes
 		//  of topsky on the right, because the low-level
@@ -88,6 +90,7 @@ void R_InitSky (texture_t *mt)
 }
 
 
+#if !id68k
 /*
 =================
 R_MakeSky
@@ -150,6 +153,7 @@ void R_MakeSky (void)
 
 	r_skymade = 1;
 }
+#endif /* !id68k */
 
 
 /*
