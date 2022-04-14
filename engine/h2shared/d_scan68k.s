@@ -2454,6 +2454,7 @@ _D_DrawSpans16T
 .izistep        rs.l    1
 .izi            rs.l    1
 .pz             rs.l    1
+.savearea       rs.l    4
 .saved4         rs.l    1
 .saved5         rs.l    1
 .savea6         rs.l    1
@@ -2520,16 +2521,16 @@ _D_DrawSpans16T
 *
 
 		move.l  _cacheblock,a1          ;pbase = (unsigned char *)cacheblock
-		fmove.s #16,fp7
+		fmove.s #16,fp5
 		fmove.s .szstpu(sp),fp3
-		fmul    fp7,fp3                 ;sdivz16stepu = d_sdivzstepu * 16
+		fmul    fp5,fp3                 ;sdivz16stepu = d_sdivzstepu * 16
 		fmove.s .tzstpu(sp),fp4
-		fmul    fp7,fp4                 ;tdivz16stepu = d_tdivzstepu * 16
-		fmove.s .zistpu(sp),fp5
+		fmul    fp5,fp4                 ;tdivz16stepu = d_tdivzstepu * 16
+		fmove.s .zistpu(sp),fp7
 		fmul    fp7,fp5                 ;zi16stepu = d_zistepu * 16
 ; translucent
 		fmove.s #32768*65536,fp0
-		fmove.s .zistpu(sp),fp7         ;fp7 = d_zistepu
+		;fmove.s .zistpu(sp),fp7         ;fp7 = d_zistepu
 		fmul    fp0,fp7                 ;multiply by $8000*$10000
 		fmove.l fp7,d3                  ;izistep = d3
 		move.l  d3,.izistep(sp)
@@ -2546,11 +2547,10 @@ _D_DrawSpans16T
 		move.l  (a6)+,d4
 ; translucent
 		move.l  _d_pzbuffer,a6
-		move.l  _d_zwidth,d7
-		move.l  d2,d3                   ;d3 = pspan->v
-		muls    d7,d3                   ;d3 = pspan->v * d_zwidth
+		move.l  _d_zwidth,d3            ;d3 = d_zwidth
+		muls    d2,d3                   ;d3 = pspan->v * d_zwidth
 		add.l   d1,d3                   ;d3 = d3 + pspan->u
-		lea     0(a6,d3.l*2),a6         ;pdest = d_pzbuffer + d3
+		lea     0(a6,d3.l*2),a6         ;pz = d_pzbuffer + d3
 		move.l  a6,.pz(sp)
 ; translucent
 		muls    d2,d0                   ;d0 = screenwidth * pspan->v
@@ -2575,8 +2575,8 @@ _D_DrawSpans16T
 		fadd.s  (a6)+,fp2               ;zi = d_ziorigin + fp2 + fp7
 ; translucent
 		fmove.s #32768*65536,fp6
-		fmove.l fp2,fp7                 ;fp7 = zi
-		fmul    fp7,fp6                 ;izi = zi * $8000 * $10000
+		;fmove.l fp2,fp7                 ;fp7 = zi
+		fmul    fp2,fp6                 ;izi = zi * $8000 * $10000
 		fmove.l fp6,d3                  ;convert to integer
 		move.l  d3,.izi(sp)
 ; translucent
@@ -2909,7 +2909,7 @@ _D_DrawSpans16T
 
 .mainloop
 		;move.l  d1,-(sp)
-		movem.l d1/a2-a4,-(sp)
+		movem.l d1/a2-a4,.savearea(sp)
 		lea     .PixTable,a6            ;a6 -> Functable
 		move.l  _cachewidth,d3          ;read cachewidth
 		move.l  0(a6,d2.w*4),a6         ;get pointer to function
@@ -2935,20 +2935,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3                      ;d3 = izi >> 16
-		cmp     (a4),d3                 ;if (*pz <= (izi >> 16))
+		;move.l  .izi(sp),d3
+		;swap    d3                      ;d3 = izi >> 16
+		move.w  .izi(sp),d3             ;d3 = izi >> 16
+		cmp.w   (a4),d3                 ;if (*pz <= (izi >> 16))
 		blt.b   .Pix16_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3           ;btemp = *(pbase + (s >> 16) + (t >> 16) * cachewidth)
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3                 ;(btemp<<8) + (*pdest)
 		move.b  0(a3,d3.l),(a0)
 .Pix16_next
-		addq.l  #1,a0
+		addq.l  #1,a0                   ;pdest++
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)             ;izi += izistep
+		addq.l  #2,a4                   ;pz++
 ; translucent
 		add.l   d4,d6                   ;increment s fractional part
 		addx.w  d0,d6                   ;increment s integer part
@@ -2960,20 +2962,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6           ;and so long...
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+		;move.l  .izi(sp),d3
+		;swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix15_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix15_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -2985,20 +2989,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+;		move.l  .izi(sp),d3
+;		swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix14_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix14_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -3010,20 +3016,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+;		move.l  .izi(sp),d3
+;		swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix13_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix13_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -3035,20 +3043,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+;		move.l  .izi(sp),d3
+;		swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix12_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix12_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -3060,20 +3070,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+		;move.l  .izi(sp),d3
+		;swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix11_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix11_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -3085,20 +3097,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+		;move.l  .izi(sp),d3
+		;swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix10_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix10_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -3110,20 +3124,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+		;move.l  .izi(sp),d3
+		;swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix9_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix9_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -3135,20 +3151,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+		;move.l  .izi(sp),d3
+		;swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix8_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix8_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -3160,20 +3178,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+		;move.l  .izi(sp),d3
+		;swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix7_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix7_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -3185,20 +3205,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+		;move.l  .izi(sp),d3
+		;swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix6_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix6_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -3210,20 +3232,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+		;move.l  .izi(sp),d3
+		;swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix5_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix5_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -3235,20 +3259,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+		;move.l  .izi(sp),d3
+		;swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix4_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix4_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -3260,20 +3286,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+		;move.l  .izi(sp),d3
+		;swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix3_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix3_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -3285,20 +3313,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+		;move.l  .izi(sp),d3
+		;swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix2_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix2_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -3310,20 +3340,22 @@ _D_DrawSpans16T
 		;lea     0(a1,d6.w),a6
 		;move.b  0(a6,d7.l),(a0)+
 ; translucent
-		move.l  .izi(sp),d3
-		swap    d3
-		cmp     (a4),d3
+		;move.l  .izi(sp),d3
+		;swap    d3
+		move.w  .izi(sp),d3
+		cmp.w   (a4),d3
 		blt.b   .Pix1_next
 		lea     0(a1,d6.w),a6
 		clr.l   d3
 		move.b  0(a6,d7.l),d3
-		lsl.l   #8,d3
+		lsl.w   #8,d3
 		move.b  (a0),d3
 		move.b  0(a3,d3.l),(a0)
 .Pix1_next
 		addq.l  #1,a0
 		move.l  .izistep(sp),d3
 		add.l   d3,.izi(sp)
+		addq.l  #2,a4
 ; translucent
 		add.l   d4,d6
 		addx.w  d0,d6
@@ -3332,7 +3364,8 @@ _D_DrawSpans16T
 		bcc.b   .Pix0
 		add.l   a2,d7
 .Pix0
-		movem.l (sp)+,d1/a2-a4
+		move.l  a4,.pz(sp)              ;save pz onto the stack
+		movem.l .savearea(sp),d1/a2-a4
 		;move.l  (sp)+,d1
 
 ******  loop terminations
