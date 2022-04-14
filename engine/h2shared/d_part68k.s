@@ -245,11 +245,9 @@ _D_DrawParticle
 		lea     0(a0,d2.l*2),a0         ;pz += d_zwidth
 		dbra    d0,.more_loop
 .is_trans
-		add.l   #-256,d4
-		lsl.l   #8,d4              ; << 8 for transTable idx
+		add.w   #-256,d4
+		lsl.w   #8,d4                   ; << 8 for transTable idx
 		move.l  _transTable,a4
-		add.l   d4,a4
-		clr.l   d4
 		cmp.l   #4,d0                   ;switch (pix)
 		bgt.b   .t_more
 		beq.b   .t_four
