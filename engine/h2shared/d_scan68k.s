@@ -29,8 +29,8 @@ SPAN_PNEXT	equ	12
 		;XREF    _sintable
 		XREF    _r_turb_turb
 		XREF    _mainTransTable
-		XREF    _scanList
-		XREF    _ZScanCount
+		;XREF    _scanList
+		;XREF    _ZScanCount
 
 		XDEF    _D_DrawTurbulent8
 		XDEF    _D_DrawTurbulent8T
@@ -572,6 +572,10 @@ _D_DrawTurbulent8T
 		rsreset
 ;.origscanList   rs.b    SCAN_SIZE
 ;.ZScanCount     rs.l    1
+.izistep        rs.l    1
+.izi            rs.l    1
+.pz             rs.l    1
+.savearea       rs.l    5
 .saved4         rs.l    1
 .saved5         rs.l    1
 .savea1         rs.l    1
@@ -617,10 +621,12 @@ _D_DrawTurbulent8T
 *
 *        sdivz16stepu = d_sdivzstepu * 16;
 *        tdivz16stepu = d_tdivzstepu * 16;
+*        izistep = (int)(d_zistepu * 0x8000 * 0x10000);
 *        zi16stepu = d_zistepu * 16;
 *
 *        do
 *        {
+*                pz = d_pzbuffer + (d_zwidth * pspan->v) + pspan->u;
 *                r_turb_pdest = (unsigned char *)((byte *)d_viewbuffer +
 *                                (screenwidth * pspan->v) + pspan->u);
 *
@@ -633,6 +639,7 @@ _D_DrawTurbulent8T
 *                sdivz = d_sdivzorigin + dv*d_sdivzstepv + du*d_sdivzstepu;
 *                tdivz = d_tdivzorigin + dv*d_tdivzstepv + du*d_tdivzstepu;
 *                zi = d_ziorigin + dv*d_zistepv + du*d_zistepu;
+*                izi = (int)(zi * 0x8000 * 0x10000);
 *                z = (float)0x10000 / zi;        // prescale to 16.16 fixed-point
 *
 
@@ -651,6 +658,12 @@ _D_DrawTurbulent8T
 		fmove.s .tzstpu(sp),fp4
 		fmul    fp7,fp4                 ;tdivz16stepu = d_tdivzstepu * 16
 		fmove.s .zistpu(sp),fp5
+; translucent
+		fmove.s #32768*65536,fp0
+		fmul    fp5,fp0                 ;izistep = (int)(d_zistepu * 0x8000 * 0x10000)
+		fmove.l fp0,d3                  ;d3 = izistep
+		move.l  d3,.izistep(sp)
+; translucent
 		fmul    fp7,fp5                 ;zi16stepu = d_zistepu * 16
 		move.l  .pspan(sp),a1           ;get function parameter
 .loop
@@ -660,121 +673,13 @@ _D_DrawTurbulent8T
 		move.l  (a1)+,d2
 		fmove.l d2,fp7                  ;dv = (float)pspan->v
 		move.l  (a1)+,d4                ;d4 = pspan->count
-
-******  D_DrawSingleZSpans (inlined)
-
-******  d0  : scratch
-******  d1  : pspan->u
-******  d2  : pspan->v
-******  d3  : scratch
-******  d4  : pspan->count
-******  d5  : scratch
-******  d6  : scratch
-******  d7  : scratch
-******  a0  : scratch
-******  a1  : scratch
-******  fp0 : scratch
-******  fp1 : scratch
-******  fp2 : du = (float)pspan->u
-******  fp6 : scratch
-******  fp7 : dv = (float)pspan->v
-
-*				ZScanCount = 0;
-*				izistep = (int)(d_zistepu * 0x8000 * 0x10000);
-*				pdest = d_pzbuffer + (d_zwidth * pspan->v) + pspan->u;
-*				zi = d_ziorigin + dv*d_zistepv + du*d_zistepu;
-*				izi = (int)(zi * 0x8000 * 0x10000);
-
-		clr.l    d0                     ;d0 = ZScanCount
-		fmove.s #32768*65536,fp0
-		fmove.s .zistpu(sp),fp6         ;fp6 = d_zistepu
-		fmove   fp6,fp1                 ;fp1 = d_zistepu
-		fmul    fp0,fp1                 ;multiply by $8000*$10000
-		fmove.l fp1,d3                  ;d3 = izistep
-
-		fmove   fp6,fp1                 ;fp1 = d_zistepu
-		fmul    fp2,fp1                 ;fp1 = du * d_zistepu
-		fmove.s .zistpv(sp),fp6         ;fp6 = d_zistepv
-		fmul    fp7,fp6                 ;fp6 = dv * d_zistepv
-		fadd    fp6,fp1                 ;fp1 = dv * d_zistepv + du * d_zistepu
-
+; translucent
 		move.l  _d_zwidth,d7
 		muls    d2,d7                   ;d7 = pspan->v * d_zwidth
-		fmove.s _d_ziorigin,fp6         ;fp6 = d_ziorigin
-		fadd    fp6,fp1                 ;fp1 = zi = d_ziorigin + dv * d_zistepv + du * d_zistepu
 		add.l   d1,d7                   ;d7 = d7 + pspan->u
 		move.l  _d_pzbuffer,a0
-		lea     0(a0,d7.l*2),a1         ;a1 = pdest
-		fmul    fp0,fp1                 ;izi = zi * $8000 * $10000
-		fmove.l fp1,d5                  ;d5 = izi
-
-*				if (count > 0)
-*				{
-
-		tst.l   d4
-		ble.w   .szsend
-
-*					do
-*					{
-*						if (*pdest > (short)(izi >> 16))
-*						{
-*							ZScanCount++;
-*							scanList[count-1] = 0;
-*						}
-*						else
-*						{
-*							scanList[count-1] = 1;
-*							*pdest = (short)(izi >> 16);
-*						}
-*						izi += izistep;
-*						pdest++;
-*						count--;
-*					} while (count > 0);
-
-******  d0 = ZScanCount
-******  d3 = izistep
-******  d4 = count
-******  d5 = izi
-******  d6 = scratch
-******  d7 = scratch
-******  a1 = scratch
-******  a1 = pdest
-
-		lea     _scanList,a0
-		move.l  d4,d6                    ;d6 = count
-		subq.l  #1,d6                    ;d6 = count--
-.szsloop
-		move.l  d5,d7
-		swap    d7                       ;d7 = izi >> 16 (upper 16-bits contain garbage)
-		cmp.w   (a1),d7
-		bge.w   .szsvisible              ;if (*pdest > (izi >> 16))
-		addq.l  #1,d0                    ;ZScanCount++
-		clr.b   (a0,d6.l)                ;scanList[count-1] = 0
-		bra.s   .szsincvars
-.szsvisible
-		move.b  #1,(a0,d6.l)             ;scanList[count-1] = 1;
-		move.w  d7,(a1)                  ;*pdest = (izi >> 16)
-.szsincvars
-		add.l   d3,d5                    ;izi += izistep
-		addq.l  #2,a1                    ;pdest++
-		move.l  d6,d7                    ;d7 = count
-		subq.l  #1,d6                    ;count--
-		tst.l   d7
-		bne.w   .szsloop                 ;while (count > 0);
-.szsend
-*				}
-****** D_DrawSingleZSpans return
-******  d0 : ZScanCount
-******  d4 : count
-; translucent
-
-*				if (ZScanCount == count)  // fully blocked
-*					continue;
-
-		cmp.l   d0,d4
-		beq.w   .skiploop
-		;move.l  d0,.ZScanCount(sp)      ;save ZScanCount
-		move.l  d0,_ZScanCount
+		lea     0(a0,d7.l*2),a1         ;a1 = pz
+		move.l  a1,.pz(sp)
 ; translucent
 		move.l  _d_viewbuffer,a0
 		move.l  _screenwidth,d0
@@ -798,6 +703,12 @@ _D_DrawTurbulent8T
 		fmul.s  (a1)+,fp7               ;fp7 = dv * d_zistepv
 		fadd    fp7,fp2
 		fadd.s  (a1)+,fp2               ;zi = d_ziorigin + fp2 + fp7
+; translucent
+		fmove.s #32768*65536,fp6
+		fmul    fp2,fp6                 ;izi = zi * $8000 * $10000
+		fmove.l fp6,d5                  ;d5 = izi
+		move.l  d5,.izi(sp)
+; translucent
 		fmove.s #65536,fp6
 		fdiv    fp2,fp6                 ;z = (float)0x10000 / zi
 
@@ -1116,10 +1027,14 @@ _D_DrawTurbulent8T
 
 *        do
 *        {
-*                sturb = ((r_turb_s + r_turb_turb[(r_turb_t>>16)&(CYCLE-1)])>>16)&63;
-*                tturb = ((r_turb_t + r_turb_turb[(r_turb_s>>16)&(CYCLE-1)])>>16)&63;
-*                temp = *(r_turb_pbase + (tturb<<6) + sturb);
-*                *r_turb_pdest = mainTransTable[(temp<<8) + (*r_turb_pdest)];
+*                if (*pdest > (short)(izi >> 16))
+*                {
+*                        sturb = ((r_turb_s + r_turb_turb[(r_turb_t>>16)&(CYCLE-1)])>>16)&63;
+*                        tturb = ((r_turb_t + r_turb_turb[(r_turb_s>>16)&(CYCLE-1)])>>16)&63;
+*                        temp = *(r_turb_pbase + (tturb<<6) + sturb);
+*                        *r_turb_pdest = mainTransTable[(temp<<8) + (*r_turb_pdest)];
+*                        *pz = (short)(izi >> 16);
+*                }
 *                r_turb_pdest++;
 *                r_turb_s += r_turb_sstep;
 *                r_turb_t += r_turb_tstep;
@@ -1128,22 +1043,24 @@ _D_DrawTurbulent8T
 .mainloop
 
 		;move.l  d1,-(sp)
-		movem.l d1/a2-a5,-(sp)
-		;move.l  .ZScanCount(sp),d3
-		lea     _scanList,a5            ;a5 = scanList
-		add.l   d1,a5                   ;TODO don't do this for the quick case
+		movem.l d1/a2-a5,.savearea(sp)
 		move.l  _cacheblock,a1          ;pbase = (unsigned char *)cacheblock
 		moveq   #10,d1
 		move.l  _mainTransTable,a2
 		move.l  d4,a3                   ;a3 = r_turb_sstep
-		;clr.l   d4
+		clr.l   d4
 		move.l  d5,a4                   ;a4 = r_turb_tstep
-		clr.l   d5
-		move.l  _ZScanCount,d3
-		tst.l   d3
-		bne.w   .draw                   ;if (ZScanCount)
+; translucent
+		move.l  .izi(sp),d5             ;d5 = izi
+		move.l  .pz(sp),a5              ;a5 = pz
+; translucent
 
-.drawquick
+.draw
+; translucent
+		swap    d5
+		cmp.w   (a5),d5                 ;if (*pz <= (izi >> 16))
+		blt.b   .skipdraw
+; translucent
 		swap    d6                      ;r_turb_s >> 16
 		swap    d7                      ;r_turb_t >> 16
 		and     #CYCLE-1,d6             ;(r_turb_s >> 16) & (CYCLE-1)
@@ -1160,21 +1077,33 @@ _D_DrawTurbulent8T
 		and.l   #$fc0,d3                ;tturb<<6 = (d3 >> (16-6)) & (63 << 6)
 		add.l   d3,d0                   ;sturb + tturb << 6
 		;move.b  0(a1,d0.l),(a0)+        ;*r_turb_pdest++ = *(r_turb_pbase + d0)
-		clr.l   d4
+; translucent
 		move.b  0(a1,d0.l),d4           ;d4 = *(r_turb_pbase + d0)
-		lsl.l   #8,d4
-		move.b  (a0),d5                 ;d5 = *r_turb_pdest
-		add.l   d5,d4
-		move.b  0(a2,d4.l),(a0)+
+		lsl.w   #8,d4
+		move.b  (a0),d4                 ;d4 = (temp<<8) + *r_turb_pdest
+		move.b  0(a2,d4.l),(a0)
+		move.w  d5,(a5)                 ;*pz = izi >> 16
+; translucent
+.skipdraw
+		add.l   #1,a0                   ;r_turb_pdest++
 		add.l   a3,d6                   ;r_turb_s += r_turb_sstep
 		add.l   a4,d7                   ;r_turb_t += r_turb_tstep
-		dbra    d2,.drawquick           ;while (--r_turb_spancount > 0)
+; translucent
+		move.l  .izistep(sp),d3
+		;add.l   d3,.izi(sp)             ;izi += izistep
+		swap    d5
+		add.l   d3,d5                   ;izi += izistep
+		addq.l  #2,a5                   ;pz++
+; translucent
+		dbra    d2,.draw                ;while (--r_turb_spancount > 0)
+		move.l  a5,.pz(sp)              ;save pz onto the stack
+		move.l  d5,.izi(sp)             ;save izi
 		;move.l  (sp)+,d1
-		movem.l (sp)+,d1/a2-a5
+		movem.l .savearea(sp),d1/a2-a5
 
 ******  loop terminations
 
-.terminateloop
+;.terminateloop
 		move.l   .saved5(sp),d7         ;r_turb_t = tnext
 		move.l   .saved4(sp),d6         ;r_turb_s = snext
 
@@ -1190,45 +1119,6 @@ _D_DrawTurbulent8T
 		fmovem.x        (sp)+,fp2-fp7
 		movem.l (sp)+,d2-d7/a2-a6
 		rts
-
-.draw
-		sub.w   #1,d2
-		move.b  0(a5,d2.w),d0           ;d0 = scanList[r_turb_spancount-1]
-		tst.b   d0
-		beq.w   .skipdraw
-		swap    d6                      ;r_turb_s >> 16
-		swap    d7                      ;r_turb_t >> 16
-		and     #CYCLE-1,d6             ;(r_turb_s >> 16) & (CYCLE-1)
-		and     #CYCLE-1,d7             ;(r_turb_t >> 16) & (CYCLE-1)
-		move.l  0(a6,d7.w*4),d0         ;r_turb_turb [d7]
-		move.l  0(a6,d6.w*4),d3         ;r_turb_turb [d6]
-		swap    d6
-		swap    d7
-		add.l   d6,d0                   ;r_turb_s + r_turb_turb []
-		add.l   d7,d3                   ;r_turb_t + r_turb_turb []
-		swap    d0                      ;d0 >> 16
-		and.l   #$3f,d0                 ;sturb = (d0 >> 16) & 63
-		lsr.l   d1,d3                   ;(d3 >> (16-6))
-		and.l   #$fc0,d3                ;tturb<<6 = (d3 >> (16-6)) & (63 << 6)
-		add.l   d3,d0                   ;sturb + tturb << 6
-		;move.b  0(a1,d0.l),(a0)+        ;*r_turb_pdest++ = *(r_turb_pbase + d0)
-		clr.l   d4
-		move.b  0(a1,d0.l),d4           ;d4 = *(r_turb_pbase + d0)
-		lsl.l   #8,d4
-		move.b  (a0),d5                 ;d5 = *r_turb_pdest
-		add.l   d5,d4
-		move.b  0(a2,d4.l),(a0)
-.skipdraw
-		add.l   #1,a0                   ;r_turb_pdest++
-		add.l   a3,d6                   ;r_turb_s += r_turb_sstep
-		add.l   a4,d7                   ;r_turb_t += r_turb_tstep
-
-		cmp.w   #-1,d2
-		bne     .draw
-		;dbra    d2,.draw                ;while (--r_turb_spancount > 0)
-		;move.l  (sp)+,d1
-		movem.l (sp)+,d1/a2-a5
-		bra.w   .terminateloop
 
 
 
