@@ -69,7 +69,7 @@ int	r_currentkey;
 static void (*pdrawfunc)(void);
 static void (*pdrawTfunc)(void);
 
-#if	!id386
+#if	!id386 && !id68k
 static void R_GenerateSpans (void);
 static void R_GenerateTSpans (void);
 #endif
@@ -165,7 +165,7 @@ void R_BeginEdgeFrame (void)
 }
 
 
-#if	!id386
+#if	!id386 && !id68k
 
 /*
 ==============
@@ -295,7 +295,7 @@ pushback:
 	}
 }
 
-#endif	/* !id386 */
+#endif	/* !id386 && !id68k */
 
 
 /*
@@ -331,7 +331,7 @@ static void R_CleanupSpan (void)
 	} while (surf != &surfaces[1]);
 }
 
-#if	!id386
+#if	!id386 && !id68k
 
 static void R_CleanupSpanT (void)
 {
@@ -361,7 +361,7 @@ static void R_CleanupSpanT (void)
 	} while (surf != &surfaces[1]);
 }
 
-#endif	/* !id386 */
+#endif	/* !id386 && !id68k */
 
 
 /*
@@ -493,7 +493,7 @@ static void R_TrailingEdge (surf_t *surf, edge_t *edge)
 	}
 }
 
-#if	!id386
+#if	!id386 && !id68k
 
 static void R_TrailingEdgeT (surf_t *surf, edge_t *edge)
 {
@@ -911,7 +911,7 @@ static void R_GenerateTSpans (void)
 	R_CleanupSpanT ();
 }
 
-#endif	/* !id386 */
+#endif	/* !id386 && !id68k */
 
 
 /*
