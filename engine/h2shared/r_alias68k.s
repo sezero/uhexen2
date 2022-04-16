@@ -15,7 +15,7 @@ SV_T	equ	8
 		XREF    _r_plightvec
 		XREF    _r_ambientlight
 		XREF    _r_shadelight
-		XREF    _ziscale
+		;XREF    _ziscale
 		;XREF    _aliasxscale
 		;XREF    _aliasyscale
 		;XREF    _aliasxcenter
