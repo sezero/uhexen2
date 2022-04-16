@@ -214,6 +214,11 @@ void R_InsertNewEdges (edge_t *edgestoadd, edge_t *edgelist);
 void R_RemoveEdges (edge_t *pedge);
 void R_StepActiveU (edge_t *pedge);
 
+void R_Alias_clip_top (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
+void R_Alias_clip_bottom (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
+void R_Alias_clip_left (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
+void R_Alias_clip_right (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
+
 void R_AliasTransformAndProjectFinalVerts (finalvert_t *fv, stvert_t *pstverts);
 
 void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
