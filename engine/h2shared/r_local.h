@@ -222,6 +222,9 @@ void R_Alias_clip_right (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out)
 void R_AliasTransformAndProjectFinalVerts (finalvert_t *fv, stvert_t *pstverts);
 
 void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
+
+void R_AliasTransformVector (vec3_t in, vec3_t out);
+void R_AliasTransformFinalVert (finalvert_t *fv, auxvert_t *av, trivertx_t *pverts);
 #endif
 
 ASM_LINKAGE_END

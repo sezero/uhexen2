@@ -1296,6 +1296,7 @@ SOFT_ASM = \
 	d_sky68k.o \
 	d_sprite68k.o \
 	r_aclip68k.o \
+	r_alias68k.o \
 	r_edge68k.o \
 	r_sky68k.o \
 	r_surf68k.o
