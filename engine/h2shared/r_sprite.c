@@ -288,6 +288,7 @@ void R_DrawSprite (void)
 	msprite_t	*psprite;
 	vec3_t		tvec;
 	float		dot, angle, sr, cr;
+	float		*psincos;
 
 	psprite = (msprite_t *) currententity->model->cache.data;
 
@@ -377,9 +378,13 @@ void R_DrawSprite (void)
 	// generate the sprite's axes, parallel to the viewplane, but rotated in
 	// that plane around the center according to the sprite entity's roll
 	// angle. So vpn stays the same, but vright and vup rotate
-		angle = currententity->angles[ROLL] * (M_PI*2 / 360);
-		sr = sin(angle);
-		cr = cos(angle);
+		//angle = currententity->angles[ROLL] * (M_PI*2 / 360);
+		//sr = sin(angle);
+		//cr = cos(angle);
+		angle = currententity->angles[ROLL];
+		psincos = &r_sincos[SINCOS_INDEX(angle)];
+		sr = *psincos++;
+		cr = *psincos;
 
 		for (i = 0 ; i < 3 ; i++)
 		{
