@@ -238,10 +238,12 @@ R_InitSinCos
 */
 static void R_InitSinCos (void)
 {
-	for (i = 0 ; i < (SINCOS_SIZE/2) ; i++)
+	int		i;
+
+	for (i = 0 ; i < (SINCOS_ANGLES) ; i++)
 	{
-		r_sincos[i*2 + 0] = sin(i * M_PI*2 / 360 / SINCOS_RES);
-		r_sincos[i*2 + 1] = cos(i * M_PI*2 / 360 / SINCOS_RES);
+		r_sincos[i*2 + 0] = sin(i * M_PI*2 / SINCOS_ANGLES);
+		r_sincos[i*2 + 1] = cos(i * M_PI*2 / SINCOS_ANGLES);
 	}
 }
 
