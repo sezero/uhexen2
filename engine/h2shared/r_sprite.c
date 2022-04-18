@@ -382,7 +382,7 @@ void R_DrawSprite (void)
 		//sr = sin(angle);
 		//cr = cos(angle);
 		angle = currententity->angles[ROLL];
-		psincos = &r_sincos[SINCOS_INDEX(angle)];
+		psincos = &r_sincos[SINCOS_DEG(angle)];
 		sr = *psincos++;
 		cr = *psincos;
 

@@ -97,7 +97,7 @@ void R_RotateBmodel (void)
 	//angle = angle * M_PI*2 / 360;
 	//s = sin(angle);
 	//c = cos(angle);
-	psincos = &r_sincos[SINCOS_INDEX(angle)];
+	psincos = &r_sincos[SINCOS_DEG(angle)];
 	s = *psincos++;
 	c = *psincos;
 
@@ -116,7 +116,7 @@ void R_RotateBmodel (void)
 	//angle = angle * M_PI*2 / 360;
 	//s = sin(angle);
 	//c = cos(angle);
-	psincos = &r_sincos[SINCOS_INDEX(angle)];
+	psincos = &r_sincos[SINCOS_DEG(angle)];
 	s = *psincos++;
 	c = *psincos;
 
@@ -137,7 +137,7 @@ void R_RotateBmodel (void)
 	//angle = angle * M_PI*2 / 360;
 	//s = sin(angle);
 	//c = cos(angle);
-	psincos = &r_sincos[SINCOS_INDEX(angle)];
+	psincos = &r_sincos[SINCOS_DEG(angle)];
 	s = *psincos++;
 	c = *psincos;
 

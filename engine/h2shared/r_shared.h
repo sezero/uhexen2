@@ -68,7 +68,10 @@ extern	int	intsintable[SIN_BUFFER_SIZE];
 
 #define SINCOS_ANGLES 2048
 #define SINCOS_SIZE (SINCOS_ANGLES*2)
-#define SINCOS_INDEX(angle) (((int)((angle) * (1.0f/360.f) * SINCOS_ANGLES) & (SINCOS_ANGLES-1)) * 2)
+#define SINCOS_SINE 0
+#define SINCOS_COSINE 1
+#define SINCOS_DEG(angle) (((int)((angle) * (1.0f/360.0f) * SINCOS_ANGLES) & (SINCOS_ANGLES-1)) * 2)
+#define SINCOS_RAD(angle) (((int)((angle) * (1.0f/M_PI/2.0f) * SINCOS_ANGLES) & (SINCOS_ANGLES-1)) * 2)
 extern	float	r_sincos[SINCOS_SIZE];
 
 extern	vec3_t	vup, base_vup;

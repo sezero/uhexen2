@@ -505,9 +505,12 @@ static void R_AliasSetUpTransform (int trivial_accept)
 	if (currententity->model->flags & EF_ROTATE)
 	{
 		// Floating motion
-		tmatrix[2][3] += sin(currententity->origin[0]
+		/*tmatrix[2][3] += sin(currententity->origin[0]
 					+ currententity->origin[1]
-					+ (cl.time*3)) * 5.5;
+					+ (cl.time*3)) * 5.5;*/
+		tmatrix[2][3] += r_sincos[SINCOS_RAD(currententity->origin[0]
+					+ currententity->origin[1]
+					+ (cl.time*3))] * 5.5;
 	}
 
 // TODO: can do this with simple matrix rearrangement
@@ -971,7 +974,8 @@ void R_AliasDrawModel (alight_t *plighting)
 	{
 		plighting->ambientlight =
 		plighting->shadelight =
-			60 + 34 + sin(currententity->origin[0] + currententity->origin[1] + (cl.time*3.8))*34;
+			//60 + 34 + sin(currententity->origin[0] + currententity->origin[1] + (cl.time*3.8))*34;
+			60 + 34 + r_sincos[SINCOS_RAD(currententity->origin[0] + currententity->origin[1] + (cl.time*3.8))]*34;
 		R_AliasSetupLighting (plighting);
 		r_plightvec[0] = r_plightvec[1] = r_plightvec[2] = 0;
 	}

@@ -22,6 +22,7 @@
 // HEADER FILES ------------------------------------------------------------
 
 #include "quakedef.h"
+#include "r_shared.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -194,6 +195,7 @@ void CL_ParseEffect (void)
 	float		angleval, sinval, cosval;
 	float		skinnum;
 	float		final;
+	float		*psincos;
 
 	ImmediateFree = false;
 
@@ -547,10 +549,13 @@ void CL_ParseEffect (void)
 				ent = &EffectEntities[cl.Effects[idx].ef.Teleporter.entity_index[i]];
 				VectorCopy(cl.Effects[idx].ef.Teleporter.origin, ent->origin);
 
-				angleval = dir * M_PI*2 / 360;
+				//angleval = dir * M_PI*2 / 360;
 
-				sinval = sin(angleval);
-				cosval = cos(angleval);
+				//sinval = sin(angleval);
+				//cosval = cos(angleval);
+				psincos = &r_sincos[SINCOS_DEG(dir)];
+				sinval = *psincos++;
+				cosval = *psincos;
 
 				cl.Effects[idx].ef.Teleporter.velocity[i][0] = 10*cosval;
 				cl.Effects[idx].ef.Teleporter.velocity[i][1] = 10*sinval;
@@ -996,6 +1001,7 @@ void CL_UpdateEffects (void)
 	int		x_dir, y_dir;
 	entity_t	*ent;
 	float		distance, smoketime;
+	float		*psincos;
 
 	if (cls.state == ca_disconnected)
 		return;
@@ -1274,8 +1280,11 @@ void CL_UpdateEffects (void)
 			}
 
 			VectorCopy(cl.Effects[idx].ef.RD.origin, org);
-			org[0] += sin(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
-			org[1] += cos(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
+			//org[0] += sin(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
+			//org[1] += cos(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
+			psincos = &r_sincos[SINCOS_RAD(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI)];
+			org[0] += (*psincos++) * 30;
+			org[1] += (*psincos) * 30;
 
 			if (cl.Effects[idx].ef.RD.stage <= 6)
 			{
@@ -1307,8 +1316,11 @@ void CL_UpdateEffects (void)
 				cl.Effects[idx].ef.RD.time_amount -= 1;
 
 			VectorCopy(cl.Effects[idx].ef.RD.origin, org);
-			org[0] += sin(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
-			org[1] += cos(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
+			//org[0] += sin(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
+			//org[1] += cos(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
+			psincos = &r_sincos[SINCOS_RAD(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI)];
+			org[0] += (*psincos++) * 30;
+			org[1] += (*psincos) * 30;
 
 			if (cl.Effects[idx].ef.RD.lifetime < cl.time)
 			{

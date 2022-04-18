@@ -23,6 +23,7 @@
 // HEADER FILES ------------------------------------------------------------
 
 #include "quakedef.h"
+#include "r_shared.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -328,6 +329,7 @@ void CL_ParseEffect (void)
 	vec3_t		forward, right, up, vtemp;
 	vec3_t		forward2, right2, up2;
 	vec3_t		origin;
+	float		*psincos;
 
 	ImmediateFree = false;
 
@@ -726,10 +728,13 @@ void CL_ParseEffect (void)
 				ent = &EffectEntities[cl.Effects[idx].ef.Teleporter.entity_index[i]];
 				VectorCopy(cl.Effects[idx].ef.Teleporter.origin, ent->origin);
 
-				angleval = dir * M_PI*2 / 360;
+				//angleval = dir * M_PI*2 / 360;
 
-				sinval = sin(angleval);
-				cosval = cos(angleval);
+				//sinval = sin(angleval);
+				//cosval = cos(angleval);
+				psincos = &r_sincos[SINCOS_DEG(dir)];
+				sinval = *psincos++;
+				cosval = *psincos;
 
 				cl.Effects[idx].ef.Teleporter.velocity[i][0] = 10*cosval;
 				cl.Effects[idx].ef.Teleporter.velocity[i][1] = 10*sinval;
@@ -1711,6 +1716,7 @@ void CL_UpdateEffects (void)
 	float		smoketime;
 	entity_state_t	*es;
 	mleaf_t		*l;
+	float		*psincos;
 
 	frametime = host_frametime;
 	if (!frametime)
@@ -1987,8 +1993,11 @@ void CL_UpdateEffects (void)
 			}
 
 			VectorCopy(cl.Effects[idx].ef.RD.origin, org);
-			org[0] += sin(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
-			org[1] += cos(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
+			//org[0] += sin(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
+			//org[1] += cos(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
+			psincos = &r_sincos[SINCOS_RAD(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI)];
+			org[0] += (*psincos++) * 30;
+			org[1] += (*psincos) * 30;
 
 			if (cl.Effects[idx].ef.RD.stage <= 6)
 			{

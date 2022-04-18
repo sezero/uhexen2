@@ -773,6 +773,7 @@ void R_RunQuakeEffect (vec3_t org, float distance)
 	int		i;
 	particle_t	*p;
 	float		num, num2;
+	float		*psincos;
 
 	for (i = 0; i < 100; i++)
 	{
@@ -788,8 +789,11 @@ void R_RunQuakeEffect (vec3_t org, float distance)
 		num = rand() * (1.0 / RAND_MAX);
 		num2 = distance * num;
 		num = rand() * (1.0 / RAND_MAX);
-		p->org[0] = org[0] + cos(num * 2 * M_PI)*num2;
-		p->org[1] = org[1] + sin(num * 2 * M_PI)*num2;
+		//p->org[0] = org[0] + cos(num * 2 * M_PI)*num2;
+		//p->org[1] = org[1] + sin(num * 2 * M_PI)*num2;
+		psincos = &r_sincos[SINCOS_RAD(num * 2 * M_PI)];
+		p->org[1] = org[1] + (*psincos++)*num2;
+		p->org[0] = org[0] + (*psincos)*num2;
 		num = rand() * (1.0 / RAND_MAX);
 		p->org[2] = org[2] + 15*num;
 		p->org[2] = org[2];
@@ -856,6 +860,7 @@ void RiderParticle (int count, vec3_t origin)
 	int		i;
 	particle_t	*p;
 	float	radius, angle;
+	float	*psincos;
 
 	VectorCopy(origin, rider_origin);
 
@@ -874,8 +879,11 @@ void RiderParticle (int count, vec3_t origin)
 
 		angle = (rand() % 360) / (2 * M_PI);
 		radius = 300 + (rand() & 255);
-		p->org[0] += sin(angle) * radius;
-		p->org[1] += cos(angle) * radius;
+		//p->org[0] += sin(angle) * radius;
+		//p->org[1] += cos(angle) * radius;
+		psincos = &r_sincos[SINCOS_RAD(angle)];
+		p->org[0] += (*psincos++) * radius;
+		p->org[1] += (*psincos) * radius;
 		p->org[2] += (rand() & 255) - 30;
 
 		p->vel[0] = (rand() & 255) - 127;
@@ -889,6 +897,7 @@ void GravityWellParticle (int count, vec3_t origin, int color)
 	int		i;
 	particle_t	*p;
 	float	radius,angle;
+	float	*psincos;
 
 	VectorCopy(origin, rider_origin);
 
@@ -907,8 +916,11 @@ void GravityWellParticle (int count, vec3_t origin, int color)
 
 		angle = (rand() % 360) / (2 * M_PI);
 		radius = 300 + (rand() & 255);
-		p->org[0] += sin(angle) * radius;
-		p->org[1] += cos(angle) * radius;
+		//p->org[0] += sin(angle) * radius;
+		//p->org[1] += cos(angle) * radius;
+		psincos = &r_sincos[SINCOS_RAD(angle)];
+		p->org[0] += (*psincos++) * radius;
+		p->org[1] += (*psincos) * radius;
 		p->org[2] += (rand() & 255) - 30;
 
 		p->vel[0] = (rand() & 255) - 127;
