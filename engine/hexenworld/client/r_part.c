@@ -297,15 +297,11 @@ void R_SuccubusInvincibleParticles (entity_t *ent)
 	int		count;
 	particle_t	*p;
 	vec3_t		ent_angles,forward,org;
-	float		*psincos;
 
 	ent_angles[0] = ent_angles[2] = 0;
 	ent_angles[1] = cl.time * 12;
-	//forward[0] = cos(ent_angles[1]) * 32;
-	//forward[1] = sin(ent_angles[1]) * 32;
-	psincos = &r_sincos[SINCOS_RAD(ent_angles[1])];
-	forward[1] = (*psincos++) * 32;
-	forward[0] = (*psincos) * 32;
+	forward[0] = q_cosrad(ent_angles[1]) * 32;
+	forward[1] = q_sinrad(ent_angles[1]) * 32;
 	forward[2] = 0;
 	VectorCopy(ent->origin, org);
 	org[2] += 28;
@@ -889,8 +885,7 @@ void R_BrightFieldSource (vec3_t org)
 	vec3_t		dir;
 	float		height;
 
-	//height = cos(cl.time * 4.0) * 25;
-	height = r_sincos[SINCOS_RAD(cl.time * 4.0) + SINCOS_COSINE] * 25;
+	height = q_cosrad(cl.time * 4.0) * 25;
 
 	for (i = 0; i < 120 * host_frametime ; i++)
 	{
@@ -996,7 +991,6 @@ void R_RunQuakeEffect (vec3_t org, float distance)
 	particle_t	*p;
 	float		num, num2;
 //	int		j;
-	float		*psincos;
 
 	for (i = 0; i < 100; i++)
 	{
@@ -1012,11 +1006,8 @@ void R_RunQuakeEffect (vec3_t org, float distance)
 		num = rand() / RAND_MAX;
 		num2 = distance * num;
 		num = rand() / RAND_MAX;
-		//p->org[0] = org[0] + cos(num * 2 * M_PI)*num2;
-		//p->org[1] = org[1] + sin(num * 2 * M_PI)*num2;
-		psincos = &r_sincos[SINCOS_RAD(num * 2 * M_PI)];
-		p->org[1] = org[1] + (*psincos++)*num2;
-		p->org[0] = org[0] + (*psincos)*num2;
+		p->org[0] = org[0] + q_cosrad(num * 2 * M_PI)*num2;
+		p->org[1] = org[1] + q_sinrad(num * 2 * M_PI)*num2;
 		num = rand() / RAND_MAX;
 		p->org[2] = org[2] + 15*num;
 		p->org[2] = org[2];
@@ -1090,7 +1081,6 @@ void RiderParticle (int count, vec3_t origin)
 	particle_t	*p;
 //	float	num, num2;
 	float	radius, angle;
-	float	*psincos;
 
 	VectorCopy(origin, rider_origin);
 
@@ -1110,11 +1100,8 @@ void RiderParticle (int count, vec3_t origin)
 		//num = rand() / RAND_MAX;
 		angle = (rand() % 360) / (2 * M_PI);
 		radius = 300 + (rand() % 256);
-		//p->org[0] += sin(angle) * radius;
-		//p->org[1] += cos(angle) * radius;
-		psincos = &r_sincos[SINCOS_RAD(angle)];
-		p->org[0] += (*psincos++) * radius;
-		p->org[1] += (*psincos) * radius;
+		p->org[0] += q_sinrad(angle) * radius;
+		p->org[1] += q_cosrad(angle) * radius;
 		p->org[2] += (rand() & 255) - 30;
 
 		p->vel[0] = (rand() & 255) - 127;

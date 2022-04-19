@@ -165,4 +165,48 @@ ASM_LINKAGE_BEGIN
 fixed16_t Invert24To16 (fixed16_t val);
 ASM_LINKAGE_END
 
+#define SINCOS_ANGLES 2048
+#define SINCOS_SIZE (SINCOS_ANGLES*2)
+#define SINCOS_SINE 0
+#define SINCOS_COSINE 1
+#define SINCOS_DEG(angle) (((int)((angle) * (1.0f/360.0f) * SINCOS_ANGLES) & (SINCOS_ANGLES-1)) * 2)
+#define SINCOS_RAD(angle) (((int)((angle) * (1.0f/M_PI/2.0f) * SINCOS_ANGLES) & (SINCOS_ANGLES-1)) * 2)
+extern	float	r_sincos[SINCOS_SIZE];
+
+static inline float q_sindeg(float ang)
+{
+#ifndef GLQUAKE
+	return r_sincos[SINCOS_DEG(ang)];
+#else
+	return sin(ang *M_PI*2 / 360);
+#endif
+}
+
+static inline float q_sinrad(float ang)
+{
+#ifndef GLQUAKE
+	return r_sincos[SINCOS_RAD(ang)];
+#else
+	return sin(ang);
+#endif
+}
+
+static inline float q_cosdeg(float ang)
+{
+#ifndef GLQUAKE
+	return r_sincos[SINCOS_DEG(ang) + SINCOS_COSINE];
+#else
+	return cos(ang *M_PI*2 / 360);
+#endif
+}
+
+static inline float q_cosrad(float ang)
+{
+#ifndef GLQUAKE
+	return r_sincos[SINCOS_RAD(ang) + SINCOS_COSINE];
+#else
+	return cos(ang);
+#endif
+}
+
 #endif	/* __MATHLIB_H */

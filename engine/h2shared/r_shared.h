@@ -66,14 +66,6 @@ extern	cvar_t	r_clearcolor;
 extern	int	sintable[SIN_BUFFER_SIZE];
 extern	int	intsintable[SIN_BUFFER_SIZE];
 
-#define SINCOS_ANGLES 2048
-#define SINCOS_SIZE (SINCOS_ANGLES*2)
-#define SINCOS_SINE 0
-#define SINCOS_COSINE 1
-#define SINCOS_DEG(angle) (((int)((angle) * (1.0f/360.0f) * SINCOS_ANGLES) & (SINCOS_ANGLES-1)) * 2)
-#define SINCOS_RAD(angle) (((int)((angle) * (1.0f/M_PI/2.0f) * SINCOS_ANGLES) & (SINCOS_ANGLES-1)) * 2)
-extern	float	r_sincos[SINCOS_SIZE];
-
 extern	vec3_t	vup, base_vup;
 extern	vec3_t	vpn, base_vpn;
 extern	vec3_t	vright, base_vright;

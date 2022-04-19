@@ -27,7 +27,6 @@
  */
 
 #include "quakedef.h"
-#include "r_shared.h"
 
 static	float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
 
@@ -117,8 +116,7 @@ static float V_CalcBob (void)
 	// (don't count Z, or jumping messes it up)
 
 	bob = sqrt(cl.velocity[0]*cl.velocity[0] + cl.velocity[1]*cl.velocity[1]) * cl_bob.value;
-	//bob = bob*0.3 + bob*0.7*sin(cycle);
-	bob = bob*0.3 + bob*0.7*r_sincos[SINCOS_RAD(cycle)];
+	bob = bob*0.3 + bob*0.7*q_sinrad(cycle);
 	if (bob > 4)
 		bob = 4;
 	else if (bob < -7)
@@ -777,12 +775,9 @@ static void CalcGunAngle (void)
 	if (v_idlescale.value == 0)
 		return;
 
-	//cl.viewent.angles[ROLL] -= v_idlescale.value * sin(cl.time*v_iroll_cycle.value) * v_iroll_level.value;
-	//cl.viewent.angles[PITCH] -= v_idlescale.value * sin(cl.time*v_ipitch_cycle.value) * v_ipitch_level.value;
-	//cl.viewent.angles[YAW] -= v_idlescale.value * sin(cl.time*v_iyaw_cycle.value) * v_iyaw_level.value;
-	cl.viewent.angles[ROLL] -= v_idlescale.value * r_sincos[SINCOS_RAD(cl.time*v_iroll_cycle.value)] * v_iroll_level.value;
-	cl.viewent.angles[PITCH] -= v_idlescale.value * r_sincos[SINCOS_RAD(cl.time*v_ipitch_cycle.value)] * v_ipitch_level.value;
-	cl.viewent.angles[YAW] -= v_idlescale.value * r_sincos[SINCOS_RAD(cl.time*v_iyaw_cycle.value)] * v_iyaw_level.value;
+	cl.viewent.angles[ROLL] -= v_idlescale.value * q_sinrad(cl.time*v_iroll_cycle.value) * v_iroll_level.value;
+	cl.viewent.angles[PITCH] -= v_idlescale.value * q_sinrad(cl.time*v_ipitch_cycle.value) * v_ipitch_level.value;
+	cl.viewent.angles[YAW] -= v_idlescale.value * q_sinrad(cl.time*v_iyaw_cycle.value) * v_iyaw_level.value;
 }
 
 /*
@@ -827,12 +822,9 @@ static void V_AddIdle (void)
 	if (v_idlescale.value == 0)
 		return;
 
-	//r_refdef.viewangles[ROLL] += v_idlescale.value * sin(cl.time*v_iroll_cycle.value) * v_iroll_level.value;
-	//r_refdef.viewangles[PITCH] += v_idlescale.value * sin(cl.time*v_ipitch_cycle.value) * v_ipitch_level.value;
-	//r_refdef.viewangles[YAW] += v_idlescale.value * sin(cl.time*v_iyaw_cycle.value) * v_iyaw_level.value;
-	r_refdef.viewangles[ROLL] -= v_idlescale.value * r_sincos[SINCOS_RAD(cl.time*v_iroll_cycle.value)] * v_iroll_level.value;
-	r_refdef.viewangles[PITCH] -= v_idlescale.value * r_sincos[SINCOS_RAD(cl.time*v_ipitch_cycle.value)] * v_ipitch_level.value;
-	r_refdef.viewangles[YAW] -= v_idlescale.value * r_sincos[SINCOS_RAD(cl.time*v_iyaw_cycle.value)] * v_iyaw_level.value;
+	r_refdef.viewangles[ROLL] += v_idlescale.value * q_sinrad(cl.time*v_iroll_cycle.value) * v_iroll_level.value;
+	r_refdef.viewangles[PITCH] += v_idlescale.value * q_sinrad(cl.time*v_ipitch_cycle.value) * v_ipitch_level.value;
+	r_refdef.viewangles[YAW] += v_idlescale.value * q_sinrad(cl.time*v_iyaw_cycle.value) * v_iyaw_level.value;
 }
 
 

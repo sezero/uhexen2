@@ -42,8 +42,6 @@ clipplane_t	world_clipplanes[16];
 int		sintable[SIN_BUFFER_SIZE];
 int		intsintable[SIN_BUFFER_SIZE];
 
-float		r_sincos[SINCOS_SIZE];
-
 ASM_LINKAGE_BEGIN
 unsigned int	cacheoffset;
 

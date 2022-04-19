@@ -20,7 +20,6 @@
  */
 
 #include "quakedef.h"
-#include "r_shared.h"
 
 extern	cvar_t	cl_predict_players;
 extern	cvar_t	cl_predict_players2;
@@ -491,8 +490,7 @@ static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		//dl->color[2] = .5 + cos(cl.time*7 + M_PI*4/3)*.5;
 		//dl->color[3] = 1.0;
 		VectorCopy (ent->origin,  dl->origin);
-		//dl->radius = 200 + cos(cl.time*5)*100;
-		dl->radius = 200 + r_sincos[SINCOS_RAD(cl.time*5) + SINCOS_COSINE]*100;
+		dl->radius = 200 + q_cosrad(cl.time*5)*100;
 		dl->die = cl.time + 0.001;
 
 		R_BrightFieldSource (ent->origin);

@@ -226,22 +226,6 @@ static void R_InitTurb (void)
 }
 
 /*
-================
-R_InitSinCos
-================
-*/
-static void R_InitSinCos (void)
-{
-	int		i;
-
-	for (i = 0 ; i < (SINCOS_ANGLES) ; i++)
-	{
-		r_sincos[i*2 + 0] = sin(i * M_PI*2 / SINCOS_ANGLES);
-		r_sincos[i*2 + 1] = cos(i * M_PI*2 / SINCOS_ANGLES);
-	}
-}
-
-/*
 ===============
 R_Init
 ===============
@@ -254,7 +238,6 @@ void R_Init (void)
 	r_stack_start = (byte *)&dummy;
 
 	R_InitTurb ();
-	R_InitSinCos ();
 
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
 	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);

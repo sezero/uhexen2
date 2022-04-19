@@ -24,7 +24,6 @@
 // HEADER FILES ------------------------------------------------------------
 
 #include "quakedef.h"
-#include "r_shared.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -795,8 +794,6 @@ void CL_ParseTEnt (void)
 	dlight_t	*dl;
 	explosion_t	*ex;
 	vec3_t	pos, vel, movedir, offset;
-	float	*psincos;
-	float	*psincos2;
 
 	type = MSG_ReadByte ();
 	switch (type)
@@ -1900,10 +1897,8 @@ void CL_ParseTEnt (void)
 			{
 				//cosval = 10 * cos(dir *M_PI*2 / 360);
 				//sinval = 10 * sin(dir *M_PI*2 / 360);
-				psincos = &r_sincos[SINCOS_DEG(dir)];
-				sinval = 10 * (*psincos++);
-				cosval = 10 * (*psincos);
-
+				sinval = 10 * q_sindeg(dir);
+				cosval = 10 * q_cosdeg(dir);
 				ex = CL_AllocExplosion ();
 				VectorCopy(pos, ex->origin);
 				ex->model = Mod_ForName("models/telesmk2.spr", true);
@@ -2286,14 +2281,9 @@ void CL_ParseTEnt (void)
 				curAng = angle*6.28/256.0 + ((rand() % 100) / 50.0) - 1.0;
 				curPitch = pitch*6.28/256.0 + ((rand() % 100) / 100.0) - .5;
 
-				//ex->velocity[0] = force*throwPower * cos(curAng) * cos(curPitch);
-				//ex->velocity[1] = force*throwPower * sin(curAng) * cos(curPitch);
-				//ex->velocity[2] = force*throwPower * sin(curPitch);
-				psincos = &r_sincos[SINCOS_RAD(curAng)];
-				psincos2 = &r_sincos[SINCOS_RAD(curPitch)];
-				ex->velocity[0] = force*throwPower * psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE];
-				ex->velocity[1] = force*throwPower * psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE];
-				ex->velocity[2] = force*throwPower * psincos2[SINCOS_SINE];
+				ex->velocity[0] = force*throwPower * q_cosrad(curAng) * q_cosrad(curPitch);
+				ex->velocity[1] = force*throwPower * q_sinrad(curAng) * q_cosrad(curPitch);
+				ex->velocity[2] = force*throwPower * q_sinrad(curPitch);
 
 				// are these in degrees or radians?
 				ex->angles[0] = rand() % 360;
@@ -2354,14 +2344,9 @@ void CL_ParseTEnt (void)
 			pitch = MSG_ReadByte()*6.28/256.0;
 			dist = MSG_ReadShort();
 
-			//endPos[0] = pos[0] + dist * cos(angle) * cos(pitch);
-			//endPos[1] = pos[1] + dist * sin(angle) * cos(pitch);
-			//endPos[2] = pos[2] + dist * sin(pitch);
-			psincos = &r_sincos[SINCOS_RAD(angle)];
-			psincos2 = &r_sincos[SINCOS_RAD(pitch)];
-			endPos[0] = pos[0] + dist * psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE];
-			endPos[1] = pos[1] + dist * psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE];
-			endPos[2] = pos[2] + dist * psincos2[SINCOS_SINE];
+			endPos[0] = pos[0] + dist * q_cosrad(angle) * q_cosrad(pitch);
+			endPos[1] = pos[1] + dist * q_sinrad(angle) * q_cosrad(pitch);
+			endPos[2] = pos[2] + dist * q_sinrad(pitch);
 
 			R_RocketTrail (pos, endPos, rt_purify);
 
@@ -2627,14 +2612,9 @@ void CL_ParseTEnt (void)
 			dlx->die = cl.time + 0.001;
 
 			VectorCopy(pos, endPos);
-			//endPos[0] += cos(travelAng) * cos(travelPitch) * 450;
-			//endPos[1] += sin(travelAng) * cos(travelPitch) * 450;
-			//endPos[2] += sin(travelPitch) * 450;
-			psincos = &r_sincos[SINCOS_RAD(travelAng)];
-			psincos2 = &r_sincos[SINCOS_RAD(travelPitch)];
-			endPos[0] += psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE] * 450;
-			endPos[1] += psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE] * 450;
-			endPos[2] += psincos2[SINCOS_SINE] * 450;
+			endPos[0] += q_cosrad(travelAng) * q_cosrad(travelPitch) * 450;
+			endPos[1] += q_sinrad(travelAng) * q_cosrad(travelPitch) * 450;
+			endPos[2] += q_sinrad(travelPitch) * 450;
 
 			VectorCopy(pos, curPos);
 			VectorSubtract(endPos, pos, posAdd);
@@ -2751,14 +2731,9 @@ void CL_ParseTEnt (void)
 			dlx->die = cl.time + 0.001;
 
 			VectorCopy(pos, endPos);
-			//endPos[0] += cos(travelAng) * cos(travelPitch) * 375;
-			//endPos[1] += sin(travelAng) * cos(travelPitch) * 375;
-			//endPos[2] += sin(travelPitch) * 375;
-			psincos = &r_sincos[SINCOS_RAD(travelAng)];
-			psincos2 = &r_sincos[SINCOS_RAD(travelPitch)];
-			endPos[0] += psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE] * 375;
-			endPos[1] += psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE] * 375;
-			endPos[2] += psincos2[SINCOS_SINE] * 375;
+			endPos[0] += q_cosrad(travelAng) * q_cosrad(travelPitch) * 375;
+			endPos[1] += q_sinrad(travelAng) * q_cosrad(travelPitch) * 375;
+			endPos[2] += q_sinrad(travelPitch) * 375;
 
 			VectorCopy(pos, curPos);
 			VectorSubtract(endPos, pos, posAdd);
@@ -2766,11 +2741,8 @@ void CL_ParseTEnt (void)
 
 			for (i = 0; i < fireCounts; i++)
 			{
-				//cVal = cos((svTime + (i*.3/8.0))*8)*10;
-				//sVal = sin((svTime + (i*.3/8.0))*8)*10;
-				psincos = &r_sincos[SINCOS_RAD((svTime + (i*.3/8.0))*8)];
-				sVal = (*psincos++)*10;
-				cVal = (*psincos)*10;
+				cVal = q_cosrad((svTime + (i*.3/8.0))*8)*10;
+				sVal = q_sinrad((svTime + (i*.3/8.0))*8)*10;
 
 				ex = CL_AllocExplosion();
 				VectorCopy(curPos, ex->origin);
@@ -2826,14 +2798,9 @@ void CL_ParseTEnt (void)
 			trailLen = MSG_ReadByte();
 			health = MSG_ReadByte();
 
-			//vel[0] = cos(travelAng) * cos(travelPitch) * 800;
-			//vel[1] = sin(travelAng) * cos(travelPitch) * 800;
-			//vel[2] = sin(travelPitch) * 800;
-			psincos = &r_sincos[SINCOS_RAD(travelAng)];
-			psincos2 = &r_sincos[SINCOS_RAD(travelPitch)];
-			vel[0] = psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE] * 800;
-			vel[1] = psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE] * 800;
-			vel[2] = psincos2[SINCOS_SINE] * 800;
+			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 800;
+			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 800;
+			vel[2] = q_sinrad(travelPitch) * 800;
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -2894,14 +2861,9 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			//vel[0] = cos(travelAng) * cos(travelPitch) * 1100;
-			//vel[1] = sin(travelAng) * cos(travelPitch) * 1100;
-			//vel[2] = sin(travelPitch) * 1100;
-			psincos = &r_sincos[SINCOS_RAD(travelAng)];
-			psincos2 = &r_sincos[SINCOS_RAD(travelPitch)];
-			vel[0] = psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE] * 1100;
-			vel[1] = psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE] * 1100;
-			vel[2] = psincos2[SINCOS_SINE] * 1100;
+			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 1100;
+			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 1100;
+			vel[2] = q_sinrad(travelPitch) * 1100;
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -2940,14 +2902,9 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			//vel[0] = cos(travelAng) * cos(travelPitch) * 1000;
-			//vel[1] = sin(travelAng) * cos(travelPitch) * 1000;
-			//vel[2] = sin(travelPitch) * 1000;
-			psincos = &r_sincos[SINCOS_RAD(travelAng)];
-			psincos2 = &r_sincos[SINCOS_RAD(travelPitch)];
-			vel[0] = psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE] * 1000;
-			vel[1] = psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE] * 1000;
-			vel[2] = psincos2[SINCOS_SINE] * 1000;
+			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 1000;
+			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 1000;
+			vel[2] = q_sinrad(travelPitch) * 1000;
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -2973,14 +2930,9 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			//vel[0] = cos(travelAng) * cos(travelPitch) * 1200;
-			//vel[1] = sin(travelAng) * cos(travelPitch) * 1200;
-			//vel[2] = sin(travelPitch) * 1200;
-			psincos = &r_sincos[SINCOS_RAD(travelAng)];
-			psincos2 = &r_sincos[SINCOS_RAD(travelPitch)];
-			vel[0] = psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE] * 1200;
-			vel[1] = psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE] * 1200;
-			vel[2] = psincos2[SINCOS_SINE] * 1200;
+			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 1200;
+			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 1200;
+			vel[2] = q_sinrad(travelPitch) * 1200;
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -3009,14 +2961,9 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			//vel[0] = cos(travelAng) * cos(travelPitch) * 1200;
-			//vel[1] = sin(travelAng) * cos(travelPitch) * 1200;
-			//vel[2] = sin(travelPitch) * 1200;
-			psincos = &r_sincos[SINCOS_RAD(travelAng)];
-			psincos2 = &r_sincos[SINCOS_RAD(travelPitch)];
-			vel[0] = psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE] * 1200;
-			vel[1] = psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE] * 1200;
-			vel[2] = psincos2[SINCOS_SINE] * 1200;
+			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 1200;
+			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 1200;
+			vel[2] = q_sinrad(travelPitch) * 1200;
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -3067,14 +3014,9 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			//vel[0] = cos(travelAng) * cos(travelPitch) * 1000;
-			//vel[1] = sin(travelAng) * cos(travelPitch) * 1000;
-			//vel[2] = sin(travelPitch) * 1000;
-			psincos = &r_sincos[SINCOS_RAD(travelAng)];
-			psincos2 = &r_sincos[SINCOS_RAD(travelPitch)];
-			vel[0] = psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE] * 1000;
-			vel[1] = psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE] * 1000;
-			vel[2] = psincos2[SINCOS_SINE] * 1000;
+			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 1000;
+			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 1000;
+			vel[2] = q_sinrad(travelPitch) * 1000;
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -3118,14 +3060,9 @@ void CL_ParseTEnt (void)
 			dl->color[2] = 0.05;
 			dl->color[3] = 0.7;
 
-			//vel[0] = cos(travelAng) * cos(travelPitch) * speed;
-			//vel[1] = sin(travelAng) * cos(travelPitch) * speed;
-			//vel[2] = sin(travelPitch) * speed;
-			psincos = &r_sincos[SINCOS_RAD(travelAng)];
-			psincos2 = &r_sincos[SINCOS_RAD(travelPitch)];
-			vel[0] = psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE] * speed;
-			vel[1] = psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE] * speed;
-			vel[2] = psincos2[SINCOS_SINE] * speed;
+			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * speed;
+			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * speed;
+			vel[2] = q_sinrad(travelPitch) * speed;
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -3157,14 +3094,9 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			//vel[0] = cos(travelAng) * cos(travelPitch) * 1600;
-			//vel[1] = sin(travelAng) * cos(travelPitch) * 1600;
-			//vel[2] = sin(travelPitch) * 1600;
-			psincos = &r_sincos[SINCOS_RAD(travelAng)];
-			psincos2 = &r_sincos[SINCOS_RAD(travelPitch)];
-			vel[0] = psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE] * 1600;
-			vel[1] = psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE] * 1600;
-			vel[2] = psincos2[SINCOS_SINE] * 1600;
+			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 1600;
+			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 1600;
+			vel[2] = q_sinrad(travelPitch) * 1600;
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -3279,14 +3211,9 @@ void CL_ParseTEnt (void)
 
 				VectorCopy(pos, stream->source);
 				VectorCopy(stream->source, stream->dest);
-				//stream->dest[0] += 75.0 * cos(tempAng) * cos(tempPitch);
-				//stream->dest[1] += 75.0 * sin(tempAng) * cos(tempPitch);
-				//stream->dest[2] += 75.0 * sin(tempPitch);
-				psincos = &r_sincos[SINCOS_RAD(tempAng)];
-				psincos2 = &r_sincos[SINCOS_RAD(tempPitch)];
-				stream->dest[0] += 75.0 * psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE];
-				stream->dest[0] += 75.0 * psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE];
-				stream->dest[0] += 75.0 * psincos2[SINCOS_SINE];
+				stream->dest[0] += 75.0 * q_cosrad(tempAng) * q_cosrad(tempPitch);
+				stream->dest[1] += 75.0 * q_sinrad(tempAng) * q_cosrad(tempPitch);
+				stream->dest[2] += 75.0 * q_sinrad(tempPitch);
 			}
 		  }	break;
 
@@ -3301,14 +3228,9 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			//vel[0] = cos(travelAng) * cos(travelPitch) * 850;
-			//vel[1] = sin(travelAng) * cos(travelPitch) * 850;
-			//vel[2] = sin(travelPitch) * 850;
-			psincos = &r_sincos[SINCOS_RAD(travelAng)];
-			psincos2 = &r_sincos[SINCOS_RAD(travelPitch)];
-			vel[0] = psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE] * 850;
-			vel[1] = psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE] * 850;
-			vel[2] = psincos2[SINCOS_SINE] * 850;
+			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 850;
+			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 850;
+			vel[2] = q_sinrad(travelPitch) * 850;
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -3333,14 +3255,9 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			//vel[0] = cos(travelAng) * cos(travelPitch) * 1000;
-			//vel[1] = sin(travelAng) * cos(travelPitch) * 1000;
-			//vel[2] = sin(travelPitch) * 1000;
-			psincos = &r_sincos[SINCOS_RAD(travelAng)];
-			psincos2 = &r_sincos[SINCOS_RAD(travelPitch)];
-			vel[0] = psincos[SINCOS_COSINE] * psincos2[SINCOS_COSINE] * 1000;
-			vel[1] = psincos[SINCOS_SINE] * psincos2[SINCOS_COSINE] * 1000;
-			vel[2] = psincos2[SINCOS_SINE] * 1000;
+			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 1000;
+			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 1000;
+			vel[2] = q_sinrad(travelPitch) * 1000;
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -3631,7 +3548,6 @@ static void CL_UpdateStreams(void)
 	float	cos2Time = 0.0, sin2Time = 0.0, lifeTime = 0.0;	// ditto
 	float	d, yaw, pitch, forward;
 	int	i, j, offset;
-	float	*psincos;
 
 	// Update streams
 	for (i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
@@ -3686,16 +3602,10 @@ static void CL_UpdateStreams(void)
 			AngleVectors(discard, discard, right, up);
 
 			lifeTime = ((stream->endTime - cl.time)/.8);
-			//cosTime = cos(cl.time*5);
-			//sinTime = sin(cl.time*5);
-			//cos2Time = cos(cl.time*5 + 3.14);
-			//sin2Time = sin(cl.time*5 + 3.14);
-			psincos = &r_sincos[SINCOS_RAD(cl.time*5)];
-			sinTime = *psincos++;
-			cosTime = *psincos;
-			psincos = &r_sincos[SINCOS_RAD(cl.time*5 + 3.14)];
-			sin2Time = *psincos++;
-			cos2Time = *psincos;
+			cosTime = q_cosrad(cl.time*5);
+			sinTime = q_sinrad(cl.time*5);
+			cos2Time = q_cosrad(cl.time*5 + 3.14);
+			sin2Time = q_sinrad(cl.time*5 + 3.14);
 		}
 
 		if (stream->type == TE_STREAM_ICECHUNKS)
@@ -4962,7 +4872,6 @@ static void telEffectUpdate (explosion_t *ex)
 	float	angle;
 	int	testVal, testVal2;
 	vec3_t	tvec;
-	float	*psincos;
 
 	if (ex->endTime - cl.time <= 1.2)
 		ex->frameFunc = NULL;
@@ -4979,11 +4888,8 @@ static void telEffectUpdate (explosion_t *ex)
 
 			VectorCopy(ex->origin,ex2->origin);
 			VectorCopy(ex->origin,ex2->angles);
-			//ex2->origin[0] += cos(angle)*10;
-			//ex2->origin[1] += sin(angle)*10;
-			psincos = &r_sincos[SINCOS_RAD(angle)];
-			ex2->origin[1] += (*psincos++)*10;
-			ex2->origin[0] += (*psincos)*10;
+			ex2->origin[0] += q_cosrad(angle)*10;
+			ex2->origin[1] += q_sinrad(angle)*10;
 
 			VectorSubtract(ex->origin, ex2->origin, tvec);
 			VectorScale(tvec,20,tvec);
@@ -5018,8 +4924,8 @@ static void CL_UpdateTargetBall(void)
 	qmodel_t	*iceMod;
 	vec3_t		newOrg;
 	float		newScale;
-	float		*psincos;
-	float		*psincos2;
+	float		pitch;
+	float		angle;
 
 	if (v_targDist < 24)
 		return;	// either there is no ball, or it's too close to be needed...
@@ -5044,11 +4950,11 @@ static void CL_UpdateTargetBall(void)
 	//newOrg[0] += cos(v_targAngle*M_PI*2/256.0) * 50 * cos(v_targPitch*M_PI*2/256.0);
 	//newOrg[1] += sin(v_targAngle*M_PI*2/256.0) * 50 * cos(v_targPitch*M_PI*2/256.0);
 	//newOrg[2] += 44 + sin(v_targPitch*M_PI*2/256.0) * 50 + cos(cl.time*2)*5;
-	psincos = &r_sincos[SINCOS_RAD(v_targAngle*M_PI*2/256.0)];
-	psincos2 = &r_sincos[SINCOS_RAD(v_targPitch*M_PI*2/256.0)];
-	newOrg[0] += psincos[SINCOS_COSINE] * 50 * psincos2[SINCOS_COSINE];
-	newOrg[1] += psincos[SINCOS_SINE] * 50 * psincos2[SINCOS_COSINE];
-	newOrg[2] += 44 + psincos2[SINCOS_SINE] * 50 + r_sincos[SINCOS_RAD(cl.time*2) + SINCOS_COSINE]*5;
+	pitch = v_targPitch*M_PI*2/256.0;
+	angle = v_targAngle*M_PI*2/256.0;
+	newOrg[0] += q_cosrad(angle) * 50 * q_cosrad(pitch);
+	newOrg[1] += q_sinrad(angle) * 50 * q_cosrad(pitch);
+	newOrg[2] += 44 + q_sinrad(pitch) * 50 + q_cosrad(cl.time*2)*5;
 
 	if (v_targDist < 60)	// make it scale back down up close...
 		newScale = 172 - (172 * (1.0 - (v_targDist - 24.0)/36.0));
@@ -5075,8 +4981,7 @@ static void CL_UpdateTargetBall(void)
 	ex1->angles[0] = v_targPitch*360/256.0;
 	ex1->angles[1] = v_targAngle*360/256.0;
 	ex1->angles[2] = cl.time * 240;
-	//ex1->abslight = 96 + (32 * cos(cl.time*6.5)) + (64 * ((256.0 - v_targDist)/256.0));
-	ex1->abslight = 96 + (32 * r_sincos[SINCOS_RAD(cl.time*6.5) + SINCOS_COSINE]) + (64 * ((256.0 - v_targDist)/256.0));
+	ex1->abslight = 96 + (32 * q_cosrad(cl.time*6.5)) + (64 * ((256.0 - v_targDist)/256.0));
 
 	if (v_targDist < 60)	// make it scale back down up close...
 		newScale = 76 - (76 * (1.0 - (v_targDist - 24.0)/36.0));
@@ -5100,8 +5005,7 @@ static void CL_UpdateTargetBall(void)
 	ex2->angles[0] = ex1->angles[0];
 	ex2->angles[1] = ex1->angles[1];
 	ex2->angles[2] = cl.time * -360;
-	//ex2->abslight = 96 + (128 * cos(cl.time*4.5));
-	ex2->abslight = 96 + (128 * r_sincos[SINCOS_RAD(cl.time*4.5) + SINCOS_COSINE]);
+	ex2->abslight = 96 + (128 * q_cosrad(cl.time*4.5));
 
 	R_TargetBallEffect (ex1->origin);
 }

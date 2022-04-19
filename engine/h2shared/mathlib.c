@@ -23,6 +23,12 @@
 #include "quakedef.h"
 
 vec3_t vec3_origin = { 0, 0, 0 };
+#ifndef GLQUAKE
+float r_sincos[SINCOS_SIZE] =
+{
+#include "sincos.h"
+};
+#endif
 
 
 /*
