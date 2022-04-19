@@ -191,7 +191,7 @@ void CL_ParseEffect (void)
 	qboolean	ImmediateFree;
 	entity_t	*ent;
 	int		dir;
-	float		angleval, sinval, cosval;
+	float		sinval, cosval;
 	float		skinnum;
 	float		final;
 

@@ -323,7 +323,7 @@ void CL_ParseEffect (void)
 	qboolean	ImmediateFree;
 	entity_t	*ent;
 	int		dir;
-	float		angleval, sinval, cosval;
+	float		sinval, cosval;
 	float		skinnum;
 	vec3_t		forward, right, up, vtemp;
 	vec3_t		forward2, right2, up2;

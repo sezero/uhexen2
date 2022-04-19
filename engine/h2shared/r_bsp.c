@@ -85,7 +85,7 @@ R_RotateBmodel
 void R_RotateBmodel (void)
 {
 	float	angle, s, c, temp1[3][3], temp2[3][3], temp3[3][3];
-	float	*psincos;
+	const float	*psincos;
 
 // TODO: should use a look-up table
 // TODO: should really be stored with the entity instead of being reconstructed
@@ -97,7 +97,7 @@ void R_RotateBmodel (void)
 	//angle = angle * M_PI*2 / 360;
 	//s = sin(angle);
 	//c = cos(angle);
-	psincos = &r_sincos[SINCOS_DEG(angle)];
+	psincos = &sincos_tab[SINCOS_DEG(angle)];
 	s = *psincos++;
 	c = *psincos;
 
@@ -116,7 +116,7 @@ void R_RotateBmodel (void)
 	//angle = angle * M_PI*2 / 360;
 	//s = sin(angle);
 	//c = cos(angle);
-	psincos = &r_sincos[SINCOS_DEG(angle)];
+	psincos = &sincos_tab[SINCOS_DEG(angle)];
 	s = *psincos++;
 	c = *psincos;
 
@@ -137,7 +137,7 @@ void R_RotateBmodel (void)
 	//angle = angle * M_PI*2 / 360;
 	//s = sin(angle);
 	//c = cos(angle);
-	psincos = &r_sincos[SINCOS_DEG(angle)];
+	psincos = &sincos_tab[SINCOS_DEG(angle)];
 	s = *psincos++;
 	c = *psincos;
 

@@ -23,9 +23,19 @@
 #include "quakedef.h"
 
 vec3_t vec3_origin = { 0, 0, 0 };
-#ifndef GLQUAKE
-float r_sincos[SINCOS_SIZE] =
+
+#if 0
+void Math_InitSinCos (void)
 {
+	int	i;
+	for (i = 0; i < SINCOS_ANGLES; i++) {
+		printf("%f, %f,\n", sin(i * M_PI*2 / SINCOS_ANGLES), cos(i * M_PI*2 / SINCOS_ANGLES));
+	}
+}
+#endif
+
+#ifdef USE_SINCOS_TABLE
+const float sincos_tab[SINCOS_SIZE] = {
 #include "sincos.h"
 };
 #endif

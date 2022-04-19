@@ -171,42 +171,40 @@ ASM_LINKAGE_END
 #define SINCOS_COSINE 1
 #define SINCOS_DEG(angle) (((int)((angle) * (1.0f/360.0f) * SINCOS_ANGLES) & (SINCOS_ANGLES-1)) * 2)
 #define SINCOS_RAD(angle) (((int)((angle) * (1.0f/M_PI/2.0f) * SINCOS_ANGLES) & (SINCOS_ANGLES-1)) * 2)
-extern	float	r_sincos[SINCOS_SIZE];
 
-static inline float q_sindeg(float ang)
-{
-#ifndef GLQUAKE
-	return r_sincos[SINCOS_DEG(ang)];
+/* FIXME: make this into a makefile option? */
+#if !defined(GLQUAKE) && !defined(SERVERONLY)
+#define USE_SINCOS_TABLE 1
+#endif
+
+#ifdef USE_SINCOS_TABLE
+extern	const float	sincos_tab[SINCOS_SIZE];
+
+static inline float q_sindeg(float ang) {
+	return sincos_tab[SINCOS_DEG(ang)];
+}
+static inline float q_sinrad(float ang) {
+	return sincos_tab[SINCOS_RAD(ang)];
+}
+static inline float q_cosdeg(float ang) {
+	return sincos_tab[SINCOS_DEG(ang) + SINCOS_COSINE];
+}
+static inline float q_cosrad(float ang) {
+	return sincos_tab[SINCOS_RAD(ang) + SINCOS_COSINE];
+}
 #else
+static inline float q_sindeg(float ang) {
 	return sin(ang *M_PI*2 / 360);
-#endif
 }
-
-static inline float q_sinrad(float ang)
-{
-#ifndef GLQUAKE
-	return r_sincos[SINCOS_RAD(ang)];
-#else
+static inline float q_sinrad(float ang) {
 	return sin(ang);
-#endif
 }
-
-static inline float q_cosdeg(float ang)
-{
-#ifndef GLQUAKE
-	return r_sincos[SINCOS_DEG(ang) + SINCOS_COSINE];
-#else
+static inline float q_cosdeg(float ang) {
 	return cos(ang *M_PI*2 / 360);
-#endif
 }
-
-static inline float q_cosrad(float ang)
-{
-#ifndef GLQUAKE
-	return r_sincos[SINCOS_RAD(ang) + SINCOS_COSINE];
-#else
+static inline float q_cosrad(float ang) {
 	return cos(ang);
-#endif
 }
+#endif
 
 #endif	/* __MATHLIB_H */

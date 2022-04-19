@@ -288,7 +288,7 @@ void R_DrawSprite (void)
 	msprite_t	*psprite;
 	vec3_t		tvec;
 	float		dot, angle, sr, cr;
-	float		*psincos;
+	const float		*psincos;
 
 	psprite = (msprite_t *) currententity->model->cache.data;
 
@@ -382,7 +382,7 @@ void R_DrawSprite (void)
 		//sr = sin(angle);
 		//cr = cos(angle);
 		angle = currententity->angles[ROLL];
-		psincos = &r_sincos[SINCOS_DEG(angle)];
+		psincos = &sincos_tab[SINCOS_DEG(angle)];
 		sr = *psincos++;
 		cr = *psincos;
 
