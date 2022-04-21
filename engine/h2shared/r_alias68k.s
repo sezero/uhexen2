@@ -1,14 +1,15 @@
 **
 ** Quake for AMIGA
 ** r_alias.c assembler implementations by Frank Wille <frank@phoenix.owl.de>
+** Adapted for Hexen II by Szilard Biro
 **
 
 		;INCLUDE	"quakedef68k.i"
-FV_FLAGS	equ	24
+;FV_FLAGS	equ	24
 TV_LIGHTNORMALINDEX	equ	3
-SV_ONSEAM	equ	0
-SV_S	equ	4
-SV_T	equ	8
+;SV_ONSEAM	equ	0
+;SV_S	equ	4
+;SV_T	equ	8
 
 		XREF    _aliastransform
 		XREF    _r_avertexnormals
@@ -90,7 +91,7 @@ _R_AliasTransformVector
 ******************************************************************************
 *
 *       void _R_AliasTransformFinalVert (finalvert_t *fv, auxvert_t *av,
-*                                      trivertx_t *pverts, stvert_t *pstverts)
+*                                      trivertx_t *pverts)
 *
 ******************************************************************************
 
@@ -106,7 +107,7 @@ _R_AliasTransformFinalVert
 .fv             rs.l    1
 .av             rs.l    1
 .tv             rs.l    1
-.sv             rs.l    1
+;.sv             rs.l    1
 
 
 		move.l  a2,-(sp)
@@ -166,10 +167,10 @@ _R_AliasTransformFinalVert
 *        fv->flags = pstverts->onseam;
 
 		move.l  .fv(sp),a0
-		move.l  .sv(sp),a1
-		move.l  SV_S(a1),8(a0)
-		move.l  SV_T(a1),12(a0)
-		move.l  SV_ONSEAM(a1),FV_FLAGS(a0)
+		;move.l  .sv(sp),a1
+		;move.l  SV_S(a1),8(a0)
+		;move.l  SV_T(a1),12(a0)
+		;move.l  SV_ONSEAM(a1),FV_FLAGS(a0)
 
 *        plightnormal = r_avertexnormals[pverts->lightnormalindex];
 *        lightcos = DotProduct (plightnormal, r_plightvec);
