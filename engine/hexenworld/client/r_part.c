@@ -300,8 +300,9 @@ void R_SuccubusInvincibleParticles (entity_t *ent)
 
 	ent_angles[0] = ent_angles[2] = 0;
 	ent_angles[1] = cl.time * 12;
-	forward[0] = q_cosrad(ent_angles[1]) * 32;
-	forward[1] = q_sinrad(ent_angles[1]) * 32;
+	q_sincosrad(ent_angles[1], &forward[1], &forward[0]);
+	forward[0] *= 32;
+	forward[1] *= 32;
 	forward[2] = 0;
 	VectorCopy(ent->origin, org);
 	org[2] += 28;
@@ -1006,8 +1007,11 @@ void R_RunQuakeEffect (vec3_t org, float distance)
 		num = rand() / RAND_MAX;
 		num2 = distance * num;
 		num = rand() / RAND_MAX;
-		p->org[0] = org[0] + q_cosrad(num * 2 * M_PI)*num2;
-		p->org[1] = org[1] + q_sinrad(num * 2 * M_PI)*num2;
+		q_sincosrad(num * 2 * M_PI, &p->org[1], &p->org[0]);
+		p->org[0] *= num2;
+		p->org[1] *= num2;
+		p->org[0] += org[0];
+		p->org[1] += org[1];
 		num = rand() / RAND_MAX;
 		p->org[2] = org[2] + 15*num;
 		p->org[2] = org[2];
@@ -1095,13 +1099,15 @@ void RiderParticle (int count, vec3_t origin)
 		p->type = pt_rd;
 		p->ramp = 0;
 
-		VectorCopy(origin, p->org);
-
 		//num = rand() / RAND_MAX;
 		angle = (rand() % 360) / (2 * M_PI);
 		radius = 300 + (rand() % 256);
-		p->org[0] += q_sinrad(angle) * radius;
-		p->org[1] += q_cosrad(angle) * radius;
+		q_sincosrad(angle, &p->org[0], &p->org[1]);
+		p->org[0] *= radius;
+		p->org[1] *= radius;
+		p->org[0] += origin[0];
+		p->org[1] += origin[1];
+		p->org[2]  = origin[2];
 		p->org[2] += (rand() & 255) - 30;
 
 		p->vel[0] = (rand() & 255) - 127;

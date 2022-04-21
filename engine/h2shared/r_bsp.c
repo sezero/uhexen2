@@ -84,8 +84,7 @@ R_RotateBmodel
 */
 void R_RotateBmodel (void)
 {
-	float	angle, s, c, temp1[3][3], temp2[3][3], temp3[3][3];
-	const float	*psincos;
+	float	s, c, temp1[3][3], temp2[3][3], temp3[3][3];
 
 // TODO: should use a look-up table
 // TODO: should really be stored with the entity instead of being reconstructed
@@ -93,13 +92,7 @@ void R_RotateBmodel (void)
 // TODO: share work with R_SetUpAliasTransform
 
 // yaw
-	angle = currententity->angles[YAW];
-	//angle = angle * M_PI*2 / 360;
-	//s = sin(angle);
-	//c = cos(angle);
-	psincos = &sincos_tab[SINCOS_DEG(angle)];
-	s = *psincos++;
-	c = *psincos;
+	q_sincosdeg(currententity->angles[YAW], &s, &c);
 
 	temp1[0][0] = c;
 	temp1[0][1] = s;
@@ -112,13 +105,7 @@ void R_RotateBmodel (void)
 	temp1[2][2] = 1;
 
 // pitch
-	angle = currententity->angles[PITCH];
-	//angle = angle * M_PI*2 / 360;
-	//s = sin(angle);
-	//c = cos(angle);
-	psincos = &sincos_tab[SINCOS_DEG(angle)];
-	s = *psincos++;
-	c = *psincos;
+	q_sincosdeg(currententity->angles[PITCH], &s, &c);
 
 	temp2[0][0] = c;
 	temp2[0][1] = 0;
@@ -133,13 +120,7 @@ void R_RotateBmodel (void)
 	R_ConcatRotations (temp2, temp1, temp3);
 
 // roll
-	angle = currententity->angles[ROLL];
-	//angle = angle * M_PI*2 / 360;
-	//s = sin(angle);
-	//c = cos(angle);
-	psincos = &sincos_tab[SINCOS_DEG(angle)];
-	s = *psincos++;
-	c = *psincos;
+	q_sincosdeg(currententity->angles[ROLL], &s, &c);
 
 	temp1[0][0] = 1;
 	temp1[0][1] = 0;

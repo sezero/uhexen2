@@ -181,29 +181,56 @@ ASM_LINKAGE_END
 extern	const float	sincos_tab[SINCOS_SIZE];
 
 static inline float q_sindeg(float ang) {
-	return sincos_tab[SINCOS_DEG(ang)];
+	const int val = SINCOS_DEG(ang);
+	return sincos_tab[val];
 }
 static inline float q_sinrad(float ang) {
-	return sincos_tab[SINCOS_RAD(ang)];
+	const int val = SINCOS_RAD(ang);
+	return sincos_tab[val];
 }
 static inline float q_cosdeg(float ang) {
-	return sincos_tab[SINCOS_DEG(ang) + SINCOS_COSINE];
+	const int val = SINCOS_DEG(ang);
+	return sincos_tab[val + SINCOS_COSINE];
 }
 static inline float q_cosrad(float ang) {
-	return sincos_tab[SINCOS_RAD(ang) + SINCOS_COSINE];
+	const int rad = SINCOS_RAD(ang);
+	return sincos_tab[rad + SINCOS_COSINE];
+}
+static inline void q_sincosdeg(float ang, float *sinval, float *cosval) {
+	const int val = SINCOS_DEG(ang);
+	const float *psincos = &sincos_tab[val];
+	*sinval = *psincos++;
+	*cosval = *psincos;
+}
+static inline void q_sincosrad(float ang, float *sinval, float *cosval) {
+	const int val = SINCOS_RAD(ang);
+	const float *psincos = &sincos_tab[val];
+	*sinval = *psincos++;
+	*cosval = *psincos;
 }
 #else
 static inline float q_sindeg(float ang) {
-	return sin(ang *M_PI*2 / 360);
+	const float val = ang*M_PI*2 / 360;
+	return sin(val);
 }
 static inline float q_sinrad(float ang) {
 	return sin(ang);
 }
 static inline float q_cosdeg(float ang) {
-	return cos(ang *M_PI*2 / 360);
+	const float val = ang*M_PI*2 / 360;
+	return cos(val);
 }
 static inline float q_cosrad(float ang) {
 	return cos(ang);
+}
+static inline void q_sincosdeg(float ang, float *sinval, float *cosval) {
+	const float val = ang*M_PI*2 / 360;
+	*sinval = sin(val);
+	*cosval = cos(val);
+}
+static inline void q_sincosrad(float ang, float *sinval, float *cosval) {
+	*sinval = sin(ang);
+	*cosval = cos(ang);
 }
 #endif
 

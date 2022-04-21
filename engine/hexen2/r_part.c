@@ -788,8 +788,11 @@ void R_RunQuakeEffect (vec3_t org, float distance)
 		num = rand() * (1.0 / RAND_MAX);
 		num2 = distance * num;
 		num = rand() * (1.0 / RAND_MAX);
-		p->org[0] = org[0] + q_cosrad(num * 2 * M_PI)*num2;
-		p->org[1] = org[1] + q_sinrad(num * 2 * M_PI)*num2;
+		q_sincosrad(num * 2 * M_PI, &p->org[0], &p->org[1]);
+		p->org[0] *= num2;
+		p->org[1] *= num2;
+		p->org[0] += org[0];
+		p->org[1] += org[1];
 		num = rand() * (1.0 / RAND_MAX);
 		p->org[2] = org[2] + 15*num;
 		p->org[2] = org[2];
@@ -870,12 +873,14 @@ void RiderParticle (int count, vec3_t origin)
 		p->type = pt_rd;
 		p->ramp = 0;
 
-		VectorCopy(origin, p->org);
-
 		angle = (rand() % 360) / (2 * M_PI);
 		radius = 300 + (rand() & 255);
-		p->org[0] += q_sinrad(angle) * radius;
-		p->org[1] += q_cosrad(angle) * radius;
+		q_sincosrad(angle, &p->org[0], &p->org[1]);
+		p->org[0] *= radius;
+		p->org[1] *= radius;
+		p->org[0] += origin[0];
+		p->org[1] += origin[1];
+		p->org[2]  = origin[2];
 		p->org[2] += (rand() & 255) - 30;
 
 		p->vel[0] = (rand() & 255) - 127;
@@ -903,12 +908,14 @@ void GravityWellParticle (int count, vec3_t origin, int color)
 		p->type = pt_gravwell;
 		p->ramp = 0;
 
-		VectorCopy(origin, p->org);
-
 		angle = (rand() % 360) / (2 * M_PI);
 		radius = 300 + (rand() & 255);
-		p->org[0] += q_sinrad(angle) * radius;
-		p->org[1] += q_cosrad(angle) * radius;
+		q_sincosrad(angle, &p->org[0], &p->org[1]);
+		p->org[0] *= radius;
+		p->org[1] *= radius;
+		p->org[0] += origin[0];
+		p->org[1] += origin[1];
+		p->org[2]  = origin[2];
 		p->org[2] += (rand() & 255) - 30;
 
 		p->vel[0] = (rand() & 255) - 127;

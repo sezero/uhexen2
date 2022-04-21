@@ -726,12 +726,7 @@ void CL_ParseEffect (void)
 				ent = &EffectEntities[cl.Effects[idx].ef.Teleporter.entity_index[i]];
 				VectorCopy(cl.Effects[idx].ef.Teleporter.origin, ent->origin);
 
-				//angleval = dir * M_PI*2 / 360;
-
-				//sinval = sin(angleval);
-				//cosval = cos(angleval);
-				sinval = q_sindeg(dir);
-				cosval = q_cosdeg(dir);
+				q_sincosdeg(dir, &sinval, &cosval);
 
 				cl.Effects[idx].ef.Teleporter.velocity[i][0] = 10*cosval;
 				cl.Effects[idx].ef.Teleporter.velocity[i][1] = 10*sinval;
@@ -1713,7 +1708,6 @@ void CL_UpdateEffects (void)
 	float		smoketime;
 	entity_state_t	*es;
 	mleaf_t		*l;
-	float		angle;
 
 	frametime = host_frametime;
 	if (!frametime)
@@ -1781,8 +1775,7 @@ void CL_UpdateEffects (void)
 
 			/*
 			memset(&test, 0, sizeof(test));
-			trace = SV_Move (cl.Effects[idx].ef.Fountain.pos, mymin, mymax, mymin,
-										false, &test);
+			trace = SV_Move (cl.Effects[idx].ef.Fountain.pos, mymin, mymax, mymin, false, &test);
 			Con_Printf("Fraction is %f\n", trace.fraction);
 			*/
 			break;
@@ -1981,7 +1974,8 @@ void CL_UpdateEffects (void)
 
 			break;
 
-		case CE_RIDER_DEATH:
+		case CE_RIDER_DEATH: {
+			float sinval, cosval;
 			cl.Effects[idx].ef.RD.time_amount += frametime;
 			if (cl.Effects[idx].ef.RD.time_amount >= 1)
 			{
@@ -1990,11 +1984,9 @@ void CL_UpdateEffects (void)
 			}
 
 			VectorCopy(cl.Effects[idx].ef.RD.origin, org);
-			//org[0] += sin(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
-			//org[1] += cos(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
-			angle = cl.Effects[idx].ef.RD.time_amount * 2 * M_PI;
-			org[0] += q_sinrad(angle) * 30;
-			org[1] += q_cosrad(angle) * 30;
+			q_sincosrad(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI, &sinval, &cosval);
+			org[0] += sinval * 30;
+			org[1] += cosval * 30;
 
 			if (cl.Effects[idx].ef.RD.stage <= 6)
 			{
@@ -2016,7 +2008,7 @@ void CL_UpdateEffects (void)
 				//	cl.Effects[idx].ef.RD.stage = 0;
 					CL_FreeEffect(idx);
 				}
-			}
+			} }
 			break;
 
 		case CE_TELEPORTERPUFFS:

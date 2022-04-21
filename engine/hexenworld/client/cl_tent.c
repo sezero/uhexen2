@@ -1895,10 +1895,9 @@ void CL_ParseTEnt (void)
 
 			for (dir = 0; dir < 360; dir += 45)
 			{
-				//cosval = 10 * cos(dir *M_PI*2 / 360);
-				//sinval = 10 * sin(dir *M_PI*2 / 360);
-				sinval = 10 * q_sindeg(dir);
-				cosval = 10 * q_cosdeg(dir);
+				q_sincosdeg(dir, &sinval, &cosval);
+				sinval *= 10;
+				cosval *= 10;
 				ex = CL_AllocExplosion ();
 				VectorCopy(pos, ex->origin);
 				ex->model = Mod_ForName("models/telesmk2.spr", true);
@@ -2278,12 +2277,18 @@ void CL_ParseTEnt (void)
 				ex->frameFunc = ChunkThink;
 
 				throwPower = 3.5 + ((rand() % 100) / 100.0);
+				throwPower *= force;
 				curAng = angle*6.28/256.0 + ((rand() % 100) / 50.0) - 1.0;
 				curPitch = pitch*6.28/256.0 + ((rand() % 100) / 100.0) - .5;
 
-				ex->velocity[0] = force*throwPower * q_cosrad(curAng) * q_cosrad(curPitch);
-				ex->velocity[1] = force*throwPower * q_sinrad(curAng) * q_cosrad(curPitch);
-				ex->velocity[2] = force*throwPower * q_sinrad(curPitch);
+				q_sincosrad(curAng, &sinval, &cosval);
+				ex->velocity[0]  = cosval;
+				ex->velocity[1]  = sinval;
+				q_sincosrad(curPitch, &sinval, &cosval);
+				ex->velocity[0] *= cosval;
+				ex->velocity[1] *= cosval;
+				ex->velocity[2]  = sinval;
+				VectorScale(ex->velocity, throwPower, ex->velocity);
 
 				// are these in degrees or radians?
 				ex->angles[0] = rand() % 360;
@@ -2344,9 +2349,15 @@ void CL_ParseTEnt (void)
 			pitch = MSG_ReadByte()*6.28/256.0;
 			dist = MSG_ReadShort();
 
-			endPos[0] = pos[0] + dist * q_cosrad(angle) * q_cosrad(pitch);
-			endPos[1] = pos[1] + dist * q_sinrad(angle) * q_cosrad(pitch);
-			endPos[2] = pos[2] + dist * q_sinrad(pitch);
+			q_sincosrad(angle, &sinval, &cosval);
+			endPos[0]  = cosval;
+			endPos[1]  = sinval;
+			q_sincosrad(pitch, &sinval, &cosval);
+			endPos[0] *= cosval;
+			endPos[1] *= cosval;
+			endPos[2]  = sinval;
+			VectorScale(endPos, dist, endPos);
+			VectorAdd(endPos, pos, endPos);
 
 			R_RocketTrail (pos, endPos, rt_purify);
 
@@ -2611,10 +2622,15 @@ void CL_ParseTEnt (void)
 			dlx->radius = 200 + (rand() & 31);
 			dlx->die = cl.time + 0.001;
 
-			VectorCopy(pos, endPos);
-			endPos[0] += q_cosrad(travelAng) * q_cosrad(travelPitch) * 450;
-			endPos[1] += q_sinrad(travelAng) * q_cosrad(travelPitch) * 450;
-			endPos[2] += q_sinrad(travelPitch) * 450;
+			q_sincosrad(travelAng, &sinval, &cosval);
+			endPos[0]  = cosval;
+			endPos[1]  = sinval;
+			q_sincosrad(travelPitch, &sinval, &cosval);
+			endPos[0] *= cosval;
+			endPos[1] *= cosval;
+			endPos[2]  = sinval;
+			VectorScale(endPos, 450, endPos);
+			VectorAdd(endPos, pos, endPos);
 
 			VectorCopy(pos, curPos);
 			VectorSubtract(endPos, pos, posAdd);
@@ -2709,7 +2725,7 @@ void CL_ParseTEnt (void)
 			dlight_t	*dlx;
 			vec3_t	endPos, curPos, posAdd;
 			vec3_t	angles, forward, right, up;
-			float	cVal, sVal, svTime;
+			float	svTime;
 
 			pos[0] = MSG_ReadCoord();
 			pos[1] = MSG_ReadCoord();
@@ -2730,10 +2746,15 @@ void CL_ParseTEnt (void)
 			dlx->radius = 200 + (rand() & 31);
 			dlx->die = cl.time + 0.001;
 
-			VectorCopy(pos, endPos);
-			endPos[0] += q_cosrad(travelAng) * q_cosrad(travelPitch) * 375;
-			endPos[1] += q_sinrad(travelAng) * q_cosrad(travelPitch) * 375;
-			endPos[2] += q_sinrad(travelPitch) * 375;
+			q_sincosrad(travelAng, &sinval, &cosval);
+			endPos[0]  = cosval;
+			endPos[1]  = sinval;
+			q_sincosrad(travelPitch, &sinval, &cosval);
+			endPos[0] *= cosval;
+			endPos[1] *= cosval;
+			endPos[2]  = sinval;
+			VectorScale(endPos, 375, endPos);
+			VectorAdd(endPos, pos, endPos);
 
 			VectorCopy(pos, curPos);
 			VectorSubtract(endPos, pos, posAdd);
@@ -2741,13 +2762,14 @@ void CL_ParseTEnt (void)
 
 			for (i = 0; i < fireCounts; i++)
 			{
-				cVal = q_cosrad((svTime + (i*.3/8.0))*8)*10;
-				sVal = q_sinrad((svTime + (i*.3/8.0))*8)*10;
+				q_sincosrad((svTime + (i*.3/8.0))*8, &sinval, &cosval);
+				sinval *= 10;
+				cosval *= 10;
 
 				ex = CL_AllocExplosion();
 				VectorCopy(curPos, ex->origin);
-				VectorMA(ex->origin, cVal, right, ex->origin);
-				VectorMA(ex->origin, sVal, up, ex->origin);
+				VectorMA(ex->origin, cosval, right, ex->origin);
+				VectorMA(ex->origin, sinval, up, ex->origin);
 				ex->origin[0] += (rand() % 8) - 4;
 				ex->origin[1] += (rand() % 8) - 4;
 				ex->origin[2] += (rand() % 6) - 3;
@@ -2759,13 +2781,13 @@ void CL_ParseTEnt (void)
 				ex->velocity[0] = 0;
 				ex->velocity[1] = 0;
 				ex->velocity[2] = 0;
-				VectorMA(ex->velocity, cVal * 4.0, right, ex->velocity);
-				VectorMA(ex->velocity, sVal * 4.0, up, ex->velocity);
+				VectorMA(ex->velocity, cosval * 4.0, right, ex->velocity);
+				VectorMA(ex->velocity, sinval * 4.0, up, ex->velocity);
 
 				ex = CL_AllocExplosion();
 				VectorCopy(curPos, ex->origin);
-				VectorMA(ex->origin, -cVal, right, ex->origin);
-				VectorMA(ex->origin, -sVal, up, ex->origin);
+				VectorMA(ex->origin, -cosval, right, ex->origin);
+				VectorMA(ex->origin, -sinval, up, ex->origin);
 				ex->origin[0] += (rand() % 8) - 4;
 				ex->origin[1] += (rand() % 8) - 4;
 				ex->origin[2] += (rand() % 6) - 3;
@@ -2777,8 +2799,8 @@ void CL_ParseTEnt (void)
 				ex->velocity[0] = 0;
 				ex->velocity[1] = 0;
 				ex->velocity[2] = 0;
-				VectorMA(ex->velocity, -cVal * 4.0, right, ex->velocity);
-				VectorMA(ex->velocity, -sVal * 4.0, up, ex->velocity);
+				VectorMA(ex->velocity, -cosval * 4.0, right, ex->velocity);
+				VectorMA(ex->velocity, -sinval * 4.0, up, ex->velocity);
 
 				VectorAdd(curPos, posAdd, curPos);
 			}
@@ -2798,9 +2820,14 @@ void CL_ParseTEnt (void)
 			trailLen = MSG_ReadByte();
 			health = MSG_ReadByte();
 
-			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 800;
-			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 800;
-			vel[2] = q_sinrad(travelPitch) * 800;
+			q_sincosrad(travelAng, &sinval, &cosval);
+			vel[0]  = cosval;
+			vel[1]  = sinval;
+			q_sincosrad(travelPitch, &sinval, &cosval);
+			vel[0] *= cosval;
+			vel[1] *= cosval;
+			vel[2]  = sinval;
+			VectorScale(vel, 800, vel);
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -2861,9 +2888,14 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 1100;
-			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 1100;
-			vel[2] = q_sinrad(travelPitch) * 1100;
+			q_sincosrad(travelAng, &sinval, &cosval);
+			vel[0]  = cosval;
+			vel[1]  = sinval;
+			q_sincosrad(travelPitch, &sinval, &cosval);
+			vel[0] *= cosval;
+			vel[1] *= cosval;
+			vel[2]  = sinval;
+			VectorScale(vel, 1100, vel);
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -2902,9 +2934,14 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 1000;
-			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 1000;
-			vel[2] = q_sinrad(travelPitch) * 1000;
+			q_sincosrad(travelAng, &sinval, &cosval);
+			vel[0]  = cosval;
+			vel[1]  = sinval;
+			q_sincosrad(travelPitch, &sinval, &cosval);
+			vel[0] *= cosval;
+			vel[1] *= cosval;
+			vel[2]  = sinval;
+			VectorScale(vel, 1000, vel);
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -2930,9 +2967,14 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 1200;
-			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 1200;
-			vel[2] = q_sinrad(travelPitch) * 1200;
+			q_sincosrad(travelAng, &sinval, &cosval);
+			vel[0]  = cosval;
+			vel[1]  = sinval;
+			q_sincosrad(travelPitch, &sinval, &cosval);
+			vel[0] *= cosval;
+			vel[1] *= cosval;
+			vel[2]  = sinval;
+			VectorScale(vel, 1200, vel);
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -2961,9 +3003,14 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 1200;
-			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 1200;
-			vel[2] = q_sinrad(travelPitch) * 1200;
+			q_sincosrad(travelAng, &sinval, &cosval);
+			vel[0]  = cosval;
+			vel[1]  = sinval;
+			q_sincosrad(travelPitch, &sinval, &cosval);
+			vel[0] *= cosval;
+			vel[1] *= cosval;
+			vel[2]  = sinval;
+			VectorScale(vel, 1200, vel);
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -3014,9 +3061,14 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 1000;
-			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 1000;
-			vel[2] = q_sinrad(travelPitch) * 1000;
+			q_sincosrad(travelAng, &sinval, &cosval);
+			vel[0]  = cosval;
+			vel[1]  = sinval;
+			q_sincosrad(travelPitch, &sinval, &cosval);
+			vel[0] *= cosval;
+			vel[1] *= cosval;
+			vel[2]  = sinval;
+			VectorScale(vel, 1000, vel);
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -3060,9 +3112,14 @@ void CL_ParseTEnt (void)
 			dl->color[2] = 0.05;
 			dl->color[3] = 0.7;
 
-			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * speed;
-			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * speed;
-			vel[2] = q_sinrad(travelPitch) * speed;
+			q_sincosrad(travelAng, &sinval, &cosval);
+			vel[0]  = cosval;
+			vel[1]  = sinval;
+			q_sincosrad(travelPitch, &sinval, &cosval);
+			vel[0] *= cosval;
+			vel[1] *= cosval;
+			vel[2]  = sinval;
+			VectorScale(vel, speed, vel);
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -3094,9 +3151,14 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 1600;
-			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 1600;
-			vel[2] = q_sinrad(travelPitch) * 1600;
+			q_sincosrad(travelAng, &sinval, &cosval);
+			vel[0]  = cosval;
+			vel[1]  = sinval;
+			q_sincosrad(travelPitch, &sinval, &cosval);
+			vel[0] *= cosval;
+			vel[1] *= cosval;
+			vel[2]  = sinval;
+			VectorScale(vel, 1600, vel);
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -3210,10 +3272,15 @@ void CL_ParseTEnt (void)
 				tempPitch = (rand() % 628) / 100.0;
 
 				VectorCopy(pos, stream->source);
-				VectorCopy(stream->source, stream->dest);
-				stream->dest[0] += 75.0 * q_cosrad(tempAng) * q_cosrad(tempPitch);
-				stream->dest[1] += 75.0 * q_sinrad(tempAng) * q_cosrad(tempPitch);
-				stream->dest[2] += 75.0 * q_sinrad(tempPitch);
+				q_sincosrad(tempAng, &sinval, &cosval);
+				stream->dest[0]  = cosval;
+				stream->dest[1]  = sinval;
+				q_sincosrad(tempPitch, &sinval, &cosval);
+				stream->dest[0] *= cosval;
+				stream->dest[1] *= cosval;
+				stream->dest[2]  = sinval;
+				VectorScale(stream->dest, 75, stream->dest);
+				VectorAdd(stream->dest, stream->source, stream->dest);
 			}
 		  }	break;
 
@@ -3228,9 +3295,14 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 850;
-			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 850;
-			vel[2] = q_sinrad(travelPitch) * 850;
+			q_sincosrad(travelAng, &sinval, &cosval);
+			vel[0]  = cosval;
+			vel[1]  = sinval;
+			q_sincosrad(travelPitch, &sinval, &cosval);
+			vel[0] *= cosval;
+			vel[1] *= cosval;
+			vel[2]  = sinval;
+			VectorScale(vel, 850, vel);
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -3255,9 +3327,14 @@ void CL_ParseTEnt (void)
 			travelPitch = MSG_ReadByte()*6.28/256.0;
 			trailLen = MSG_ReadByte() * .01;
 
-			vel[0] = q_cosrad(travelAng) * q_cosrad(travelPitch) * 1000;
-			vel[1] = q_sinrad(travelAng) * q_cosrad(travelPitch) * 1000;
-			vel[2] = q_sinrad(travelPitch) * 1000;
+			q_sincosrad(travelAng, &sinval, &cosval);
+			vel[0]  = cosval;
+			vel[1]  = sinval;
+			q_sincosrad(travelPitch, &sinval, &cosval);
+			vel[0] *= cosval;
+			vel[1] *= cosval;
+			vel[2]  = sinval;
+			VectorScale(vel, 1000, vel);
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->origin);
@@ -3602,10 +3679,8 @@ static void CL_UpdateStreams(void)
 			AngleVectors(discard, discard, right, up);
 
 			lifeTime = ((stream->endTime - cl.time)/.8);
-			cosTime = q_cosrad(cl.time*5);
-			sinTime = q_sinrad(cl.time*5);
-			cos2Time = q_cosrad(cl.time*5 + 3.14);
-			sin2Time = q_sinrad(cl.time*5 + 3.14);
+			q_sincosrad(cl.time*5, &sinTime, &cosTime);
+			q_sincosrad(cl.time*5 + 3.14, &sin2Time, &cos2Time);
 		}
 
 		if (stream->type == TE_STREAM_ICECHUNKS)
@@ -4888,8 +4963,9 @@ static void telEffectUpdate (explosion_t *ex)
 
 			VectorCopy(ex->origin,ex2->origin);
 			VectorCopy(ex->origin,ex2->angles);
-			ex2->origin[0] += q_cosrad(angle)*10;
-			ex2->origin[1] += q_sinrad(angle)*10;
+			q_sincosrad(angle, &tvec[1], &tvec[0]);
+			ex2->origin[0] += tvec[0]*10;
+			ex2->origin[1] += tvec[1]*10;
 
 			VectorSubtract(ex->origin, ex2->origin, tvec);
 			VectorScale(tvec,20,tvec);
@@ -4924,8 +5000,7 @@ static void CL_UpdateTargetBall(void)
 	qmodel_t	*iceMod;
 	vec3_t		newOrg;
 	float		newScale;
-	float		pitch;
-	float		angle;
+	float	sinval, cosval;
 
 	if (v_targDist < 24)
 		return;	// either there is no ball, or it's too close to be needed...
@@ -4946,15 +5021,17 @@ static void CL_UpdateTargetBall(void)
 		}
 	}
 
-	VectorCopy(cl.simorg, newOrg);
-	//newOrg[0] += cos(v_targAngle*M_PI*2/256.0) * 50 * cos(v_targPitch*M_PI*2/256.0);
-	//newOrg[1] += sin(v_targAngle*M_PI*2/256.0) * 50 * cos(v_targPitch*M_PI*2/256.0);
-	//newOrg[2] += 44 + sin(v_targPitch*M_PI*2/256.0) * 50 + cos(cl.time*2)*5;
-	pitch = v_targPitch*M_PI*2/256.0;
-	angle = v_targAngle*M_PI*2/256.0;
-	newOrg[0] += q_cosrad(angle) * 50 * q_cosrad(pitch);
-	newOrg[1] += q_sinrad(angle) * 50 * q_cosrad(pitch);
-	newOrg[2] += 44 + q_sinrad(pitch) * 50 + q_cosrad(cl.time*2)*5;
+	q_sincosrad(v_targAngle*M_PI*2/256.0, &sinval, &cosval);
+	newOrg[0]  = cosval;
+	newOrg[1]  = sinval;
+	q_sincosrad(v_targPitch*M_PI*2/256.0, &sinval, &cosval);
+	newOrg[0] *= cosval;
+	newOrg[1] *= cosval;
+	newOrg[2]  = sinval;
+	VectorScale(newOrg, 50, newOrg);
+	VectorAdd(newOrg, cl.simorg, newOrg);
+	newOrg[2] += 44;
+	newOrg[2] += q_cosrad(cl.time*2) * 5;
 
 	if (v_targDist < 60)	// make it scale back down up close...
 		newScale = 172 - (172 * (1.0 - (v_targDist - 24.0)/36.0));
