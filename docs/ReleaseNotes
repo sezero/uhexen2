@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.10: (Apr. 04, 2022.)
+Changes in v1.5.10: (Apr. 23, 2022.)
 ========================================================================
 
 This is a minor bug fix and maintenance release:
@@ -9,6 +9,9 @@ This is a minor bug fix and maintenance release:
 - Added BSP2 format support, thanks to an initial patch by Spike.
 
 - Fixed possible crash in effects code (thanks to Jonathan Bergeron).
+
+- Fixed getting stuck with loading plaque upon attempting to load a
+  bad save from the menu.
 
 - OpenGL: Fixed dark dynamic lights -- e.g. when Necromancer uses
   invulnerability. (thanks to Shanjaq Astraljam, sf.net bug 48.)
@@ -21,6 +24,9 @@ This is a minor bug fix and maintenance release:
 
 - OpenGL: compensate viewmodel distortion at fov > 90.
 
+- Software renderer: replaced client sin/cos calls with precomputed
+  table lookups for better performance especially on old hardware.
+
 - Windows, midi: Fixed volume reseting after loop (sf.net bug 66.)
 
 - Improvements to mp3 tag detection / skipping.
@@ -30,9 +36,6 @@ This is a minor bug fix and maintenance release:
 
 - Utils: light, vis, and jsh2color now default to auto-detecting the
   max number of threads.
-
-- Updated third-party libraries (music codecs, SDL, etc.) Other minor
-  fixes, tidy-ups, and protability tweaks.
 
 - Windows: removed the long-obsoleted Scitech MGL video driver.
 

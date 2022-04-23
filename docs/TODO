@@ -3,15 +3,14 @@ Hexen II: Hammer of Thyrion (uHexen2)
 TODO:
 -------------------------------------
 
-- Add a pak-patch application for Mac OS X.
+- Add a pak-patch application and a launcher for Mac OS X.
 - Port code to SDL2.
 - Re-visit the messy mouse grab code and clean it up.
 - Clean-up the opengl code, modernize it.
 - Proper vsync support for opengl.
 - Multisampling support for windows opengl.
 - Support for several image formats (jpeg, png, etc)
-- Model interpolation stuff.
-- Support for BSP2 and 2PSB formats.
+- Maybe model interpolation stuff?
 - Increase several engine limits to allow for larger maps, as
   in Fitzquake and QuakeSpasm engines.
 - Software renderer: maybe add 16 bit support (r_pixbytes = 2,
@@ -25,4 +24,3 @@ TODO:
 - utils: qbsp, light and vis: improvements?
 - utils, texutils: add more texture tools (pcx2wal, etc.)?
 - More unification of hexen2 and hexenworld trees
-
