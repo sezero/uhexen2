@@ -1114,11 +1114,12 @@ static void CL_ParticleExplosion(void)
 	R_ColoredParticleExplosion(org,color,radius,counter);
 }
 
+
 #if 0	/* for debugging. from fteqw. */
 static void CL_DumpPacket (void)
 {
 	int			i, pos;
-	char	*packet = net_message.data;
+	unsigned char	*packet = net_message.data;
 
 	Con_Printf("%s, BEGIN:\n", __thisfunc__);
 	pos = 0;
@@ -1129,7 +1130,7 @@ static void CL_DumpPacket (void)
 		{
 			if (pos >= net_message.cursize)
 				Con_Printf(" X ");
-			else	Con_Printf("%2x ", (unsigned char)packet[pos]);
+			else	Con_Printf("%2x ", packet[pos]);
 			pos++;
 		}
 		pos -= 16;
@@ -1139,7 +1140,7 @@ static void CL_DumpPacket (void)
 				Con_Printf("X");
 			else if (packet[pos] == 0)
 				Con_Printf(".");
-			else	Con_Printf("%c", (unsigned char)packet[pos]);
+			else	Con_Printf("%c", packet[pos]);
 			pos++;
 		}
 		Con_Printf("\n");
