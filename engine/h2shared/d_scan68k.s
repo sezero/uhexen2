@@ -1082,7 +1082,7 @@ _D_DrawTurbulent8T
 		lsl.w   #8,d4
 		move.b  (a0),d4                 ;d4 = (temp<<8) + *r_turb_pdest
 		move.b  0(a2,d4.l),(a0)
-		move.w  d5,(a5)                 ;*pz = izi >> 16
+		;move.w  d5,(a5)                 ;*pz = izi >> 16
 ; translucent
 .skipdraw
 		add.l   #1,a0                   ;r_turb_pdest++

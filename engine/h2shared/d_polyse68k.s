@@ -422,13 +422,9 @@ _D_PolysetDrawSpans8T
 		move.b  0(a3,d2.l),d2           ;d2 = ((byte *)acolormap[d2]
 		lsl.w   #8,d2
 		move.b  (a0),d2                 ;d2 = (btemp<<8) + (*lpdest)
-		;move.l  a1,-(sp)
-		;move.l  _mainTransTable,a1
-		;move.b  0(a1,d2.l),(a0)         ;*lpdest = mainTransTable[d2];
-		;move.l  (sp)+,a1
 		move.b	([_mainTransTable],d2.l),(a0) ;*lpdest = mainTransTable[d2]
 		;move    d0,-2(a1)               ;*lpz = lzi >> 16
-		move    d0,(a1)                 ;*lpz = lzi >> 16
+		;move    d0,(a1)                 ;*lpz = lzi >> 16
 .cont
 		swap    d0
 .cont3
@@ -623,10 +619,6 @@ _D_PolysetDrawSpans8T2
 		move.b  0(a3,d2.l),d2           ;d2 = ((byte *)acolormap[d2]
 		lsl.w   #8,d2
 		move.b  (a0),d2                 ;d2 = (btemp<<8) + (*lpdest)
-		;move.l  a1,-(sp)
-		;move.l  _mainTransTable,a1
-		;move.b  0(a1,d2.l),(a0)         ;*lpdest = mainTransTable[d2];
-		;move.l  (sp)+,a1
 		move.b	([_mainTransTable],d2.l),(a0) ;*lpdest = mainTransTable[d2]
 .writez
 		move    d0,(a1)                 ;*lpz = lzi >> 16
@@ -983,7 +975,7 @@ _D_PolysetDrawSpans8T5
 		lsl.w   #8,d2
 		move.b  (a0),d2                 ;d2 = (btemp<<8) + (*lpdest)
 		move.b  0(a3,d2.l),(a0)         ;*lpdest = transTable[d2]
-		move    d0,(a1)                 ;*lpz = lzi >> 16
+		;move    d0,(a1)                 ;*lpz = lzi >> 16
 .cont
 		swap    d0
 .cont3
@@ -1436,7 +1428,7 @@ DoRecursionT
 		move.l  0(a5,d5.l*4),a3
 		cmp     0(a3,d4.l*2),d0         ;if (z >= *zbuf)
 		blt.b   .nodraw
-		move    d0,0(a3,d4.l*2)         ;*zbuf = z
+		;move    d0,0(a3,d4.l*2)         ;*zbuf = z
 		swap    d6
 		swap    d7
 		lea     _skintable,a3
@@ -2160,7 +2152,7 @@ DoRecursionT5
 		move.l  0(a5,d5.l*4),a3
 		cmp     0(a3,d4.l*2),d0         ;if (z >= *zbuf)
 		blt.b   .nodraw
-		move    d0,0(a3,d4.l*2)         ;*zbuf = z
+		;move    d0,0(a3,d4.l*2)         ;*zbuf = z
 		swap    d6
 		swap    d7
 		lea     _skintable,a3
@@ -3619,7 +3611,7 @@ do_PolysetDrawFinalVertsT
 		move.w	20(a6),d2				;d2 = pv->v[5]>>16
 		cmp.w	(a0),d2					;if (d2 >= *zbuf)
 		blt.b	.fvskip
-		move.w	d2,(a0)					;*zbuf = d2
+		;move.w	d2,(a0)					;*zbuf = d2
 
 		move.w	12(a6),d0				;d0 = pv->v[3]>>16
 		move.l	(a2,d0.w*4),a0			;a0 = skintable[d0]
@@ -3870,7 +3862,7 @@ do_PolysetDrawFinalVertsT5
 		move.w	20(a6),d2				;d2 = pv->v[5]>>16
 		cmp.w	(a0),d2					;if (d2 >= *zbuf)
 		blt.b	.fvskip
-		move.w	d2,(a0)					;*zbuf = d2
+		;move.w	d2,(a0)					;*zbuf = d2
 
 		move.w	12(a6),d0				;d0 = pv->v[3]>>16
 		move.l	(a2,d0.w*4),a0			;a0 = skintable[d0]
