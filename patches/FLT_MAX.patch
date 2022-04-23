@@ -1,12 +1,12 @@
 Instead of just assuming that 9999 or similar is "big enough", use the
 implementation defined type limits:  Similar changes are in quakespasm,
-tyrquake, and tyrutils.
+tyr-quake, and tyr-utils.
 
 diff --git a/engine/h2shared/d_sprite.c b/engine/h2shared/d_sprite.c
-index 21ca81f..bc99863 100644
+index e89b60d..e508ba1 100644
 --- a/engine/h2shared/d_sprite.c
 +++ b/engine/h2shared/d_sprite.c
-@@ -558,8 +558,8 @@ void D_DrawSprite (void)
+@@ -707,8 +707,8 @@ void D_DrawSprite (void)
  
  // find the top and bottom vertices, and make sure there's at least one scan to
  // draw
@@ -33,7 +33,7 @@ index fbf3671..cfad3b6 100644
  	tex = s->texinfo;
  
 diff --git a/engine/h2shared/gl_warp.c b/engine/h2shared/gl_warp.c
-index 6ecfd11..9c27d7f 100644
+index 317bbfc..9c27d7f 100644
 --- a/engine/h2shared/gl_warp.c
 +++ b/engine/h2shared/gl_warp.c
 @@ -36,8 +36,8 @@ static void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
@@ -59,7 +59,7 @@ index 6ecfd11..9c27d7f 100644
  }
  
 diff --git a/engine/h2shared/mathlib.h b/engine/h2shared/mathlib.h
-index f790f33..269eea3 100644
+index 8f64337..d89d5c4 100644
 --- a/engine/h2shared/mathlib.h
 +++ b/engine/h2shared/mathlib.h
 @@ -23,6 +23,7 @@
@@ -85,6 +85,21 @@ index fa11368..a6427d5 100644
  
  	tex = s->texinfo;
  
+diff --git a/engine/h2shared/pr_cmds.c b/engine/h2shared/pr_cmds.c
+index 9bb2c3b..f3f4be7 100644
+--- a/engine/h2shared/pr_cmds.c
++++ b/engine/h2shared/pr_cmds.c
+@@ -229,8 +229,8 @@ static void SetMinMaxSize (edict_t *e, float *minvec, float *maxvec, qboolean ro
+ 		VectorCopy (minvec, bounds[0]);
+ 		VectorCopy (maxvec, bounds[1]);
+ 
+-		rmin[0] = rmin[1] = rmin[2] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
+-		rmax[0] = rmax[1] = rmax[2] = -9999999;
++		rmin[0] = rmin[1] = rmin[2] = FLT_MAX;
++		rmax[0] = rmax[1] = rmax[2] = -FLT_MAX;
+ 
+ 		for (i = 0; i <= 1; i++)
+ 		{
 diff --git a/engine/h2shared/sv_model.c b/engine/h2shared/sv_model.c
 index b52216e..51f0bb1 100644
 --- a/engine/h2shared/sv_model.c
@@ -100,23 +115,8 @@ index b52216e..51f0bb1 100644
  
  	tex = s->texinfo;
  
-diff --git a/engine/hexen2/pr_cmds.c b/engine/hexen2/pr_cmds.c
-index 78947a2..0bc5253 100644
---- a/engine/hexen2/pr_cmds.c
-+++ b/engine/hexen2/pr_cmds.c
-@@ -207,8 +207,8 @@ static void SetMinMaxSize (edict_t *e, float *minvec, float *maxvec, qboolean ro
- 		VectorCopy (minvec, bounds[0]);
- 		VectorCopy (maxvec, bounds[1]);
- 
--		rmin[0] = rmin[1] = rmin[2] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
--		rmax[0] = rmax[1] = rmax[2] = -9999999;
-+		rmin[0] = rmin[1] = rmin[2] = FLT_MAX;
-+		rmax[0] = rmax[1] = rmax[2] = -FLT_MAX;
- 
- 		for (i = 0; i <= 1; i++)
- 		{
 diff --git a/engine/hexen2/r_main.c b/engine/hexen2/r_main.c
-index 23ef4f8..4ad8ef4 100644
+index 1c5eeec..4ad8ef4 100644
 --- a/engine/hexen2/r_main.c
 +++ b/engine/hexen2/r_main.c
 @@ -945,8 +945,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
@@ -131,7 +131,7 @@ index 23ef4f8..4ad8ef4 100644
  
  	AngleVectors (angles, forward, right, up);
 diff --git a/engine/hexen2/world.c b/engine/hexen2/world.c
-index 9a13cd3..779f23d 100644
+index c95439a..779f23d 100644
 --- a/engine/hexen2/world.c
 +++ b/engine/hexen2/world.c
 @@ -1006,8 +1006,8 @@ static void SV_MoveBounds (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, v
@@ -146,7 +146,7 @@ index 9a13cd3..779f23d 100644
  	int		i;
  
 diff --git a/engine/hexenworld/client/r_main.c b/engine/hexenworld/client/r_main.c
-index 2126952..4ea30ca 100644
+index a550c8d..4ea30ca 100644
 --- a/engine/hexenworld/client/r_main.c
 +++ b/engine/hexenworld/client/r_main.c
 @@ -974,8 +974,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
@@ -160,23 +160,8 @@ index 2126952..4ea30ca 100644
  	}
  
  	AngleVectors (angles, forward, right, up);
-diff --git a/engine/hexenworld/server/pr_cmds.c b/engine/hexenworld/server/pr_cmds.c
-index 8d792a5..44fa7b0 100644
---- a/engine/hexenworld/server/pr_cmds.c
-+++ b/engine/hexenworld/server/pr_cmds.c
-@@ -210,8 +210,8 @@ static void SetMinMaxSize (edict_t *e, float *minvec, float *maxvec, qboolean ro
- 		VectorCopy (minvec, bounds[0]);
- 		VectorCopy (maxvec, bounds[1]);
- 
--		rmin[0] = rmin[1] = rmin[2] = 9999999;	/* FIXME: change these two to FLT_MAX/-FLT_MAX */
--		rmax[0] = rmax[1] = rmax[2] = -9999999;
-+		rmin[0] = rmin[1] = rmin[2] = FLT_MAX;
-+		rmax[0] = rmax[1] = rmax[2] = -FLT_MAX;
- 
- 		for (i = 0; i <= 1; i++)
- 		{
 diff --git a/engine/hexenworld/server/world.c b/engine/hexenworld/server/world.c
-index d943d7d..e417533 100644
+index 1bbea56..e417533 100644
 --- a/engine/hexenworld/server/world.c
 +++ b/engine/hexenworld/server/world.c
 @@ -962,8 +962,8 @@ static void SV_MoveBounds (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, v

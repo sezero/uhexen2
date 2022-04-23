@@ -1250,7 +1250,7 @@ index 7fa6d6b..8775038 100644
  		modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
  		if (is_fullscreen)
 diff --git a/engine/hexen2/Makefile b/engine/hexen2/Makefile
-index 9690cd8..d4ff5b0 100644
+index 4319a77..fb6e883 100644
 --- a/engine/hexen2/Makefile
 +++ b/engine/hexen2/Makefile
 @@ -47,8 +47,17 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
@@ -1403,7 +1403,7 @@ index 9690cd8..d4ff5b0 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -1508,8 +1543,10 @@ SYSOBJ_SOFT_VID:= vid_sdl.o
+@@ -1516,8 +1551,10 @@ SYSOBJ_SOFT_VID:= vid_sdl.o
  SYSOBJ_NET := net_bsd.o net_udp.o
  SYSOBJ_SYS := sys_unix.o
  SYSOBJ_SYS += sys_osx.o
@@ -1501,7 +1501,7 @@ index cfe91b8..89502b1 100644
  	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
  	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
 diff --git a/engine/hexenworld/client/Makefile b/engine/hexenworld/client/Makefile
-index 8a6e1c6..7eb1116 100644
+index 2302824..c8190f1 100644
 --- a/engine/hexenworld/client/Makefile
 +++ b/engine/hexenworld/client/Makefile
 @@ -49,8 +49,17 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
@@ -1654,7 +1654,7 @@ index 8a6e1c6..7eb1116 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -1460,8 +1495,10 @@ SYSOBJ_GL_VID:= gl_vidsdl.o
+@@ -1467,8 +1502,10 @@ SYSOBJ_GL_VID:= gl_vidsdl.o
  SYSOBJ_SOFT_VID:= vid_sdl.o
  SYSOBJ_SYS := sys_unix.o
  SYSOBJ_SYS += sys_osx.o
