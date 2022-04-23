@@ -1027,8 +1027,8 @@ ifneq ($(BEBBO_TOOLCHAIN),yes)
 # -fomit-frame-pointer / -ffast-math causes trouble with gcc2.95
 CFLAGS  += -fno-omit-frame-pointer
 else
-# these break the game with GCC6
-CFLAGS  += -fbbb=- -fno-tree-forwprop -fno-tree-ter -fno-tree-fre -fno-tree-sra -fno-move-loop-invariants -fno-inline-functions-called-once 
+# these break the game with bebbo's gcc-6.x:
+CFLAGS  += -fbbb=- -fno-tree-forwprop -fno-tree-ter -fno-tree-fre -fno-tree-sra -fno-move-loop-invariants -fno-inline-functions-called-once
 endif
 endif
 ifeq ($(USE_CLIB2),yes)
