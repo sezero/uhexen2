@@ -390,10 +390,10 @@ void R_SetupFrame (void)
 // don't allow cheats in multiplayer
 	if (cl.maxclients > 1)
 	{
-		Cvar_Set ("r_draworder", "0");
-		Cvar_Set ("r_fullbright", "0");
-		Cvar_Set ("r_ambient", "0");
-		Cvar_Set ("r_drawflat", "0");
+		r_draworder.integer = 0;
+		r_fullbright.integer = 0;
+		r_ambient.integer = 0;
+		r_drawflat.integer = 0;
 	}
 
 	if (r_numsurfs.integer)
