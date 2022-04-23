@@ -280,6 +280,7 @@ void R_PrintAliasStats (void)
 }
 
 
+#if	!id68k
 /*
 ===================
 R_TransformFrustum
@@ -305,6 +306,7 @@ void R_TransformFrustum (void)
 		view_clipplanes[i].dist = DotProduct (modelorg, v2);
 	}
 }
+#endif
 
 
 #if	!id386 && !id68k

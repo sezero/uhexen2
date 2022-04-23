@@ -30,7 +30,7 @@ int		vstartscan;
 
 // FIXME: should go away
 extern void	R_RotateBmodel (void);
-extern void	R_TransformFrustum (void);
+//extern void	R_TransformFrustum (void);
 
 vec3_t		transformed_modelorg;
 

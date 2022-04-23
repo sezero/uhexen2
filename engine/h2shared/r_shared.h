@@ -146,6 +146,7 @@ extern	int	ubasestep, errorterm, erroradjustup, erroradjustdown;
 extern	int	r_skymade;
 
 void TransformVector (vec3_t in, vec3_t out);
+void R_TransformFrustum (void);
 
 // this is in asm for m68k amiga
 void R_MakeSky (void);

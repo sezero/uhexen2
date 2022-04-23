@@ -146,7 +146,6 @@ void R_ClearPolyList (void);
 void R_RenderBmodelFace (bedge_t *pedges, msurface_t *psurf);
 void R_RotateBmodel (void);
 void R_TransformPlane (mplane_t *p, float *normal, float *dist);
-void R_TransformFrustum (void);
 void R_SetSkyFrame (void);
 texture_t *R_TextureAnimation (texture_t *base);
 
