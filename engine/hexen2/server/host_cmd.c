@@ -1,5 +1,5 @@
 /*
- * server/host_cmd.c -- console commands
+ * host_cmd.c -- console commands
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -515,7 +515,7 @@ static void Host_Savegame_f (void)
 	FS_MakePath_VABUF (FS_USERDIR, &error_state, savedest, sizeof(savedest), "%s/info.dat", p);
 	if (error_state)
 	{
-		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
+		Host_Error ("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return;
 	}
 	f = fopen (savedest, "w");
@@ -624,14 +624,14 @@ static void Host_Loadgame_f (void)
 
 	if (q_snprintf(savedest, sizeof(savedest), "%s/info.dat", savename) >= (int)sizeof(savedest))
 	{
-		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
+		Host_Error ("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return;
 	}
 
 	f = fopen (savedest, "r");
 	if (!f)
 	{
-		Con_Printf ("%s: ERROR: couldn't open savefile\n", __thisfunc__);
+		Host_Error ("%s: ERROR: couldn't open savefile", __thisfunc__);
 		return;
 	}
 
@@ -640,7 +640,7 @@ static void Host_Loadgame_f (void)
 	if (version != SAVEGAME_VERSION)
 	{
 		fclose (f);
-		Con_Printf ("Savegame is version %i, not %i\n", version, SAVEGAME_VERSION);
+		Host_Error ("Savegame is version %i, not %i", version, SAVEGAME_VERSION);
 		return;
 	}
 	fscanf (f, "%s\n", str);
@@ -686,7 +686,6 @@ static void Host_Loadgame_f (void)
 
 	tempf = -1;
 	fscanf (f, "%f\n", &tempf);
-		// nothing to do with this tempf (cl_playerclass.value)
 
 	// mission pack, objectives strings
 	fscanf (f, "%u\n", &info_mask);
@@ -737,7 +736,7 @@ int SaveGamestate (qboolean ClientsOnly)
 		FS_MakePath_BUF (FS_USERDIR, &error_state, savename, sizeof(savename), "clients.gip");
 		if (error_state)
 		{
-			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
+			Host_Error ("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
 		}
 	}
@@ -749,7 +748,7 @@ int SaveGamestate (qboolean ClientsOnly)
 		FS_MakePath_VABUF (FS_USERDIR, &error_state, savename, sizeof(savename), "%s.gip", sv.name);
 		if (error_state)
 		{
-			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
+			Host_Error ("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
 		}
 	}
@@ -889,7 +888,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 		FS_MakePath_BUF (FS_USERDIR, &r, savename, sizeof(savename), "clients.gip");
 		if (r)
 		{
-			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
+			Host_Error ("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
 		}
 	}
@@ -898,7 +897,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 		FS_MakePath_VABUF (FS_USERDIR, &r, savename, sizeof(savename), "%s.gip", level);
 		if (r)
 		{
-			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
+			Host_Error ("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
 		}
 
@@ -909,8 +908,8 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 	f = fopen (savename, "r");
 	if (!f)
 	{
-		if (ClientsMode == 2)
-			Con_Printf ("%s: ERROR: couldn't open savefile\n", __thisfunc__);
+		if (ClientsMode == 2) /* caller: Host_Loadgame_f() */
+			Host_Error ("%s: ERROR: couldn't open savefile", __thisfunc__);
 
 		return -1;
 	}
@@ -920,7 +919,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 	if (version != SAVEGAME_VERSION)
 	{
 		fclose (f);
-		Con_Printf ("Savegame is version %i, not %i\n", version, SAVEGAME_VERSION);
+		Host_Error ("Savegame is version %i, not %i", version, SAVEGAME_VERSION);
 		return -1;
 	}
 
