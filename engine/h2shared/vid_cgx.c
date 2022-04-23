@@ -56,6 +56,7 @@ ULONG __WriteLUTPixelArray(__reg("a6") void *, __reg("a0") APTR srcRect, __reg("
 
 struct Window *window = NULL; /* used by in_amiga.c */
 static struct Screen *screen = NULL;
+static ULONG spal[1 + (256 * 3) + 1];
 static unsigned char ppal[256 * 4];
 static pixel_t *buffer = NULL;
 static byte *directbitmap = NULL;
@@ -84,8 +85,6 @@ ASM_LINKAGE_END
 #endif /* PLATFORM_AMIGAOS3 */
 
 /* ----------------------------------------- */
-
-static unsigned char	vid_curpal[256*3];	/* save for mode changes */
 
 unsigned short	d_8to16table[256];
 unsigned int	d_8to24table[256];
@@ -487,6 +486,10 @@ static void VID_NumModes_f (void)
 
 static void VID_DestroyWindow (void)
 {
+	extern cvar_t v_gamma;
+	// always call VID_ShiftPalette after mode changes
+	v_gamma.flags |= CVAR_CHANGED;
+
 	if (window)
 	{
 		CloseWindow(window);
@@ -702,7 +705,7 @@ static void VID_ChangeVideoMode (int newmode)
 	BGM_Pause ();
 	S_ClearBuffer ();
 
-	if (!VID_SetMode (newmode, vid_curpal))
+	if (!VID_SetMode (newmode, NULL))
 	{
 		if (vid_modenum == newmode)
 			Sys_Error ("Couldn't set video mode");
@@ -710,7 +713,7 @@ static void VID_ChangeVideoMode (int newmode)
 		// failed setting mode, probably due to insufficient
 		// memory. go back to previous mode.
 		Cvar_SetValueQuick (&vid_mode, vid_modenum);
-		if (!VID_SetMode (vid_modenum, vid_curpal))
+		if (!VID_SetMode (vid_modenum, NULL))
 			Sys_Error ("Couldn't set video mode");
 	}
 
@@ -747,14 +750,11 @@ void VID_SetPalette(const unsigned char *palette)
 	unsigned char *pp;
 	int i;
 
-	palette_changed = true;
-
-	if (palette != vid_curpal)
-		memcpy(vid_curpal, palette, sizeof(vid_curpal));
+	if (!palette)
+		return;
 
 	if (screen)
 	{
-		static ULONG spal[1 + (256 * 3) + 1];
 		ULONG *sp = spal;
 
 		*sp++ = 256 << 16;
@@ -770,23 +770,26 @@ void VID_SetPalette(const unsigned char *palette)
 
 		LoadRGB32(&screen->ViewPort, spal);
 	}
-
-	for (i = 0, p = palette, pp = ppal; i < 256; i++)
+	else
 	{
-		if (host_bigendian)
+		for (i = 0, p = palette, pp = ppal; i < 256; i++)
 		{
-			*pp++ = 0;
-			*pp++ = *p++;
-			*pp++ = *p++;
-			*pp++ = *p++;
-		}
-		else
-		{
-			*pp++ = p[2];
-			*pp++ = p[1];
-			*pp++ = p[0];
-			*pp++ = 0;
-			p += 3;
+			if (host_bigendian)
+			{
+				*pp++ = 0;
+				*pp++ = *p++;
+				*pp++ = *p++;
+				*pp++ = *p++;
+			}
+			else
+			{
+				*pp++ = p[2];
+				*pp++ = p[1];
+				*pp++ = p[0];
+				*pp++ = 0;
+				p += 3;
+			}
+			palette_changed = true;
 		}
 	}
 }
