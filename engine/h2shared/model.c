@@ -44,6 +44,7 @@ static byte	mod_novis[MAX_MAP_LEAFS/8];
 #define	MAX_MOD_KNOWN	2048
 static qmodel_t	mod_known[MAX_MOD_KNOWN];
 static int	mod_numknown;
+static hashindex_t hash_mod;
 
 static vec3_t	aliasmins, aliasmaxs;
 
@@ -63,6 +64,8 @@ void Mod_Init (void)
 	Cmd_AddCommand ("mcache", Mod_Print);
 
 	memset (mod_novis, 0xff, sizeof(mod_novis));
+
+	Hash_Allocate (&hash_mod, MAX_MOD_KNOWN);
 }
 
 /*
@@ -196,9 +199,9 @@ Mod_FindName
 */
 qmodel_t *Mod_FindName (const char *name)
 {
-	int		i;
+	int		i, key;
 	qmodel_t	*mod;
-	qmodel_t	*avail = NULL;
+	int		avail = -1;
 
 	if (!name[0])
 		Sys_Error ("%s: NULL name", __thisfunc__);
@@ -206,24 +209,27 @@ qmodel_t *Mod_FindName (const char *name)
 //
 // search the currently loaded models
 //
-	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
+	key = Hash_GenerateKeyString (&hash_mod, name, true);
+	for (i = Hash_First (&hash_mod, key); i != -1; i = Hash_Next (&hash_mod, i))
 	{
+		mod = &mod_known[i];
 		if (!strcmp (mod->name, name) )
 			break;
 		if (mod->needload == NL_UNREFERENCED)
 		{
-			if (!avail || mod->type != mod_alias)
-				avail = mod;
+			if (avail == -1 || mod->type != mod_alias)
+				avail = i;
 		}
 	}
 
-	if (i == mod_numknown)
+	if (i == -1)
 	{
 		if (mod_numknown == MAX_MOD_KNOWN)
 		{
-			if (avail)
+			if (avail != -1)
 			{
-				mod = avail;
+				Hash_Add (&hash_mod, key, avail);
+				mod = &mod_known[avail];
 				if (mod->type == mod_alias)
 				{
 					if (Cache_Check (&mod->cache))
@@ -236,7 +242,11 @@ qmodel_t *Mod_FindName (const char *name)
 				Sys_Error ("mod_numknown == MAX_MOD_KNOWN");
 		}
 		else
+		{
+			Hash_Add (&hash_mod, key, mod_numknown);
+			mod = &mod_known[mod_numknown];
 			mod_numknown++;
+		}
 		q_strlcpy (mod->name, name, MAX_QPATH);
 		mod->needload = NL_NEEDS_LOADED;
 	}

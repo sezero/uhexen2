@@ -1606,6 +1606,7 @@ COMMONOBJS = \
 	pmove.o \
 	pmovetst.o \
 	zone.o \
+	hashindex.o \
 	$(SYSOBJ_SYS)
 
 

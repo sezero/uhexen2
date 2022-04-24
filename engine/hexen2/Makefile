@@ -1665,6 +1665,7 @@ COMMONOBJS = \
 	$(WORLD_ASM) \
 	world.o \
 	zone.o \
+	hashindex.o \
 	$(SYSOBJ_SYS)
 
 
