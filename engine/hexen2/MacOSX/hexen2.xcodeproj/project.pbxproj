@@ -32,6 +32,10 @@
 		48E2EC7E15FB507A00B8D476 /* libogg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7A15FB507A00B8D476 /* libogg.dylib */; };
 		48E2EC7F15FB507A00B8D476 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */; };
 		48E2EC8015FB507A00B8D476 /* libvorbisfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */; };
+		6314361C2815EC8B00CC0F5A /* hashindex.c in Sources */ = {isa = PBXBuildFile; fileRef = 6314361A2815EC8B00CC0F5A /* hashindex.c */; };
+		6314361D2815EC8B00CC0F5A /* hashindex.h in Headers */ = {isa = PBXBuildFile; fileRef = 6314361B2815EC8B00CC0F5A /* hashindex.h */; };
+		6314361E2815EC8B00CC0F5A /* hashindex.c in Sources */ = {isa = PBXBuildFile; fileRef = 6314361A2815EC8B00CC0F5A /* hashindex.c */; };
+		6314361F2815EC8B00CC0F5A /* hashindex.h in Headers */ = {isa = PBXBuildFile; fileRef = 6314361B2815EC8B00CC0F5A /* hashindex.h */; };
 		631478BF27F1B3530023B20A /* snd_modplug.c in Sources */ = {isa = PBXBuildFile; fileRef = 631478BE27F1B3530023B20A /* snd_modplug.c */; };
 		631478C027F1B3530023B20A /* snd_modplug.c in Sources */ = {isa = PBXBuildFile; fileRef = 631478BE27F1B3530023B20A /* snd_modplug.c */; };
 		6398921823A25377003C5801 /* snd_mp3tag.c in Sources */ = {isa = PBXBuildFile; fileRef = 6398921723A25377003C5801 /* snd_mp3tag.c */; };
@@ -387,6 +391,8 @@
 		48E2EC7A15FB507A00B8D476 /* libogg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.dylib; path = ../../../oslibs/macosx/codecs/lib/libogg.dylib; sourceTree = "<group>"; };
 		48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.dylib; path = ../../../oslibs/macosx/codecs/lib/libvorbis.dylib; sourceTree = "<group>"; };
 		48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbisfile.dylib; path = ../../../oslibs/macosx/codecs/lib/libvorbisfile.dylib; sourceTree = "<group>"; };
+		6314361A2815EC8B00CC0F5A /* hashindex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashindex.c; path = ../../h2shared/hashindex.c; sourceTree = SOURCE_ROOT; };
+		6314361B2815EC8B00CC0F5A /* hashindex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = hashindex.h; path = ../../h2shared/hashindex.h; sourceTree = SOURCE_ROOT; };
 		631478BD27F1B2DC0023B20A /* snd_mpg123.c */ = {isa = PBXFileReference; comments = "NOTE: snd_mp3.c and snd_mpg123.c are mutually exclusive - build only one."; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_mpg123.c; path = ../../h2shared/snd_mpg123.c; sourceTree = SOURCE_ROOT; };
 		631478BE27F1B3530023B20A /* snd_modplug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_modplug.c; path = ../../h2shared/snd_modplug.c; sourceTree = SOURCE_ROOT; };
 		6398921723A25377003C5801 /* snd_mp3tag.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_mp3tag.c; path = ../../h2shared/snd_mp3tag.c; sourceTree = SOURCE_ROOT; };
@@ -758,6 +764,8 @@
 				707D57A60AA9F6EE00313A9F /* host_cmd.c */,
 				707D57C30AA9F6EE00313A9F /* host_string.c */,
 				707D57A70AA9F6EE00313A9F /* host.c */,
+				6314361A2815EC8B00CC0F5A /* hashindex.c */,
+				6314361B2815EC8B00CC0F5A /* hashindex.h */,
 				707D57A80AA9F6EE00313A9F /* in_sdl.c */,
 				707D57A90AA9F6EE00313A9F /* input.h */,
 				707D57AA0AA9F6EE00313A9F /* keys.c */,
@@ -848,6 +856,7 @@
 				70310B4E0BFDEA0F00CA35D3 /* cfgfile.h in Headers */,
 				48AE54C6179723F7008E11FB /* snd_opus.h in Headers */,
 				4828130A179C4055004E1D61 /* snd_flac.h in Headers */,
+				6314361F2815EC8B00CC0F5A /* hashindex.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -907,6 +916,7 @@
 				70310B4C0BFDEA0F00CA35D3 /* cfgfile.h in Headers */,
 				48AE54C5179723F7008E11FB /* snd_opus.h in Headers */,
 				48281309179C4055004E1D61 /* snd_flac.h in Headers */,
+				6314361D2815EC8B00CC0F5A /* hashindex.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1126,6 +1136,7 @@
 				483A78780D2EEAF000CB2E4C /* snd_mikmod.c in Sources */,
 				6398921923A25377003C5801 /* snd_mp3tag.c in Sources */,
 				631478C027F1B3530023B20A /* snd_modplug.c in Sources */,
+				6314361E2815EC8B00CC0F5A /* hashindex.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1216,6 +1227,7 @@
 				48305B530D8AF8EC00A29C24 /* snd_mikmod.c in Sources */,
 				6398921823A25377003C5801 /* snd_mp3tag.c in Sources */,
 				631478BF27F1B3530023B20A /* snd_modplug.c in Sources */,
+				6314361C2815EC8B00CC0F5A /* hashindex.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
