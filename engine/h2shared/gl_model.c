@@ -23,6 +23,7 @@
  */
 
 #include "quakedef.h"
+#include "hashindex.h"
 #include "hwal.h"
 
 qmodel_t	*loadmodel;
@@ -44,6 +45,7 @@ static byte	mod_novis[MAX_MAP_LEAFS/8];
 #define	MAX_MOD_KNOWN	2048
 static qmodel_t	mod_known[MAX_MOD_KNOWN];
 static int	mod_numknown;
+static hashindex_t	hash_mod;
 
 static vec3_t	aliasmins, aliasmaxs;
 
@@ -65,6 +67,8 @@ void Mod_Init (void)
 	Cmd_AddCommand ("mcache", Mod_Print);
 
 	memset (mod_novis, 0xff, sizeof(mod_novis));
+
+	Hash_Allocate (&hash_mod, MAX_MOD_KNOWN);
 }
 
 /*
@@ -181,7 +185,7 @@ Mod_ClearAll
 */
 void Mod_ClearAll (void)
 {
-	int		i;
+	int		i, key;
 	qmodel_t	*mod;
 
 	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
@@ -197,6 +201,8 @@ void Mod_ClearAll (void)
 		}
 		else
 		{	// Clear all other models completely
+			key = Hash_GenerateKeyString (&hash_mod, mod->name, true);
+			Hash_Remove(&hash_mod, key, i);
 			memset(mod, 0, sizeof(qmodel_t));
 			mod->needload = NL_UNREFERENCED;
 		}
@@ -211,7 +217,7 @@ Mod_FindName
 */
 qmodel_t *Mod_FindName (const char *name)
 {
-	int		i;
+	int		i, key;
 	qmodel_t	*mod = NULL;
 
 	if (!name[0])
@@ -221,7 +227,8 @@ qmodel_t *Mod_FindName (const char *name)
 // search the currently loaded models
 //
 	// allow recycling of model handles (Pa3PyX)
-	for (i = 0; i < mod_numknown; i++)
+	key = Hash_GenerateKeyString (&hash_mod, name, true);
+	for (i = Hash_First(&hash_mod, key); i != -1; i = Hash_Next(&hash_mod, i))
 	{
 		if (!strcmp(mod_known[i].name, name))
 		{
@@ -230,6 +237,7 @@ qmodel_t *Mod_FindName (const char *name)
 		}
 		if (!mod && mod_known[i].needload == NL_UNREFERENCED)
 		{
+			Hash_Add (&hash_mod, key, i);
 			mod = mod_known + i;
 		}
 	}
@@ -242,6 +250,7 @@ qmodel_t *Mod_FindName (const char *name)
 		}
 		else
 		{
+			Hash_Add (&hash_mod, key, mod_numknown);
 			mod = &(mod_known[mod_numknown++]);
 		}
 	}

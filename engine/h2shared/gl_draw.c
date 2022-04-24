@@ -22,6 +22,7 @@
  */
 
 #include "quakedef.h"
+#include "hashindex.h"
 
 #if ENDIAN_RUNTIME_DETECT
 /* initialized by VID_Init() */
@@ -96,6 +97,7 @@ int		gl_filter_idx = 4; /* Bilinear */
 
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
+static hashindex_t	hash_gltextures;
 
 static GLuint GL_LoadPixmap (const char *name, const char *data);
 static void GL_Upload32 (unsigned int *data, gltexture_t *glt);
@@ -107,6 +109,7 @@ static void GL_Upload8 (byte *data, gltexture_t *glt);
 
 cachepic_t	menu_cachepics[MAX_CACHED_PICS];
 int			menu_numcachepics;
+static hashindex_t	hash_cachepics;
 
 /*
  * Geometry for the player/skin selection screen image.
@@ -173,18 +176,22 @@ Draw_CachePic
 qpic_t	*Draw_CachePic (const char *path)
 {
 	cachepic_t	*pic;
-	int			i;
+	int			i, key;
 	qpic_t		*dat;
 	glpic_t		gl;
 
-	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
+	key = Hash_GenerateKeyString (&hash_cachepics, path, true);
+	for (i = Hash_First(&hash_cachepics, key); i != -1; i = Hash_Next(&hash_cachepics, i))
 	{
+		pic = &menu_cachepics[i];
 		if (!strcmp (path, pic->name))
 			return &pic->pic;
 	}
 
 	if (menu_numcachepics == MAX_CACHED_PICS)
 		Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
+	Hash_Add (&hash_cachepics, key, menu_numcachepics);
+	pic = &menu_cachepics[menu_numcachepics];
 	menu_numcachepics++;
 	q_strlcpy (pic->name, path, MAX_QPATH);
 
@@ -239,12 +246,14 @@ static const char ls_path[] = "gfx/menu/loading.lmp";
 qpic_t	*Draw_CacheLoadingPic (void)
 {
 	cachepic_t	*pic;
-	int			i;
+	int			i, key;
 	qpic_t		*dat;
 	glpic_t		gl;
 
-	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
+	key = Hash_GenerateKeyString (&hash_cachepics, ls_path, true);
+	for (i = Hash_First(&hash_cachepics, key); i != -1; i = Hash_Next(&hash_cachepics, i))
 	{
+		pic = &menu_cachepics[i];
 		if (!strcmp (ls_path, pic->name))
 			return &pic->pic;
 	}
@@ -258,6 +267,8 @@ qpic_t	*Draw_CacheLoadingPic (void)
 	if (fs_filesize != 17592 || dat->width != 157 || dat->height != 112)
 		return Draw_CachePic(ls_path);
 
+	Hash_Add (&hash_cachepics, key, menu_numcachepics);
+	pic = &menu_cachepics[menu_numcachepics];
 	q_strlcpy (pic->name, ls_path, MAX_QPATH);
 	menu_numcachepics++;
 
@@ -500,6 +511,8 @@ void Draw_Init (void)
 		Cvar_RegisterVariable (&gl_texture_anisotropy);
 		Cvar_SetCallback (&gl_texturemode, Draw_TextureMode_f);
 		Cvar_SetCallback (&gl_texture_anisotropy, Draw_Anisotropy_f);
+		Hash_Allocate (&hash_cachepics, MAX_CACHED_PICS);
+		Hash_Allocate (&hash_gltextures, MAX_GLTEXTURES);
 	}
 
 	// load the charset: 8*8 graphic characters
@@ -852,18 +865,22 @@ colors (e.g. in intermission screens)
 qpic_t *Draw_CachePicNoTrans (const char *path)
 {
 	cachepic_t	*pic;
-	int		i;
+	int		i, key;
 	qpic_t		*dat;
 	glpic_t		gl;
 
-	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
+	key = Hash_GenerateKeyString (&hash_cachepics, path, true);
+	for (i = Hash_First(&hash_cachepics, key); i != -1; i = Hash_Next(&hash_cachepics, i))
 	{
+		pic = &menu_cachepics[i];
 		if (!strcmp (path, pic->name))
 			return &pic->pic;
 	}
 
 	if (menu_numcachepics == MAX_CACHED_PICS)
 		Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
+	Hash_Add (&hash_cachepics, key, menu_numcachepics);
+	pic = &menu_cachepics[menu_numcachepics];
 	menu_numcachepics++;
 	q_strlcpy (pic->name, path, MAX_QPATH);
 
@@ -1783,7 +1800,7 @@ GL_LoadTexture
 */
 GLuint GL_LoadTexture (const char *identifier, byte *data, int width, int height, int flags)
 {
-	int		i, size;
+	int		i, size, key;
 	unsigned short	crc;
 	gltexture_t	*glt;
 
@@ -1797,11 +1814,13 @@ GLuint GL_LoadTexture (const char *identifier, byte *data, int width, int height
 		size *= 4;
 	crc = CRC_Block (data, size);
 
+	key = Hash_GenerateKeyString (&hash_gltextures, identifier, true);
 	if (identifier[0])
 	{
 		/* texture already present? */
-		for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)
+		for (i = Hash_First(&hash_gltextures, key); i != -1; i = Hash_Next(&hash_gltextures, i))
 		{
+			glt = &gltextures[i];
 			if (!strcmp (identifier, glt->identifier))
 			{
 				if (crc != glt->crc ||
@@ -1821,6 +1840,7 @@ GLuint GL_LoadTexture (const char *identifier, byte *data, int width, int height
 	if (numgltextures >= MAX_GLTEXTURES)
 		Sys_Error ("%s: cache full, max is %i textures.", __thisfunc__, MAX_GLTEXTURES);
 
+	Hash_Add (&hash_gltextures, key, numgltextures);
 	glt = &gltextures[numgltextures];
 	numgltextures++;
 	q_strlcpy (glt->identifier, identifier, MAX_QPATH);
