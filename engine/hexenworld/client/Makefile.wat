@@ -488,6 +488,7 @@ COMMONOBJS = &
 	pmove.obj &
 	pmovetst.obj &
 	zone.obj &
+	hashindex.obj &
 	$(SYSOBJ_SYS)
 
 all: $(BUILD_TARGET)

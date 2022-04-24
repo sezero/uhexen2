@@ -23,6 +23,7 @@
  */
 
 #include "quakedef.h"
+#include "hashindex.h"
 #include "hwal.h"
 #include "r_local.h"
 
@@ -44,7 +45,7 @@ static byte	mod_novis[MAX_MAP_LEAFS/8];
 #define	MAX_MOD_KNOWN	2048
 static qmodel_t	mod_known[MAX_MOD_KNOWN];
 static int	mod_numknown;
-static hashindex_t hash_mod;
+static hashindex_t	hash_mod;
 
 static vec3_t	aliasmins, aliasmaxs;
 
@@ -210,7 +211,7 @@ qmodel_t *Mod_FindName (const char *name)
 // search the currently loaded models
 //
 	key = Hash_GenerateKeyString (&hash_mod, name, true);
-	for (i = Hash_First (&hash_mod, key); i != -1; i = Hash_Next (&hash_mod, i))
+	for (i = Hash_First(&hash_mod, key); i != -1; i = Hash_Next(&hash_mod, i))
 	{
 		mod = &mod_known[i];
 		if (!strcmp (mod->name, name) )

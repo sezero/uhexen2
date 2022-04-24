@@ -19,12 +19,13 @@
  */
 
 #include "quakedef.h"
+#include "hashindex.h"
 
 #define NULL_INDEX (-1)
 
 static inline qboolean Hash_IsPowerOfTwo(int x)
 {
-	return (x & (x - 1)) == 0 && x > 0;
+	return (x > 0) && !(x & (x - 1));
 }
 
 /*
@@ -41,9 +42,9 @@ void Hash_Allocate(hashindex_t *hi, int hashSize)
 		Sys_Error("%s: hash is already initialized", __thisfunc__);
 
 	hi->hashSize = hashSize;
-	hi->hash = Z_Malloc(sizeof(int) * hi->hashSize, Z_MAINZONE);
+	hi->hash = (int *) Z_Malloc(sizeof(int) * hi->hashSize, Z_MAINZONE);
 	memset(hi->hash, NULL_INDEX, hi->hashSize * sizeof(hi->hash[0]));
-	hi->indexChain = Z_Malloc(sizeof(int) * hi->hashSize, Z_MAINZONE);
+	hi->indexChain = (int *) Z_Malloc(sizeof(int) * hi->hashSize, Z_MAINZONE);
 	memset(hi->indexChain, NULL_INDEX, hi->hashSize * sizeof(hi->indexChain[0]));
 	hi->hashMask = hashSize - 1;
 }

@@ -94,8 +94,6 @@
 #include "input.h"
 #include "keys.h"
 #include "menu.h"
-#include "q_ctype.h"
-#include "hashindex.h"
 #endif	/* !SERVERONLY */
 
 #endif	/* __QUAKEINC_H */

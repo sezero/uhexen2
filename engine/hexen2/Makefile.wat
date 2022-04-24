@@ -492,6 +492,7 @@ COMMONOBJS = &
 	$(WORLD_ASM) &
 	world.obj &
 	zone.obj &
+	hashindex.obj &
 	$(SYSOBJ_SYS)
 
 all: $(BUILD_TARGET)

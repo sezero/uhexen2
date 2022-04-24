@@ -23,6 +23,7 @@
 
 
 #include "quakedef.h"
+#include "hashindex.h"
 #include "r_shared.h"
 
 typedef struct {
@@ -59,7 +60,7 @@ typedef struct cachepic_s
 #define	MAX_CACHED_PICS		256
 static cachepic_t	menu_cachepics[MAX_CACHED_PICS];
 static int		menu_numcachepics;
-static hashindex_t hash_cachepics;
+static hashindex_t	hash_cachepics;
 
 
 static void Draw_PicCheckError (void *ptr, const char *name)
@@ -86,7 +87,7 @@ qpic_t	*Draw_CachePic (const char *path)
 	qpic_t		*dat;
 
 	key = Hash_GenerateKeyString (&hash_cachepics, path, true);
-	for (i = Hash_First (&hash_cachepics, key); i != -1; i = Hash_Next (&hash_cachepics, i))
+	for (i = Hash_First(&hash_cachepics, key); i != -1; i = Hash_Next(&hash_cachepics, i))
 	{
 		pic = &menu_cachepics[i];
 		if (!strcmp (path, pic->name))
@@ -134,7 +135,7 @@ qpic_t	*Draw_CacheLoadingPic (void)
 	qpic_t		*dat;
 
 	key = Hash_GenerateKeyString (&hash_cachepics, ls_path, true);
-	for (i = Hash_First (&hash_cachepics, key); i != -1; i = Hash_Next (&hash_cachepics, i))
+	for (i = Hash_First(&hash_cachepics, key); i != -1; i = Hash_Next(&hash_cachepics, i))
 	{
 		pic = &menu_cachepics[i];
 		if (!strcmp (ls_path, pic->name))
@@ -172,7 +173,6 @@ qpic_t	*Draw_CacheLoadingPic (void)
 
 	return dat;
 }
-
 #endif	/* !DRAW_PROGRESSBARS */
 
 
@@ -191,7 +191,7 @@ qpic_t *Draw_CachePicResize (const char *path, int targetWidth, int targetHeight
 	qpic_t *dat, *temp;
 
 	key = Hash_GenerateKeyString (&hash_cachepics, path, true);
-	for (i = Hash_First (&hash_cachepics, key); i != -1; i = Hash_Next (&hash_cachepics, i))
+	for (i = Hash_First(&hash_cachepics, key); i != -1; i = Hash_Next(&hash_cachepics, i))
 	{
 		pic = &menu_cachepics[i];
 		if (!strcmp (path, pic->name))

@@ -21,6 +21,7 @@
  */
 
 #include "quakedef.h"
+#include "hashindex.h"
 #include "cfgfile.h"
 #include "snd_sys.h"
 #include "snd_codec.h"
@@ -364,11 +365,10 @@ static sfx_t *S_FindName (const char *name)
 
 // see if already loaded
 	key = Hash_GenerateKeyString (&hash_sfx, name, true);
-	for (i = Hash_First (&hash_sfx, key); i != -1; i = Hash_Next (&hash_sfx, i))
+	for (i = Hash_First(&hash_sfx, key); i != -1; i = Hash_Next(&hash_sfx, i))
 	{
 		sfx = &known_sfx[i];
-		if (!strcmp(name, sfx->name))
-		{
+		if (!strcmp(name, sfx->name)) {
 			return sfx;
 		}
 	}

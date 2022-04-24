@@ -3,7 +3,7 @@
  * from the Doom 3 GPL Source Code source adapted for uhexen2.
  *
  * Copyright (C) 1993-2012 id Software LLC, a ZeniMax Media company.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -18,8 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __HASHINDEX_H__
-#define __HASHINDEX_H__
+#ifndef HASHINDEX_H_
+#define HASHINDEX_H_
+
+#include "q_ctype.h"
 
 typedef struct hashindex_s
 {
@@ -90,4 +92,4 @@ static inline int Hash_GenerateKeyInt(hashindex_t *hi, int n)
 	return n & hi->hashMask;
 }
 
-#endif /* !__HASHINDEX_H__ */
+#endif /* !HASHINDEX_H_ */
