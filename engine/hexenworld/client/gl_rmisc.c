@@ -20,6 +20,7 @@
  */
 
 #include "quakedef.h"
+#include "hashindex.h"
 
 byte			*playerTranslation;
 const int	color_offsets[MAX_PLAYER_CLASS] =
@@ -43,6 +44,8 @@ qboolean		flush_textures;
 int			gl_texlevel;
 extern int		menu_numcachepics;
 extern cachepic_t	menu_cachepics[MAX_CACHED_PICS];
+extern hashindex_t	hash_gltextures;
+extern hashindex_t	hash_cachepics;
 
 extern void R_InitBubble (void);
 
@@ -430,11 +433,15 @@ void R_NewMap (void)
 */
 void D_ClearOpenGLTextures (int last_tex)
 {
-	int		i;
+	int		i, key;
 
 	// Delete OpenGL textures
 	for (i = last_tex; i < numgltextures; i++)
+	{
 		glDeleteTextures_fp(1, &(gltextures[i].texnum));
+		key = Hash_GenerateKeyString (&hash_gltextures, gltextures[i].identifier, true);
+		Hash_Remove(&hash_gltextures, key, i);
+	}
 
 	memset(&(gltextures[last_tex]), 0, (numgltextures - last_tex) * sizeof(gltexture_t));
 	numgltextures = last_tex;
@@ -445,6 +452,7 @@ void D_ClearOpenGLTextures (int last_tex)
 	// Clear menu pic cache
 	memset(menu_cachepics, 0, menu_numcachepics * sizeof(cachepic_t));
 	menu_numcachepics = 0;
+	Hash_Clear(&hash_cachepics);
 
 	Con_DPrintf ("Purged OpenGL textures\n");
 }

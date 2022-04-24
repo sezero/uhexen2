@@ -97,7 +97,7 @@ int		gl_filter_idx = 4; /* Bilinear */
 
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
-static hashindex_t	hash_gltextures;
+hashindex_t	hash_gltextures;
 
 static GLuint GL_LoadPixmap (const char *name, const char *data);
 static void GL_Upload32 (unsigned int *data, gltexture_t *glt);
@@ -109,7 +109,7 @@ static void GL_Upload8 (byte *data, gltexture_t *glt);
 
 cachepic_t	menu_cachepics[MAX_CACHED_PICS];
 int			menu_numcachepics;
-static hashindex_t	hash_cachepics;
+hashindex_t	hash_cachepics;
 
 /*
  * Geometry for the player/skin selection screen image.
