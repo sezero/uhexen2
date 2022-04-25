@@ -201,8 +201,11 @@ void Mod_ClearAll (void)
 		}
 		else
 		{	// Clear all other models completely
-			key = Hash_GenerateKeyString (&hash_mod, mod->name, true);
-			Hash_Remove(&hash_mod, key, i);
+			if (mod->name[0])
+			{
+				key = Hash_GenerateKeyString (&hash_mod, mod->name, true);
+				Hash_Remove(&hash_mod, key, i);
+			}
 			memset(mod, 0, sizeof(qmodel_t));
 			mod->needload = NL_UNREFERENCED;
 		}
@@ -218,7 +221,7 @@ Mod_FindName
 qmodel_t *Mod_FindName (const char *name)
 {
 	int		i, key;
-	qmodel_t	*mod = NULL;
+	qmodel_t	*mod;
 
 	if (!name[0])
 		Sys_Error ("%s: NULL name", __thisfunc__);
@@ -235,18 +238,24 @@ qmodel_t *Mod_FindName (const char *name)
 			mod = &(mod_known[i]);
 			return mod;
 		}
-		if (!mod && mod_known[i].needload == NL_UNREFERENCED)
-		{
-			Hash_Add (&hash_mod, key, i);
-			mod = mod_known + i;
-		}
 	}
 
-	if (!mod)
+	if (i == -1)
 	{
 		if (mod_numknown == MAX_MOD_KNOWN)
-		{	// No free model handle
-			Sys_Error ("mod_numknown == MAX_MOD_KNOWN");
+		{
+			for (i = 0; i < mod_numknown; i++)
+			{
+				if (mod_known[i].needload == NL_UNREFERENCED)
+					break;
+			}
+			if (i < mod_numknown)
+			{
+				Hash_Add (&hash_mod, key, i);
+				mod = &(mod_known[i]);
+			}
+			else // No free model handle
+				Sys_Error ("mod_numknown == MAX_MOD_KNOWN");
 		}
 		else
 		{

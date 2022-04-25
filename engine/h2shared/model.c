@@ -202,7 +202,6 @@ qmodel_t *Mod_FindName (const char *name)
 {
 	int		i, key;
 	qmodel_t	*mod;
-	int		avail = -1;
 
 	if (!name[0])
 		Sys_Error ("%s: NULL name", __thisfunc__);
@@ -216,21 +215,22 @@ qmodel_t *Mod_FindName (const char *name)
 		mod = &mod_known[i];
 		if (!strcmp (mod->name, name) )
 			break;
-		if (mod->needload == NL_UNREFERENCED)
-		{
-			if (avail == -1 || mod->type != mod_alias)
-				avail = i;
-		}
 	}
 
 	if (i == -1)
 	{
 		if (mod_numknown == MAX_MOD_KNOWN)
 		{
-			if (avail != -1)
+			for (i = 0; i < mod_numknown; i++)
 			{
-				Hash_Add (&hash_mod, key, avail);
-				mod = &mod_known[avail];
+				mod = &mod_known[i];
+				if (mod->needload == NL_UNREFERENCED && mod->type != mod_alias)
+					break;
+			}
+			if (i < mod_numknown)
+			{
+				Hash_Add (&hash_mod, key, i);
+				mod = &mod_known[i];
 				if (mod->type == mod_alias)
 				{
 					if (Cache_Check (&mod->cache))
