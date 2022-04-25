@@ -27,6 +27,7 @@
 #include <io.h>
 #endif
 #include "filenames.h"
+#include "hashindex.h"
 
 typedef struct
 {
@@ -40,6 +41,7 @@ typedef struct pack_s
 	FILE	*handle;
 	int	numfiles;
 	pakfiles_t	*files;
+	hashindex_t	hash;
 } pack_t;
 
 typedef struct searchpath_s
@@ -257,7 +259,7 @@ Takes a path to a pak file.  Loads the header and directory.
 static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_fs)
 {
 	dpackheader_t	header;
-	int	i, numpackfiles;
+	int	i, numpackfiles, key, hashSize;
 	pakfiles_t	*newfiles;
 	pack_t		*pack;
 	FILE		*packhandle;
@@ -300,6 +302,14 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 
 	newfiles = (pakfiles_t *) Z_Malloc (numpackfiles * sizeof(pakfiles_t), Z_MAINZONE);
 
+	/* get the hash table size from the number of files in the pak */
+	for (i = 1; i <= MAX_FILES_IN_PACK; i <<= 1)
+	{
+		if (i > numpackfiles)
+			break;
+	}
+	hashSize = i;
+
 	fseek (packhandle, header.dirofs, SEEK_SET);
 	fread (info,  1, header.dirlen, packhandle);
 
@@ -313,15 +323,19 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 		gameflags |= check_known_paks (paknum, numpackfiles, crc);
 	else	gameflags |= GAME_MODIFIED;
 
+	pack = (pack_t *) Z_Malloc (sizeof(pack_t), Z_MAINZONE);
+	Hash_Allocate(&pack->hash, hashSize);
+
 	/* parse the directory */
 	for (i = 0; i < numpackfiles; i++)
 	{
 		qerr_strlcpy(__thisfunc__, __LINE__, newfiles[i].name, info[i].name, MAX_QPATH);
 		newfiles[i].filepos = LittleLong(info[i].filepos);
 		newfiles[i].filelen = LittleLong(info[i].filelen);
+		key = Hash_GenerateKeyString (&pack->hash, newfiles[i].name, true);
+		Hash_Add (&pack->hash, key, i);
 	}
 
-	pack = (pack_t *) Z_Malloc (sizeof(pack_t), Z_MAINZONE);
 	qerr_strlcpy(__thisfunc__, __LINE__, pack->filename, packfile, MAX_OSPATH);
 	pack->handle = packhandle;
 	pack->numfiles = numpackfiles;
@@ -472,6 +486,7 @@ void FS_Gamedir (const char *dir)
 		{
 			fclose (fs_searchpaths->pack->handle);
 			Z_Free (fs_searchpaths->pack->files);
+			Hash_Free(&fs_searchpaths->pack->hash);
 			Z_Free (fs_searchpaths->pack);
 		}
 		next = fs_searchpaths->next;
@@ -752,7 +767,7 @@ size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 	searchpath_t	*search;
 	pack_t		*pak;
 	char	ospath[MAX_OSPATH];
-	int	i;
+	int	i, key;
 
 	file_from_pak = 0;
 
@@ -762,7 +777,8 @@ size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 		if (search->pack)	/* look through all the pak file elements */
 		{
 			pak = search->pack;
-			for (i = 0; i < pak->numfiles; i++)
+			key = Hash_GenerateKeyString (&pak->hash, filename, true);
+			for (i = Hash_First(&pak->hash, key); i != -1; i = Hash_Next(&pak->hash, i))
 			{
 				if (strcmp(pak->files[i].name, filename) != 0)
 					continue;
@@ -1308,6 +1324,7 @@ void FS_Init (void)
 				{
 					fclose (fs_searchpaths->pack->handle);
 					Z_Free (fs_searchpaths->pack->files);
+					Hash_Free(&fs_searchpaths->pack->hash);
 					Z_Free (fs_searchpaths->pack);
 					Sys_Printf ("Removed packfile %s\n", fs_searchpaths->pack->filename);
 				}
