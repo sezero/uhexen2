@@ -386,6 +386,7 @@ OBJECTS = \
 	cvar.o \
 	mathlib.o \
 	zone.o \
+	hashindex.o \
 	$(SYSOBJ_NET) \
 	net_dgrm.o \
 	net_main.o \

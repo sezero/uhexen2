@@ -110,6 +110,7 @@ OBJECTS = &
 	cvar.obj &
 	mathlib.obj &
 	zone.obj &
+	hashindex.obj &
 	$(SYSOBJ_NET) &
 	net_dgrm.obj &
 	net_main.obj &

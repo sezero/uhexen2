@@ -362,6 +362,7 @@ OBJECTS = \
 	host_string.o \
 	mathlib.o \
 	zone.o \
+	hashindex.o \
 	huffman.o \
 	net_udp.o \
 	net_chan.o \

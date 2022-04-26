@@ -114,6 +114,7 @@ OBJECTS = &
 	host_string.obj &
 	mathlib.obj &
 	zone.obj &
+	hashindex.obj &
 	huffman.obj &
 	net_udp.obj &
 	net_chan.obj &
