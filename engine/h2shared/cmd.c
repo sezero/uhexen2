@@ -659,6 +659,31 @@ qboolean Cmd_CheckCommand (const char *partial)
 
 /*
 ============
+Cmd_MoveToFront
+============
+*/
+void Cmd_MoveToFront (const char *cmd_name)
+{
+	cmd_function_t	*cmd;
+	cmd_function_t	*cmd_next;
+
+	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
+	{
+		cmd_next = cmd->next;
+		if ( cmd_next && !strcmp(cmd_name, cmd_next->name) )
+		{
+			// remove from the list
+			cmd->next = cmd_next->next;
+			// move to the front
+			cmd_next->next = cmd_functions;
+			cmd_functions = cmd_next;
+			break;
+		}
+	}
+}
+
+/*
+============
 Cmd_ExecuteString
 
 A complete command line has been parsed, so try to execute it

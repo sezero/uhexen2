@@ -93,6 +93,9 @@ qboolean Cmd_CheckCommand (const char *partial);
 // attempts to match a given text to known commands, cvars or aliases
 // returns true if there is an exact match, false otherwise
 
+void Cmd_MoveToFront (const char *cmd_name);
+// move commands to the head of the list for faster access
+
 int		Cmd_Argc (void);
 const char	*Cmd_Argv (int arg);
 const char	*Cmd_Args (void);

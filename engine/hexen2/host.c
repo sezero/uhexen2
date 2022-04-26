@@ -1052,6 +1052,12 @@ void Host_Init (void)
 
 	CFG_CloseConfig();
 
+// move commands and cvars used by progs to the front for faster access
+	Cmd_MoveToFront ("bf");
+	Cvar_MoveToFront ("teamplay");
+	Cvar_MoveToFront ("skill");
+	Cvar_MoveToFront ("registered");
+
 #ifdef GLQUAKE
 /* analogous to host_hunklevel, this will mark OpenGL texture
  * beyond which everything will need to be purged on new map */
