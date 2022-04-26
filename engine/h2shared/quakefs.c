@@ -259,7 +259,7 @@ Takes a path to a pak file.  Loads the header and directory.
 static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_fs)
 {
 	dpackheader_t	header;
-	int	i, numpackfiles, key, hashSize;
+	int	i, numpackfiles, key;
 	pakfiles_t	*newfiles;
 	pack_t		*pack;
 	FILE		*packhandle;
@@ -302,14 +302,6 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 
 	newfiles = (pakfiles_t *) Z_Malloc (numpackfiles * sizeof(pakfiles_t), Z_MAINZONE);
 
-	/* get the hash table size from the number of files in the pak */
-	for (i = 1; i <= MAX_FILES_IN_PACK; i <<= 1)
-	{
-		if (i > numpackfiles)
-			break;
-	}
-	hashSize = i;
-
 	fseek (packhandle, header.dirofs, SEEK_SET);
 	fread (info,  1, header.dirlen, packhandle);
 
@@ -324,7 +316,13 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 	else	gameflags |= GAME_MODIFIED;
 
 	pack = (pack_t *) Z_Malloc (sizeof(pack_t), Z_MAINZONE);
-	Hash_Allocate(&pack->hash, hashSize);
+	/* get the hash table size from the number of files in the pak */
+	for (i = 1; i < MAX_FILES_IN_PACK; i <<= 1)
+	{
+		if (i > numpackfiles)
+			break;
+	}
+	Hash_Allocate(&pack->hash, i);
 
 	/* parse the directory */
 	for (i = 0; i < numpackfiles; i++)
