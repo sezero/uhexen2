@@ -1075,6 +1075,25 @@ static void Mod_SetDrawingFlags(msurface_t *out)
 
 		return;
 	}
+
+	if (!strncmp(out->texinfo->texture->name, "rtex", 4))	// solid color
+	{
+		texture_t	*texture;
+		byte	*pixels;
+		int		size;
+
+		texture = out->texinfo->texture;
+		pixels = (byte *)texture + texture->offsets[0];
+		size = texture->width * texture->height;
+
+		for (i = 1; i < size; i++)
+		{
+			if (pixels[i] != pixels[0])
+				break;
+		}
+		if (i == size && !texture->anim_total)
+			out->flags |= SURF_DRAWSOLID;
+	}
 }
 
 

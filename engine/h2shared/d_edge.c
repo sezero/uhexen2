@@ -115,6 +115,43 @@ static void D_DrawSolidSurface (surf_t *surf, int color)
 
 /*
 ==============
+D_DrawSolidSurfaceT
+==============
+*/
+static void D_DrawSolidSurfaceT (surf_t *surf, int color)
+{
+	espan_t	*pspan;
+	byte	*pdest;
+	short	*pz;
+	int		izi, izistep, count;
+	float	zi, dv, du;
+
+	izistep = (int)(d_zistepu * 0x8000 * 0x10000);
+	for (pspan = surf->spans ; pspan ; pspan = pspan->pnext)
+	{
+		pdest = (byte *)d_viewbuffer + screenwidth*pspan->v + pspan->u;
+		pz = d_pzbuffer + (d_zwidth * pspan->v) + pspan->u;
+		count = pspan->count;
+		du = (float)pspan->u;
+		dv = (float)pspan->v;
+		zi = d_ziorigin + dv*d_zistepv + du*d_zistepu;
+		izi = (int)(zi * 0x8000 * 0x10000);
+		do
+		{
+			if (*pz <= (izi >> 16))
+			{
+				*pdest = mainTransTable[(color<<8) + (*pdest)];
+			}
+			izi += izistep;
+			pdest++;
+			pz++;
+		} while (--count > 0);
+	}
+}
+
+
+/*
+==============
 D_CalcGradients
 ==============
 */
@@ -335,6 +372,15 @@ void D_DrawSurfaces (qboolean Translucent)
 						R_TransformFrustum ();
 					}
 				}
+				else if (s->flags & SURF_DRAWSOLID)
+				{
+					byte *pixels;
+					pface = (msurface_t *) s->data;
+					pixels = ((byte *)pface->texinfo->texture +
+							pface->texinfo->texture->offsets[0]);
+					D_DrawSolidSurface (s, pixels[0]);
+					D_DrawZSpans (s->spans);
+				}
 				else
 				{
 					if (s->insubmodel)
@@ -455,6 +501,15 @@ void D_DrawSurfaces (qboolean Translucent)
 						VectorCopy (base_modelorg, modelorg);
 						R_TransformFrustum ();
 					}
+				}
+				else if (s->flags & SURF_DRAWSOLID)
+				{
+					byte *pixels;
+					pface = (msurface_t *) s->data;
+					pixels = ((byte *)pface->texinfo->texture +
+							pface->texinfo->texture->offsets[0]);
+					D_DrawSolidSurfaceT (s, pixels[0]);
+				//	D_DrawZSpans (s->spans);
 				}
 				else
 				{

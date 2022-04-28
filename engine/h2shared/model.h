@@ -87,6 +87,7 @@ typedef struct texture_s
 #define SURF_DRAWBACKGROUND	0x40
 #define SURF_TRANSLUCENT	0x80	/* r_edge.asm checks this */
 #define SURF_DRAWBLACK		0x100
+#define SURF_DRAWSOLID		0x200
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct
