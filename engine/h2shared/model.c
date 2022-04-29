@@ -1076,23 +1076,21 @@ static void Mod_SetDrawingFlags(msurface_t *out)
 		return;
 	}
 
+	if (out->texinfo->texture->anim_total)
+		return;
+	// BSzili: for D_DrawSolidSurface optimization:
 	if (!strncmp(out->texinfo->texture->name, "rtex", 4))	// solid color
 	{
-		texture_t	*texture;
-		byte	*pixels;
-		int		size;
-
-		texture = out->texinfo->texture;
-		pixels = (byte *)texture + texture->offsets[0];
-		size = texture->width * texture->height;
+		const texture_t *texture = out->texinfo->texture;
+		const byte *pixels = (byte *)texture + texture->offsets[0];
+		const int size = texture->width * texture->height;
 
 		for (i = 1; i < size; i++)
 		{
 			if (pixels[i] != pixels[0])
-				break;
+				return;
 		}
-		if (i == size && !texture->anim_total)
-			out->flags |= SURF_DRAWSOLID;
+		out->flags |= SURF_DRAWSOLID;
 	}
 }
 

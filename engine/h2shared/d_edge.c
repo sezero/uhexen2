@@ -21,6 +21,7 @@
 
 #include "quakedef.h"
 #include "d_local.h"
+#include "r_local.h"
 
 static int	miplevel;
 
@@ -372,15 +373,6 @@ void D_DrawSurfaces (qboolean Translucent)
 						R_TransformFrustum ();
 					}
 				}
-				else if (s->flags & SURF_DRAWSOLID)
-				{
-					byte *pixels;
-					pface = (msurface_t *) s->data;
-					pixels = ((byte *)pface->texinfo->texture +
-							pface->texinfo->texture->offsets[0]);
-					D_DrawSolidSurface (s, pixels[0]);
-					D_DrawZSpans (s->spans);
-				}
 				else
 				{
 					if (s->insubmodel)
@@ -397,18 +389,38 @@ void D_DrawSurfaces (qboolean Translucent)
 					}
 
 					pface = (msurface_t *) s->data;
-					miplevel = D_MipLevelForScale (s->nearzi * scale_for_mip
-									* pface->texinfo->mipadjust);
+					if ((s->flags & SURF_DRAWSOLID) &&
+						((s->entity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT || !pface->samples))
+					{
+						byte *pixels = ((byte *)pface->texinfo->texture +
+							pface->texinfo->texture->offsets[0]);
+						int light;
+						if (!r_fullbright.integer)
+						{
+							if ((s->entity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
+								light = s->entity->abslight;
+							else
+								light = r_refdef.ambientlight;
+						}
+						else
+							light = 255;
+						D_DrawSolidSurface (s, ((unsigned char *)vid.colormap)[(((255-light)<<VID_CBITS) & 0xFF00) + pixels[0]]);
+					}
+					else
+					{
+						miplevel = D_MipLevelForScale (s->nearzi * scale_for_mip
+										* pface->texinfo->mipadjust);
 
-				// FIXME: make this passed in to D_CacheSurface
-					pcurrentcache = D_CacheSurface (pface, miplevel);
+					// FIXME: make this passed in to D_CacheSurface
+						pcurrentcache = D_CacheSurface (pface, miplevel);
 
-					cacheblock = (pixel_t *)pcurrentcache->data;
-					cachewidth = pcurrentcache->width;
+						cacheblock = (pixel_t *)pcurrentcache->data;
+						cachewidth = pcurrentcache->width;
 
-					D_CalcGradients (pface);
+						D_CalcGradients (pface);
 
-					(*d_drawspans) (s->spans);
+						(*d_drawspans) (s->spans);
+					}
 
 					D_DrawZSpans (s->spans);
 
@@ -502,15 +514,6 @@ void D_DrawSurfaces (qboolean Translucent)
 						R_TransformFrustum ();
 					}
 				}
-				else if (s->flags & SURF_DRAWSOLID)
-				{
-					byte *pixels;
-					pface = (msurface_t *) s->data;
-					pixels = ((byte *)pface->texinfo->texture +
-							pface->texinfo->texture->offsets[0]);
-					D_DrawSolidSurfaceT (s, pixels[0]);
-				//	D_DrawZSpans (s->spans);
-				}
 				else
 				{
 					if (s->insubmodel)
@@ -527,23 +530,43 @@ void D_DrawSurfaces (qboolean Translucent)
 					}
 
 					pface = (msurface_t *) s->data;
-					miplevel = D_MipLevelForScale (s->nearzi * scale_for_mip
-									* pface->texinfo->mipadjust);
+					if ((s->flags & SURF_DRAWSOLID) &&
+						((s->entity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT || !pface->samples))
+					{
+						byte *pixels = ((byte *)pface->texinfo->texture +
+							pface->texinfo->texture->offsets[0]);
+						int light;
+						if (!r_fullbright.integer)
+						{
+							if ((s->entity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
+								light = s->entity->abslight;
+							else
+								light = r_refdef.ambientlight;
+						}
+						else
+							light = 255;
+						D_DrawSolidSurfaceT (s, ((unsigned char *)vid.colormap)[(((255-light)<<VID_CBITS) & 0xFF00) + pixels[0]]);
+					}
+					else
+					{
+						miplevel = D_MipLevelForScale (s->nearzi * scale_for_mip
+										* pface->texinfo->mipadjust);
 
-				// FIXME: make this passed in to D_CacheSurface
-					pcurrentcache = D_CacheSurface (pface, miplevel);
+					// FIXME: make this passed in to D_CacheSurface
+						pcurrentcache = D_CacheSurface (pface, miplevel);
 
-					cacheblock = (pixel_t *)pcurrentcache->data;
-					cachewidth = pcurrentcache->width;
+						cacheblock = (pixel_t *)pcurrentcache->data;
+						cachewidth = pcurrentcache->width;
 
-					D_CalcGradients (pface);
+						D_CalcGradients (pface);
 
-				//	(*d_drawspans) (s->spans);
+					//	(*d_drawspans) (s->spans);
 #if id386 || id68k
-					D_DrawSpans16T(s->spans);
+						D_DrawSpans16T(s->spans);
 #else
-					D_DrawSpans8T(s->spans);
+						D_DrawSpans8T(s->spans);
 #endif
+					}
 
 				//	D_DrawZSpans (s->spans);
 
