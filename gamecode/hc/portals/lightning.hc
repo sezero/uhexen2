@@ -67,8 +67,8 @@ LightningDamage
 
 void (vector endpos) ThroughWaterZap =
 {
-	entity waterloser, attacker;
-	float damg;
+entity waterloser, attacker;
+float damg;
 	waterloser = spawn();
 	setorigin (waterloser, endpos);
 	if(self.classname=="mjolnir")
@@ -90,15 +90,16 @@ void (vector endpos) ThroughWaterZap =
 void (vector startpos) ThroughWater =
 {
 vector endpos;
-float mover;
+float mover,content;
 	mover = 600;
     while (mover)
     {
         mover = mover - 10;
         endpos = startpos + v_forward * mover;
-        if (pointcontents(endpos) == CONTENT_WATER || pointcontents(endpos) == CONTENT_SLIME)
+        content = pointcontents(endpos);
+        if (content == CONTENT_WATER || content == CONTENT_SLIME)
                 ThroughWaterZap(endpos);
-        else if (pointcontents(endpos) == CONTENT_SOLID)
+        else if (content == CONTENT_SOLID)
                 return;
     }
 };
@@ -108,7 +109,6 @@ void do_lightning_dam (entity from, float damage, string type)
 vector loser_org;
 	if((trace_ent.classname=="buddha_shield"||trace_ent.classname=="monster_buddha")&&from.classname=="monster_buddha"&&type=="lightning")
 		return;
-	
 	if((trace_ent.classname=="monster_eidolon"||trace_ent.classname=="obj_chaos_orb")&&type=="lightning")
 		return;
 
@@ -117,7 +117,7 @@ vector loser_org;
 //		spawnshockball((trace_ent.absmax+trace_ent.absmin)*0.5);
 		starteffect(CE_LSHOCK,(trace_ent.absmax+trace_ent.absmin)*0.5);
 	loser_org=trace_ent.origin;
-    T_Damage (trace_ent, from, from, damage);
+	T_Damage (trace_ent, from, from, damage);
 	if(trace_ent.health<=0)
 		smolder(loser_org);
 	if(type=="lightning")
@@ -128,9 +128,10 @@ vector loser_org;
 
 void(vector p1, vector p2, entity from, float damage,string type) LightningDamage =
 {
-entity	e1, e2;// swap;
+entity	e1, e2;
 vector	f;
-float	inertia;//absorb;
+float	inertia;
+float	content;
 	f = p2 - p1;
 	normalize (f);
 	f_x = 0 - f_y;
@@ -141,42 +142,43 @@ float	inertia;//absorb;
 	e1 = e2 = world;
 
 	traceline (p1, p2, FALSE, self);
+	content = pointcontents(trace_endpos);
 
-        if(type=="lightning"&&(pointcontents(trace_endpos) == CONTENT_WATER || pointcontents(trace_endpos) == CONTENT_SLIME))
-			ThroughWaterZap(trace_endpos);
-        else if(type=="lightning"&&(trace_ent.watertype == CONTENT_WATER || trace_ent.watertype == CONTENT_SLIME))
-			T_RadiusDamageWater (self, self, 666*2,self);
-		else if(self.classname=="mjolnir"&&trace_ent==self.controller)
-			bprint("");
-        else if (trace_ent.takedamage)
+	if(type=="lightning"&&(content == CONTENT_WATER || content == CONTENT_SLIME))
+		ThroughWaterZap(trace_endpos);
+	else if(type=="lightning"&&(trace_ent.watertype == CONTENT_WATER || trace_ent.watertype == CONTENT_SLIME))
+		T_RadiusDamageWater (self, self, 666*2,self);
+	else if(self.classname=="mjolnir"&&trace_ent==self.controller)
+		bprint("");
+	else if (trace_ent.takedamage)
+	{
+		if (trace_ent.mass<=10)
+			inertia=1;
+		else
+			inertia = trace_ent.mass/10;
+		do_lightning_dam(from,damage,type);
+		if (self.classname=="mjolnir"&&(trace_ent.flags&FL_ONGROUND)&&type=="lightning")
 		{
-			if (trace_ent.mass<=10)
-				inertia=1;
-			else 
-				inertia = trace_ent.mass/10;
-			do_lightning_dam(from,damage,type);
-            if (self.classname=="mjolnir"&&(trace_ent.flags&FL_ONGROUND)&&type=="lightning")
-            {
-	            trace_ent.velocity_z = trace_ent.velocity_z + 400/inertia;
-	            trace_ent.flags(-)FL_ONGROUND;
-            }
+		  trace_ent.velocity_z = trace_ent.velocity_z + 400/inertia;
+		  trace_ent.flags(-)FL_ONGROUND;
 		}
-        else if(type=="lightning") 
-			ThroughWater(p1);
+	}
+	else if(type=="lightning") 
+		ThroughWater(p1);
 
-        e1 = trace_ent;
-		traceline (p1 + f, p2 + f, FALSE, self);
-		if(self.classname=="mjolnir"&&trace_ent==self.controller)
-			bprint("");
-        else if(trace_ent != e1 && trace_ent.takedamage)
-			do_lightning_dam(from,damage,type);
+	e1 = trace_ent;
+	traceline (p1 + f, p2 + f, FALSE, self);
+	if(self.classname=="mjolnir"&&trace_ent==self.controller)
+		bprint("");
+	else if(trace_ent != e1 && trace_ent.takedamage)
+		do_lightning_dam(from,damage,type);
 
-		e2 = trace_ent;
-		traceline (p1 - f, p2 - f, FALSE, self);
-		if(self.classname=="mjolnir"&&trace_ent==self.controller)
-			bprint("");
-        else if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage)
-			do_lightning_dam(from,damage,type);
+	e2 = trace_ent;
+	traceline (p1 - f, p2 - f, FALSE, self);
+	if(self.classname=="mjolnir"&&trace_ent==self.controller)
+		bprint("");
+	else if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage)
+		do_lightning_dam(from,damage,type);
 };
 
 void do_lightning (entity lowner,float tag, float lflags, float duration, vector spot1, vector spot2, float ldamg,float te_type)

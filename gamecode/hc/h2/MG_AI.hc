@@ -273,6 +273,8 @@ float jump_height, jumpup, ignore_height;
 
 	if(!jumpup)
 	{
+		float content;
+
 //		spot1+=normalize(v_forward)*((self.maxs_x+self.maxs_y)*0.5);
 		spot1+=jumpdir*((self.maxs_x+self.maxs_y)*0.5);
 
@@ -285,8 +287,8 @@ float jump_height, jumpup, ignore_height;
 		}
 
 		traceline(spot1,spot1+jumpdir*64 - '0 0 500',FALSE,self);
-
-		if(pointcontents(trace_endpos)==CONTENT_WATER||pointcontents(trace_endpos)==CONTENT_SLIME||pointcontents(trace_endpos)==CONTENT_LAVA)
+		content=pointcontents(trace_endpos);
+		if(content==CONTENT_WATER||content==CONTENT_SLIME||content==CONTENT_LAVA)
 		{
 //			dprint("won't jump in water\n");
 			return FALSE;

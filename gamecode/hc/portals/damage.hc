@@ -1217,7 +1217,8 @@ vector	org;
 		{
 			if (head.takedamage)
 			{
-				if (pointcontents(head.origin) == CONTENT_WATER || pointcontents(head.origin) == CONTENT_SLIME) //  visible(inflictor)?
+				points=pointcontents(head.origin);
+				if (points == CONTENT_WATER || points == CONTENT_SLIME) //  visible(inflictor)?
 				{
 					if (head.classname == "player" && head != attacker)
 						head.enemy = attacker;

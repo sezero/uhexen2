@@ -135,6 +135,7 @@ void obj_push()
 {//MG
 vector pushdir,pushangle;
 float ontop,pushed,inertia,force,walkforce;
+float content;
 
 	if(other.solid==SOLID_PHASE||other.movetype==MOVETYPE_FLYMISSILE||other.movetype==MOVETYPE_BOUNCEMISSILE)
 		return;
@@ -204,7 +205,8 @@ float ontop,pushed,inertia,force,walkforce;
 	else
 		force=vlen(other.velocity);
 
-	if(pointcontents(self.origin)==CONTENT_WATER||pointcontents(self.origin)==CONTENT_SLIME||pointcontents(self.origin)==CONTENT_LAVA)
+	content=pointcontents(self.origin);
+	if(content==CONTENT_WATER||content==CONTENT_SLIME||content==CONTENT_LAVA)
 		force/=3;
 
 //FIXME: mass should determine how fast the object can be pushed
