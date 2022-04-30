@@ -1078,8 +1078,7 @@ void() obj_statue_mummy_head =
 
 	self.touch	= obj_push;
 	self.flags	(+) FL_PUSH;
-	self.drawflags += SCALE_ORIGIN_BOTTOM;
-
+	self.drawflags (+) SCALE_ORIGIN_BOTTOM;
 };
 
 /*QUAKED obj_statue_mummy (0.3 0.1 0.6) (-16 -16 0) (16 16 160)
@@ -1113,14 +1112,13 @@ void() obj_statue_mummy =
 	precache_model2 ("models/mumstatu.mdl");
 	CreateEntityNew(self,ENT_STATUE_MUMMY_BODY,"models/mumstatu.mdl",statue_death);
 
-	self.drawflags += SCALE_ORIGIN_BOTTOM;
+	self.drawflags (+) SCALE_ORIGIN_BOTTOM;
 
 	precache_model2 ("models/mhdstatu.mdl");
 	CreateEntityNew(head,ENT_STATUE_MUMMY_HEAD,"models/mhdstatu.mdl",statue_death);
 
 	head.health = self.health;	
-	head.drawflags += SCALE_ORIGIN_BOTTOM;
-
+	head.drawflags (+) SCALE_ORIGIN_BOTTOM;
 };
 
 
@@ -1149,7 +1147,7 @@ void obj_pot1 (void)
 
 	self.touch	= obj_push;
 	self.flags	(+) FL_PUSH;
-	self.drawflags += SCALE_ORIGIN_BOTTOM;
+	self.drawflags (+) SCALE_ORIGIN_BOTTOM;
 
 	if(self.targetname)
 		self.use=chunk_death;
@@ -1181,7 +1179,7 @@ void obj_pot2 (void)
 
 	self.touch	= obj_push;
 	self.flags	(+) FL_PUSH;
-	self.drawflags += SCALE_ORIGIN_BOTTOM;
+	self.drawflags (+) SCALE_ORIGIN_BOTTOM;
 
 	if(self.targetname)
 		self.use=chunk_death;
@@ -1212,7 +1210,7 @@ void obj_pot3 (void)
 
 	self.touch	= obj_push;
 	self.flags	(+) FL_PUSH;
-	self.drawflags += SCALE_ORIGIN_BOTTOM;
+	self.drawflags (+) SCALE_ORIGIN_BOTTOM;
 
 	if(self.targetname)
 		self.use=chunk_death;
@@ -1234,7 +1232,7 @@ void obj_statue_tut (void)
 
 	self.touch	= obj_push;
 	self.flags	(+) FL_PUSH;
-	self.drawflags += SCALE_ORIGIN_BOTTOM;
+	self.drawflags (+) SCALE_ORIGIN_BOTTOM;
 }
 
 /*QUAKED obj_flag (0.3 0.1 0.6) (-16 -16 0) (16 16 160)
@@ -1611,11 +1609,10 @@ void obj_cauldron (void)
 
 	self.touch	= obj_push;
 	self.flags	(+) FL_PUSH;
-	self.drawflags += SCALE_ORIGIN_BOTTOM;
+	self.drawflags (+) SCALE_ORIGIN_BOTTOM;
 	
 	self.think = cauldron_run;
 	self.nextthink = time + random(0.5,1.5);
-
 }
 
 /*QUAKED obj_skullstick (0.3 0.1 0.6) (-16 -16 0) (16 16 40)
@@ -1699,13 +1696,13 @@ void obj_ice (void)
 
 	self.use = chunk_death;
 
-	self.drawflags+=MLS_ABSLIGHT;
+	self.drawflags(+)MLS_ABSLIGHT;
 
 	if(!self.abslight)
 		self.abslight = 0.75;
 
 	if(!self.spawnflags&1)
-		self.drawflags+=DRF_TRANSLUCENT;
+		self.drawflags(+)DRF_TRANSLUCENT;
 
 	if(!self.health)
 		self.health = 20;
@@ -1755,8 +1752,7 @@ void obj_statue_lion(void)
 	precache_model2("models/lion.mdl");
 	CreateEntityNew(self,ENT_STATUE_LION,"models/lion.mdl",chunk_death);
 
-	self.drawflags += SCALE_ORIGIN_BOTTOM;
-
+	self.drawflags (+) SCALE_ORIGIN_BOTTOM;
 }
 
 /*QUAKED obj_statue_athena(0.3 0.1 0.6) (-30 -30 0) (30 30 90)
@@ -1771,8 +1767,7 @@ void obj_statue_athena (void)
 	precache_model2("models/athena.mdl");
 	CreateEntityNew(self,ENT_STATUE_ATHENA,"models/athena.mdl",chunk_death);
 
-	self.drawflags += SCALE_ORIGIN_BOTTOM;
-
+	self.drawflags (+) SCALE_ORIGIN_BOTTOM;
 }
 
 
@@ -1788,8 +1783,7 @@ void obj_statue_neptune (void)
 	precache_model2("models/neptune.mdl");
 	CreateEntityNew(self,ENT_STATUE_NEPTUNE,"models/neptune.mdl",chunk_death);
 
-	self.drawflags += SCALE_ORIGIN_BOTTOM;
-
+	self.drawflags (+) SCALE_ORIGIN_BOTTOM;
 }
 
 /*QUAKED obj_bonepile(0.3 0.1 0.6) (-10 -10 0) (10 10 10)
@@ -1805,7 +1799,7 @@ void obj_bonepile (void)
 
 	self.use = chunk_death;
 
-	self.drawflags += SCALE_ORIGIN_BOTTOM;
+	self.drawflags (+) SCALE_ORIGIN_BOTTOM;
 }
 
 /*QUAKED obj_statue_caesar(0.3 0.1 0.6) (-24 -24 0) (24 24 90)
@@ -1819,8 +1813,7 @@ void obj_statue_caesar (void)
 	precache_model2("models/caesar.mdl");
 	CreateEntityNew(self,ENT_STATUE_CAESAR,"models/caesar.mdl",chunk_death);
 
-	self.drawflags += SCALE_ORIGIN_BOTTOM;
-
+	self.drawflags (+) SCALE_ORIGIN_BOTTOM;
 }
 
 /*QUAKED obj_statue_snake_coil (0.3 0.1 0.6) (-44 -44 0) (44 44 90)
@@ -1835,8 +1828,7 @@ void obj_statue_snake_coil (void)
 	CreateEntityNew(self,ENT_STATUE_SNAKE_COIL,"models/snake.mdl",chunk_death);
 
 	self.scale = .5;
-	self.drawflags += SCALE_ORIGIN_BOTTOM;
-
+	self.drawflags (+) SCALE_ORIGIN_BOTTOM;
 }
 
 /*QUAKED obj_skull (0.3 0.1 0.6) (-8 -8 0) (8 8 16)
