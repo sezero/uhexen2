@@ -263,12 +263,12 @@ float IT_TESTWEAP					= 8;
 float IT_WEAPON4_1					= 16;		// First half of weapon
 float IT_WEAPON4_2					= 32;		// Second half of weapon
 
-
 // paladin weapons
-float IT_GAUNTLETS           = 4096;
+//float IT_GAUNTLETS           = 4096;
 
 
 // items
+/*
 float	IT_AXE						= 4096;
 float	IT_SHOTGUN					= 1;
 float	IT_SUPER_SHOTGUN			= 2;
@@ -278,18 +278,17 @@ float	IT_GRENADE_LAUNCHER			= 16;
 float	IT_ROCKET_LAUNCHER			= 32;
 float	IT_LIGHTNING				= 64;
 float	IT_EXTRA_WEAPON				= 128;
+*/
 
-
-float	IT_ARMOR1					= 8192;
-float	IT_ARMOR2					= 16384;
-float	IT_ARMOR3					= 32768;
+//float	IT_ARMOR1					= 8192;
+//float	IT_ARMOR2					= 16384;
+//float	IT_ARMOR3					= 32768;
 float	IT_SUPERHEALTH				= 65536;
 
-
 float	IT_INVISIBILITY			= 524288;
-float	IT_INVULNERABILITY		= 1048576;
-float	IT_SUIT						= 2097152;
-float	IT_QUAD						= 4194304;
+//float	IT_INVULNERABILITY		= 1048576;
+//float	IT_SUIT						= 2097152;
+//float	IT_QUAD						= 4194304;
 
 // rings - amount of time they work
 float FLIGHT_TIME					= 30;
@@ -299,7 +298,7 @@ float REGEN_TIME					= 30;
 float TURNING_TIME					= 30;
 
 // artifacts - amount of time they work
-float HASTE_TIME				= 15;
+//float HASTE_TIME				= 15;
 float TOME_TIME					= 30;
 
 float RESPAWN_TIME				= 30;
@@ -322,9 +321,9 @@ float BLAST_RADIUS				= 200;
 float BLASTDAMAGE				= 2; 
 
 // Damage values for attacks from monsters
-float DMG_ARCHER_PUNCH			= 4;
+//float DMG_ARCHER_PUNCH			= 4;
 float DMG_MUMMY_PUNCH			= 8;
-float DMG_MUMMY_BITE 			= 2;
+//float DMG_MUMMY_BITE 			= 2;
 
 
 //Thing Types
@@ -575,10 +574,10 @@ float	ATTN_STATIC					= 3;
 float	ATTN_LOOP					= 4;//Sound will start on client even if volume is 0- so if player comes into range, it will be playing- attenuates like ATTN_NORM
 
 // update types
-float	UPDATE_GENERAL				= 0;
-float	UPDATE_STATIC				= 1;
-float	UPDATE_BINARY				= 2;
-float	UPDATE_TEMP					= 3;
+//float	UPDATE_GENERAL				= 0;
+//float	UPDATE_STATIC				= 1;
+//float	UPDATE_BINARY				= 2;
+//float	UPDATE_TEMP					= 3;
 
 
 // entity effects
@@ -642,7 +641,7 @@ float   MULTICAST_ALL_R = 3;            // every client, reliable
 float   MULTICAST_PHS_R = 4;            // within hearing, reliable
 float   MULTICAST_PVS_R = 5;            // within sight, reliable
 
-float STEP_HEIGHT					= 18;		// Max step height
+//float STEP_HEIGHT					= 18;		// Max step height
 
 // monster AI states
 float AI_DECIDE						=    0;		// An action was just finished - time to decide what to do
@@ -671,10 +670,10 @@ float MAX_LEVELS = 10;
 
 
 // server flags
-float	SFL_EPISODE_1		= 1;
-float	SFL_EPISODE_2		= 2;
-float	SFL_EPISODE_3		= 4;
-float	SFL_EPISODE_4		= 8;
+//float	SFL_EPISODE_1		= 1;
+//float	SFL_EPISODE_2		= 2;
+//float	SFL_EPISODE_3		= 4;
+//float	SFL_EPISODE_4		= 8;
 float	SFL_NEW_UNIT		= 16;
 float	SFL_NEW_EPISODE		= 32;
 // = 64;
@@ -687,9 +686,9 @@ float	SFL_CROSS_TRIGGER_5	= 4096;
 float	SFL_CROSS_TRIGGER_6	= 8192;
 float	SFL_CROSS_TRIGGER_7	= 16384;
 float	SFL_CROSS_TRIGGER_8	= 32768;
-
 float	SFL_CROSS_TRIGGERS	= 65280;
-float attck_cnt;
+
+//float attck_cnt;
 
 float WF_NORMAL_ADVANCE = 0;		// States when using advanceweaponframe
 float WF_CYCLE_STARTED = 1;

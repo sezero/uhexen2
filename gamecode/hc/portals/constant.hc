@@ -267,7 +267,6 @@ float IT_WEAPON4					= 4;
 float IT_WEAPON4_1					= 16;		// First half of weapon
 float IT_WEAPON4_2					= 32;		// Second half of weapon
 
-
 // paladin weapons
 //float IT_GAUNTLETS           = 4096;
 
@@ -289,7 +288,6 @@ float	IT_EXTRA_WEAPON				= 128;
 //float	IT_ARMOR2					= 16384;
 //float	IT_ARMOR3					= 32768;
 //float	IT_SUPERHEALTH				= 65536;
-
 
 float	IT_INVISIBILITY			= 524288;
 //float	IT_INVULNERABILITY		= 1048576;
@@ -581,8 +579,8 @@ float	SFL_CROSS_TRIGGER_5	= 4096;
 float	SFL_CROSS_TRIGGER_6	= 8192;
 float	SFL_CROSS_TRIGGER_7	= 16384;
 float	SFL_CROSS_TRIGGER_8	= 32768;
-
 float	SFL_CROSS_TRIGGERS	= 65280;
+
 //float attck_cnt;
 
 float WF_NORMAL_ADVANCE = 0;		// States when using advanceweaponframe
