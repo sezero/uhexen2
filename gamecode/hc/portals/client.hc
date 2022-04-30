@@ -2838,17 +2838,33 @@ string deathstring, deathstring2,iclass;
 					bprint (" was savagely mauled by a sheep!\n");
 				else
 					bprint (" says 'HELLO DOLLY!'\n");
+				return;
 			}
 			if (attacker.netname=="monster_archer_ice")
+			{
 				bprint (" got the cold shoulder from the Tulku Archer!\n");
-			else if (attacker.classname == "monster_archer")
+				return;
+			}
+			if (attacker.classname == "monster_archer")
+			{
 				bprint (" was skewered by an Archer!\n");
+				return;
+			}
 			if (attacker.classname == "monster_archer_lord")
+			{
 				bprint (" got Horshacked!\n");
+				return;
+			}
 			if (attacker.classname == "monster_fallen_angel")
+			{
 				bprint (" was felled by the Fallen Angel\n");
+				return;
+			}
 			if (attacker.classname == "monster_fallen_angel_lord")
+			{
 				bprint (" was decimated by a Fallen Angel Lord!\n");
+				return;
+			}
 			if (attacker.classname == "monster_golem_bronze")
 			{
 				if(targ.decap==1)
@@ -2857,6 +2873,7 @@ string deathstring, deathstring2,iclass;
 					bprint (" became a permanent stain on the wall!\n");
 				else
 					bprint (" was squished like an insect by a Bronze Golem!\n");
+				return;
 			}
 			if (attacker.classname == "monster_golem_iron")
 			{
@@ -2866,6 +2883,7 @@ string deathstring, deathstring2,iclass;
 					bprint ("'s brains make nice wall decorations!\n");
 				else
 					bprint (" was crushed by the Iron Golem's fist!\n");
+				return;
 			}
 			if (attacker.classname == "monster_golem_stone")
 			{
@@ -2873,21 +2891,35 @@ string deathstring, deathstring2,iclass;
 					bprint (" is feeling a little light-headed!\n");
 				else
 					bprint (" was pummeled by a Stone Golem!\n");
+				return;
 			}
 			if (attacker.classname == "monster_golem_crystal")
+			{
 				bprint (" was mangled by the Enchanted Crystal Golem!\n");
+				return;
+			}
 			if (attacker.classname == "monster_hydra")
+			{
 				bprint (" becomes food for the Hydra!\n");
+				return;
+			}
 			if (attacker.classname == "monster_imp_fire")
+			{
 				bprint (" was roasted by a Fire Imp!\n");
+				return;
+			}
 			if (attacker.classname == "monster_imp_ice")
+			{
 				bprint (" chills out with the Ice Imps!\n");
+				return;
+			}
 			if (attacker.classname == "monster_medusa")
 			{
 				if (attacker.skin==1)
 					bprint (" was stricken by the beauty of the Crimson Medusa!\n");
 				else
 					bprint (" is helpless in the face of the Medusa's beauty!\n");
+				return;
 			}
 			if (attacker.classname == "monster_mezzoman")
 			{
@@ -2899,29 +2931,63 @@ string deathstring, deathstring2,iclass;
 					bprint (" is not yet worthy of facing the WerePanther!\n");
 				else
 					bprint (" is no match for the WereJaguar!\n");
+				return;
 			}
 			if (attacker.classname == "monster_mummy")
+			{
 				bprint (" got mummified!\n");
+				return;
+			}
 			if (attacker.classname == "monster_mummy_lord")
+			{
 				bprint (" was escorted to the Underworld by a Mummy Lord!\n");
+				return;
+			}
 			if (attacker.classname == "monster_scorpion_black")
+			{
 				bprint (" submits to the sting of the Black Scorpion!\n");
+				return;
+			}
 			if (attacker.classname == "monster_scorpion_yellow")
+			{
 				bprint (" was poisoned by the fatal Golden Scorpion!\n");
+				return;
+			}
 			if (attacker.classname == "monster_skull_wizard")
+			{
 				bprint (" succumbed to the Skull Wizard's magic!\n");
+				return;
+			}
 			if (attacker.classname == "monster_skull_wizard_lord")
+			{
 				bprint (" was Skull-duggeried!\n");
+				return;
+			}
 			if (attacker.classname == "monster_snake")
+			{
 				bprint (" was bitten by the lethal Cobra!\n");
+				return;
+			}
 			if (attacker.classname == "monster_spider_red_large")
+			{
 				bprint (" was overcome by the Crimson Spiders!\n");
+				return;
+			}
 			if (attacker.classname == "monster_spider_red_small")
+			{
 				bprint (" was eaten alive by the spiders!\n");
+				return;
+			}
 			if (attacker.classname == "monster_spider_yellow_large")
+			{
 				bprint (" was overwhelmed by the Golden Spiders!\n");
+				return;
+			}
 			if (attacker.classname == "monster_spider_yellow_small")
+			{
 				bprint (" is a meal for the spiders!\n");
+				return;
+			}
 			if (attacker.classname == "monster_yakman")
 			{
 				if(targ.frozen>0)
@@ -2930,9 +2996,13 @@ string deathstring, deathstring2,iclass;
 					bprint (" was taken down by the Yakman!\n");
 				else
 					bprint (" got gored by the Yakman!\n");
+				return;
 			}
 			if (attacker.classname == "monster_pentacles")
+			{
 				bprint (" was humbled by the pentacles!\n");
+				return;
+			}
 			if (attacker.classname == "monster_buddha")
 			{
 				if (inflictor==attacker)
@@ -2943,9 +3013,13 @@ string deathstring, deathstring2,iclass;
 					bprint (" couldn't take the heat of Praevus' pillars of fire!\n");
 				else if (inflictor.classname=="buddha_missile")
 					bprint (" was tracked down by Praevus' spinning stars of death!\n");
+				return;
 			}
 			if (attacker.classname == "rider_famine")
+			{
 				bprint(" was drained of life-force by Famine!\n");
+				return;
+			}
 			if (attacker.classname == "rider_death")
 			{
 				if(inflictor==attacker)
@@ -2956,6 +3030,7 @@ string deathstring, deathstring2,iclass;
 					bprint(" was shot down by Death's crimson bolts!\n");
 				else
 					bprint(" was smitten by Death's unholy fire\n");
+				return;
 			}
 			if (attacker.classname == "rider_pestilence")
 			{
@@ -2963,9 +3038,13 @@ string deathstring, deathstring2,iclass;
 					bprint(" was poisoned to death by Pestilence's Crossbow!\n");
 				else
 					bprint("'s rotted corpse is the possession of Pestilence!\n");
+				return;
 			}
 			if (attacker.classname == "rider_war")
+			{
 				bprint(" was taught the true meaning of War!\n");
+				return;
+			}
 			if (attacker.classname == "monster_eidolon")
 			{
 				if(inflictor==attacker)

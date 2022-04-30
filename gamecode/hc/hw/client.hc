@@ -2812,15 +2812,28 @@ float deathstring, deathstring2;
 					selectprint (PRINT_MEDIUM, " was savagely mauled by a sheep!\n");
 				else
 					selectprint (PRINT_MEDIUM, " says 'HELLO DOLLY!'\n");
+				return;
 			}
 			if (attacker.classname == "monster_archer")
+			{
 				selectprint (PRINT_MEDIUM, " was skewered by an Archer!\n");
+				return;
+			}
 			if (attacker.classname == "monster_archer_lord")
+			{
 				selectprint (PRINT_MEDIUM, " got Horshacked!\n");
+				return;
+			}
 			if (attacker.classname == "monster_fallen_angel")
+			{
 				selectprint (PRINT_MEDIUM, " was felled by the Fallen Angel\n");
+				return;
+			}
 			if (attacker.classname == "monster_fallen_angel_lord")
+			{
 				selectprint (PRINT_MEDIUM, " was decimated by a Fallen Angel Lord!\n");
+				return;
+			}
 			if (attacker.classname == "monster_golem_bronze")
 			{
 				if(targ.decap==1)
@@ -2829,6 +2842,7 @@ float deathstring, deathstring2;
 					selectprint (PRINT_MEDIUM, " became a permanent stain on the wall!\n");
 				else
 					selectprint (PRINT_MEDIUM, " was squished like an insect by a Bronze Golem!\n");
+				return;
 			}
 			if (attacker.classname == "monster_golem_iron")
 			{
@@ -2838,6 +2852,7 @@ float deathstring, deathstring2;
 					selectprint (PRINT_MEDIUM, "'s brains make nice wall decorations!\n");
 				else
 					selectprint (PRINT_MEDIUM, " was crushed by the Iron Golem's fist!\n");
+				return;
 			}
 			if (attacker.classname == "monster_golem_stone")
 			{
@@ -2845,21 +2860,35 @@ float deathstring, deathstring2;
 					selectprint (PRINT_MEDIUM, " is feeling a little light-headed!\n");
 				else
 					selectprint (PRINT_MEDIUM, " was pummeled by a Stone Golem!\n");
+				return;
 			}
 			if (attacker.classname == "monster_golem_crystal")
+			{
 				selectprint (PRINT_MEDIUM, " was mangled by the Enchanted Crystal Golem!\n");
+				return;
+			}
 			if (attacker.classname == "monster_hydra")
+			{
 				selectprint (PRINT_MEDIUM, " becomes food for the Hydra!\n");
+				return;
+			}
 			if (attacker.classname == "monster_imp_fire")
+			{
 				selectprint (PRINT_MEDIUM, " was roasted by a Fire Imp!\n");
+				return;
+			}
 			if (attacker.classname == "monster_imp_ice")
+			{
 				selectprint (PRINT_MEDIUM, " chills out with the Ice Imps!\n");
+				return;
+			}
 			if (attacker.classname == "monster_medusa")
 			{
 				if (attacker.skin==1)
 					selectprint (PRINT_MEDIUM, " was stricken by the beauty of the Crimson Medusa!\n");
 				else
 					selectprint (PRINT_MEDIUM, " is helpless in the face of the Medusa's beauty!\n");
+				return;
 			}
 			if (attacker.classname == "monster_mezzoman")
 			{
@@ -2867,31 +2896,68 @@ float deathstring, deathstring2;
 					selectprint (PRINT_MEDIUM, " is not yet worthy of facing the WerePanther!\n");
 				else
 					selectprint (PRINT_MEDIUM, " is no match for the WereJaguar!\n");
+				return;
 			}
 			if (attacker.classname == "monster_mummy")
+			{
 				selectprint (PRINT_MEDIUM, " got mummified!\n");
+				return;
+			}
 			if (attacker.classname == "monster_mummy_lord")
+			{
 				selectprint (PRINT_MEDIUM, " was escorted to the Underworld by a Mummy Lord!\n");
+				return;
+			}
 			if (attacker.classname == "monster_scorpion_black")
+			{
 				selectprint (PRINT_MEDIUM, " submits to the sting of the Black Scorpion!\n");
+				return;
+			}
 			if (attacker.classname == "monster_scorpion_yellow")
+			{
 				selectprint (PRINT_MEDIUM, " was poisoned by the fatal Golden Scorpion!\n");
+				return;
+			}
 			if (attacker.classname == "monster_skull_wizard")
+			{
 				selectprint (PRINT_MEDIUM, " succumbed to the Skull Wizard's magic!\n");
+				return;
+			}
 			if (attacker.classname == "monster_skull_wizard_lord")
+			{
 				selectprint (PRINT_MEDIUM, " was Skull-duggeried!\n");
+				return;
+			}
 			if (attacker.classname == "monster_snake")
+			{
 				selectprint (PRINT_MEDIUM, " was bitten by the lethal Cobra!\n");
+				return;
+			}
 			if (attacker.classname == "monster_spider_red_large")
+			{
 				selectprint (PRINT_MEDIUM, " was overcome by the Crimson Spiders!\n");
+				return;
+			}
 			if (attacker.classname == "monster_spider_red_small")
+			{
 				selectprint (PRINT_MEDIUM, " was eaten alive by the spiders!\n");
+				return;
+			}
 			if (attacker.classname == "monster_spider_yellow_large")
+			{
 				selectprint (PRINT_MEDIUM, " was overwhelmed by the Golden Spiders!\n");
+				return;
+			}
 			if (attacker.classname == "monster_spider_yellow_small")
+			{
 				selectprint (PRINT_MEDIUM, " is a meal for the spiders!\n");
+				return;
+			}
 			if (attacker.classname == "rider_famine")
+			{
 				selectprint(PRINT_MEDIUM, " was drained of life-force by Famine!\n");
+				return;
+			}
 			if (attacker.classname == "rider_death")
 			{
 				if(inflictor==attacker)
@@ -2902,6 +2968,7 @@ float deathstring, deathstring2;
 					selectprint(PRINT_MEDIUM, " was shot down by Death's crimson bolts!\n");
 				else
 					selectprint(PRINT_MEDIUM, " was smitten by Death's unholy fire\n");
+				return;
 			}
 			if (attacker.classname == "rider_pestilence")
 			{
@@ -2909,9 +2976,13 @@ float deathstring, deathstring2;
 					selectprint(PRINT_MEDIUM, " was poisoned to death by Pestilence's Crossbow!\n");
 				else
 					selectprint(PRINT_MEDIUM, "'s rotted corpse is the possession of Pestilence!\n");
+				return;
 			}
 			if (attacker.classname == "rider_war")
+			{
 				selectprint(PRINT_MEDIUM, " was taught the true meaning of War!\n");
+				return;
+			}
 			if (attacker.classname == "monster_eidolon")
 			{
 				if(inflictor==attacker)
