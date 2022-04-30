@@ -326,6 +326,10 @@ void() ImpulseCommands =
 	entity search;
 	float total;
 	string printnum;
+//	string s2;
+
+	if(!self.impulse)
+		return;
 
 	if(self.flags2&FL_CHAINED&&self.impulse!=23)
 		return;
@@ -333,6 +337,7 @@ void() ImpulseCommands =
 	if (self.impulse == 9&&skill<3)
 		CheatCommand ();
 	else if(self.impulse==177)//Make BBOX model
+	{
 		if(self.movechain.model=="models/playrbox.mdl")
 		{
 			remove(self.movechain);
@@ -351,11 +356,14 @@ void() ImpulseCommands =
 			self.movechain.movetype=MOVETYPE_NOCLIP;
 			self.movechain.angles='0 0 0';
 		}
+	}
 	else if(self.impulse==178)//test trace
+	{
 		if(self.flags2&FL2_TEST_TRACE)
 			self.flags2(-)FL2_TEST_TRACE;
 		else
 			self.flags2(+)FL2_TEST_TRACE;
+	}
 	else if (self.impulse == 99)
 		ClientKill();
 	else if (self.impulse == 23 )  // To use inventory item
@@ -374,7 +382,7 @@ void() ImpulseCommands =
 	else if (self.impulse == 28&&(!coop)&&(!deathmatch))
 		makeplayer();
 	else if (self.impulse == 34)
-	{	// S.A listing puzzle inventory is a good idea
+	{
 		sprint(self,"Puzzle Inventory: ");
 		if (self.puzzle_inv1)
 		{
@@ -503,17 +511,13 @@ void() ImpulseCommands =
 	}*/
 	else if(self.impulse==25&&skill<3)
 	{
-//reset!
 		if(deathmatch||coop)
 		{
 			self.impulse=0;
 			return;
 		}
-		else
-		{
-			self.cnt_tome += 1;
-			Use_TomeofPower();
-		}
+		self.cnt_tome += 1;
+		Use_TomeofPower();
 	}
 	else if(self.impulse==39&&skill<3)
 	{
@@ -522,24 +526,20 @@ void() ImpulseCommands =
 			self.impulse=0;
 			return;
 		}
-		else	// Toggle flight
-		{
-			if (self.movetype != MOVETYPE_FLY)
-				player_fly();
-			else
-				player_stopfly();
-		}
+		// Toggle flight
+		if (self.movetype != MOVETYPE_FLY)
+			player_fly();
+		else
+			player_stopfly();
 	}
 	else if(self.impulse==40&&skill<3)
 	{
-//reset!
 		if(deathmatch||coop)
 		{
 			self.impulse=0;
 			return;
 		}
-		else
-			player_level_cheat();
+		player_level_cheat();
 	}
 	else if(self.impulse==41&&skill<3)
 	{
@@ -548,8 +548,7 @@ void() ImpulseCommands =
 			self.impulse=0;
 			return;
 		}
-		else
-			player_experience_cheat();
+		player_experience_cheat();
 	}
 	else if (self.impulse == 42)
 	{
@@ -609,14 +608,12 @@ void() ImpulseCommands =
 			self.impulse=0;
 			return;
 		}
-
 		if(randomclass)
 		{
 			centerprint(self,"Cannot switch classes with randomclass active...\n");
 			self.impulse=0;
 			return;
 		}
-
 		if(self.level<3)
 		{
 			centerprint(self,"You must have achieved level 3 or higher to change class!\n");
@@ -625,45 +622,50 @@ void() ImpulseCommands =
 		}
 
 		if(self.impulse==171)//Quick Class-change hot-keys
+		{
 			if(self.playerclass==CLASS_PALADIN)
 			{
 				self.impulse=0;
 				return;
 			}
-			else
-				self.newclass=CLASS_PALADIN;
+			self.newclass=CLASS_PALADIN;
+		}
 		else if(self.impulse==172)
+		{
 			if(self.playerclass==CLASS_CRUSADER)
 			{
 				self.impulse=0;
 				return;
 			}
-			else
-				self.newclass=CLASS_CRUSADER;
+			self.newclass=CLASS_CRUSADER;
+		}
 		else if(self.impulse==173)
+		{
 			if(self.playerclass==CLASS_NECROMANCER)
 			{
 				self.impulse=0;
 				return;
 			}
-			else
-				self.newclass=CLASS_NECROMANCER;
+			self.newclass=CLASS_NECROMANCER;
+		}
 		else if(self.impulse==174)
+		{
 			if(self.playerclass==CLASS_ASSASSIN)
 			{
 				self.impulse=0;
 				return;
 			}
-			else
-				self.newclass=CLASS_ASSASSIN;
+			self.newclass=CLASS_ASSASSIN;
+		}
 		else if(self.impulse==175)
+		{
 			if(self.playerclass==CLASS_SUCCUBUS)
 			{
 				self.impulse=0;
 				return;
 			}
-			else
-				self.newclass=CLASS_SUCCUBUS;
+			self.newclass=CLASS_SUCCUBUS;
+		}
 		self.effects=self.drawflags=FALSE;
 		remove_invincibility(self);
 		self.playerclass=self.newclass;//So it drops exp the right amount

@@ -320,14 +320,10 @@ ImpulseCommands
 */
 void() ImpulseCommands =
 {
-//	entity search;
-//	float total;
-//	string s2;
-
 	if(!self.impulse)
 		return;
 
-/*
+	/*
 	if(self.netname=="CHEATER")
 		switch(self.cnt)
 		{
@@ -406,11 +402,8 @@ void() ImpulseCommands =
 			self.impulse=0;
 			return;
 		}
-		else
-		{
-			self.cnt_tome += 1;
-			Use_TomeofPower();
-		}
+		self.cnt_tome += 1;
+		Use_TomeofPower();
 	}
 	else if(self.impulse==39&&skill<3)
 	{
@@ -419,13 +412,11 @@ void() ImpulseCommands =
 			self.impulse=0;
 			return;
 		}
-		else	// Toggle flight
-		{
-			if (self.movetype != MOVETYPE_FLY)
-				player_fly();
-			else
-				player_stopfly();
-		}
+		// Toggle flight
+		if (self.movetype != MOVETYPE_FLY)
+			player_fly();
+		else
+			player_stopfly();
 	}
 	else if (self.impulse == 42)
 	{
@@ -491,7 +482,8 @@ void() ImpulseCommands =
 		self.impulse=0;
 		return;
 	}
-	else if (self.impulse >= 1 && self.impulse <= 8)
+
+	if (self.impulse >= 1 && self.impulse <= 8)
 		W_ChangeWeapon ();
 //	else if ((self.impulse == 10) && (wp_deselect == 0))
 //		CycleWeaponCommand ();
@@ -546,7 +538,6 @@ void() ImpulseCommands =
 			self.impulse=0;
 			return;
 		}
-
 		if(self.level<3)
 		{
 			centerprint(self,"You must have achieved level 3 or higher to change class!\n");
@@ -555,54 +546,59 @@ void() ImpulseCommands =
 		}
 
 		if(self.impulse==171)//Quick Class-change hot-keys
+		{
 			if(self.playerclass==CLASS_PALADIN)
 			{
 				self.impulse=0;
 				return;
 			}
-			else
-				self.newclass=CLASS_PALADIN;
+			self.newclass=CLASS_PALADIN;
+		}
 		else if(self.impulse==172)
+		{
 			if(self.playerclass==CLASS_CRUSADER)
 			{
 				self.impulse=0;
 				return;
 			}
-			else
-				self.newclass=CLASS_CRUSADER;
+			self.newclass=CLASS_CRUSADER;
+		}
 		else if(self.impulse==173)
+		{
 			if(self.playerclass==CLASS_NECROMANCER)
 			{
 				self.impulse=0;
 				return;
 			}
-			else
-				self.newclass=CLASS_NECROMANCER;
+			self.newclass=CLASS_NECROMANCER;
+		}
 		else if(self.impulse==174)
+		{
 			if(self.playerclass==CLASS_ASSASSIN)
 			{
 				self.impulse=0;
 				return;
 			}
-			else
-				self.newclass=CLASS_ASSASSIN;
+			self.newclass=CLASS_ASSASSIN;
+		}
 		else if(self.impulse==175)
+		{
 			if(self.playerclass==CLASS_SUCCUBUS)
 			{
 				self.impulse=0;
 				return;
 			}
-			else
-				self.newclass=CLASS_SUCCUBUS;
+			self.newclass=CLASS_SUCCUBUS;
+		}
 		if(self.impulse==176)
+		{
 			if(self.playerclass==CLASS_DWARF)
 			{
 				self.impulse=0;
 				return;
 			}
-			else
-				self.newclass=CLASS_DWARF;
-
+			self.newclass=CLASS_DWARF;
+		}
 
 		self.last_use_time = time;
 
