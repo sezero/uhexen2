@@ -14,66 +14,61 @@ float getInventoryCount(entity who, float itemType)
 	{
 		return who.cnt_torch;
 	}
-	else if(itemType == STR_HEALTHBOOST)
+	if(itemType == STR_HEALTHBOOST)
 	{
 		return who.cnt_h_boost;
 	}
-	else if(itemType == STR_SUPERHEALTHBOOST) // 5 limit
+	if(itemType == STR_SUPERHEALTHBOOST) // 5 limit
 	{
 		return who.cnt_sh_boost;
 	}
-	else if(itemType == STR_MANABOOST)
+	if(itemType == STR_MANABOOST)
 	{
 		return who.cnt_mana_boost;
 	}
-	else if(itemType == STR_TELEPORT)
+	if(itemType == STR_TELEPORT)
 	{
 		return who.cnt_teleport;
 	}
-	else if(itemType == STR_TOME)
+	if(itemType == STR_TOME)
 	{
 		if(tomeMode == 2)//how many tomes do i really have? um er...none?
-		{
 			return 0;
-		}
-		else
-		{
-			return who.cnt_tome;
-		}
+		return who.cnt_tome;
 	}
-	else if(itemType == STR_SUMMON)
+	if(itemType == STR_SUMMON)
 	{
 		return who.cnt_summon;
 	}
-	else if(itemType == STR_INVISIBILITY)
+	if(itemType == STR_INVISIBILITY)
 	{
 		return who.cnt_invisibility;
 	}
-	else if(itemType == STR_GLYPH)
+	if(itemType == STR_GLYPH)
 	{
 		return who.cnt_glyph;
 	}
-	else if(itemType == STR_RINGFLIGHT)
+	if(itemType == STR_RINGFLIGHT)
 	{
 		return who.cnt_flight;
 	}
-	else if(itemType == STR_HASTE)
+	if(itemType == STR_HASTE)
 	{
 		return who.cnt_haste;
 	}
-	else if(itemType == STR_BLAST)
+	if(itemType == STR_BLAST)
 	{
 		return who.cnt_blast;
 	}
-	else if(itemType == STR_POLYMORPH)
+	if(itemType == STR_POLYMORPH)
 	{
 		return who.cnt_polymorph;
 	}
-	else if(itemType == STR_CUBEOFFORCE)
+	if(itemType == STR_CUBEOFFORCE)
 	{
 		return who.cnt_cubeofforce;
 	}
-	else if(itemType == STR_INVINCIBILITY)
+	if(itemType == STR_INVINCIBILITY)
 	{
 		if(dmMode == DM_CAPTURE_THE_TOKEN)
 		{
@@ -81,13 +76,9 @@ float getInventoryCount(entity who, float itemType)
 			{
 				return 1;//but it's not a real invincibility...
 			}
-			else
-			{
-				return 0;
-			}
+			return 0;
 		}
-		else
-			return who.cnt_invincibility;
+		return who.cnt_invincibility;
 	}
 	return 0;
 }
@@ -322,7 +313,6 @@ void adjustInventoryCount(entity who, float itemType, float numba)
 				who.cnt_invincibility = 0;
 		}
 	}
-
 }
 
 
@@ -338,7 +328,6 @@ float countPlayers(void)
 		if(lastent.classname=="player")
 		{
 			num_players+=1;
-
 		}
 		lastent=find(lastent,classname,"player");
 	}
@@ -378,7 +367,7 @@ void artifact_touch()
 			remove(self);
 			return;
 		}
-		else if(self.flags&FL_ONGROUND)
+		if(self.flags&FL_ONGROUND)
 		{
 			oldself = spawn();
 			oldself.goalentity = SelectSpawnPoint ();
@@ -416,9 +405,7 @@ void artifact_touch()
 		return;
 
 	if ((dmMode == DM_CAPTURE_THE_TOKEN) && (other.gameFlags & GF_HAS_TOKEN))
-	{
 		return;
-	}
 
 	if (roomForItem(other,self.artifact_name)<=0)
 		return;
@@ -462,7 +449,6 @@ void artifact_touch()
 			{
 				self.inventory = INV_INVINCIBILITY;
 			}
-
 
 			UseInventoryItem();
 
@@ -714,7 +700,6 @@ void art_SuperHBoost()
 
 
 
-
 /*
 ====================================================================================================
 
@@ -731,9 +716,9 @@ void use_healthboost()
 	}
 	self.cnt_h_boost -= 1;
 	self.health += 25;
-  	if(self.health > self.max_health)
+	if(self.health > self.max_health)
 	{
-  		self.health = self.max_health;
+		self.health = self.max_health;
 	}
 
 	if(self.flags2&FL2_POISONED)
@@ -754,7 +739,6 @@ void art_HealthBoost()
 {
 	spawn_artifact(ARTIFACT_HP_BOOST,RESPAWN);
 }
-
 
 
 
@@ -981,13 +965,15 @@ void spawn_art_sword_and_crown(void)
 	StartItem();
 }
 */
-/*QUAK-ED art_sword_and_crown (.0 .0 .5) (-8 -8 -44) (8 8 20) FLOATING
+
+/*QUAKED art_sword_and_crown (.0 .0 .5) (-8 -8 -44) (8 8 20) FLOATING
 Artifact for Sword and Crown
 -------------------------FIELDS-------------------------
 None
 --------------------------------------------------------
 */
-/*void art_sword_and_crown()
+/*
+void art_sword_and_crown()
 {
 	precache_model2("models/xcalibur.mdl");
 	self.artifact_respawn = deathmatch;

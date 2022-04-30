@@ -14,66 +14,61 @@ float getInventoryCount(entity who, float itemType)
 	{
 		return who.cnt_torch;
 	}
-	else if(itemType == STR_HEALTHBOOST)
+	if(itemType == STR_HEALTHBOOST)
 	{
 		return who.cnt_h_boost;
 	}
-	else if(itemType == STR_SUPERHEALTHBOOST) // 5 limit
+	if(itemType == STR_SUPERHEALTHBOOST) // 5 limit
 	{
 		return who.cnt_sh_boost;
 	}
-	else if(itemType == STR_MANABOOST)
+	if(itemType == STR_MANABOOST)
 	{
 		return who.cnt_mana_boost;
 	}
-	else if(itemType == STR_TELEPORT)
+	if(itemType == STR_TELEPORT)
 	{
 		return who.cnt_teleport;
 	}
-	else if(itemType == STR_TOME)
+	if(itemType == STR_TOME)
 	{
 		if(tomeMode == 2)//how many tomes do i really have? um er...none?
-		{
 			return 0;
-		}
-		else
-		{
-			return who.cnt_tome;
-		}
+		return who.cnt_tome;
 	}
-	else if(itemType == STR_SUMMON)
+	if(itemType == STR_SUMMON)
 	{
 		return who.cnt_summon;
 	}
-	else if(itemType == STR_INVISIBILITY)
+	if(itemType == STR_INVISIBILITY)
 	{
 		return who.cnt_invisibility;
 	}
-	else if(itemType == STR_GLYPH)
+	if(itemType == STR_GLYPH)
 	{
 		return who.cnt_glyph;
 	}
-	else if(itemType == STR_RINGFLIGHT)
+	if(itemType == STR_RINGFLIGHT)
 	{
 		return who.cnt_flight;
 	}
-	else if(itemType == STR_HASTE)
+	if(itemType == STR_HASTE)
 	{
 		return who.cnt_haste;
 	}
-	else if(itemType == STR_BLAST)
+	if(itemType == STR_BLAST)
 	{
 		return who.cnt_blast;
 	}
-	else if(itemType == STR_POLYMORPH)
+	if(itemType == STR_POLYMORPH)
 	{
 		return who.cnt_polymorph;
 	}
-	else if(itemType == STR_CUBEOFFORCE)
+	if(itemType == STR_CUBEOFFORCE)
 	{
 		return who.cnt_cubeofforce;
 	}
-	else if(itemType == STR_INVINCIBILITY)
+	if(itemType == STR_INVINCIBILITY)
 	{
 		if(dmMode == DM_CAPTURE_THE_TOKEN)
 		{
@@ -81,13 +76,9 @@ float getInventoryCount(entity who, float itemType)
 			{
 				return 1;//but it's not a real invincibility...
 			}
-			else
-			{
-				return 0;
-			}
+			return 0;
 		}
-		else
-			return who.cnt_invincibility;
+		return who.cnt_invincibility;
 	}
 	return 0;
 }
@@ -97,7 +88,6 @@ float roomForItem(entity who, float itemType)//F***ING S**T IS RIGHT! exotic pla
 {
 	float slots;
 	slots = 0;
-
 	if(itemType == STR_TORCH)
 	{
 		slots = 5-who.cnt_torch;
@@ -183,7 +173,6 @@ float roomForItem(entity who, float itemType)//F***ING S**T IS RIGHT! exotic pla
 		else
 			slots = 1-who.cnt_invincibility;
 	}
-
 	return slots;
 }
 
@@ -324,7 +313,6 @@ void adjustInventoryCount(entity who, float itemType, float numba)
 				who.cnt_invincibility = 0;
 		}
 	}
-
 }
 
 
@@ -340,7 +328,6 @@ float countPlayers(void)
 		if(lastent.classname=="player")
 		{
 			num_players+=1;
-
 		}
 		lastent=find(lastent,classname,"player");
 	}
@@ -354,7 +341,6 @@ void artifact_touch()
 	float scaleVal;
 	entity	oldself;
 	float oldInv;
-//	string printnum;
 
 	if(self.artifact_name == STR_TELEPORT&&self.owner!=world)
 	{//Thrown teleport coin opens a portal
@@ -381,7 +367,7 @@ void artifact_touch()
 			remove(self);
 			return;
 		}
-		else if(self.flags&FL_ONGROUND)
+		if(self.flags&FL_ONGROUND)
 		{
 			oldself = spawn();
 			oldself.goalentity = SelectSpawnPoint ();
@@ -421,31 +407,25 @@ void artifact_touch()
 		return;
 
 	if ((dmMode == DM_CAPTURE_THE_TOKEN) && (other.gameFlags & GF_HAS_TOKEN))
-	{
 		return;
-	}
-
 
 	if(self.artifact_name == STR_GLYPH)
 	{
 		if ((other.cnt_glyph + 1) > 10||other.playerclass!=CLASS_ASSASSIN)
 			return;	
-		else	
-			other.cnt_glyph += 1;
+		other.cnt_glyph += 1;
 	}
 	else if(self.artifact_name  == STR_GRENADES)
 	{
 		if ((other.cnt_grenades + 15) > 45||other.playerclass!=CLASS_SUCCUBUS)
 			return;	
-		else	
-			other.cnt_grenades += 15;
+		other.cnt_grenades += 15;
 	}
 	else if(self.artifact_name  == STR_ARROWS)
 	{
 		if ((other.cnt_arrows + 25) > 100||other.playerclass==CLASS_CRUSADER||other.playerclass==CLASS_DWARF)
 			return;	
-		else	
-			other.cnt_arrows += 25;
+		other.cnt_arrows += 25;
 	}
 	else if(self.artifact_name  == STR_CLIMB)
 	{
@@ -485,7 +465,6 @@ void artifact_touch()
 	{
 		if (roomForItem(other,self.artifact_name)<=0)
 			return;
-	
 		adjustInventoryCount(other,self.artifact_name,1);
 	}
 
@@ -526,7 +505,6 @@ void artifact_touch()
 			{
 				self.inventory = INV_INVINCIBILITY;
 			}
-
 
 			UseInventoryItem();
 
@@ -642,7 +620,6 @@ void GenerateArtifactModel(string modelname,float art_name,float respawnflag)
 {
 	if (respawnflag)	// Should this thing respawn
 		self.artifact_respawn = deathmatch;
-
 	setmodel(self, modelname);
 	self.artifact_name = art_name;
 	self.netname = "artifact";
@@ -787,7 +764,6 @@ void art_SuperHBoost()
 
 
 
-
 /*
 ====================================================================================================
 
@@ -804,9 +780,9 @@ void use_healthboost()
 	}
 	self.cnt_h_boost -= 1;
 	self.health += 25;
-  	if(self.health > self.max_health)
+	if(self.health > self.max_health)
 	{
-  		self.health = self.max_health;
+		self.health = self.max_health;
 	}
 
 	if(self.flags2&FL2_POISONED)
@@ -827,7 +803,6 @@ void art_HealthBoost()
 {
 	spawn_artifact(ARTIFACT_HP_BOOST,RESPAWN);
 }
-
 
 
 
@@ -963,7 +938,7 @@ void art_teleport()
 {
 	remove(self);
 	return;
-	spawn_artifact(ARTIFACT_TELEPORT,RESPAWN);
+//	spawn_artifact(ARTIFACT_TELEPORT,RESPAWN);
 }
 
 
