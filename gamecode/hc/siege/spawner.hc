@@ -144,7 +144,7 @@ vector org;
 			spawn_tdeath(trace_ent.origin,newmis,FALSE);
 
 	newmis.angles = self.angles;
-	newmis.flags2+=FL_SUMMONED;
+	newmis.flags2(+)FL_SUMMONED;
 //	newmis.spawnflags=NO_DROP;
 
 	float foundthink,rnd;
@@ -360,5 +360,6 @@ void func_monsterspawn_spot (void)
 		self.use=spawnspot_activate;
 }
 
+//stubs for the missing boss map funcs
 void hive_die(){}
 void spawn_ghost (entity attacker){}

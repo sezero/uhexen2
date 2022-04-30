@@ -1167,7 +1167,7 @@ vector org;
 			spawn_tdeath(trace_ent.origin,newmis);
 
 	newmis.angles = self.angles;
-	newmis.flags2+=FL_SUMMONED;
+	newmis.flags2(+)FL_SUMMONED;
 //	newmis.spawnflags=NO_DROP;
 
 	float foundthink,rnd;
