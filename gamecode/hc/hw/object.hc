@@ -325,7 +325,7 @@ float content;
 			{
 				if(self.velocity_z<0)
 					self.velocity_z=0;
-				self.flags-=FL_ONGROUND;
+				self.flags(-)FL_ONGROUND;
 			}
 			if(self.velocity!='0 0 0')
 				pushed=TRUE;
@@ -897,8 +897,7 @@ void bell_attack(float anim)
 
 		if (!trace_ent.movetype == MOVETYPE_NONE)
 		{
-			if(trace_ent.flags&FL_ONGROUND)
-				trace_ent.flags = trace_ent.flags - FL_ONGROUND;
+			trace_ent.flags (-) FL_ONGROUND;
 			trace_ent.velocity =  trace_ent.origin - self.origin;
 			trace_ent.velocity_z = 280;
 		}
@@ -1378,8 +1377,7 @@ void webs_touch ()
 	if(!other.movetype||other.movetype==MOVETYPE_PUSHPULL||other.classname==self.classname)
 		return;
 
-	if(!other.flags&FL_ONGROUND)
-		other.flags+=FL_ONGROUND;
+	other.flags(+)FL_ONGROUND;
 }
 
 void webs_death (void)
@@ -1600,7 +1598,7 @@ void ice_touch (void)
 {
 	if(other.flags&FL_ONGROUND)
 		if(random()>self.friction)
-			other.flags-=FL_ONGROUND;
+			other.flags(-)FL_ONGROUND;
 }
 
 void ice_slab_melt (void)
