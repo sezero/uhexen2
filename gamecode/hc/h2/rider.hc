@@ -492,14 +492,7 @@ void rider_eol(void)
 
 
 	//Remove cross-level trigger server flags for next hub
-	serverflags(-)(SFL_CROSS_TRIGGER_1|
-				SFL_CROSS_TRIGGER_2|
-				SFL_CROSS_TRIGGER_3|
-				SFL_CROSS_TRIGGER_4|
-				SFL_CROSS_TRIGGER_5|
-				SFL_CROSS_TRIGGER_6|
-				SFL_CROSS_TRIGGER_7|
-				SFL_CROSS_TRIGGER_8);
+	serverflags (-) SFL_CROSS_TRIGGERS;
 
 	search=find(world,classname,"player");
 	while(search)

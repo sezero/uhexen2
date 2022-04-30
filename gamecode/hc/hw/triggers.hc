@@ -1573,14 +1573,49 @@ Once this trigger is touched/used, any trigger_crosslevel_target with the same t
 */
 void() trigger_crosslevel =
 {
-	if (((self.spawnflags & 1) && (serverflags & SFL_CROSS_TRIGGER_1)) ||
-		((self.spawnflags & 2) && (serverflags & SFL_CROSS_TRIGGER_2)) ||
-		((self.spawnflags & 4) && (serverflags & SFL_CROSS_TRIGGER_3)) ||
-		((self.spawnflags & 8) && (serverflags & SFL_CROSS_TRIGGER_4)) ||
-		((self.spawnflags & 16) && (serverflags & SFL_CROSS_TRIGGER_5)) ||
-		((self.spawnflags & 32) && (serverflags & SFL_CROSS_TRIGGER_6)) ||
-		((self.spawnflags & 64) && (serverflags & SFL_CROSS_TRIGGER_7)) ||
-		((self.spawnflags & 128) && (serverflags & SFL_CROSS_TRIGGER_8)))
+	if ((self.spawnflags & 1) && (serverflags & SFL_CROSS_TRIGGER_1))
+	{
+		self.solid = SOLID_NOT;
+		self.flags(+)FL_ARCHIVE_OVERRIDE;
+		return;
+	}
+	if ((self.spawnflags & 2) && (serverflags & SFL_CROSS_TRIGGER_2))
+	{
+		self.solid = SOLID_NOT;
+		self.flags(+)FL_ARCHIVE_OVERRIDE;
+		return;
+	}
+	if ((self.spawnflags & 4) && (serverflags & SFL_CROSS_TRIGGER_3))
+	{
+		self.solid = SOLID_NOT;
+		self.flags(+)FL_ARCHIVE_OVERRIDE;
+		return;
+	}
+	if ((self.spawnflags & 8) && (serverflags & SFL_CROSS_TRIGGER_4))
+	{
+		self.solid = SOLID_NOT;
+		self.flags(+)FL_ARCHIVE_OVERRIDE;
+		return;
+	}
+	if ((self.spawnflags & 16) && (serverflags & SFL_CROSS_TRIGGER_5))
+	{
+		self.solid = SOLID_NOT;
+		self.flags(+)FL_ARCHIVE_OVERRIDE;
+		return;
+	}
+	if ((self.spawnflags & 32) && (serverflags & SFL_CROSS_TRIGGER_6))
+	{
+		self.solid = SOLID_NOT;
+		self.flags(+)FL_ARCHIVE_OVERRIDE;
+		return;
+	}
+	if ((self.spawnflags & 64) && (serverflags & SFL_CROSS_TRIGGER_7))
+	{
+		self.solid = SOLID_NOT;
+		self.flags(+)FL_ARCHIVE_OVERRIDE;
+		return;
+	}
+	if ((self.spawnflags & 128) && (serverflags & SFL_CROSS_TRIGGER_8))
 	{
 		self.solid = SOLID_NOT;
 		self.flags(+)FL_ARCHIVE_OVERRIDE;
@@ -1604,14 +1639,49 @@ entity found;
 //		bprint("Postponing check\n");
 		thinktime self : 3;
 	}
-	else if (((self.spawnflags & 1) && (serverflags & SFL_CROSS_TRIGGER_1)) ||
-		((self.spawnflags & 2) && (serverflags & SFL_CROSS_TRIGGER_2)) ||
-		((self.spawnflags & 4) && (serverflags & SFL_CROSS_TRIGGER_3)) ||
-		((self.spawnflags & 8) && (serverflags & SFL_CROSS_TRIGGER_4)) ||
-		((self.spawnflags & 16) && (serverflags & SFL_CROSS_TRIGGER_5)) ||
-		((self.spawnflags & 32) && (serverflags & SFL_CROSS_TRIGGER_6)) ||
-		((self.spawnflags & 64) && (serverflags & SFL_CROSS_TRIGGER_7)) ||
-		((self.spawnflags & 128) && (serverflags & SFL_CROSS_TRIGGER_8)))
+	else if ((self.spawnflags & 1) && (serverflags & SFL_CROSS_TRIGGER_1))
+	{
+		activator = world;
+		self.check_ok=TRUE;
+		SUB_UseTargets();
+	}
+	else if ((self.spawnflags & 2) && (serverflags & SFL_CROSS_TRIGGER_2))
+	{
+		activator = world;
+		self.check_ok=TRUE;
+		SUB_UseTargets();
+	}
+	else if ((self.spawnflags & 4) && (serverflags & SFL_CROSS_TRIGGER_3))
+	{
+		activator = world;
+		self.check_ok=TRUE;
+		SUB_UseTargets();
+	}
+	else if ((self.spawnflags & 8) && (serverflags & SFL_CROSS_TRIGGER_4))
+	{
+		activator = world;
+		self.check_ok=TRUE;
+		SUB_UseTargets();
+	}
+	else if ((self.spawnflags & 16) && (serverflags & SFL_CROSS_TRIGGER_5))
+	{
+		activator = world;
+		self.check_ok=TRUE;
+		SUB_UseTargets();
+	}
+	else if ((self.spawnflags & 32) && (serverflags & SFL_CROSS_TRIGGER_6))
+	{
+		activator = world;
+		self.check_ok=TRUE;
+		SUB_UseTargets();
+	}
+	else if ((self.spawnflags & 64) && (serverflags & SFL_CROSS_TRIGGER_7))
+	{
+		activator = world;
+		self.check_ok=TRUE;
+		SUB_UseTargets();
+	}
+	else if ((self.spawnflags & 128) && (serverflags & SFL_CROSS_TRIGGER_8))
 	{
 		activator = world;
 		self.check_ok=TRUE;

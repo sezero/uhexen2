@@ -1479,14 +1479,7 @@ void buddha_trigger_use(void)
 	intermission_exittime = time + 99999;
 
 	//Remove cross-level trigger server flags for next hub
-	serverflags(-)(SFL_CROSS_TRIGGER_1|
-				SFL_CROSS_TRIGGER_2|
-				SFL_CROSS_TRIGGER_3|
-				SFL_CROSS_TRIGGER_4|
-				SFL_CROSS_TRIGGER_5|
-				SFL_CROSS_TRIGGER_6|
-				SFL_CROSS_TRIGGER_7|
-				SFL_CROSS_TRIGGER_8);
+	serverflags (-) SFL_CROSS_TRIGGERS;
 
 	entity search;
 
