@@ -2600,7 +2600,7 @@ entity found;
 	else if(self.wait>0)
 		thinktime self : self.wait;
 	else
-		thinktime self : 999999999999;
+		thinktime self : 99999999;
 }
 
 void trigger_stop_touch ()

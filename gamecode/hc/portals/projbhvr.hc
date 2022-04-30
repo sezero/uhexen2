@@ -270,7 +270,7 @@ void HomeThink()
 		if(self.t_width<time)
 		{
 			sound(self,CHAN_BODY,"succubus/buzz2.wav",1,ATTN_LOOP);
-			self.t_width=time+99999999999999;
+			self.t_width=time+99999999;
 		}
 	}
 
