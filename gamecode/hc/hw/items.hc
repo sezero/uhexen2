@@ -7,7 +7,6 @@ void (entity spawnSpot, float persists) spawnNewDmToken;
 BE .8 .3 .4 IN COLOR */
 
 
-
 void() SUB_regen =
 {
 	entity	checkGuy;
@@ -65,8 +64,7 @@ void ItemHitFloorWait ()
 		self.nextthink=-1;
 		return;
 	}
-	else
-		thinktime self : 0.05;
+	thinktime self : 0.05;
 }
 
 float getBackpackSize(entity item)
@@ -396,17 +394,14 @@ void weapon_touch (void)
 		return;
 	}
 
-
 	if (deathmatch == 2 || coop)
 	{
 		if(other.items&self.items)
 			return;
-		else
-			leave = 1;
+		leave = 1;
 	}
 	else
 		leave = 0;
-
 
 	new = self.items;
 	// Give player weapon and mana

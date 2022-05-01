@@ -6,7 +6,6 @@ void()puzzle_touch;
 BE .8 .3 .4 IN COLOR */
 
 
-
 void() SUB_regen =
 {
 	self.model = self.mdl;		// restore original model
@@ -38,8 +37,7 @@ void ItemHitFloorWait ()
 		self.nextthink=-1;
 		return;
 	}
-	else
-		thinktime self : 0.05;
+	thinktime self : 0.05;
 }
 /*
 ============
@@ -371,8 +369,7 @@ void weapon_touch (void)
 	{
 		if(other.items&self.items)
 			return;
-		else
-			leave = 1;
+		leave = 1;
 	}
 	else
 		leave = 0;
