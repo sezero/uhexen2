@@ -6,7 +6,7 @@ float FALSE					= 0;
 float TRUE					= 1;
 
 float HX_FRAME_TIME			= 0.05;
-//float HX_FPS				= 20;
+float HX_FPS				= 20;
 
 // edict.flags
 float FL_FLY					= 1;
@@ -263,7 +263,7 @@ float IT_WEAPON1					= 4096;
 float IT_WEAPON2					= 1;
 float IT_WEAPON3					= 2;
 float IT_WEAPON4					= 4;
-//float IT_TESTWEAP					= 8;
+float IT_TESTWEAP					= 8;
 float IT_WEAPON4_1					= 16;		// First half of weapon
 float IT_WEAPON4_2					= 32;		// Second half of weapon
 
@@ -287,7 +287,7 @@ float	IT_EXTRA_WEAPON				= 128;
 //float	IT_ARMOR1					= 8192;
 //float	IT_ARMOR2					= 16384;
 //float	IT_ARMOR3					= 32768;
-//float	IT_SUPERHEALTH				= 65536;
+float	IT_SUPERHEALTH				= 65536;
 
 float	IT_INVISIBILITY			= 524288;
 //float	IT_INVULNERABILITY		= 1048576;
@@ -295,11 +295,11 @@ float	IT_INVISIBILITY			= 524288;
 //float	IT_QUAD						= 4194304;
 
 // rings - amount of time they work
-//float FLIGHT_TIME					= 30;
-//float WATER_TIME					= 30;
-//float ABSORPTION_TIME				= 30;
-//float REGEN_TIME					= 30;
-//float TURNING_TIME					= 30;
+float FLIGHT_TIME					= 30;
+float WATER_TIME					= 30;
+float ABSORPTION_TIME				= 30;
+float REGEN_TIME					= 30;
+float TURNING_TIME					= 30;
 
 // artifacts - amount of time they work
 //float HASTE_TIME				= 15;
@@ -372,11 +372,11 @@ float	STATE_DOWN					= 3;
 float	STATE_MOVING				= 4;
 
 vector	VEC_ORIGIN				= '0 0 0';
-//vector	VEC_HULL_MIN			= '-16 -16 -24';
-//vector	VEC_HULL_MAX			= '16 16 32';
+vector	VEC_HULL_MIN			= '-16 -16 -24';
+vector	VEC_HULL_MAX			= '16 16 32';
 
-//vector	VEC_HULL2_MIN			= '-32 -32 -24';
-//vector	VEC_HULL2_MAX			= '32 32 64';
+vector	VEC_HULL2_MIN			= '-32 -32 -24';
+vector	VEC_HULL2_MAX			= '32 32 64';
 
 // protocol bytes
 float SVC_SETVIEWPORT = 5;			// Net.Protocol 0x05- for camera
@@ -532,7 +532,7 @@ float	EF_TEX_STOPL				= 528;
 float	MSG_BROADCAST				= 0;		// unreliable to all
 float	MSG_ONE						= 1;		// reliable to one (msg_entity)
 float	MSG_ALL						= 2;		// reliable to all
-//float	MSG_INIT						= 3;		// write to the init string
+float	MSG_INIT						= 3;		// write to the init string
 
 //float STEP_HEIGHT					= 18;		// Max step height
 
@@ -568,7 +568,7 @@ float MAX_LEVELS = 10;
 //float	SFL_EPISODE_3		= 4;
 //float	SFL_EPISODE_4		= 8;
 float	SFL_NEW_UNIT		= 16;
-//float	SFL_NEW_EPISODE		= 32;
+float	SFL_NEW_EPISODE		= 32;
 // = 64;
 // = 128;
 float	SFL_CROSS_TRIGGER_1 = 256;
@@ -622,7 +622,7 @@ float SLOPE = 16;		//Trains- follow angle for vec between path_corners
 float FLOATING	=	1;	//Keeps them from dropping to the ground at spawntime
 
 //Spawnflags for barrels
-//float BARREL_DOWNHILL		= 1;
+float BARREL_DOWNHILL		= 1;
 float BARREL_NO_DROP		= 2;
 float ON_SIDE				= 4;
 float BARREL_SINK			= 8;		
