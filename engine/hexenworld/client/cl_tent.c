@@ -271,7 +271,7 @@ static void vectoangles(vec3_t vec, vec3_t ang)
 		yaw = (int) (atan2(vec[1], vec[0]) * 180 / M_PI);
 		if (yaw < 0)
 			yaw += 360;
-		forward = sqrt (vec[0]*vec[0] + vec[1]*vec[1]);
+		forward = Q_sqrt (vec[0]*vec[0] + vec[1]*vec[1]);
 		pitch = (int) (atan2(vec[2], forward) * 180 / M_PI);
 		if (pitch < 0)
 			pitch += 360;
@@ -2412,7 +2412,7 @@ void CL_ParseTEnt (void)
 			VectorScale(midPos,0.5,midPos);
 
 			VectorSubtract(midPos,pos,distVec);
-			distance = (int)(VectorNormalize(distVec)*0.025);
+			distance = (int)(VectorNormalizeFast(distVec)*0.025);
 			if (distance > 0)
 			{
 				VectorScale(distVec,40,distVec);
@@ -3487,7 +3487,7 @@ static void CL_UpdateBeams (void)
 			yaw = (int) (atan2(dist[1], dist[0]) * 180 / M_PI);
 			if (yaw < 0)
 				yaw += 360;
-			forward = sqrt (dist[0]*dist[0] + dist[1]*dist[1]);
+			forward = Q_sqrt (dist[0]*dist[0] + dist[1]*dist[1]);
 			pitch = (int) (atan2(dist[2], forward) * 180 / M_PI);
 			if (pitch < 0)
 				pitch += 360;
@@ -3495,7 +3495,7 @@ static void CL_UpdateBeams (void)
 
 	// add new entities for the lightning
 		VectorCopy (b->start, org);
-		d = VectorNormalize(dist);
+		d = VectorNormalizeFast(dist);
 		while (d > 0)
 		{
 			ent = CL_NewTempEntity ();
@@ -3662,14 +3662,14 @@ static void CL_UpdateStreams(void)
 			yaw = (int)(atan2(dist[1], dist[0])*180/M_PI);
 			if (yaw < 0)
 				yaw += 360;
-			forward = sqrt(dist[0]*dist[0]+dist[1]*dist[1]);
+			forward = Q_sqrt(dist[0]*dist[0]+dist[1]*dist[1]);
 			pitch = (int)(atan2(dist[2], forward)*180/M_PI);
 			if (pitch < 0)
 				pitch += 360;
 		}
 
 		VectorCopy(stream->source, org);
-		d = VectorNormalize(dist);
+		d = VectorNormalizeFast(dist);
 
 		if (stream->type == TE_STREAM_SUNSTAFF2)
 		{
@@ -4084,7 +4084,7 @@ static void ChunkThink(explosion_t *ex)
 
 		if ((int)ex->data == THINGTYPE_FLESH)
 		{
-			if (VectorNormalize(ex->velocity) > 100.0)
+			if (VectorNormalizeFast(ex->velocity) > 100.0)
 			{	// hit, now make a splash of blood
 				vec3_t	dmin = {-40, -40, 10};
 				vec3_t	dmax = {40, 40, 40};
@@ -4095,7 +4095,7 @@ static void ChunkThink(explosion_t *ex)
 		}
 		else if ((int)ex->data == THINGTYPE_ACID)
 		{
-			if (VectorNormalize(ex->velocity) > 100.0)
+			if (VectorNormalizeFast(ex->velocity) > 100.0)
 			{	// hit, now make a splash of acid
 			//	vec3_t	dmin = {-40, -40, 10};
 			//	vec3_t	dmax = {40, 40, 40};
@@ -4798,7 +4798,7 @@ void CL_UpdatePowerFlameBurn(entity_t *ent, int edict_num)
 		VectorCopy(srcVec, ex->velocity);
 		ex->velocity[2] += 24;
 		VectorScale(ex->velocity, 1.0 / .25, ex->velocity);
-		VectorNormalize(srcVec);
+		VectorNormalizeFast(srcVec);
 		vectoangles(srcVec, ex->angles);
 
 		ex->flags |= MLS_ABSLIGHT;//|DRF_TRANSLUCENT;
@@ -4920,7 +4920,7 @@ static void telPuffMove (explosion_t *ex)
 
 	VectorSubtract(ex->angles, ex->origin, tvec);
 	VectorCopy(tvec,tvec2);
-	VectorNormalize(tvec);
+	VectorNormalizeFast(tvec);
 	VectorScale(tvec,320,tvec);
 
 	ex->velocity[0] = tvec[1];

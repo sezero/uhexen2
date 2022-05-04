@@ -398,7 +398,7 @@ static void R_AliasSetUpTransform (int trivial_accept)
 	{
 		VectorSubtract(currententity->origin,r_origin,angles);
 		VectorSubtract(r_origin,currententity->origin,angles);
-		VectorNormalize(angles);
+		VectorNormalizeFast(angles);
 
 		if (angles[1] == 0 && angles[0] == 0)
 		{
@@ -414,7 +414,7 @@ static void R_AliasSetUpTransform (int trivial_accept)
 			if (yaw < 0)
 				yaw += 360;
 
-			forward = sqrt (angles[0]*angles[0] + angles[1]*angles[1]);
+			forward = Q_sqrt (angles[0]*angles[0] + angles[1]*angles[1]);
 			pitch = (int) (atan2(angles[2], forward) * 180 / M_PI);
 			if (pitch < 0)
 				pitch += 360;

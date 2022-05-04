@@ -308,7 +308,7 @@ void R_DrawSprite (void)
 		tvec[0] = -modelorg[0];
 		tvec[1] = -modelorg[1];
 		tvec[2] = -modelorg[2];
-		VectorNormalize (tvec);
+		VectorNormalizeFast (tvec);
 		dot = tvec[2];	// same as DotProduct (tvec, r_spritedesc.vup) because
 						//  r_spritedesc.vup is 0, 0, 1
 		if ((dot > 0.999848) || (dot < -0.999848))	// cos(1 degree) = 0.999848
@@ -321,7 +321,7 @@ void R_DrawSprite (void)
 		r_spritedesc.vright[1] = -tvec[0];
 								//              r_spritedesc.vright)
 		r_spritedesc.vright[2] = 0;
-		VectorNormalize (r_spritedesc.vright);
+		VectorNormalizeFast (r_spritedesc.vright);
 		r_spritedesc.vpn[0] = -r_spritedesc.vright[1];
 		r_spritedesc.vpn[1] = r_spritedesc.vright[0];
 		r_spritedesc.vpn[2] = 0;
@@ -359,7 +359,7 @@ void R_DrawSprite (void)
 							// CrossProduct (r_spritedesc.vup, vpn,
 		r_spritedesc.vright[1] = -vpn[0];	//  r_spritedesc.vright)
 		r_spritedesc.vright[2] = 0;
-		VectorNormalize (r_spritedesc.vright);
+		VectorNormalizeFast (r_spritedesc.vright);
 		r_spritedesc.vpn[0] = -r_spritedesc.vright[1];
 		r_spritedesc.vpn[1] = r_spritedesc.vright[0];
 		r_spritedesc.vpn[2] = 0;

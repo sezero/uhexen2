@@ -90,7 +90,7 @@ static void vectoangles (vec3_t vec, vec3_t ang)
 		if (yaw < 0)
 			yaw += 360;
 
-		forward = sqrt (vec[0]*vec[0] + vec[1]*vec[1]);
+		forward = Q_sqrt (vec[0]*vec[0] + vec[1]*vec[1]);
 		pitch = (int) (atan2(vec[2], forward) * 180 / M_PI);
 		if (pitch < 0)
 			pitch += 360;
@@ -889,7 +889,7 @@ void CL_ParseEffect (void)
 
 		AngleVectors (cl.Effects[idx].ef.Xbow.angle, forward, right, up);
 
-		VectorNormalize(forward);
+		VectorNormalizeFast(forward);
 		VectorCopy(forward, cl.Effects[idx].ef.Xbow.velocity);
 	//	VectorScale(forward, 1000, cl.Effects[idx].ef.Xbow.velocity);
 
@@ -967,7 +967,7 @@ void CL_ParseEffect (void)
 
 		AngleVectors (cl.Effects[idx].ef.Xbow.angle, forward, right, up);
 
-		VectorNormalize(forward);
+		VectorNormalizeFast(forward);
 		VectorCopy(forward, cl.Effects[idx].ef.Xbow.velocity);
 
 	//	S_StartSound (TempSoundChannel(), 1, cl_fxsfx_xbowshoot, origin, 1, 1);
@@ -1306,7 +1306,7 @@ void CL_ReviseEffect(void)	/* be sure to read, in the switch statement, everythi
 
 					/* make sure bolt is in correct position */
 					VectorCopy(cl.Effects[idx].ef.Xbow.vel[curEnt], forward);
-					VectorNormalize(forward);
+					VectorNormalizeFast(forward);
 					VectorScale(forward, dist, forward);
 					VectorAdd(cl.Effects[idx].ef.Xbow.origin[curEnt], forward, ent->origin);
 
@@ -1323,7 +1323,7 @@ void CL_ReviseEffect(void)	/* be sure to read, in the switch statement, everythi
 					}
 
 					VectorCopy(cl.Effects[idx].ef.Xbow.vel[curEnt], forward);
-					VectorNormalize(forward);
+					VectorNormalizeFast(forward);
 					VectorScale(forward, 8, forward);
 
 					/* do a particle effect here, with the color depending on chType */
@@ -1374,7 +1374,7 @@ void CL_ReviseEffect(void)	/* be sure to read, in the switch statement, everythi
 					}
 
 					AngleVectors(ent->angles, forward, right, up);
-					speed = VectorLength(cl.Effects[idx].ef.Xbow.vel[curEnt]);
+					speed = VectorLengthFast(cl.Effects[idx].ef.Xbow.vel[curEnt]);
 					VectorScale(forward, speed, cl.Effects[idx].ef.Xbow.vel[curEnt]);
 					VectorCopy(cl.Effects[idx].ef.Xbow.origin[curEnt], ent->origin);
 				}
@@ -1397,7 +1397,7 @@ void CL_ReviseEffect(void)	/* be sure to read, in the switch statement, everythi
 					}
 
 					AngleVectors(pos, forward, right,up);
-					speed = VectorLength(cl.Effects[idx].ef.Xbow.vel[curEnt]);
+					speed = VectorLengthFast(cl.Effects[idx].ef.Xbow.vel[curEnt]);
 					VectorScale(forward, speed, cl.Effects[idx].ef.Xbow.vel[curEnt]);
 				}
 			}
@@ -1417,7 +1417,7 @@ void CL_ReviseEffect(void)	/* be sure to read, in the switch statement, everythi
 
 					/* make sure bolt is in correct position */
 					VectorCopy(cl.Effects[idx].ef.Xbow.vel[curEnt], forward);
-					VectorNormalize(forward);
+					VectorNormalizeFast(forward);
 					VectorScale(forward, dist, forward);
 					VectorAdd(cl.Effects[idx].ef.Xbow.origin[curEnt], forward, ent->origin);
 					R_ColoredParticleExplosion(ent->origin,
@@ -1446,7 +1446,7 @@ void CL_ReviseEffect(void)	/* be sure to read, in the switch statement, everythi
 					}
 
 					AngleVectors(ent->angles, forward, right, up);
-					speed = VectorLength(cl.Effects[idx].ef.Xbow.vel[curEnt]);
+					speed = VectorLengthFast(cl.Effects[idx].ef.Xbow.vel[curEnt]);
 					VectorScale(forward, speed, cl.Effects[idx].ef.Xbow.vel[curEnt]);
 					VectorCopy(cl.Effects[idx].ef.Xbow.origin[curEnt], ent->origin);
 				}
@@ -1469,7 +1469,7 @@ void CL_ReviseEffect(void)	/* be sure to read, in the switch statement, everythi
 					}
 
 					AngleVectors(pos, forward, right, up);
-					speed = VectorLength(cl.Effects[idx].ef.Xbow.vel[curEnt]);
+					speed = VectorLengthFast(cl.Effects[idx].ef.Xbow.vel[curEnt]);
 					VectorScale(forward, speed, cl.Effects[idx].ef.Xbow.vel[curEnt]);
 				}
 			}
@@ -1500,7 +1500,7 @@ void CL_ReviseEffect(void)	/* be sure to read, in the switch statement, everythi
 
 				/* lil bits at exit */
 				VectorCopy(cl.Effects[idx].ef.Missile.velocity, forward);
-				VectorNormalize(forward);
+				VectorNormalizeFast(forward);
 				VectorScale(forward, 36, forward);
 				VectorAdd(forward, pos, pos);
 				XbowImpactPuff(pos, material);
@@ -1522,7 +1522,7 @@ void CL_ReviseEffect(void)	/* be sure to read, in the switch statement, everythi
 				cl.Effects[idx].ef.Missile.origin[2] = MSG_ReadCoord();
 
 				AngleVectors(ent->angles, forward, right, up);
-				speed = VectorLength(cl.Effects[idx].ef.Missile.velocity);
+				speed = VectorLengthFast(cl.Effects[idx].ef.Missile.velocity);
 				VectorScale(forward, speed, cl.Effects[idx].ef.Missile.velocity);
 				VectorCopy(cl.Effects[idx].ef.Missile.origin, ent->origin);
 			}
@@ -2128,7 +2128,7 @@ void CL_UpdateEffects (void)
 								ent = &EffectEntities[cl.Effects[idx].ef.Xbow.ent[i]];
 
 								/* move bolt back a little to make explosion look better */
-								VectorNormalize(cl.Effects[idx].ef.Xbow.vel[i]);
+								VectorNormalizeFast(cl.Effects[idx].ef.Xbow.vel[i]);
 								VectorScale(cl.Effects[idx].ef.Xbow.vel[i], -8,
 										cl.Effects[idx].ef.Xbow.vel[i]);
 								VectorAdd(ent->origin, cl.Effects[idx].ef.Xbow.vel[i],
@@ -2249,7 +2249,7 @@ void CL_UpdateEffects (void)
 					VectorCopy(es->origin, org);
 					org[2] += cl.Effects[idx].ef.Chain.height;
 					VectorSubtract(org, ent->origin, org);
-					if (fabs(VectorNormalize(org)) < 500*frametime)
+					if (fabs(VectorNormalizeFast(org)) < 500*frametime)
 					{
 						S_StartSound (TempSoundChannel(), 1, cl_fxsfx_scarabgrab,
 											ent->origin, 1, 1);
@@ -2278,7 +2278,7 @@ void CL_UpdateEffects (void)
 			/* unattaching, server needs to set this state */
 				VectorCopy(ent->origin, org);
 				VectorSubtract(cl.Effects[idx].ef.Chain.origin, org, org);
-				if (fabs(VectorNormalize(org)) > 350*frametime)
+				if (fabs(VectorNormalizeFast(org)) > 350*frametime)
 								/* closer than 30 is too close? */
 				{
 					VectorScale(org, 350*frametime, org);

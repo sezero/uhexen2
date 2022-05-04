@@ -1045,7 +1045,7 @@ void CL_UpdateEffects (void)
 
 			VectorSubtract(snow_org, r_origin, snow_org);
 
-			distance = VectorNormalize(snow_org);
+			distance = VectorNormalizeFast(snow_org);
 
 			cl.Effects[idx].ef.Rain.next_time += frametime;
 			/* jfm:  fixme, check distance to player first */

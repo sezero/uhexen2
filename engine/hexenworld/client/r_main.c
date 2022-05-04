@@ -692,14 +692,14 @@ static void R_PrepareAlias (void)
 
 					if (cl_dlights[lnum].radius> 0)
 					{
-						add = cl_dlights[lnum].radius - VectorLength(dist);
+						add = cl_dlights[lnum].radius - VectorLengthFast(dist);
 
 						if (add > 0)
 							lighting.ambientlight += add;
 					}
 					else
 					{
-						add = VectorLength(dist) + cl_dlights[lnum].radius;
+						add = VectorLengthFast(dist) + cl_dlights[lnum].radius;
 
 						if (add < 0)
 							lighting.ambientlight += add;
@@ -848,14 +848,14 @@ static void R_DrawViewModel (void)
 
 			if (dl->radius > 0)
 			{
-				add = dl->radius - VectorLength(dist);
+				add = dl->radius - VectorLengthFast(dist);
 
 				if (add > 0)
 					r_viewlighting.ambientlight += add;
 			}
 			else
 			{
-				add = VectorLength(dist) + dl->radius;
+				add = VectorLengthFast(dist) + dl->radius;
 
 				if (add < 0)
 					r_viewlighting.ambientlight += add;

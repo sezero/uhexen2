@@ -41,6 +41,41 @@ static inline int IS_NAN (float x) {
 #endif
 int Q_isnan (float x);	/* For 32 bit floats only. */
 
+// square root approximation for single precision floats
+// https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Approximations_that_depend_on_the_floating_point_representation
+static inline float Q_sqrt (float x)
+{
+	union
+	{
+		float f;
+		unsigned int i;
+	} t;
+
+	t.f = x;
+	t.i -= 1 << 23;
+	t.i >>= 1;
+	t.i += 1 << 29;
+
+	return t.f;
+}
+
+// fast inverse square root
+// https://en.wikipedia.org/wiki/Fast_inverse_square_root
+static inline float Q_rsqrt (float x)
+{
+	union
+	{
+		float f;
+		unsigned int i;
+	} t;
+
+	t.f = x;
+	t.i  = 0x5f3759df - (t.i >> 1);
+	t.f *= 1.5F - (x * 0.5F * t.f * t.f);
+
+	return t.f;
+}
+
 extern vec3_t vec3_origin;
 
 #define VectorCompare(v1,v2)	(((v1)[0] == (v2)[0]) && ((v1)[1] == (v2)[1]) && ((v1)[2] == (v2)[2]))
@@ -50,6 +85,7 @@ extern vec3_t vec3_origin;
 				 (double)(x)[1] * (double)(y)[1] + \
 				 (double)(x)[2] * (double)(y)[2])
 #define VectorLengthDBL(a)	sqrt(DotProductDBL((a), (a)))
+#define VectorLengthFast(a)	Q_sqrt(DotProduct((a),(a)))
 
 #define CrossProduct(v1,v2,cross)					\
 	do {								\
@@ -137,6 +173,17 @@ static inline float _inl_VectorNormalize (vec3_t v)
 	return length;
 }
 #define VectorNormalize(a)	_inl_VectorNormalize((a))
+
+static inline float _inl_VectorNormalizeFast (vec3_t v)
+{
+	float	d = DotProduct(v, v);
+	float	ilength = Q_rsqrt(d);
+	v[0] *= ilength;
+	v[1] *= ilength;
+	v[2] *= ilength;
+	return Q_sqrt(d);
+}
+#define VectorNormalizeFast(a)	_inl_VectorNormalizeFast((a))
 
 int Q_log2(int val);
 

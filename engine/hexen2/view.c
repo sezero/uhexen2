@@ -115,7 +115,7 @@ static float V_CalcBob (void)
 	// bob is proportional to velocity in the xy plane
 	// (don't count Z, or jumping messes it up)
 
-	bob = sqrt(cl.velocity[0]*cl.velocity[0] + cl.velocity[1]*cl.velocity[1]) * cl_bob.value;
+	bob = Q_sqrt(cl.velocity[0]*cl.velocity[0] + cl.velocity[1]*cl.velocity[1]) * cl_bob.value;
 	bob = bob*0.3 + bob*0.7*q_sinrad(cycle);
 	if (bob > 4)
 		bob = 4;
@@ -373,7 +373,7 @@ void V_ParseDamage (void)
 	ent = &cl_entities[cl.viewentity];
 
 	VectorSubtract (from, ent->origin, from);
-	VectorNormalize (from);
+	VectorNormalizeFast (from);
 
 	AngleVectors (ent->angles, forward, right, up);
 

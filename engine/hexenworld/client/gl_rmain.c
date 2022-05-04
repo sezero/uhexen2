@@ -833,7 +833,7 @@ static void R_DrawAliasModel (entity_t *e)
 			if (cl_dlights[lnum].die >= cl.time)
 			{
 				VectorSubtract (e->origin, cl_dlights[lnum].origin, dist);
-				add = cl_dlights[lnum].radius - VectorLength(dist);
+				add = cl_dlights[lnum].radius - VectorLengthFast(dist);
 				if (add > 0)
 				{
 					ambientlight += add;
@@ -1498,7 +1498,7 @@ static void R_DrawViewModel (void)
 			continue;
 
 		VectorSubtract (e->origin, dl->origin, dist);
-		add = dl->radius - VectorLength(dist);
+		add = dl->radius - VectorLengthFast(dist);
 		if (add > 0)
 		{
 			if (gl_lightmap_format == GL_RGBA)

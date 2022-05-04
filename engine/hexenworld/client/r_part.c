@@ -128,7 +128,7 @@ void R_DarkFieldParticles (entity_t *ent)
 				p->org[1] = org[1] + j + (rand() & 3);
 				p->org[2] = org[2] + k + (rand() & 3);
 
-				VectorNormalize (dir);
+				VectorNormalizeFast (dir);
 				vel = 50 + (rand() & 63);
 				VectorScale (dir, vel, p->vel);
 			}
@@ -819,7 +819,7 @@ void R_LavaSplash (vec3_t org)
 				p->org[1] = org[1] + dir[1];
 				p->org[2] = org[2] + (rand() & 63);
 
-				VectorNormalize (dir);
+				VectorNormalizeFast (dir);
 				vel = 50 + (rand() & 63);
 				VectorScale (dir, vel, p->vel);
 			}
@@ -865,7 +865,7 @@ void R_TargetBallEffect (vec3_t org)
 		p->org[1] = org[1] + (rand() & 3) - 2;
 		p->org[2] = org[2] + (rand() & 3);
 
-		VectorNormalize (dir);
+		VectorNormalizeFast (dir);
 		vel = 50 + (rand() & 63);
 		VectorScale (dir, vel, p->vel);
 	}
@@ -907,7 +907,7 @@ void R_BrightFieldSource (vec3_t org)
 	//	p->org[2] = org[2] + (rand() & 3);
 		p->org[2] = org[2] + height;
 
-		VectorNormalize (dir);
+		VectorNormalizeFast (dir);
 		vel = 70 + (rand() & 31);
 		VectorScale (dir, vel, p->vel);
 	}
@@ -931,7 +931,7 @@ void R_BrightFieldSource (vec3_t org)
 	//	p->org[2] = org[2] + (rand() & 3);
 		p->org[2] = org[2] - height;
 
-		VectorNormalize (dir);
+		VectorNormalizeFast (dir);
 		vel = 70 + (rand() & 31);
 		VectorScale (dir, vel, p->vel);
 	}
@@ -972,7 +972,7 @@ void R_TeleportSplash (vec3_t org)
 				p->org[1] = org[1] + j + (rand() & 3);
 				p->org[2] = org[2] + k + (rand() & 3);
 
-				VectorNormalize (dir);
+				VectorNormalizeFast (dir);
 				vel = 50 + (rand() & 63);
 				VectorScale (dir, vel, p->vel);
 			}
@@ -1045,7 +1045,7 @@ void R_SunStaffTrail(vec3_t source, vec3_t dest)
 	float		length, size;
 
 	VectorSubtract(dest, source, vec);
-	length = VectorNormalize(vec);
+	length = VectorNormalizeFast(vec);
 	dist[0] = vec[0];
 	dist[1] = vec[1];
 	dist[2] = vec[2];
@@ -1131,7 +1131,7 @@ void R_RocketTrail (vec3_t start, vec3_t end, int type)
 	static int tracercount;
 
 	VectorSubtract (end, start, vec);
-	len = VectorNormalize (vec);
+	len = VectorNormalizeFast (vec);
 	dist[0] = vec[0];
 	dist[1] = vec[1];
 	dist[2] = vec[2];

@@ -119,7 +119,7 @@ static float V_CalcBob (void)
 	// bob is proportional to simulated velocity in the xy plane
 	// (don't count Z, or jumping messes it up)
 
-	bob = sqrt(cl.simvel[0]*cl.simvel[0] + cl.simvel[1]*cl.simvel[1]) * cl_bob.value;
+	bob = Q_sqrt(cl.simvel[0]*cl.simvel[0] + cl.simvel[1]*cl.simvel[1]) * cl_bob.value;
 	bob = bob*0.3 + bob*0.7*q_sinrad(cycle);
 	if (bob > 4)
 		bob = 4;
@@ -403,7 +403,7 @@ void V_ParseDamage (void)
 // calculate view angle kicks
 //
 	VectorSubtract (from, cl.simorg, from);
-	VectorNormalize (from);
+	VectorNormalizeFast (from);
 
 	AngleVectors (cl.simangles, forward, right, up);
 
