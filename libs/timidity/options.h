@@ -81,6 +81,12 @@
    click removal. */
 #define MAX_DIE_TIME 20
 
+/* On some machines (especially PCs without math coprocessors),
+   looking up sine values in a table will be significantly faster than
+   computing them on the fly. Uncomment this to use lookups. */
+/* #define LOOKUP_SINE */
+
+
 /**************************************************************************/
 /* Anything below this shouldn't need to be changed unless you're porting
    to a new machine with other than 32-bit, big-endian words. */

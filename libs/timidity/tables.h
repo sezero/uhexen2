@@ -31,9 +31,13 @@
 #ifndef TIMIDITY_TABLES_H
 #define TIMIDITY_TABLES_H
 
+#ifdef LOOKUP_SINE
+extern float _timi_sine(int);
+#define timi_sine _timi_sine
+#else
 #include <math.h>
-
 #define timi_sine(x) (sin((2*M_PI/1024.0) * (x)))
+#endif
 
 #define SINE_CYCLE_LENGTH 1024
 
