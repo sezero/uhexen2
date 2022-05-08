@@ -140,7 +140,12 @@ static qboolean SV_RunThink (edict_t *ent)
 	float	thinktime;
 
 	thinktime = ent->v.nextthink;
+#ifdef PLATFORM_AMIGAOS3
+	// SV_SpawnServer race condition workaround for meso2 and romeric5
+	if (thinktime <= 0 || (thinktime + 0.0000001) > sv.time + host_frametime)
+#else
 	if (thinktime <= 0 || thinktime > sv.time + host_frametime)
+#endif
 		return true;
 
 	if (thinktime < sv.time)
@@ -1302,7 +1307,12 @@ static void SV_Physics_Pusher (edict_t *ent)
 			SV_PushMove (ent, movetime, true);	// advances ent->v.ltime if not blocked
 	}
 
+#ifdef PLATFORM_AMIGAOS3
+	// SV_SpawnServer race condition workaround for meso2 and romeric5
+	if (thinktime > oldltime && (thinktime - 0.00000001) <= ent->v.ltime)
+#else
 	if (thinktime > oldltime && thinktime <= ent->v.ltime)
+#endif
 	{
 		ent->v.nextthink = 0;
 		*sv_globals.time = sv.time;
