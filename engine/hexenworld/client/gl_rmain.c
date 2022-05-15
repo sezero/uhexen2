@@ -1302,11 +1302,11 @@ static void R_DrawGlow (entity_t *e)
 		VectorSubtract(lightorigin, r_origin, vp2);
 
 		// See if view is outside the light.
-		distance = VectorLength(vp2);
+		distance = VectorLengthFast(vp2);
 
 		if (distance > radius)
 		{
-			VectorNormalize(vp2);
+			VectorNormalizeFast(vp2);
 			glPushMatrix_fp();
 
 			// Translate the glow to coincide with the flame. KH
@@ -1339,8 +1339,7 @@ static void R_DrawGlow (entity_t *e)
 			if (clmodel->ex_flags & XF_TORCH_GLOW)
 			{
 				i = (int)(cl.time*10);
-				if (!cl_lightstyle[TORCH_STYLE].length)
-				{
+				if (!cl_lightstyle[TORCH_STYLE].length) {
 					j = 256;
 				}
 				else
@@ -1353,8 +1352,7 @@ static void R_DrawGlow (entity_t *e)
 			else if (clmodel->ex_flags & XF_MISSILE_GLOW)
 			{
 				i = (int)(cl.time*10);
-				if (!cl_lightstyle[MISSILE_STYLE].length)
-				{
+				if (!cl_lightstyle[MISSILE_STYLE].length) {
 					j = 256;
 				}
 				else
@@ -1367,8 +1365,7 @@ static void R_DrawGlow (entity_t *e)
 			else if (clmodel->ex_flags & XF_GLOW)
 			{
 				i = (int)(cl.time*10);
-				if (!cl_lightstyle[PULSE_STYLE].length)
-				{
+				if (!cl_lightstyle[PULSE_STYLE].length) {
 					j = 256;
 				}
 				else
