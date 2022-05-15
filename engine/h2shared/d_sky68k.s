@@ -147,9 +147,22 @@ _D_DrawSkyScans8
 		fadd    fp7,fp0                 ;fp0 = end[2] = wu*vright[2] * 3 + (vpn[2] + wv*vup[2]) * 3
 		fmul    fp0,fp0                 ;fp2 = end[2] * end[2]
 		fadd    fp0,fp2                 ;fp2 = end[0]*end[0] + end[1]*end[1] + end[2] * end[2]
-		fsqrt   fp2                     ;fp2 = length(end)
+		;fsqrt   fp2                     ;fp2 = length(end)
+; fast inverse square root
+		fmove.s fp2,d0                  ;d0 = -(t.i >> 1)
+		lsr.l   #1,d0
+		neg.l   d0
+		add.l   #1597463007,d0          ;d0 = d0 + 0x5f3759df
+		fmul.s  #0.5,fp2                ;fp2 = fp2 * 0.5f
+		fmul.s  d0,fp2                  ;fp2 = fp2 * t.f * t.f
+		fmul.s  d0,fp2
+		fneg.x  fp2                     ;fp2 = 1.5f - fp2
+		fadd.s  #1.5,fp2
+		fmul.s  d0,fp2                  ;fp2 = fp2 * t.f = 1/length(end)
+; fast inverse square root
 		fmove.s #(65536*6*(SKYSIZE/2-1)),fp0
-		fdiv    fp2,fp0                 ;6*(SKYSIZE/2-1) * 0x10000 / length(end)
+		;fdiv    fp2,fp0                 ;6*(SKYSIZE/2-1) * 0x10000 / length(end)
+		fmul    fp2,fp0                 ;6*(SKYSIZE/2-1) * 0x10000 * (1/length(end))
 		fmul    fp0,fp1                 ;fp1 = 6*(SKYSIZE/2-1)*end[0]
 		fmul    fp0,fp4                 ;fp4 = 6*(SKYSIZE/2-1)*end[1]
 		fmove.l fp1,d6
@@ -225,9 +238,22 @@ _D_DrawSkyScans8
 		fadd    fp7,fp0                 ;fp0 = end[2]
 		fmul    fp0,fp0
 		fadd    fp0,fp2
-		fsqrt   fp2                     ;fp2 = length(end)
+		;fsqrt   fp2                     ;fp2 = length(end)
+; fast inverse square root
+		fmove.s fp2,d0                  ;d0 = -(t.i >> 1)
+		lsr.l   #1,d0
+		neg.l   d0
+		add.l   #1597463007,d0          ;d0 = d0 + 0x5f3759df
+		fmul.s  #0.5,fp2                ;fp2 = fp2 * 0.5f
+		fmul.s  d0,fp2                  ;fp2 = fp2 * t.f * t.f
+		fmul.s  d0,fp2
+		fneg.x  fp2                     ;fp2 = 1.5f - fp2
+		fadd.s  #1.5,fp2
+		fmul.s  d0,fp2                  ;fp2 = fp2 * t.f = 1/length(end)
+; fast inverse square root
 		fmove.s #(65536*6*(SKYSIZE/2-1)),fp0
-		fdiv    fp2,fp0
+		;fdiv    fp2,fp0
+		fmul    fp2,fp0
 		fmul    fp0,fp1                 ;fp1 = 6*(SKYSIZE/2-1)*end[0]
 		fmul    fp0,fp4                 ;fp4 = 6*(SKYSIZE/2-1)*end[1]
 		fmove.l fp1,d4
@@ -269,9 +295,22 @@ _D_DrawSkyScans8
 		fadd    fp7,fp0                 ;fp0 = end[2]
 		fmul    fp0,fp0
 		fadd    fp0,fp2
-		fsqrt   fp2                     ;fp2 = length(end)
+		;fsqrt   fp2                     ;fp2 = length(end)
+; fast inverse square root
+		fmove.s fp2,d0                  ;d0 = -(t.i >> 1)
+		lsr.l   #1,d0
+		neg.l   d0
+		add.l   #1597463007,d0          ;d0 = d0 + 0x5f3759df
+		fmul.s  #0.5,fp2                ;fp2 = fp2 * 0.5f
+		fmul.s  d0,fp2                  ;fp2 = fp2 * t.f * t.f
+		fmul.s  d0,fp2
+		fneg.x  fp2                     ;fp2 = 1.5f - fp2
+		fadd.s  #1.5,fp2
+		fmul.s  d0,fp2                  ;fp2 = fp2 * t.f = 1/length(end)
+; fast inverse square root
 		fmove.s #(65536*6*(SKYSIZE/2-1)),fp0
-		fdiv    fp2,fp0
+		;fdiv    fp2,fp0
+		fmul    fp2,fp0
 		fmul    fp0,fp1                 ;fp1 = 6*(SKYSIZE/2-1)*end[0]
 		fmul    fp0,fp4                 ;fp4 = 6*(SKYSIZE/2-1)*end[1]
 		fmove.l fp1,d4
