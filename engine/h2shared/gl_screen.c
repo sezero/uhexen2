@@ -536,6 +536,11 @@ static void SCR_DrawFPS (void)
 	static int	oldframecount = 0;
 	double	elapsed_time;
 	int	frames;
+	char	st[16];
+	int	x, y;
+
+	if (!scr_showfps.integer)
+		return;
 
 	elapsed_time = realtime - oldtime;
 	frames = r_framecount - oldframecount;
@@ -554,16 +559,11 @@ static void SCR_DrawFPS (void)
 		oldframecount = r_framecount;
 	}
 
-	if (scr_showfps.integer)
-	{
-		char	st[16];
-		int	x, y;
-		sprintf(st, "%4.0f FPS", lastfps);
-		x = vid.width - strlen(st) * 8 - 8;
-		y = vid.height - sb_lines - 8;
-	//	Draw_TileClear(x, y, strlen(st) * 8, 8);
-		Draw_String(x, y, st);
-	}
+	sprintf(st, "%4.0f FPS", lastfps);
+	x = vid.width - strlen(st) * 8 - 8;
+	y = vid.height - sb_lines - 8;
+//	Draw_TileClear(x, y, strlen(st) * 8, 8);
+	Draw_String(x, y, st);
 }
 
 /*
