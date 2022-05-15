@@ -1335,6 +1335,9 @@ static void R_DrawAllGlows (void)
 	int		i;
 	entity_t	*e;
 
+	if (!gl_glows.integer && !gl_missile_glows.integer && !gl_other_glows.integer)
+		return;
+
 	if (!r_drawentities.integer)
 		return;
 
@@ -1348,14 +1351,8 @@ static void R_DrawAllGlows (void)
 	{
 		e = cl_visedicts[i];
 
-		switch (e->model->type)
-		{
-		case mod_alias:
+		if (e->model->type == mod_alias)
 			R_DrawGlow (e);
-			break;
-		default:
-			break;
-		}
 	}
 
 	glDisable_fp (GL_BLEND);
