@@ -607,6 +607,7 @@ static void R_DrawSurfaceBlock16 (void)
 
 //============================================================================
 
+#if 0
 /*
 ================
 R_GenTurbTile
@@ -695,4 +696,5 @@ void R_GenTile (msurface_t *psurf, void *pdest)
 		Sys_Error ("Unknown tile type");
 	}
 }
+#endif
 

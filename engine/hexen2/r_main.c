@@ -38,9 +38,11 @@ float		r_lasttime1 = 0;
 
 int		r_numallocatededges;
 
+#if 0
 qboolean	r_drawpolys;
 qboolean	r_drawculledpolys;
 qboolean	r_worldpolysbacktofront;
+#endif
 qboolean	r_recursiveaffinetriangles = true;
 
 int		r_pixbytes = 1;
@@ -1048,6 +1050,7 @@ static void R_DrawBEntitiesOnList (void)
 					}
 				}
 
+#if 0
 				// if the driver wants polygons, deliver those. Z-buffering is on
 				// at this point, so no clipping to the world tree is needed, just
 				// frustum clipping
@@ -1056,6 +1059,7 @@ static void R_DrawBEntitiesOnList (void)
 					R_ZDrawSubmodelPolys (clmodel);
 				}
 				else
+#endif
 				{
 					r_pefragtopnode = NULL;
 
@@ -1177,8 +1181,10 @@ static void R_EdgeDrawing (qboolean Translucent)
 		memcpy(surfaces,SaveSurfaces,SaveSurfacesCount * sizeof(surf_t));
 	}
 
+#if 0
 	if (r_drawculledpolys)
 		R_ScanEdges (Translucent);
+#endif
 
 // only the world can be drawn back to front with no z reads or compares, just
 // z writes, so have the driver turn z compares on now
@@ -1225,7 +1231,9 @@ static void R_EdgeDrawing (qboolean Translucent)
 		}
 	}
 
+#if 0
 	if (!(r_drawpolys | r_drawculledpolys))
+#endif
 		R_ScanEdges (Translucent);
 }
 

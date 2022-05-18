@@ -565,6 +565,7 @@ static void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 					if ((surf->flags & SURF_PLANEBACK) &&
 						(surf->visframe == r_framecount))
 					{
+#if 0
 						if (r_drawpolys)
 						{
 							if (r_worldpolysbacktofront)
@@ -582,6 +583,7 @@ static void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 							}
 						}
 						else
+#endif
 						{
 							R_RenderFace (surf, clipflags);
 						}
@@ -597,6 +599,7 @@ static void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 					if (!(surf->flags & SURF_PLANEBACK) &&
 						(surf->visframe == r_framecount))
 					{
+#if 0
 						if (r_drawpolys)
 						{
 							if (r_worldpolysbacktofront)
@@ -614,6 +617,7 @@ static void R_RecursiveWorldNode (mnode_t *node, int clipflags)
 							}
 						}
 						else
+#endif
 						{
 							R_RenderFace (surf, clipflags);
 						}
@@ -653,6 +657,7 @@ void R_RenderWorld (void)
 
 	R_RecursiveWorldNode (clmodel->nodes, 15);
 
+#if 0
 // if the driver wants the polygons back to front,
 // play the visible ones back in that order
 	if (r_worldpolysbacktofront)
@@ -662,5 +667,6 @@ void R_RenderWorld (void)
 			R_RenderPoly (btofpolys[i].psurf, btofpolys[i].clipflags);
 		}
 	}
+#endif
 }
 

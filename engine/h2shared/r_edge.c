@@ -80,6 +80,7 @@ static void R_LeadingEdgeBackwards (edge_t *edge);
 //=============================================================================
 
 
+#if 0
 /*
 ==============
 R_DrawCulledPolys
@@ -121,6 +122,7 @@ static void R_DrawCulledPolys (void)
 		}
 	}
 }
+#endif
 
 
 /*
@@ -1041,11 +1043,13 @@ void R_ScanEdges (qboolean Translucent)
 			S_ExtraUpdate ();	// don't let sound get messed up if going slow
 			VID_LockBuffer ();
 
+#if 0
 			if (r_drawculledpolys)
 			{
 				R_DrawCulledPolys ();
 			}
 			else
+#endif
 			{
 				D_DrawSurfaces (Translucent);
 			}
@@ -1084,9 +1088,11 @@ void R_ScanEdges (qboolean Translucent)
 		(*pdrawTfunc) ();
 
 	// draw whatever's left in the span list
+#if 0
 	if (r_drawculledpolys)
 		R_DrawCulledPolys ();
 	else
+#endif
 	{
 		D_DrawSurfaces (Translucent);
 	}

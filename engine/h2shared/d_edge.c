@@ -35,6 +35,7 @@ extern void	R_RotateBmodel (void);
 vec3_t		transformed_modelorg;
 
 
+#if 0
 /*
 ==============
 D_DrawPoly
@@ -45,6 +46,7 @@ void D_DrawPoly (void)
 {
 // this driver takes spans, not polygons
 }
+#endif
 
 
 /*

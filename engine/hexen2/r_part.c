@@ -242,6 +242,7 @@ void R_ReadPointFile_f (void)
 }
 
 
+#if 0	/* EF_BRIGHTFIELD used this */
 /*
 ===============
 R_EntityParticles
@@ -304,6 +305,7 @@ void R_EntityParticles (entity_t *ent)
 		p->org[2] = ent->origin[2] + r_avertexnormals[i][2]*dist + forward[2]*beamlength;
 	}
 }
+#endif
 
 
 /*

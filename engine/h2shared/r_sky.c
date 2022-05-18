@@ -157,6 +157,7 @@ void R_MakeSky (void)
 #endif /* !id68k */
 
 
+#if 0
 /*
 =================
 R_GenSkyTile
@@ -255,6 +256,7 @@ void R_GenSkyTile16 (void *pdest)
 		pnewsky += TILE_SIZE;
 	}
 }
+#endif
 
 
 /*

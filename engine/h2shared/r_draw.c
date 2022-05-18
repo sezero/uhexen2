@@ -691,6 +691,7 @@ void R_RenderBmodelFace (bedge_t *pedges, msurface_t *psurf)
 }
 
 
+#if 0
 /*
 ================
 R_RenderPoly
@@ -905,4 +906,5 @@ void R_ZDrawSubmodelPolys (qmodel_t *pmodel)
 		}
 	}
 }
+#endif
 
