@@ -644,7 +644,6 @@ R_RenderWorld
 */
 void R_RenderWorld (void)
 {
-	int			i;
 	qmodel_t	*clmodel;
 	btofpoly_t	btofpolys[MAX_BTOFPOLYS];
 
@@ -662,6 +661,7 @@ void R_RenderWorld (void)
 // play the visible ones back in that order
 	if (r_worldpolysbacktofront)
 	{
+		int	i;
 		for (i = numbtofpolys-1 ; i >= 0 ; i--)
 		{
 			R_RenderPoly (btofpolys[i].psurf, btofpolys[i].clipflags);
