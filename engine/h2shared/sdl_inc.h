@@ -34,20 +34,6 @@
 
 /* =================================================================
 Minimum required SDL versions:
-Although the 1.1.x series might work fine, we require at least 1.2.0
-=================================================================== */
-
-/* =================================================================
-if we are compiling against SDL-1.3.x, then require version 1.3.0 or
-newer at runtime, too.
-
-2010-01-27:
-SDL-1.3 is still in active development and its API hasn't solidified
-yet.  As of this writing, SDL-1.2 and 1.3 has some api differences:
-see, for example, SDL_GetMouseState() which is not binary compatible
-between SDL-1.2 / 1.3: http://forums.libsdl.org/viewtopic.php?t=5458
-For now, I am limiting our own requirement to the compiled version,
-hence the SDL_NEW_VERSION_REJECT macro below.
 =================================================================== */
 
 #if SDL_VERSION_ATLEAST(1,3,0)
@@ -57,8 +43,6 @@ hence the SDL_NEW_VERSION_REJECT macro below.
 #define SDL_MIN_Z	0
 
 #else	/* SDL-1.2.x */
-
-#define SDL_NEW_VERSION_REJECT	(SDL_VERSIONNUM(1,3,0))	/* reject 1.3.0 and newer at runtime. */
 
 #define SDL_MIN_X	1
 #define SDL_MIN_Y	2

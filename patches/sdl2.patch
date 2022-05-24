@@ -735,7 +735,7 @@ index a0ceeec..d768d2d 100644
  		case SDL_JOYBUTTONUP:
  			if (in_mode_set)
 diff --git a/engine/h2shared/sdl_inc.h b/engine/h2shared/sdl_inc.h
-index 5e44dd9..1055846 100644
+index 5fbb6e1..7136038 100644
 --- a/engine/h2shared/sdl_inc.h
 +++ b/engine/h2shared/sdl_inc.h
 @@ -24,12 +24,16 @@
@@ -757,7 +757,7 @@ index 5e44dd9..1055846 100644
  #endif
  
  /* =================================================================
-@@ -52,14 +56,20 @@ hence the SDL_NEW_VERSION_REJECT macro below.
+@@ -38,12 +42,18 @@ Minimum required SDL versions:
  
  #if SDL_VERSION_ATLEAST(1,3,0)
  
@@ -770,8 +770,6 @@ index 5e44dd9..1055846 100644
 +#define SDL_MIN_Z	5 /* vid_sdl.c requires 2.0.5 or newer */
  
  #else	/* SDL-1.2.x */
- 
- #define SDL_NEW_VERSION_REJECT	(SDL_VERSIONNUM(1,3,0))	/* reject 1.3.0 and newer at runtime. */
  
 +#if (SDLQUAKE > 1)
 +#error "SDLQUAKE defined as 2, but SDL version < 2."
@@ -1250,7 +1248,7 @@ index 7fa6d6b..8775038 100644
  		modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
  		if (is_fullscreen)
 diff --git a/engine/hexen2/Makefile b/engine/hexen2/Makefile
-index 4319a77..fb6e883 100644
+index 0773047..13c998d 100644
 --- a/engine/hexen2/Makefile
 +++ b/engine/hexen2/Makefile
 @@ -47,8 +47,17 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
@@ -1415,7 +1413,7 @@ index 4319a77..fb6e883 100644
  ifeq ($(USE_SDL),yes)
  SYSOBJ_INPUT := in_sdl.o
 diff --git a/engine/hexen2/Makefile.os2 b/engine/hexen2/Makefile.os2
-index 517899e..be7b7d9 100644
+index b411ab6..0350662 100644
 --- a/engine/hexen2/Makefile.os2
 +++ b/engine/hexen2/Makefile.os2
 @@ -25,6 +25,9 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
@@ -1463,7 +1461,7 @@ index 517899e..be7b7d9 100644
  LIBS    += $(SDL_LIBS)
  
 diff --git a/engine/hexen2/sys_os2.c b/engine/hexen2/sys_os2.c
-index 3db22bb..81e8419 100644
+index 835cda8..ee88f90 100644
 --- a/engine/hexen2/sys_os2.c
 +++ b/engine/hexen2/sys_os2.c
 @@ -448,8 +448,13 @@ static void Sys_CheckSDL (void)
@@ -1479,10 +1477,10 @@ index 3db22bb..81e8419 100644
  	sdl_version = SDL_Linked_Version();
 +#endif
  	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
- 	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
- 	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
+ #endif
+ }
 diff --git a/engine/hexen2/sys_unix.c b/engine/hexen2/sys_unix.c
-index cfe91b8..89502b1 100644
+index 66797df..f7554c5 100644
 --- a/engine/hexen2/sys_unix.c
 +++ b/engine/hexen2/sys_unix.c
 @@ -570,8 +570,13 @@ static void Sys_CheckSDL (void)
@@ -1498,10 +1496,10 @@ index cfe91b8..89502b1 100644
  	sdl_version = SDL_Linked_Version();
 +#endif
  	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
- 	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
- 	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
+ #endif
+ }
 diff --git a/engine/hexenworld/client/Makefile b/engine/hexenworld/client/Makefile
-index 2302824..c8190f1 100644
+index 8b240a8..c9c0a25 100644
 --- a/engine/hexenworld/client/Makefile
 +++ b/engine/hexenworld/client/Makefile
 @@ -49,8 +49,17 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
@@ -1654,7 +1652,7 @@ index 2302824..c8190f1 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -1467,8 +1502,10 @@ SYSOBJ_GL_VID:= gl_vidsdl.o
+@@ -1468,8 +1503,10 @@ SYSOBJ_GL_VID:= gl_vidsdl.o
  SYSOBJ_SOFT_VID:= vid_sdl.o
  SYSOBJ_SYS := sys_unix.o
  SYSOBJ_SYS += sys_osx.o
@@ -1666,7 +1664,7 @@ index 2302824..c8190f1 100644
  ifeq ($(USE_SDL),yes)
  SYSOBJ_INPUT := in_sdl.o
 diff --git a/engine/hexenworld/client/Makefile.os2 b/engine/hexenworld/client/Makefile.os2
-index 7aa4775..f612b7b 100644
+index f1c79a6..a319b23 100644
 --- a/engine/hexenworld/client/Makefile.os2
 +++ b/engine/hexenworld/client/Makefile.os2
 @@ -29,6 +29,9 @@ OSLIBS=$(UHEXEN2_TOP)/oslibs
@@ -1714,7 +1712,7 @@ index 7aa4775..f612b7b 100644
  LIBS    += $(SDL_LIBS)
  
 diff --git a/engine/hexenworld/client/sys_os2.c b/engine/hexenworld/client/sys_os2.c
-index dc4faf0..9324f51 100644
+index a93a3ec..18f3468 100644
 --- a/engine/hexenworld/client/sys_os2.c
 +++ b/engine/hexenworld/client/sys_os2.c
 @@ -381,8 +381,13 @@ static void Sys_CheckSDL (void)
@@ -1730,10 +1728,10 @@ index dc4faf0..9324f51 100644
  	sdl_version = SDL_Linked_Version();
 +#endif
  	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
- 	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
- 	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
+ #endif
+ }
 diff --git a/engine/hexenworld/client/sys_unix.c b/engine/hexenworld/client/sys_unix.c
-index 9bf5f30..e24e508 100644
+index 5e26c7f..9552a35 100644
 --- a/engine/hexenworld/client/sys_unix.c
 +++ b/engine/hexenworld/client/sys_unix.c
 @@ -515,8 +515,13 @@ static void Sys_CheckSDL (void)
@@ -1749,5 +1747,5 @@ index 9bf5f30..e24e508 100644
  	sdl_version = SDL_Linked_Version();
 +#endif
  	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
- 	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
- 	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
+ #endif
+ }
