@@ -788,7 +788,7 @@ void() ballista_fire = [++ 1 .. 30 ]
 void ballista_think()
 {
 	entity targ;
-	float pitchmod,checklooped,bestdist,lastdist;
+	float pitchmod,bestdist,lastdist;
 	vector my_pitch, ideal_pitch;
 
 	if(!self.enemy||!visible(self.enemy)||!self.enemy.flags2&FL_ALIVE&&!self.enemy.artifact_active&ART_INVISIBILITY&&!self.enemy.artifact_active&ART_INVINCIBILITY)
@@ -796,9 +796,11 @@ void ballista_think()
 //		dprint("looking\n");
 		self.enemy=targ = world;
 		bestdist=9999;
-		while(!checklooped)
+		loop
 		{	
 			targ = find (targ, classname, "player");
+			if(targ==world)
+				break;
 			if(visible(targ)&&targ.flags2&FL_ALIVE&&!targ.artifact_active&ART_INVISIBILITY&&!targ.artifact_active&ART_INVINCIBILITY)
 			{
 				lastdist=vlen(targ.origin-self.origin);
@@ -809,8 +811,6 @@ void ballista_think()
 					self.enemy=targ;
 				}
 			}
-			if(targ==world)
-				checklooped=TRUE;
 		}
 	}
 
