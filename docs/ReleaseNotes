@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.10: (Apr. 23, 2022.)
+Changes in v1.5.10: (July 02, 2022.)
 ========================================================================
 
 This is a minor bug fix and maintenance release:
@@ -27,6 +27,8 @@ This is a minor bug fix and maintenance release:
 - Software renderer: replaced client sin/cos calls with precomputed
   table lookups for better performance especially on old hardware.
 
+- More performance tweaks mostly targeting the software renderer.
+
 - Windows, midi: Fixed volume reseting after loop (sf.net bug 66.)
 
 - Improvements to mp3 tag detection / skipping.
@@ -50,6 +52,8 @@ This is a minor bug fix and maintenance release:
   dropped support for VBCC compiler.
 
 - AROS: initial x86_64 support.
+
+- All platforms: Several HexenC (hcode) tweaks and clean-ups.
 
 - Multiple minor fixes, tidy-ups, and protability tweaks, and updates
   to third-party libraries.
