@@ -26,8 +26,8 @@
 #include "hashindex.h"
 #include "hwal.h"
 
-qmodel_t	*loadmodel;
-static char	loadname[MAX_QPATH];	// for hunk tags
+static qmodel_t*	loadmodel;
+static char	loadname[MAX_QPATH];	/* for hunk tags */
 
 static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash);
 static void Mod_LoadSpriteModel (qmodel_t *mod, void *buffer);
@@ -1270,7 +1270,7 @@ static void Mod_SetDrawingFlags(msurface_t *out)
 	{
 		out->flags |= (SURF_DRAWSKY | SURF_DRAWTILED);
 		#ifndef QUAKE2
-		GL_SubdivideSurface (out);	// cut up polygon for warps
+		GL_SubdivideSurface (loadmodel, out);	// cut up polygon for warps
 		#endif
 		return;
 	}
@@ -1284,7 +1284,7 @@ static void Mod_SetDrawingFlags(msurface_t *out)
 			out->texturemins[i] = -8192;
 		}
 
-		GL_SubdivideSurface (out);	// cut up polygon for warps
+		GL_SubdivideSurface (loadmodel, out);	// cut up polygon for warps
 
 		if (!q_strncasecmp(out->texinfo->texture->name,"*rtex078",8) ||
 		    !q_strncasecmp(out->texinfo->texture->name,"*lowlight",9) )

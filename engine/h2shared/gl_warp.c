@@ -20,8 +20,6 @@
 
 #include "quakedef.h"
 
-extern	qmodel_t	*loadmodel;
-
 int		skytexturenum;
 
 static GLuint	solidskytexture, alphaskytexture;
@@ -143,7 +141,7 @@ boundaries so that turbulent and sky warps
 can be done reasonably.
 ================
 */
-void GL_SubdivideSurface (msurface_t *fa)
+void GL_SubdivideSurface (qmodel_t *mod, msurface_t *fa)
 {
 	vec3_t		verts[64];
 	int		numverts;
@@ -159,12 +157,12 @@ void GL_SubdivideSurface (msurface_t *fa)
 	numverts = 0;
 	for (i = 0; i < fa->numedges; i++)
 	{
-		lindex = loadmodel->surfedges[fa->firstedge + i];
+		lindex = mod->surfedges[fa->firstedge + i];
 
 		if (lindex > 0)
-			vec = loadmodel->vertexes[loadmodel->edges[lindex].v[0]].position;
+			vec = mod->vertexes[mod->edges[lindex].v[0]].position;
 		else
-			vec = loadmodel->vertexes[loadmodel->edges[-lindex].v[1]].position;
+			vec = mod->vertexes[mod->edges[-lindex].v[1]].position;
 		VectorCopy (vec, verts[numverts]);
 		numverts++;
 	}
@@ -1156,4 +1154,3 @@ void R_InitSky (texture_t *mt)
 
 	alphaskytexture = GL_LoadTexture("lowsky", (byte *)trans, 128, 128, TEX_ALPHA|TEX_RGBA|TEX_LINEAR);
 }
-

@@ -27,8 +27,8 @@
 #include "hwal.h"
 #include "r_local.h"
 
-qmodel_t	*loadmodel;
-static char	loadname[MAX_QPATH];	// for hunk tags
+static qmodel_t*	loadmodel;
+static char	loadname[MAX_QPATH];	/* for hunk tags */
 
 static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash);
 static void Mod_LoadSpriteModel (qmodel_t *mod, void *buffer);

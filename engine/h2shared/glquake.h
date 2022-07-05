@@ -323,7 +323,7 @@ void R_LoadSkys (void);
 void R_DrawSkyBox (void);
 void R_ClearSkyBox (void);
 #endif
-void GL_SubdivideSurface (msurface_t *fa);
+void GL_SubdivideSurface (qmodel_t *m, msurface_t *fa);
 void EmitWaterPolys (msurface_t *fa);
 void EmitBothSkyLayers (msurface_t *fa);
 void R_DrawSkyChain (msurface_t *s);
