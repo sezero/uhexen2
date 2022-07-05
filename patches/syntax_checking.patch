@@ -13,10 +13,10 @@ stevenaaus@yahoo.com
 
 
 diff --git a/engine/hexen2/sys_unix.c b/engine/hexen2/sys_unix.c
-index b5b3da1..8c305ac 100644
+index 66797df..4e4461f 100644
 --- a/engine/hexen2/sys_unix.c
 +++ b/engine/hexen2/sys_unix.c
-@@ -595,65 +595,267 @@ static void PrintVersion (void)
+@@ -584,65 +584,267 @@ static void PrintVersion (void)
  }
  
  #include "snd_sys.h"
@@ -314,7 +314,7 @@ index b5b3da1..8c305ac 100644
  }
  
  /*
-@@ -676,23 +878,7 @@ int main (int argc, char **argv)
+@@ -665,23 +867,7 @@ int main (int argc, char **argv)
  
  	PrintVersion();
  

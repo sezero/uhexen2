@@ -18,10 +18,10 @@ an adaptation of it to uhexen2 v1.5.10. Providing the patch here so that
 it won't get lost.
 
 diff --git a/engine/h2shared/draw.c b/engine/h2shared/draw.c
-index def24b7..368a6ce 100644
+index 403e47f..22530f1 100644
 --- a/engine/h2shared/draw.c
 +++ b/engine/h2shared/draw.c
-@@ -447,6 +447,93 @@ void Draw_Character (int x, int y, unsigned int num)
+@@ -465,6 +465,93 @@ void Draw_Character (int x, int y, unsigned int num)
  	}
  }
  
@@ -115,7 +115,7 @@ index def24b7..368a6ce 100644
  /*
  ================
  Draw_String
-@@ -680,6 +767,107 @@ void Draw_SmallCharacter (int x, int y, int num)
+@@ -698,6 +785,107 @@ void Draw_SmallCharacter (int x, int y, int num)
  	}
  }
  
@@ -223,7 +223,7 @@ index def24b7..368a6ce 100644
  //==========================================================================
  //
  // Draw_SmallString
-@@ -696,6 +884,16 @@ void Draw_SmallString (int x, int y, const char *str)
+@@ -714,6 +902,16 @@ void Draw_SmallString (int x, int y, const char *str)
  	}
  }
  
@@ -240,7 +240,7 @@ index def24b7..368a6ce 100644
  //==========================================================================
  //
  // Draw_BigCharacter
-@@ -728,6 +926,34 @@ void Draw_BigCharacter (int x, int y, int num)
+@@ -746,6 +944,34 @@ void Draw_BigCharacter (int x, int y, int num)
  	}
  }
  
@@ -275,7 +275,7 @@ index def24b7..368a6ce 100644
  
  /*
  =============
-@@ -775,6 +1001,54 @@ void Draw_Pic (int x, int y, qpic_t *pic)
+@@ -793,6 +1019,54 @@ void Draw_Pic (int x, int y, qpic_t *pic)
  	}
  }
  
@@ -330,7 +330,7 @@ index def24b7..368a6ce 100644
  
  //==========================================================================
  //
-@@ -871,6 +1145,78 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
+@@ -889,6 +1163,78 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
  	}
  }
  
@@ -409,7 +409,7 @@ index def24b7..368a6ce 100644
  /*
  =============
  Draw_TransPic
-@@ -957,6 +1303,78 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
+@@ -975,6 +1321,78 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
  	}
  }
  
@@ -488,7 +488,7 @@ index def24b7..368a6ce 100644
  
  //==========================================================================
  //
-@@ -1258,6 +1676,100 @@ void Draw_TransPicCropped (int x, int y, qpic_t *pic)
+@@ -1276,6 +1694,100 @@ void Draw_TransPicCropped (int x, int y, qpic_t *pic)
  	}
  }
  
@@ -589,7 +589,7 @@ index def24b7..368a6ce 100644
  
  /*
  =============
-@@ -1400,7 +1912,7 @@ static void Draw_ConsoleVersionInfo (int lines)
+@@ -1418,7 +1930,7 @@ static void Draw_ConsoleVersionInfo (int lines)
  {
  	static const char ver[] = ENGINE_WATERMARK;
  	const char *ptr = ver;
@@ -598,7 +598,7 @@ index def24b7..368a6ce 100644
  	int y = lines - 14;
  	for (; *ptr; ++ptr)
  		Draw_Character (x + (int)(ptr - ver) * 8, y, *ptr | 0x100);
-@@ -1428,22 +1940,22 @@ void Draw_ConsoleBackground (int lines)
+@@ -1446,22 +1958,22 @@ void Draw_ConsoleBackground (int lines)
  	if (r_pixbytes == 1)
  	{
  		byte *dest = vid.conbuffer;
@@ -626,7 +626,7 @@ index def24b7..368a6ce 100644
  				{
  					dest[x] = src[f>>16];
  					f += fstep;
-@@ -1456,7 +1968,7 @@ void Draw_ConsoleBackground (int lines)
+@@ -1474,7 +1986,7 @@ void Draw_ConsoleBackground (int lines)
  				}
  				break;
  			case 1:
@@ -635,7 +635,7 @@ index def24b7..368a6ce 100644
  				{
  					dest[x] = mainTransTable[(((unsigned int)dest[x])<<8) + src[f>>16]];
  					f += fstep;
-@@ -1469,7 +1981,7 @@ void Draw_ConsoleBackground (int lines)
+@@ -1487,7 +1999,7 @@ void Draw_ConsoleBackground (int lines)
  				}
  				break;
  			case 2:
@@ -644,7 +644,7 @@ index def24b7..368a6ce 100644
  				{
  					dest[x] = mainTransTable[(((unsigned int)src[f>>16])<<8) + dest[x]];
  					f += fstep;
-@@ -1487,17 +1999,17 @@ void Draw_ConsoleBackground (int lines)
+@@ -1505,17 +2017,17 @@ void Draw_ConsoleBackground (int lines)
  	else /* r_pixbytes == 2 */
  	{
  		unsigned short *dest = (unsigned short *)vid.conbuffer;
@@ -665,7 +665,7 @@ index def24b7..368a6ce 100644
  			{
  				dest[x] = d_8to16table[src[f>>16]];
  				f += fstep;
-@@ -1767,6 +2279,70 @@ void Draw_Fill (int x, int y, int w, int h, int c)
+@@ -1785,6 +2297,70 @@ void Draw_Fill (int x, int y, int w, int h, int c)
  	}
  }
  
@@ -777,10 +777,10 @@ index df54a5c..1944a40 100644
  /* game/engine name to draw on the console */
  #define GAME_MOD_NAME		ENGINE_NAME
 diff --git a/engine/h2shared/gl_draw.c b/engine/h2shared/gl_draw.c
-index b18ef36..65fd439 100644
+index 78e989e..ce6547e 100644
 --- a/engine/h2shared/gl_draw.c
 +++ b/engine/h2shared/gl_draw.c
-@@ -601,6 +601,41 @@ void Draw_Character (int x, int y, unsigned int num)
+@@ -614,6 +614,41 @@ void Draw_Character (int x, int y, unsigned int num)
  	glEnd_fp ();
  }
  
@@ -822,7 +822,7 @@ index b18ef36..65fd439 100644
  /*
  ================
  Draw_String
-@@ -729,6 +764,56 @@ void Draw_SmallCharacter (int x, int y, int num)
+@@ -742,6 +777,56 @@ void Draw_SmallCharacter (int x, int y, int num)
  	glEnd_fp ();
  }
  
@@ -879,7 +879,7 @@ index b18ef36..65fd439 100644
  //==========================================================================
  //
  // Draw_SmallString
-@@ -744,6 +829,16 @@ void Draw_SmallString (int x, int y, const char *str)
+@@ -757,6 +842,16 @@ void Draw_SmallString (int x, int y, const char *str)
  	}
  }
  
@@ -896,7 +896,7 @@ index b18ef36..65fd439 100644
  //==========================================================================
  //
  // Draw_BigCharacter
-@@ -778,6 +873,33 @@ void Draw_BigCharacter (int x, int y, int num)
+@@ -791,6 +886,33 @@ void Draw_BigCharacter (int x, int y, int num)
  	glEnd_fp ();
  }
  
@@ -930,7 +930,7 @@ index b18ef36..65fd439 100644
  
  /*
  =============
-@@ -810,6 +932,32 @@ void Draw_Pic (int x, int y, qpic_t *pic)
+@@ -823,6 +945,32 @@ void Draw_Pic (int x, int y, qpic_t *pic)
  	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
  }
  
@@ -963,7 +963,7 @@ index b18ef36..65fd439 100644
  /*
  =============
  Draw_AlphaPic
-@@ -1013,6 +1161,59 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
+@@ -1030,6 +1178,59 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
  	glEnd_fp ();
  }
  
@@ -1023,7 +1023,7 @@ index b18ef36..65fd439 100644
  void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
  {
  	int		height;
-@@ -1087,11 +1288,27 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
+@@ -1104,11 +1305,27 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
  	Draw_Pic (x, y, pic);
  }
  
@@ -1052,7 +1052,7 @@ index b18ef36..65fd439 100644
  =============
  Draw_TransPicTranslate
 diff --git a/engine/h2shared/gl_screen.c b/engine/h2shared/gl_screen.c
-index c4d7ddd..e57a0e4 100644
+index 93519ff..f324ddd 100644
 --- a/engine/h2shared/gl_screen.c
 +++ b/engine/h2shared/gl_screen.c
 @@ -361,7 +361,7 @@ static void SCR_CalcRefdef (void)
@@ -1065,7 +1065,7 @@ index c4d7ddd..e57a0e4 100644
  	size = scr_viewsize.integer > 100 ? 100.0 : scr_viewsize.integer;
  	if (cl.intermission)
 diff --git a/engine/h2shared/screen.c b/engine/h2shared/screen.c
-index a759e6a..49449ff 100644
+index 100cbb9..ed6c37e 100644
 --- a/engine/h2shared/screen.c
 +++ b/engine/h2shared/screen.c
 @@ -271,7 +271,7 @@ static void SCR_DrawCenterString (void)
@@ -1280,7 +1280,7 @@ index 4f7cf0b..ccc63e2 100644
  	}
  
 diff --git a/engine/hexen2/menu.c b/engine/hexen2/menu.c
-index 9759186..bc96af7 100644
+index 76bc30e..a5e1c1a 100644
 --- a/engine/hexen2/menu.c
 +++ b/engine/hexen2/menu.c
 @@ -207,7 +207,7 @@ Draws one solid graphics character, centered, on line

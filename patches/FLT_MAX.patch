@@ -18,10 +18,10 @@ index e89b60d..e508ba1 100644
  
  	for (i = 0; i < r_spritedesc.nump; i++)
 diff --git a/engine/h2shared/gl_model.c b/engine/h2shared/gl_model.c
-index fbf3671..cfad3b6 100644
+index 4a33c89..c0dd3bf 100644
 --- a/engine/h2shared/gl_model.c
 +++ b/engine/h2shared/gl_model.c
-@@ -1073,8 +1073,8 @@ static void CalcSurfaceExtents (msurface_t *s)
+@@ -1091,8 +1091,8 @@ static void CalcSurfaceExtents (msurface_t *s)
  	mtexinfo_t	*tex;
  	int		bmins[2], bmaxs[2];
  
@@ -33,10 +33,10 @@ index fbf3671..cfad3b6 100644
  	tex = s->texinfo;
  
 diff --git a/engine/h2shared/gl_warp.c b/engine/h2shared/gl_warp.c
-index 317bbfc..9c27d7f 100644
+index 58f95f5..f442046 100644
 --- a/engine/h2shared/gl_warp.c
 +++ b/engine/h2shared/gl_warp.c
-@@ -36,8 +36,8 @@ static void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
+@@ -34,8 +34,8 @@ static void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
  	int		i, j;
  	float	*v;
  
@@ -47,7 +47,7 @@ index 317bbfc..9c27d7f 100644
  	v = verts;
  	for (i = 0; i < numverts; i++)
  	{
-@@ -1009,8 +1009,8 @@ void R_ClearSkyBox (void)
+@@ -1007,8 +1007,8 @@ void R_ClearSkyBox (void)
  
  	for (i = 0; i < 6; i++)
  	{
@@ -59,7 +59,7 @@ index 317bbfc..9c27d7f 100644
  }
  
 diff --git a/engine/h2shared/mathlib.h b/engine/h2shared/mathlib.h
-index 8f64337..d89d5c4 100644
+index ab2a64b..3d3395d 100644
 --- a/engine/h2shared/mathlib.h
 +++ b/engine/h2shared/mathlib.h
 @@ -23,6 +23,7 @@
@@ -71,10 +71,10 @@ index 8f64337..d89d5c4 100644
  
  #ifndef M_PI
 diff --git a/engine/h2shared/model.c b/engine/h2shared/model.c
-index fa11368..a6427d5 100644
+index 34f0c04..fb58eb0 100644
 --- a/engine/h2shared/model.c
 +++ b/engine/h2shared/model.c
-@@ -870,8 +870,8 @@ static void CalcSurfaceExtents (msurface_t *s)
+@@ -881,8 +881,8 @@ static void CalcSurfaceExtents (msurface_t *s)
  	mtexinfo_t	*tex;
  	int		bmins[2], bmaxs[2];
  
@@ -86,7 +86,7 @@ index fa11368..a6427d5 100644
  	tex = s->texinfo;
  
 diff --git a/engine/h2shared/pr_cmds.c b/engine/h2shared/pr_cmds.c
-index 9bb2c3b..f3f4be7 100644
+index 8f8f46f..1c9e23c 100644
 --- a/engine/h2shared/pr_cmds.c
 +++ b/engine/h2shared/pr_cmds.c
 @@ -229,8 +229,8 @@ static void SetMinMaxSize (edict_t *e, float *minvec, float *maxvec, qboolean ro
@@ -101,7 +101,7 @@ index 9bb2c3b..f3f4be7 100644
  		for (i = 0; i <= 1; i++)
  		{
 diff --git a/engine/h2shared/sv_model.c b/engine/h2shared/sv_model.c
-index b52216e..51f0bb1 100644
+index 40d818e..36c7695 100644
 --- a/engine/h2shared/sv_model.c
 +++ b/engine/h2shared/sv_model.c
 @@ -508,8 +508,8 @@ static void CalcSurfaceExtents (msurface_t *s, int firstedge, int numedges)
@@ -116,10 +116,10 @@ index b52216e..51f0bb1 100644
  	tex = s->texinfo;
  
 diff --git a/engine/hexen2/r_main.c b/engine/hexen2/r_main.c
-index 1c5eeec..4ad8ef4 100644
+index 246ca0b..257194b 100644
 --- a/engine/hexen2/r_main.c
 +++ b/engine/hexen2/r_main.c
-@@ -945,8 +945,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
+@@ -947,8 +947,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
  
  	for (i = 0; i < 3; i++)
  	{
@@ -146,10 +146,10 @@ index c95439a..779f23d 100644
  	int		i;
  
 diff --git a/engine/hexenworld/client/r_main.c b/engine/hexenworld/client/r_main.c
-index a550c8d..4ea30ca 100644
+index 3134e9d..0852e43 100644
 --- a/engine/hexenworld/client/r_main.c
 +++ b/engine/hexenworld/client/r_main.c
-@@ -974,8 +974,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
+@@ -976,8 +976,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
  
  	for (i = 0; i < 3; i++)
  	{

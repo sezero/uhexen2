@@ -1,6 +1,7 @@
 
 Basic experimental fog code extracted from jshexen2 (activate with
 "gl_fog 1", see the cvars for other options):
+
 - underwater fogging removed
 - no menu entries in Options :: OpenGL Features, yet
 - slightly cleaned-up according to original quake code
@@ -39,7 +40,7 @@ index f51975c..2ef3f6a 100644
  #define glBlendFunc_fp		glBlendFunc
  #define glShadeModel_fp		glShadeModel
 diff --git a/engine/h2shared/gl_rlight.c b/engine/h2shared/gl_rlight.c
-index 788eed3..2bc6824 100644
+index 56e5406..f8873e7 100644
 --- a/engine/h2shared/gl_rlight.c
 +++ b/engine/h2shared/gl_rlight.c
 @@ -175,6 +175,10 @@ void R_RenderDlights (void)
@@ -64,7 +65,7 @@ index 788eed3..2bc6824 100644
  
  
 diff --git a/engine/h2shared/glquake.h b/engine/h2shared/glquake.h
-index 128aeb0..cc73912 100644
+index 04232df..0c8437c 100644
 --- a/engine/h2shared/glquake.h
 +++ b/engine/h2shared/glquake.h
 @@ -260,6 +260,16 @@ extern	cvar_t	gl_glows;
@@ -85,7 +86,7 @@ index 128aeb0..cc73912 100644
  extern	cvar_t	gl_colored_dynamic_lights;
  extern	cvar_t	gl_extra_dynamic_lights;
 diff --git a/engine/hexen2/gl_rmain.c b/engine/hexen2/gl_rmain.c
-index 89d2f82..f7fae66 100644
+index 971f5b0..a7721ea 100644
 --- a/engine/hexen2/gl_rmain.c
 +++ b/engine/hexen2/gl_rmain.c
 @@ -44,6 +44,8 @@ mplane_t	*mirror_plane;
@@ -122,8 +123,8 @@ index 89d2f82..f7fae66 100644
  	glDepthMask_fp (0);
  	glDisable_fp (GL_TEXTURE_2D);
  	glShadeModel_fp (GL_SMOOTH);
-@@ -1358,6 +1371,9 @@ static void R_DrawAllGlows (void)
- 		}
+@@ -1352,6 +1365,9 @@ static void R_DrawAllGlows (void)
+ 			R_DrawGlow (e);
  	}
  
 +	if (gl_fogenable.integer)
@@ -132,7 +133,7 @@ index 89d2f82..f7fae66 100644
  	glDisable_fp (GL_BLEND);
  	glEnable_fp (GL_TEXTURE_2D);
  	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-@@ -1784,6 +1800,23 @@ static void R_RenderScene (void)
+@@ -1778,6 +1794,23 @@ static void R_RenderScene (void)
  
  	R_MarkLeaves ();	// done here so we know if we're in water
  
@@ -156,7 +157,7 @@ index 89d2f82..f7fae66 100644
  	R_DrawWorld ();		// adds static entities to the list
  
  	S_ExtraUpdate ();	// don't let sound get messed up if going slow
-@@ -1792,6 +1825,8 @@ static void R_RenderScene (void)
+@@ -1786,6 +1819,8 @@ static void R_RenderScene (void)
  
  	R_DrawAllGlows();
  
@@ -165,7 +166,7 @@ index 89d2f82..f7fae66 100644
  	R_RenderDlights ();
  }
  
-@@ -1987,6 +2022,39 @@ void R_RenderView (void)
+@@ -1981,6 +2016,39 @@ void R_RenderView (void)
  
  	R_Clear ();
  
@@ -205,7 +206,7 @@ index 89d2f82..f7fae66 100644
  	// render normal view
  	R_RenderScene ();
  
-@@ -2002,6 +2070,9 @@ void R_RenderView (void)
+@@ -1996,6 +2064,9 @@ void R_RenderView (void)
  
  	R_DrawViewModel();
  
@@ -215,7 +216,7 @@ index 89d2f82..f7fae66 100644
  	// render mirror view
  	R_Mirror ();
  
-@@ -2009,5 +2080,7 @@ void R_RenderView (void)
+@@ -2003,5 +2074,7 @@ void R_RenderView (void)
  
  	if (r_speeds.integer)
  		R_PrintTimes ();
@@ -224,10 +225,10 @@ index 89d2f82..f7fae66 100644
  }
  
 diff --git a/engine/hexen2/gl_rmisc.c b/engine/hexen2/gl_rmisc.c
-index 2876490..cb76c37 100644
+index 629ff36..c582352 100644
 --- a/engine/hexen2/gl_rmisc.c
 +++ b/engine/hexen2/gl_rmisc.c
-@@ -246,6 +246,15 @@ void R_Init (void)
+@@ -249,6 +249,15 @@ void R_Init (void)
  	Cvar_RegisterVariable (&gl_missile_glows);
  	Cvar_RegisterVariable (&gl_other_glows);
  
