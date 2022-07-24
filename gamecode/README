@@ -4,6 +4,31 @@ Hexen II: Hammer of Thyrion (uHexen2) - GAMECODE
 Changes
 -------
 
+2022-06-12 (1.29c):
+===================
+- object.hc(ballista_think): break early from loop if find() returns world
+  also change the while(){} into a loop{} .
+- cache the pointcontents() result in a local var.
+- portals: fix possible 'sticky fingers' issue (99999999999....): replaced
+  those two with 99999999:
+  trigger_stop_use is used by the wheel of time in tibet5.bsp: it used to
+  set its nextthink to (time + -727379968.0), it's now (time + 100000000).
+  HomeThink() used to set the t_width field of Succubus' lightning ball to
+  time + 276447232.0, it now sets it to time + 100000000.0.
+- break if constructs checking SFL_CROSS_TRIGGER_x into small parts.
+  also use SFL_CROSS_TRIGGERS instead of OR'ing the individual constants
+  at runtime.
+- items.hc, triggers.hc: break the if contruct in client_has_piece()
+  into smaller parts and use SFL_CROSS_TRIGGERS in hub_intermission_use()
+- impulse.hc (ImpulseCommands): early return if self.impulse == 0.  also
+  remove the 'else' cases where the parent 'if' does return.
+- commented out a lot of unused constants, also the unused attck_cnt.
+- objects.hc: bitset / bitclear clean-ups for FL_ONGROUND, DRF_TRANSLUCENT,
+  MLS_ABSLIGHT and SCALE_ORIGIN_BOTTOM.
+- check_monsterspawn_ok(): changed FL_SUMMONED bitset from += to (+)
+- client.hc (ClientObituary): return from every attacker.classname match.
+- multiple removal of 'else' cases where the parent 'if' does return.
+
 2018-02-20 (1.29b):
 ===================
 - soul.hc (necro_soul_touch): Necromancer soul devour no longer prints

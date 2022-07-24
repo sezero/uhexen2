@@ -49,7 +49,7 @@
 # all build options passed to makefile
 %define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{mp3_libraryopt} %{ogg_buildopt} %{opus_buildopt} %{flac_buildopt} %{mikmod_buildopt} %{umx_buildopt}
 
-%define gamecode_ver	1.29b
+%define gamecode_ver	1.29c
 
 Name:		hexen2
 License:	GPLv2
@@ -59,7 +59,6 @@ Release:	1
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
 Source:		http://download.sourceforge.net/uhexen2/hexen2source-%{version}.tgz
-#Source1:	http://download.sourceforge.net/uhexen2/gamedata-src-%{gamecode_ver}.tgz
 Source1:	http://download.sourceforge.net/uhexen2/hexen2source-gamecode-%{version}.tgz
 Source2:	http://download.sourceforge.net/uhexen2/hexenworld-pakfiles-0.15.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -319,8 +318,9 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Fri Nov 01 2019 O.Sezer <sezero@users.sourceforge.net> 1.5.10-1
+* Sun Jul 24 2022 O.Sezer <sezero@users.sourceforge.net> 1.5.10-1
 - Version 1.5.10.
+- Bump gamecode version to 1.29c
 
 * Tue Feb 20 2018 O.Sezer <sezero@users.sourceforge.net> 1.5.9-1
 - Version 1.5.9.
