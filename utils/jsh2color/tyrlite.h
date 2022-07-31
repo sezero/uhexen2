@@ -40,15 +40,12 @@ extern	vec3_t		bsp_origin;
 
 extern	qboolean	extrasamples;
 
-//void	TransformSample (vec3_t in, vec3_t out);
-//void	RotateSample (vec3_t in, vec3_t out);
-//void	LoadNodes (char *file);
-
 qboolean TestLine (const vec3_t start, const vec3_t stop);
 void	TestLightFace (int surfnum, const vec3_t faceoffset);
+void	TestLightFace2 (int surfnum, const vec3_t faceoffset);
 void	LightFaceLIT (int surfnum, const vec3_t faceoffset);
+void	LightFaceLIT2 (int surfnum, const vec3_t faceoffset);
 
-void	LightLeaf (dleaf_t *leaf);
 void	MakeTnodes (dmodel_t *bm);
 
 #endif	/* TYRLITE_H */

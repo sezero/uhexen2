@@ -65,7 +65,10 @@ static void ColorLightThread (void *junk)
 		if (i >= numfaces)
 			return;
 
-		LightFaceLIT (i, faceoffset[i]);
+		if (is_bsp2)
+			LightFaceLIT2 (i, faceoffset[i]);
+		else
+			LightFaceLIT (i, faceoffset[i]);
 	}
 }
 
@@ -83,7 +86,10 @@ static void TestLightThread (void *junk)
 		if (i >= numfaces)
 			return;
 
-		TestLightFace (i, faceoffset[i]);
+		if (is_bsp2)
+			TestLightFace2 (i, faceoffset[i]);
+		else
+			TestLightFace (i, faceoffset[i]);
 	}
 }
 

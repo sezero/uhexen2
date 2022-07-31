@@ -459,6 +459,42 @@ static int GetEdge (vec3_t p1, vec3_t p2, face_t *f)
 	return i;
 }
 
+static int GetEdge2 (vec3_t p1, vec3_t p2, face_t *f)
+{
+	unsigned int	v1, v2;
+	dedge2_t	*edge;
+	int		i;
+
+	if (!f->contents[0])
+		COM_Error ("%s: 0 contents", __thisfunc__);
+
+	c_tryedges++;
+	v1 = GetVertex (p1, f->planenum);
+	v2 = GetVertex (p2, f->planenum);
+	for (i = firstmodeledge ; i < numedges ; i++)
+	{
+		edge = &dedges2[i];
+		if (v1 == edge->v[1] && v2 == edge->v[0]
+			&& !edgefaces[i][1]
+			&& edgefaces[i][0]->contents[0] == f->contents[0])
+		{
+			edgefaces[i][1] = f;
+			return -i;
+		}
+	}
+
+// emit an edge
+	if (numedges == MAX_MAP_EDGES)
+		COM_Error ("numedges == MAX_MAP_EDGES");
+	edge = &dedges2[numedges];
+	numedges++;
+	edge->v[0] = v1;
+	edge->v[1] = v2;
+	edgefaces[i][0] = f;
+
+	return i;
+}
+
 
 /*
 ==================
@@ -474,7 +510,12 @@ static void FindFaceEdges (face_t *face)
 		COM_Error ("%s: %i points", __thisfunc__, face->numpoints);
 
 	for (i = 0; i < face->numpoints ; i++)
+	{
+	    if (usebsp2)
+		face->edges[i] = GetEdge2 (face->pts[i], face->pts[(i+1)%face->numpoints], face);
+	    else
 		face->edges[i] = GetEdge (face->pts[i], face->pts[(i+1)%face->numpoints], face);
+	}
 }
 
 /*
@@ -566,6 +607,56 @@ static void CheckEdges (void)
 
 //	CheckVertexes ();
 }
+
+static void CheckEdges2 (void)
+{
+	dedge2_t	*edge;
+	int		i;
+	dvertex_t	*d1, *d2;
+	face_t		*f1, *f2;
+	int		c_nonconvex;
+	int		c_multitexture;
+
+	c_nonconvex = c_multitexture = 0;
+
+//	CheckVertexes ();
+
+	for (i = 1 ; i < numedges ; i++)
+	{
+		edge = &dedges2[i];
+		if (!edgefaces[i][1])
+		{
+			d1 = &dvertexes[edge->v[0]];
+			d2 = &dvertexes[edge->v[1]];
+			qprintf ("unshared edge at: (%8.2f, %8.2f, %8.2f) (%8.2f, %8.2f, %8.2f)\n",d1->point[0], d1->point[1], d1->point[2], d2->point[0], d2->point[1], d2->point[2]); 
+		}
+		else
+		{
+			f1 = edgefaces[i][0];
+			f2 = edgefaces[i][1];
+			if (f1->planeside != f2->planeside)
+				continue;
+			if (f1->planenum != f2->planenum)
+				continue;
+
+			// on the same plane, might be discardable
+			if (f1->texturenum == f2->texturenum)
+			{
+				hvertex[edge->v[0]].numedges-=2;
+				hvertex[edge->v[1]].numedges-=2;
+				c_nonconvex++;
+			}
+			else
+				c_multitexture++;
+		}
+	}
+
+//	qprintf ("%5i edges\n", i);
+//	qprintf ("%5i c_nonconvex\n", c_nonconvex);
+//	qprintf ("%5i c_multitexture\n", c_multitexture);
+
+//	CheckVertexes ();
+}
 #endif
 
 
@@ -603,7 +694,10 @@ void MakeFaceEdges (node_t *headnode)
 
 	MakeFaceEdges_r (headnode);
 
-//	CheckEdges ();
+//	if (usebsp2)
+//		CheckEdges2 ();
+//	else
+//		CheckEdges ();
 
 	GrowNodeRegions (headnode);
 

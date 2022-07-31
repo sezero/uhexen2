@@ -56,6 +56,7 @@ char	portfilename[1024];
 char	hullfilename[1024];
 
 int		valid;
+int		usebsp2 = 0;
 qboolean        worldmodel;
 int             hullnum = 0;
 
@@ -693,7 +694,7 @@ static void UpdateEntLump (void)
 	printf ("Updating entities lump...\n");
 	LoadBSPFile (bspfilename);
 	WriteEntitiesToString();
-	WriteBSPFile (bspfilename);
+	WriteBSPFile (bspfilename, usebsp2);
 }
 
 /*
@@ -729,6 +730,40 @@ static void WriteClipHull (void)
 	for (i = 0 ; i < numclipnodes ; i++)
 	{
 		d = &dclipnodes[i];
+		p = &dplanes[d->planenum];
+		// the node number is only written out for human readability
+		fprintf (f, "%5i : %f %f %f %f : %5i %5i\n", i, p->normal[0], p->normal[1], p->normal[2], p->dist, d->children[0], d->children[1]);
+	}
+
+	fclose (f);
+}
+
+static void WriteClipHull2 (void)
+{
+	FILE	*f;
+	int		i;
+	dplane_t	*p;
+	dclipnode2_t	*d;
+
+	hullfilename[strlen(hullfilename)-1] = '0' + hullnum;
+
+	qprintf ("---- WriteClipHull ----\n");
+	qprintf ("Writing %s\n", hullfilename);
+
+	f = fopen (hullfilename, "w");
+	if (!f)
+		COM_Error ("Couldn't open %s", hullfilename);
+
+	fprintf (f, "%i\n", nummodels);
+
+	for (i = 0 ; i < nummodels ; i++)
+		fprintf (f, "%i\n", dmodels[i].headnode[hullnum]);
+
+	fprintf (f, "\n%i\n", numclipnodes);
+
+	for (i = 0 ; i < numclipnodes ; i++)
+	{
+		d = &dclipnodes2[i];
 		p = &dplanes[d->planenum];
 		// the node number is only written out for human readability
 		fprintf (f, "%5i : %f %f %f %f : %5i %5i\n", i, p->normal[0], p->normal[1], p->normal[2], p->dist, d->children[0], d->children[1]);
@@ -800,6 +835,62 @@ static void ReadClipHull (int hullnumber)
 	}
 }
 
+static void ReadClipHull2 (int hullnumber)
+{
+	FILE		*f;
+	int			i, j, n;
+	int			firstclipnode;
+	dplane_t	p;
+	dclipnode2_t	*d;
+	int			c1, c2;
+	float		f1, f2, f3, f4;
+	int			junk;
+	vec3_t		norm;
+
+	hullfilename[strlen(hullfilename)-1] = '0' + hullnumber;
+
+	f = fopen (hullfilename, "r");
+	if (!f)
+		COM_Error ("Couldn't open %s", hullfilename);
+
+	if (fscanf (f,"%i\n", &n) != 1)
+		COM_Error ("Error parsing %s", hullfilename);
+
+	if (n != nummodels)
+		COM_Error ("%s: hull had %i models, base had %i", __thisfunc__, n, nummodels);
+
+	for (i = 0 ; i < n ; i++)
+	{
+		fscanf (f, "%i\n", &j);
+		dmodels[i].headnode[hullnumber] = numclipnodes + j;
+	}
+
+	fscanf (f,"\n%i\n", &n);
+	firstclipnode = numclipnodes;
+
+	for (i = 0 ; i < n ; i++)
+	{
+		if (numclipnodes == MAX_MAP_CLIPNODES)
+			COM_Error ("%s: MAX_MAP_CLIPNODES", __thisfunc__);
+		d = &dclipnodes2[numclipnodes];
+		numclipnodes++;
+		if (fscanf (f,"%i : %f %f %f %f : %i %i\n", &junk, &f1, &f2, &f3, &f4, &c1, &c2) != 7)
+			COM_Error ("Error parsing %s", hullfilename);
+
+		p.normal[0] = f1;
+		p.normal[1] = f2;
+		p.normal[2] = f3;
+		p.dist = f4;
+
+		norm[0] = f1; norm[1] = f2; norm[2] = f3;	// double precision
+		p.type = PlaneTypeForNormal (norm);
+
+		d->children[0] = c1 >= 0 ? c1 + firstclipnode : c1;
+		d->children[1] = c2 >= 0 ? c2 + firstclipnode : c2;
+		d->planenum = FindFinalPlane (&p);
+	}
+}
+
 /*
 =================
 CreateSingleHull
@@ -819,7 +910,12 @@ static void CreateSingleHull (void)
 	}
 
 	if (hullnum)
+	{
+	    if (usebsp2)
+		WriteClipHull2 ();
+	    else
 		WriteClipHull ();
+	}
 }
 
 /*
@@ -951,11 +1047,22 @@ static void ProcessFile (char *sourcebase, char *bspfilename1)
 // the clipping hulls will be written out to text files by forked processes
 	CreateHulls ();
 
-	ReadClipHull (1);
-	ReadClipHull (2);
-	ReadClipHull (3);
-	ReadClipHull (4);
-	ReadClipHull (5);
+	if (usebsp2)
+	{
+		ReadClipHull2 (1);
+		ReadClipHull2 (2);
+		ReadClipHull2 (3);
+		ReadClipHull2 (4);
+		ReadClipHull2 (5);
+	}
+	else
+	{
+		ReadClipHull (1);
+		ReadClipHull (2);
+		ReadClipHull (3);
+		ReadClipHull (4);
+		ReadClipHull (5);
+	}
 
 	WriteEntitiesToString();
 	FinishBSPFile ();
@@ -1029,6 +1136,8 @@ int main (int argc, char **argv)
 	{
 		if (argv[i][0] != '-')
 			break;
+		else if (!strcmp (argv[i],"-bsp2"))
+			usebsp2 = 1;
 		else if (!strcmp (argv[i],"-draw"))
 			drawflag = true;
 		else if (!strcmp (argv[i],"-watervis"))

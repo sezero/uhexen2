@@ -108,7 +108,7 @@ typedef struct
 	int		texmins[2], texsize[2];
 	int		lightstyles[256];
 	int		surfnum;
-	dface_t	*face;
+	void	*face; // dface_t* or dface2_t*
 
 	// colored lighting
 	vec3_t	lightmapcolors[MAXLIGHTMAPS][SINGLEMAP];
@@ -133,7 +133,9 @@ static void CalcFaceVectors (lightinfo_t *l)
 	float	distscale;
 	vec_t	dist, len;
 
-	tex = &texinfo[l->face->texinfo];
+	const int ntexinfo = is_bsp2 ? ((dface2_t *)l->face)->texinfo : ((dface_t *)l->face)->texinfo;
+
+	tex = &texinfo[ntexinfo];
 
 // convert from float to vec_t
 	for (i = 0 ; i < 2 ; i++)
@@ -198,7 +200,7 @@ static void CalcFaceExtents (lightinfo_t *l, const vec3_t faceoffset, qboolean f
 	dvertex_t	*v;
 	texinfo_t	*tex;
 
-	s = l->face;
+	s = (dface_t *)l->face;
 
 	mins[0] = mins[1] = 999999;
 	maxs[0] = maxs[1] = -99999;
@@ -212,6 +214,63 @@ static void CalcFaceExtents (lightinfo_t *l, const vec3_t faceoffset, qboolean f
 			v = dvertexes + dedges[e].v[0];
 		else
 			v = dvertexes + dedges[-e].v[1];
+
+		for (j = 0 ; j < 2 ; j++)
+		{
+			val =	((double)v->point[0] + faceoffset[0]) * (double)tex->vecs[j][0] +
+				((double)v->point[1] + faceoffset[1]) * (double)tex->vecs[j][1] +
+				((double)v->point[2] + faceoffset[2]) * (double)tex->vecs[j][2] +
+				(double)tex->vecs[j][3];
+
+			if (val < mins[j])
+				mins[j] = val;
+			if (val > maxs[j])
+				maxs[j] = val;
+		}
+	}
+
+	for (i = 0 ; i < 2 ; i++)
+	{
+		l->exactmins[i] = mins[i];
+		l->exactmaxs[i] = maxs[i];
+
+		mins[i] = floor(mins[i]/16);
+		maxs[i] = ceil(maxs[i]/16);
+
+		/*
+		l->texmins[i] = (int)floor(mins[i]);
+		l->texsize[i] = (int)floor(maxs[i] - mins[i]);
+		*/
+		l->texmins[i] = mins[i];
+		l->texsize[i] = maxs[i] - mins[i];
+
+		if (fail && l->texsize[i] > 17)
+			COM_Error ("Bad surface extents");
+	}
+}
+
+static void CalcFaceExtents2 (lightinfo_t *l, const vec3_t faceoffset, qboolean fail)
+{
+	dface2_t	*s;
+	vec_t	mins[2], maxs[2], val;
+	int		i, j, e;
+	dvertex_t	*v;
+	texinfo_t	*tex;
+
+	s = (dface2_t *)l->face;
+
+	mins[0] = mins[1] = 999999;
+	maxs[0] = maxs[1] = -99999;
+
+	tex = &texinfo[s->texinfo];
+
+	for (i = 0 ; i < s->numedges ; i++)
+	{
+		e = dsurfedges[s->firstedge+i];
+		if (e >= 0)
+			v = dvertexes + dedges2[e].v[0];
+		else
+			v = dvertexes + dedges2[-e].v[1];
 
 		for (j = 0 ; j < 2 ; j++)
 		{
@@ -753,6 +812,163 @@ void LightFaceLIT (int surfnum, const vec3_t faceoffset)
 	}
 }
 
+void LightFaceLIT2 (int surfnum, const vec3_t faceoffset)
+{
+	dface2_t	*f;
+	lightinfo_t	l;
+	int		s, t;
+	int		i, j, c;
+	int		size;
+	int		lightmapwidth;
+	byte	*out;
+	int	w;
+	/* TYR - temp vars */
+	vec_t		maxc;
+	int		x1, x2, x3, x4;
+	/* TYR - colored lights */
+	vec3_t		*lightcolor;
+	vec3_t		totalcolors;
+	vec3_t		point;
+
+
+	f = dfaces2 + surfnum;
+
+	// this version already has the light offsets calculated from
+	// the original lighting, so we will just reuse them.
+	if (f->lightofs == -1)
+		return;
+
+	for (j = 0 ; j < MAXLIGHTMAPS ; j++)
+		f->styles[j] = 255;
+
+	if ( texinfo[f->texinfo].flags & TEX_SPECIAL)
+	{	// non-lit texture
+		return;
+	}
+
+	memset (&l, 0, sizeof(l));
+	l.surfnum = surfnum;
+	l.face = f;
+
+//
+// rotate plane
+//
+	VectorCopy (dplanes[f->planenum].normal, l.facenormal);
+	l.facedist = dplanes[f->planenum].dist;
+	VectorScale (l.facenormal, l.facedist, point);
+	VectorAdd (point, faceoffset, point);
+	l.facedist = DotProduct( point, l.facenormal );
+
+	if (f->side)
+	{
+		VectorNegate (l.facenormal, l.facenormal);
+		l.facedist = -l.facedist;
+	}
+
+	CalcFaceVectors (&l);
+	CalcFaceExtents2 (&l, faceoffset, true);
+	CalcPoints (&l);
+
+	lightmapwidth = l.texsize[0]+1;
+
+	size = lightmapwidth*(l.texsize[1]+1);
+	if (size > SINGLEMAP)
+		COM_Error ("Bad lightmap size");
+
+	for (i = 0 ; i < MAXLIGHTMAPS ; i++)
+		l.lightstyles[i] = 255;
+
+	l.numlightstyles = 0;
+
+	strcpy (l.texname, miptex[texinfo[f->texinfo].miptex].name);
+
+	for (i = 0 ; i < num_entities ; i++)
+	{
+		if (entities[i].light)
+			SingleLightFace (&entities[i], &l, faceoffset);
+	}
+
+// minimum lighting
+	FixMinlight (&l);
+
+	if (!l.numlightstyles)
+	{	// no light hitting it
+		return;
+	}
+
+//
+// save out the values
+//
+	for (i = 0 ; i < MAXLIGHTMAPS ; i++)
+		f->styles[i] = l.lightstyles[i];
+
+	// we have to store the new light data at
+	// the same offset as the old stuff...
+	out = &newdlightdata[faces_ltoffset[surfnum]];
+
+// extra filtering
+	w = (l.texsize[0] + 1) * 2;
+
+	for (i = 0 ; i < l.numlightstyles ; i++)
+	{
+		if (l.lightstyles[i] == 0xff)
+			COM_Error ("Wrote empty lightmap");
+
+		lightcolor = l.lightmapcolors[i];
+		c = 0;
+
+		for (t = 0 ; t <= l.texsize[1] ; t++)
+		{
+			for (s = 0 ; s <= l.texsize[0] ; s++, c++)
+			{
+				if (extrasamples)
+				{
+					x1 = t*2*w + s*2;
+					x2 = x1 + 1;
+					x3 = (t*2 + 1)*w + s*2;
+					x4 = x3 + 1;
+
+					// calculate the color
+					totalcolors[0] = lightcolor[x1][0] + lightcolor[x2][0] + lightcolor[x3][0] + lightcolor[x4][0];
+					totalcolors[0] *= 0.25;
+					totalcolors[1] = lightcolor[x1][1] + lightcolor[x2][1] + lightcolor[x3][1] + lightcolor[x4][1];
+					totalcolors[1] *= 0.25;
+					totalcolors[2] = lightcolor[x1][2] + lightcolor[x2][2] + lightcolor[x3][2] + lightcolor[x4][2];
+					totalcolors[2] *= 0.25;
+				}
+				else
+				{
+					VectorCopy (lightcolor[c], totalcolors);
+				}
+
+				// CSL - Scale back intensity, instead
+				//	 of capping individual colors
+				VectorScale (totalcolors, rangescale, totalcolors);
+				maxc = 0;
+
+				for (j = 0; j < 3; j++)
+				{
+					if (totalcolors[j] > maxc)
+					{
+						maxc = totalcolors[j];
+					}
+					else if (totalcolors[j] < 0)
+					{
+						totalcolors[j] = 0;	// this used to be an error!!!!
+					}
+				}
+				if (maxc > 255.0)
+					VectorScale (totalcolors, 255.0 / maxc, totalcolors);
+
+				// write out the lightmap in RGBA format
+				*out++ = totalcolors[0];
+				*out++ = totalcolors[1];
+				*out++ = totalcolors[2];
+			}
+		}
+	}
+}
+
 static void TestSingleLightFace (entity_t *light, lightinfo_t *l, const vec3_t faceoffset)
 {
 	vec_t	dist;
@@ -777,7 +993,7 @@ static void TestSingleLightFace (entity_t *light, lightinfo_t *l, const vec3_t f
 		return;
 	}
 
-	// mfah - find the light color based on the surface name
+	// find the light color based on the surface name
 	FindTexlightColor (&surf_r, &surf_g, &surf_b, l->texname);
 
 	surf = l->surfpt[0];
@@ -862,6 +1078,73 @@ void TestLightFace (int surfnum, const vec3_t faceoffset)
 	// use the safe version here which will not give bad surface
 	// extents on special textures
 	CalcFaceExtents(&l, faceoffset, false);
+
+	CalcPoints (&l);
+
+	for (i = 0 ; i < num_entities ; i++)
+	{
+		if (!strcmp (entities[i].classname, "light"))
+		{
+			// don't test torches, flames and globes
+			// they already have their own light
+			TestSingleLightFace (&entities[i], &l, faceoffset);
+		}
+		else if (!strncmp (entities[i].classname, "light_fluor", 11))
+		{
+			// test fluoros as well
+			TestSingleLightFace (&entities[i], &l, faceoffset);
+		}
+	}
+}
+
+void TestLightFace2 (int surfnum, const vec3_t faceoffset)
+{
+	dface2_t	*f;
+	lightinfo_t	l;
+	int		i;
+//	int		j, c;
+	vec3_t		point;
+
+	f = dfaces2 + surfnum;
+
+	memset (&l, 0, sizeof(l));
+
+	strcpy (l.texname, miptex[texinfo[f->texinfo].miptex].name);
+
+// we can speed up the checking process by ignoring any textures
+// that give white light. this hasn't been done since version 0.2,
+// we can get rid of it
+//	FindTexlightColor (&i, &j, &c, miptex[texinfo[f->texinfo].miptex].name);
+//	if (i == 255 && j == 255 && c == 255)
+//		return;
+
+	// don't even bother with sky - although we might later on if we can
+	// get some kinda good sky textures going.
+	if (!strncmp (l.texname, "sky", 3))
+		return;
+
+	l.surfnum = surfnum;
+	l.face = f;
+
+	/* rotate plane */
+
+	VectorCopy (dplanes[f->planenum].normal, l.facenormal);
+	l.facedist = dplanes[f->planenum].dist;
+	VectorScale (l.facenormal, l.facedist, point);
+	VectorAdd (point, faceoffset, point);
+	l.facedist = DotProduct( point, l.facenormal );
+
+	if (f->side)
+	{
+		VectorNegate (l.facenormal, l.facenormal);
+		l.facedist = -l.facedist;
+	}
+
+	CalcFaceVectors (&l);
+
+	// use the safe version here which will not give bad surface
+	// extents on special textures
+	CalcFaceExtents2(&l, faceoffset, false);
 
 	CalcPoints (&l);
 

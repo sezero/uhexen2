@@ -38,15 +38,11 @@ extern	float		minlights[MAX_MAP_FACES];
 
 extern	qboolean	extrasamples;
 
-//void	TransformSample (vec3_t in, vec3_t out);
-//void	RotateSample (vec3_t in, vec3_t out);
-//void	LoadNodes (char *file);
-
 byte	*GetFileSpace (int size);
 
 qboolean TestLine (const vec3_t start, const vec3_t stop);
 void	LightFace (int surfnum);
-void	LightLeaf (dleaf_t *leaf);
+void	LightFace2 (int surfnum);
 void	MakeTnodes (dmodel_t *bm);
 
 #endif	/* H2LIGHT_H */

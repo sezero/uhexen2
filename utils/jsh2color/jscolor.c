@@ -691,7 +691,6 @@ void CheckTex (void)
 	int		r, g, b;
 	int		count;
 	int		r2[100], g2[100], b2[100];
-	dface_t		*f;
 	int		facecolors[100];
 	int		bad;
 	char		color_name[10];
@@ -721,14 +720,14 @@ void CheckTex (void)
 	/* find out how many faces will modify light */
 	for (i = 0; i < numfaces; i++)
 	{
-		f = dfaces + i;
-		FindTexlightColor (&r, &g, &b, miptex[texinfo[f->texinfo].miptex].name);
+		const int ntexinfo = is_bsp2 ? (dfaces2 + i)->texinfo : (dfaces + i)->texinfo;
+		FindTexlightColor (&r, &g, &b, miptex[texinfo[ntexinfo].miptex].name);
 		if (r == g && g == b)
 			continue;
 
 		/* slime or lava will naturally dominate any BSP that contains lots of them,
 		 * so don't make this a warning condition */
-		if (miptex[texinfo[f->texinfo].miptex].name[0] != '*')
+		if (miptex[texinfo[ntexinfo].miptex].name[0] != '*')
 		{
 			/* see if this color is already used */
 			for (j = 0; j < count; j++)
@@ -748,9 +747,9 @@ void CheckTex (void)
 		{
 			/* slime and lava do count as unique colors, so if we find them, we'll
 			 * make a note of the fact for later. */
-			if (miptex[texinfo[f->texinfo].miptex].name[1] == 'l')
+			if (miptex[texinfo[ntexinfo].miptex].name[1] == 'l')
 				foundlava = 1;
-			else if (miptex[texinfo[f->texinfo].miptex].name[1] == 's')
+			else if (miptex[texinfo[ntexinfo].miptex].name[1] == 's')
 				foundslime = 1;
 		}
 
@@ -807,12 +806,11 @@ int	newlightdatasize;
 static void StoreFaceInfo (void)
 {
 	int		i;
-	dface_t		*fa;
 
 	for (i = 0; i < numfaces; i++)
 	{
-		fa = dfaces + i;
-		faces_ltoffset[i] = fa->lightofs * 3;
+		const int lightofs = is_bsp2 ? (dfaces2 + i)->lightofs : (dfaces + i)->lightofs;
+		faces_ltoffset[i] = lightofs * 3;
 	}
 }
 

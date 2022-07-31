@@ -472,7 +472,10 @@ static void LeafFlow (int leafnum)
 	if (vismap_p > vismap_end)
 		COM_Error ("Vismap expansion overflow");
 
-	dleafs[leafnum+1].visofs = dest-vismap;	// leaf 0 is a common solid
+	if (is_bsp2)
+		dleafs2[leafnum+1].visofs = dest-vismap;	// leaf 0 is a common solid
+	else
+		dleafs[leafnum+1].visofs  = dest-vismap;	// leaf 0 is a common solid
 
 	memcpy (dest, compressed, i);
 }
@@ -869,9 +872,12 @@ int main (int argc, char **argv)
 	visdatasize = vismap_p - dvisdata;
 	printf ("visdatasize:%i  compressed from %i\n", visdatasize, originalvismapsize);
 
-	CalcAmbientSounds ();
+	if (is_bsp2)
+		CalcAmbientSounds ();
+	else
+		CalcAmbientSounds2 ();
 
-	WriteBSPFile (source);
+	WriteBSPFile (source, is_bsp2);
 
 //	Q_unlink (portalfile);
 	if (GilMode)

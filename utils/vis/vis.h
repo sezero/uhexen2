@@ -126,6 +126,7 @@ void	PrintStats(void);
 void	BasePortalVis (void);
 void	PortalFlow (portal_t *p);
 void	CalcAmbientSounds (void);
+void	CalcAmbientSounds2(void);
 winding_t	*NewWinding (int points);
 void		FreeWinding (winding_t *w);
 winding_t	*ClipWinding (winding_t *in, plane_t *split, qboolean keepon);

@@ -100,7 +100,7 @@ typedef struct
 	int		texmins[2], texsize[2];
 	int		lightstyles[256];
 	int		surfnum;
-	dface_t	*face;
+	void	*face; // dface_t* or dface2_t*
 } lightinfo_t;
 
 
@@ -119,7 +119,9 @@ static void CalcFaceVectors (lightinfo_t *l)
 	float	distscale;
 	double	dist, len;
 
-	tex = &texinfo[l->face->texinfo];
+	const int ntexinfo = is_bsp2 ? ((dface2_t *)l->face)->texinfo : ((dface_t *)l->face)->texinfo;
+
+	tex = &texinfo[ntexinfo];
 
 // convert from float to double
 	for (i = 0 ; i < 2 ; i++)
@@ -184,7 +186,7 @@ static void CalcFaceExtents (lightinfo_t *l)
 	dvertex_t	*v;
 	texinfo_t	*tex;
 
-	s = l->face;
+	s = (dface_t *)l->face;
 
 	mins[0] = mins[1] = 999999;
 	maxs[0] = maxs[1] = -99999;
@@ -198,6 +200,57 @@ static void CalcFaceExtents (lightinfo_t *l)
 			v = dvertexes + dedges[e].v[0];
 		else
 			v = dvertexes + dedges[-e].v[1];
+
+		for (j = 0 ; j < 2 ; j++)
+		{
+			val =	((double)v->point[0] * (double)tex->vecs[j][0]) +
+				((double)v->point[1] * (double)tex->vecs[j][1]) +
+				((double)v->point[2] * (double)tex->vecs[j][2]) +
+				(double)tex->vecs[j][3];
+			if (val < mins[j])
+				mins[j] = val;
+			if (val > maxs[j])
+				maxs[j] = val;
+		}
+	}
+
+	for (i = 0 ; i < 2 ; i++)
+	{
+		l->exactmins[i] = mins[i];
+		l->exactmaxs[i] = maxs[i];
+
+		mins[i] = floor(mins[i]/16);
+		maxs[i] = ceil(maxs[i]/16);
+
+		l->texmins[i] = (int)floor(mins[i]);
+		l->texsize[i] = (int)floor(maxs[i] - mins[i]);
+		if (l->texsize[i] > 17)
+			COM_Error ("Bad surface extents");
+	}
+}
+
+static void CalcFaceExtents2 (lightinfo_t *l)
+{
+	dface2_t	*s;
+	double	mins[2], maxs[2], val;
+	int		i, j, e;
+	dvertex_t	*v;
+	texinfo_t	*tex;
+
+	s = (dface2_t *)l->face;
+
+	mins[0] = mins[1] = 999999;
+	maxs[0] = maxs[1] = -99999;
+
+	tex = &texinfo[s->texinfo];
+
+	for (i = 0 ; i < s->numedges ; i++)
+	{
+		e = dsurfedges[s->firstedge+i];
+		if (e >= 0)
+			v = dvertexes + dedges2[e].v[0];
+		else
+			v = dvertexes + dedges2[-e].v[1];
 
 		for (j = 0 ; j < 2 ; j++)
 		{
@@ -542,6 +595,120 @@ void LightFace (int surfnum)
 
 	CalcFaceVectors (&l);
 	CalcFaceExtents (&l);
+	CalcPoints (&l);
+
+	lightmapwidth = l.texsize[0]+1;
+
+	size = lightmapwidth*(l.texsize[1]+1);
+	if (size > SINGLEMAP)
+		COM_Error ("Bad lightmap size");
+
+	for (i = 0 ; i < MAXLIGHTMAPS ; i++)
+		l.lightstyles[i] = 255;
+
+//
+// cast all lights
+//
+	l.numlightstyles = 0;
+	for (i = 0 ; i < num_entities ; i++)
+		if (entities[i].light)
+			SingleLightFace (&entities[i], &l);
+
+	FixMinlight (&l);
+
+	if (!l.numlightstyles)
+	{	// no light hitting it
+		return;
+	}
+
+//
+// save out the values
+//
+	for (i = 0 ; i < MAXLIGHTMAPS ; i++)
+		f->styles[i] = l.lightstyles[i];
+
+	lightmapsize = size*l.numlightstyles;
+
+	out = GetFileSpace (lightmapsize);
+	f->lightofs = out - filebase;
+
+// extra filtering
+//	h = (l.texsize[1] + 1) * 2;
+	w = (l.texsize[0] + 1) * 2;
+
+	for (i = 0 ; i < l.numlightstyles ; i++)
+	{
+		if (l.lightstyles[i] == 0xff)
+			COM_Error ("Wrote empty lightmap");
+		light = l.lightmaps[i];
+		c = 0;
+		for (t = 0 ; t <= l.texsize[1] ; t++)
+		{
+			for (s = 0 ; s <= l.texsize[0] ; s++, c++)
+			{
+				if (extrasamples)
+				{	// filtered sample
+					total = light[t*2*w+s*2] + light[t*2*w+s*2+1]
+						+ light[(t*2+1)*w+s*2] + light[(t*2+1)*w+s*2+1];
+					total *= 0.25;
+				}
+				else
+					total = light[c];
+				total *= rangescale;	// scale before clamping
+				if (total > 255)
+					total = 255;
+				if (total < 0)
+					COM_Error ("light < 0");
+				*out++ = (byte) total;
+			}
+		}
+	}
+}
+
+void LightFace2 (int surfnum)
+{
+	dface2_t	*f;
+	lightinfo_t	l;
+	int		s, t;
+	int		i, j, c;
+	double	total;
+	int		size;
+	int		lightmapwidth, lightmapsize;
+	byte	*out;
+	double	*light;
+	int	w;//,h
+
+	f = dfaces2 + surfnum;
+
+//
+// some surfaces don't need lightmaps
+//
+	f->lightofs = -1;
+	for (j = 0 ; j < MAXLIGHTMAPS ; j++)
+		f->styles[j] = 255;
+
+	if ( texinfo[f->texinfo].flags & TEX_SPECIAL)
+	{	// non-lit texture
+		return;
+	}
+
+	memset (&l, 0, sizeof(l));
+	l.surfnum = surfnum;
+	l.face = f;
+
+//
+// rotate plane
+//
+	VectorCopy (dplanes[f->planenum].normal, l.facenormal);
+	l.facedist = dplanes[f->planenum].dist;
+	if (f->side)
+	{
+		VectorNegate (l.facenormal, l.facenormal);
+		l.facedist = -l.facedist;
+	}
+
+	CalcFaceVectors (&l);
+	CalcFaceExtents2 (&l);
 	CalcPoints (&l);
 
 	lightmapwidth = l.texsize[0]+1;

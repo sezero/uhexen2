@@ -36,6 +36,9 @@ This is a minor bug fix and maintenance release:
 - New console command music_jump: Jump to given order in music,
   like Unreal's music change.  Only for module (tracker) music.
 
+- Map utils: BSP2 format support:  qbsp must be run with the "-bsp2"
+  command line switch in order to output in bsp2 format.
+
 - Utils: light, vis, and jsh2color now default to auto-detecting the
   max number of threads.
 

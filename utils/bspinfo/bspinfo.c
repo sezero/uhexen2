@@ -44,7 +44,7 @@ int main (int argc, char **argv)
 		printf ("%s\n", source);
 
 		LoadBSPFile (source);
-		PrintBSPFileSizes ();
+		PrintBSPFileSizes (is_bsp2);
 		printf ("---------------------\n");
 	}
 

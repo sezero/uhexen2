@@ -75,7 +75,10 @@ void LightThread (void *junk)
 		if (i >= numfaces)
 			return;
 
-		LightFace (i);
+		if (is_bsp2)
+			LightFace2 (i);
+		else
+			LightFace (i);
 	}
 }
 
@@ -167,7 +170,7 @@ int main (int argc, char **argv)
 	LightWorld ();
 
 	WriteEntitiesToString ();
-	WriteBSPFile (source);
+	WriteBSPFile (source, is_bsp2);
 
 	end = COM_GetTime ();
 	printf ("%5.1f seconds elapsed\n", end-start);

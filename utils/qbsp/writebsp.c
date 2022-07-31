@@ -154,6 +154,32 @@ static int WriteClipNodes_r (node_t *node)
 	return c;
 }
 
+static int WriteClipNodes_r2 (node_t *node)
+{
+	int			i, c;
+	dclipnode2_t	*cn;
+	int			num;
+
+// FIXME: free more stuff?
+	if (node->planenum == -1)
+	{
+		num = node->contents;
+		free (node);
+		return num;
+	}
+
+// emit a clipnode
+	c = numclipnodes;
+	cn = &dclipnodes2[numclipnodes];
+	numclipnodes++;
+	cn->planenum = node->outputplanenum;
+	for (i = 0 ; i < 2 ; i++)
+		cn->children[i] = WriteClipNodes_r2(node->children[i]);
+
+	free (node);
+	return c;
+}
+
 /*
 ==================
 WriteClipNodes
@@ -165,7 +191,10 @@ representation and frees the original memory.
 void WriteClipNodes (node_t *nodes)
 {
 	headclipnode = numclipnodes;
-	WriteClipNodes_r (nodes);
+	if (usebsp2)
+		WriteClipNodes_r2 (nodes);
+	else
+		WriteClipNodes_r (nodes);
 }
 
 //===========================================================================
@@ -208,6 +237,47 @@ static void WriteLeaf (node_t *node)
 		do
 		{
 			dmarksurfaces[nummarksurfaces] =  f->outputnumber;
+			nummarksurfaces++;
+			f = f->original;	// grab tjunction split faces
+		} while (f);
+	}
+
+	leaf_p->nummarksurfaces = nummarksurfaces - leaf_p->firstmarksurface;
+}
+
+static void WriteLeaf2 (node_t *node)
+{
+	face_t		**fp, *f;
+	dleaf2_t	*leaf_p;
+
+// emit a leaf
+	leaf_p = &dleafs2[numleafs];
+	numleafs++;
+
+	leaf_p->contents = node->contents;
+
+//
+// write bounding box info
+//
+	VectorCopy (node->mins, leaf_p->mins);
+	VectorCopy (node->maxs, leaf_p->maxs);
+
+	leaf_p->visofs = -1;	// no vis info yet
+
+//
+// write the marksurfaces
+//
+	leaf_p->firstmarksurface = nummarksurfaces;
+
+	for (fp = node->markfaces ; *fp ; fp++)
+	{
+	// emit a marksurface
+		if (nummarksurfaces == MAX_MAP_MARKSURFACES)
+			COM_Error ("nummarksurfaces == MAX_MAP_MARKSURFACES");
+		f = *fp;
+		do
+		{
+			dmarksurfaces2[nummarksurfaces] =  f->outputnumber;
 			nummarksurfaces++;
 			f = f->original;	// grab tjunction split faces
 		} while (f);
@@ -264,6 +334,48 @@ static void WriteDrawNodes_r (node_t *node)
 	}
 }
 
+static void WriteDrawNodes_r2 (node_t *node)
+{
+	dnode2_t	*n;
+	int		i;
+
+// emit a node
+	if (numnodes == MAX_MAP_NODES)
+		COM_Error ("numnodes == MAX_MAP_NODES");
+	n = &dnodes2[numnodes];
+	numnodes++;
+
+	VectorCopy (node->mins, n->mins);
+	VectorCopy (node->maxs, n->maxs);
+
+	n->planenum = node->outputplanenum;
+	n->firstface = node->firstface;
+	n->numfaces = node->numfaces;
+
+//
+// recursively output the other nodes
+//
+
+	for (i = 0 ; i < 2 ; i++)
+	{
+		if (node->children[i]->planenum == -1)
+		{
+			if (node->children[i]->contents == CONTENTS_SOLID)
+				n->children[i] = -1;
+			else
+			{
+				n->children[i] = -(numleafs + 1);
+				WriteLeaf2 (node->children[i]);
+			}
+		}
+		else
+		{
+			n->children[i] = numnodes;
+			WriteDrawNodes_r2 (node->children[i]);
+		}
+	}
+}
+
 /*
 ==================
 WriteDrawNodes
@@ -293,10 +405,20 @@ void WriteDrawNodes (node_t *headnode)
 
 	start = numleafs;
 
-	if (headnode->contents < 0)
-		WriteLeaf (headnode);
+	if (usebsp2)
+	{
+		if (headnode->contents < 0)
+			WriteLeaf2 (headnode);
+		else
+			WriteDrawNodes_r2 (headnode);
+	}
 	else
-		WriteDrawNodes_r (headnode);
+	{
+		if (headnode->contents < 0)
+			WriteLeaf (headnode);
+		else
+			WriteDrawNodes_r (headnode);
+	}
 	bm->visleafs = numleafs - start;
 
 	for (i = 0 ; i < 3 ; i++)
@@ -606,7 +728,10 @@ void BeginBSPFile (void)
 
 // leaf 0 is common solid with no faces
 	numleafs = 1;
-	dleafs[0].contents = CONTENTS_SOLID;
+	if (usebsp2)
+		dleafs2[0].contents = CONTENTS_SOLID;
+	else
+		dleafs[0].contents = CONTENTS_SOLID;
 
 	firstface = 0;
 }
@@ -624,6 +749,6 @@ void FinishBSPFile (void)
 
 	WriteMiptex ();
 
-	PrintBSPFileSizes ();
-	WriteBSPFile (bspfilename);
+	PrintBSPFileSizes (usebsp2);
+	WriteBSPFile (bspfilename, usebsp2);
 }

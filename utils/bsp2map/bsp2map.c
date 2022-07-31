@@ -25,6 +25,16 @@ static void GetEdges(int ledge, dedge_t *edge)
     }
 }
 
+static void GetEdges2(int ledge, dedge2_t *edge)
+{
+    if (dsurfedges[ledge]>0) {
+        *edge = dedges2[dsurfedges[ledge]];
+    } else {
+        edge->v[0] = dedges2[-dsurfedges[ledge]].v[1];
+        edge->v[1] = dedges2[-dsurfedges[ledge]].v[0];
+    }
+}
+
 static void ProcessFace(int face)
 {
     int n_face_edges, ledge, ledge2;
@@ -149,12 +159,139 @@ static void ProcessFace(int face)
     printf(" }\n");
 }
 
+static void ProcessFace2(int face)
+{
+    int n_face_edges, ledge, ledge2;
+    dedge2_t edges[MAX_FACE_EDGES];
+    dvertex_t vert_beg[MAX_FACE_EDGES];
+    dvertex_t vert_end[MAX_FACE_EDGES];
+    vec3_t normal, v1, v2, v3;
+    miptex_t *p_miptex;
+    dmiptexlump_t *head_miptex;
+    texinfo_t *p_texinfo;
+    float x_off, y_off, rotation, x_scale, y_scale;
+    static int gi = 0;
+    char gs[12];
+    char texname[18];
+
+    n_face_edges = dfaces2[face].numedges;
+    if (n_face_edges < 3)
+        COM_Error ("too few edges for face");
+    if (n_face_edges > MAX_FACE_EDGES)
+        COM_Error ("too many edges for face");
+
+    for (ledge2 = ledge = 0; ledge < n_face_edges; ledge++,ledge2++) {
+        GetEdges2(ledge2 + dfaces2[face].firstedge, &edges[ledge]);
+        vert_beg[ledge] = dvertexes[edges[ledge].v[0]];
+        vert_end[ledge] = dvertexes[edges[ledge].v[1]];
+        if (verbose1)
+            printf(" // edge %d, ledge %d [%4.2f %4.2f %4.2f] [%4.2f %4.2f %4.2f]\n",
+                    ledge, ledge + dfaces2[face].firstedge,
+                    vert_beg[ledge].point[0], vert_beg[ledge].point[1], vert_beg[ledge].point[2],
+                    vert_end[ledge].point[0], vert_end[ledge].point[1], vert_end[ledge].point[2]);
+        if (VectorCompare(vert_beg[ledge].point, vert_end[ledge].point)) {
+            ledge--;
+            if (verbose1)
+                printf(" // edge skiped (a) : no normal\n");
+        }
+    }
+
+    VectorCopy(dplanes[dfaces2[face].planenum].normal, normal);
+    if (verbose1) {
+        printf(" // dfaces[face].planenum = %d,  side = %d\n", dfaces2[face].planenum, dfaces2[face].side);
+        printf(" // normal ( %4.2f %4.2f %4.2f ) type %d\n",
+            normal[0], normal[1], normal[2], dplanes[dfaces2[face].planenum].type);
+    }
+    VectorScale (normal, 2.0f, normal);
+    if (!dfaces2[face].side)
+        VectorInverse(normal);
+
+    for (ledge2 = 1; ledge2 < n_face_edges - 2; ledge2++) {
+        VectorSubtract(vert_end[0].point, vert_beg[0].point, v1);
+        VectorSubtract(vert_end[ledge2].point, vert_beg[ledge2].point, v2);
+        VectorNormalize(v1);
+        VectorNormalize(v2);
+        if (!VectorCompare(v1, v2))
+            break;
+        if (verbose1)
+            printf(" // edge %d skiped (b) : duplicate plane\n", ledge2);
+    }
+
+    head_miptex = (dmiptexlump_t *)dtexdata;
+    p_texinfo = &texinfo[dfaces2[face].texinfo];
+    p_miptex = (miptex_t *)((((byte *)dtexdata))+(head_miptex->dataofs[p_texinfo->miptex]));
+    strcpy(texname, p_miptex->name);
+    q_strupr(texname);
+    if (verbose2)
+        printf(" // texinfo ( %4.2f %4.2f %4.2f %4.2f ) ( %4.2f %4.2f %4.2f %4.2f )\n",
+                p_texinfo->vecs[0][0], p_texinfo->vecs[0][1], p_texinfo->vecs[0][2], p_texinfo->vecs[0][3],
+                p_texinfo->vecs[0][0], p_texinfo->vecs[0][1], p_texinfo->vecs[0][2], p_texinfo->vecs[0][3]);
+
+    //here must calc x_off y_off rotation x_scale y_scale from p_texinfo->vecs !
+    x_off = y_off = rotation = 0.0f;
+    x_scale = y_scale = 1.0f;
+
+    printf(" {\n");
+    printf("  ( %4.0f %4.0f %4.0f ) ( %4.0f %4.0f %4.0f ) ( %4.0f %4.0f %4.0f ) %s %.0f %.0f %.0f %.6f %.6f 0\n",
+            vert_beg[0].point[0], vert_beg[0].point[1], vert_beg[0].point[2],
+            vert_end[0].point[0], vert_end[0].point[1], vert_end[0].point[2],
+            vert_end[ledge2].point[0], vert_end[ledge2].point[1], vert_end[ledge2].point[2],
+            texname,
+            x_off, y_off, rotation, x_scale, y_scale);
+
+    for (ledge = 0; ledge < n_face_edges; ledge++) {
+        if (ledge == 0) {
+            VectorSubtract(vert_end[n_face_edges-1].point, vert_beg[n_face_edges-1].point, v1);
+            VectorSubtract(vert_end[ledge].point, vert_beg[ledge].point, v2);
+            VectorNormalize(v1);
+            VectorNormalize(v2);
+            if (VectorCompare(v1, v2)) {
+                if (verbose1)
+                    printf(" // edge 0 skiped (c) : duplicate plane\n");
+                continue;
+            }
+        } else {
+            VectorSubtract(vert_end[ledge-1].point, vert_beg[ledge-1].point, v1);
+            VectorSubtract(vert_end[ledge].point, vert_beg[ledge].point, v2);
+            VectorNormalize(v1);
+            VectorNormalize(v2);
+            if (VectorCompare(v1, v2)) {
+                if (verbose1)
+                    printf(" // edge %d skiped (d) : duplicate plane\n", ledge);
+                continue;
+            }
+        }
+        VectorAdd(vert_end[ledge].point, normal, v2);
+        printf("  ( %4.0f %4.0f %4.0f ) ( %4.0f %4.0f %4.0f ) ( %4.0f %4.0f %4.0f ) %s 0 0 0 1.000000 1.000000 0\n",
+                vert_end[ledge].point[0], vert_end[ledge].point[1], vert_end[ledge].point[2],
+                vert_beg[ledge].point[0], vert_beg[ledge].point[1], vert_beg[ledge].point[2],
+                v2[0], v2[1], v2[2],
+                texname);
+    }
+
+    VectorAdd(vert_beg[0].point, normal, v2);
+    VectorAdd(vert_end[0].point, normal, v1);
+    VectorAdd(vert_end[ledge2].point, normal, v3);
+
+    if (verbose3)
+        sprintf(gs, "tx%04x", gi++);
+    printf("  ( %4.0f %4.0f %4.0f ) ( %4.0f %4.0f %4.0f ) ( %4.0f %4.0f %4.0f ) %s 0 0 0 1.000000 1.000000 0\n",
+            v1[0], v1[1], v1[2],
+            v2[0], v2[1], v2[2],
+            v3[0], v3[1], v3[2],
+            !verbose3 ? texname : gs);
+    printf(" }\n");
+}
+
 static void ProcessModel(int model)
 {
     int face;
     printf(" // total brushes: %d\n", dmodels[model].numfaces);
     for (face = 0; face < dmodels[model].numfaces; face++) {
-        ProcessFace(face + dmodels[model].firstface);
+        if (is_bsp2)
+            ProcessFace2(face + dmodels[model].firstface);
+        else
+            ProcessFace(face + dmodels[model].firstface);
     }
 }
 

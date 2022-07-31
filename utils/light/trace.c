@@ -74,6 +74,34 @@ static void MakeTnode (int nodenum)
 	}
 }
 
+static void MakeTnode2 (int nodenum)
+{
+	tnode_t			*t;
+	dplane_t		*plane;
+	int				i;
+	dnode2_t		*node;
+
+	t = tnode_p++;
+
+	node = dnodes2 + nodenum;
+	plane = dplanes + node->planenum;
+
+	t->type = plane->type;
+	VectorCopy (plane->normal, t->normal);
+	t->dist = plane->dist;
+
+	for (i = 0 ; i < 2 ; i++)
+	{
+		if (node->children[i] < 0)
+			t->children[i] = dleafs2[-node->children[i] - 1].contents;
+		else
+		{
+			t->children[i] = tnode_p - tnodes;
+			MakeTnode2 (node->children[i]);
+		}
+	}
+}
+
 
 /*
 =============
@@ -86,7 +114,10 @@ void MakeTnodes (dmodel_t *bm)
 {
 	tnode_p = tnodes = (tnode_t *) SafeMalloc(numnodes * sizeof(tnode_t));
 
-	MakeTnode (0);
+	if (is_bsp2)
+		MakeTnode2 (0);
+	else
+		MakeTnode (0);
 }
 
 

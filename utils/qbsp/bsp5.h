@@ -285,6 +285,7 @@ extern	qboolean	oldhullsize;	// if true, use original H2 sizes for hulls #5 and 
 extern	brushset_t	*brushset;
 
 extern	int		valid;
+extern	int		usebsp2;
 
 extern	char	portfilename[1024];
 extern	char	bspfilename[1024];
