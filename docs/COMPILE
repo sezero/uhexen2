@@ -125,117 +125,39 @@ libxmp or libmikmod:
 Compiling for Windows:
 ========================================
 
-a. On Linux, using MinGW cross compiler:
-----------------------------------------
-To compile for Win32 (x86), the mingw cross compilers can be used under
-linux. We provide mingw cross compilers on our downloads page, too: see
-under the support files section if you need one.
-Run the  build_cross_win32.sh scripts residing in all directories in
-order to compile. Read the scripts and edit them as necessary. Settings
-for the build_cross_win32.sh scripts are in the  scripts/cross_defs.w32
-file: edit it to meet your needs/setup, if necessary.
-
-To compile for Win64 (X64), mingw-w64 cross compilers can be used under
-linux.  We provide mingw-w64 cross compilers on our downloads page, too:
-see under the support files section if you need one. To compile, use the
-"build_cross_win64.sh" scripts residing in all the directories. Read the
-scripts and edit them as necessary.  Settings for build_cross_win64.sh
-scripts are in the  scripts/cross_defs.w64  file:  edit it to meet your
-needs, if necessary.
-
-
-b. On Windows, using win32-native MinGW compiler:
--------------------------------------------------
-Download a prebuilt MinGW installer and install it to C:\MinGW .  Then
-download MSys and install it to c:\msys
-As x86 assembler, download nasm version 2.09.10, put nasm.exe into the
-C:\MinGW\bin directory. Adding the mingw directory to your PATH may be
-a good idea, too.  MinGW-5.1.4 comes with gcc-3.4.5 and is recommended.
-
-Open a console window, cd into \msys and type "msys sh.exe". You will be
-in a unixish sh environment.  The rest is like doing things in linux:
-cd into your fake "home directory", extract uhexen2 tarball, then change
-into into each subdirectory you want to build and normally use the make
-commands to compile.
-
-Note that "make" may be named "mingw32-make". In that case, you may want
-to try "mingw32-make" if "make" command itself fails to run. Remember to
-do a make clean between each different build.
-
-c. On Windows, using Visual Studio 2005/2008 or 2010/2017:
-----------------------------------------------------------
-MS Visual Studio versions 2005 through 2017 have been tested to compile
-all uhexen2 code successfully.  The VisualStudio2005.zip files contain
-the *.vcproj project files and *.sln solution files: unzipping them and
-double-clicking on them should start visual studio and you will be ready
-to go.  The VS2005 project files import perfectly into VS2008, therefore
-VS2008 owners can use the VS2005 project files.  For your convenience,
-VS2010 project files are provided for hexen2 and hexenworld, which work
-fine with vs2017 too.  All of the projects are adjusted for Win32 (x86)
-and x64 targets.  Note that older MSVC versions such as Visual Studio 6
+uHexen2 developers usually cross-compile to windows using MinGW-w64 and
+MinGW.  The project can be built using Microsoft Visual Studio 2005 and
+newer versions, too. (Note that older MSVC versions eg. Visual Studio 6
 aren't supported: parts of our code make use of a few C99 features such
-as variadic macros which require Visual Studio 2005 or newer versions.
+as variadic macros which require Visual Studio 2005 or newer versions.)
 
 
 Compiling for Mac OS X:
 ========================================
 
 The Xcode project file is in source tarball: look at the hexen2/MacOSX
-folder. Currently, project files are adjusted to generate hexen2 and
-glhexen2 (universal) binaries for all Mac OS X versions, ppc part tuned
-for older g3's for better performance for these slower cpu's.
+folder.
 
-Double click on hexen2.xcodeproj. At the Xcode main window, on the left
-side look at "Targets" in the Groups & Files. Expand "Targets". You'll
-see both glhexen2 and hexen2 targets and one of them selected. You can
-press the hammer icon at the toolbar and start building, or you can
-select "Project/Set Active Target/<glhexen2 or hexen2> to change the
-build target to glhexen2 or hexen2.
-
-For building for older Mac OS X sdk's (probably you don't need to),
-double click on the little icon at the left of "Architectures" and
-select only "ppc"; then double click on the "SDK Path" value and
-delete "/Developer/SDKs/MacOSX10.4u.sdk" from there, build as usual.
-
-Cross compiling for OSX on linux is also possible.  To create a cross-
-toolchain, you can follow the instructions from the OpenTTD project,
-here:	http://devs.openttd.org/~truebrain/compile-farm/
-which basically boils down to compiling odcctools, downloading xcode
-v3.1.x from the Apple website (you need an account) and extracting the
-sdk from it, and compiling a gcc source capable of targeting osx, e.g.
-gcc-4.0 from:	http://www.opensource.apple.com/tarballs/
-To create an x86_64-capable cross-toolchain with gcc-4.2, I followed
-the instructions from https://github.com/Tatsh/xchain as guidelines.
+Cross compiling for OSX on linux is also possible:  build_cross_osx.sh
+scripts should give clues about it.
 
 
 Compiling for DOS:
 ========================================
 
-You need DJGPP. Tested compilation and functionality using djgpp v2.03
-and v2.05 using gcc-3.3.6, 3.4.6 and 4.4.7.  I compile on linux using
-cross toolchains: see the tiny build_cross_dos.sh script to understand
-how I do it.  Settings for the build_cross_dos.sh scripts are in the
-scripts/cross_defs.dj file: edit it to meet your needs/setup, if needed.
-We provide djgpp cross compilers on our downloads page: see under the
-support files section if you need one.
+You need DJGPP. Tested cross-compilation and functionality using djgpp
+v2.05 with gcc-3.3.6 and 3.4.6.
 
-Compiling in a native DOS/DJGPP environment is possible *if* you have
-long file names (LFN) support. Remember adding DOSBUILD=1 to your
-environment. For example, in order to compile the dos version of hexen2
-on native dos:
-	set DOSBUILD=1
-	make h2
-
-Cross-compiling for DOS on Windows in a command console or under MSYS
-should be possible too: remember adding DOSBUILD=1 to your environment,
-like above.
-
-Compilers other than djgpp, such as Open Watcom, won't work and need
-specifically porting to.
+Compiling in a native DOS/DJGPP environment is possible, *if* you have
+long file names (LFN) support. (Remember to set DOSBUILD=1 environment
+variable.)
 
 CWSDPMI.EXE is needed at runtime: use the "0.90+ r5" or a newer version.
-I've been successfully using the R5 "2008 refresh" (21 Aug.2008) as well
-as the R7 (07 Jan. 2010) versions for quite some time.
+I have been successfully using the R7 (07 Jan. 2010), as well as the R5
+"2008 refresh" (21 Aug. 2008) versions for quite some time.
+
+Compilers other than djgpp such as Open Watcom shall not work, and need
+specifically porting to.
 
 
 Compiling for OS/2:
@@ -247,8 +169,7 @@ work just as well.  You also need nasm in order to build the x86 asm
 sources (yasm won't work.)  Change into the relevant directory and run:
 	wmake -f Makefile.os2
 
-The Watcom makefiles work both when using on OS/2 natively and also when
-cross compiling on linux.  The source builds and runs with EMX/GCC too.
+The source builds and runs with EMX/GCC too.
 
 
 Compiling for Amiga variants:
