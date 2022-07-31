@@ -398,7 +398,7 @@ void PrintBSPFileSizes (void)
 	printf ("%5i clipnodes    %6i\n", numclipnodes, (int)(numclipnodes*sizeof(dclipnode_t)));
 	printf ("%5i leafs        %6i\n", numleafs, (int)(numleafs*sizeof(dleaf_t)));
 	printf ("%5i marksurfaces %6i\n", nummarksurfaces, (int)(nummarksurfaces*sizeof(dmarksurfaces[0])));
-	printf ("%5i surfedges    %6i\n", numsurfedges, (int)(numsurfedges*sizeof(dmarksurfaces[0])));
+	printf ("%5i surfedges    %6i\n", numsurfedges, (int)(numsurfedges*sizeof(dsurfedges[0])));
 	printf ("%5i edges        %6i\n", numedges, (int)(numedges*sizeof(dedge_t)));
 	if (!texdatasize)
 		printf ("    0 textures          0\n");
