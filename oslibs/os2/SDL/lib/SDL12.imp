@@ -189,3 +189,7 @@ SDL_CDResume SDL12 SDL_CDResume ?
 SDL_CDStop SDL12 SDL_CDStop ?
 SDL_CDEject SDL12 SDL_CDEject ?
 SDL_CDClose SDL12 SDL_CDClose ?
+SDL_iconv SDL12 SDL_iconv ?
+SDL_iconv_string SDL12 SDL_iconv_string ?
+SDL_iconv_open SDL12 SDL_iconv_open ?
+SDL_iconv_close SDL12 SDL_iconv_close ?
