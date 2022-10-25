@@ -251,7 +251,7 @@ static void DumpChunks (void)
 GetWavinfo
 ============
 */
-wavinfo_t GetWavinfo (const char *name, byte *wav, size_t wavlength)
+wavinfo_t GetWavinfo (const char *name, byte *wav, int wavlength)
 {
 	wavinfo_t	info;
 	int	i;

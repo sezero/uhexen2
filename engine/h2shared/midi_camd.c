@@ -786,7 +786,7 @@ static void *MIDI_Play (const char *filename)
 
 	struct SMFHeader *hdr;
 	UBYTE *pbyte;
-	size_t smfdatasize;
+	long smfdatasize;
 	UWORD track;
 	LONG error;
 	ULONG id;

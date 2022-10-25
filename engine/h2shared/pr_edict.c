@@ -1747,7 +1747,7 @@ static const char maplist_name[] = "maplist.txt";
 	unsigned int	id0, id1;
 	fshandle_t	FH;
 
-	FH.length = (long) FS_OpenFile (maplist_name, & FH.file, &id1);
+	FH.length = FS_OpenFile (maplist_name, & FH.file, &id1);
 	FH.pak = file_from_pak;
 	if (FH.file == NULL)
 		return def_progname;
@@ -1898,7 +1898,7 @@ void PR_LoadProgs (void)
 	progs = (dprograms_t *)FS_LoadHunkFile (progname, NULL);
 	if (!progs)
 		Host_Error ("%s: couldn't load %s", __thisfunc__, progname);
-	Con_DPrintf ("Programs occupy %luK.\n", (unsigned long)(fs_filesize/1024));
+	Con_DPrintf ("Programs occupy %ldK.\n", fs_filesize / 1024);
 
 	pr_crc = CRC_Block ((byte *)progs, fs_filesize);
 	#if defined(H2W) /* add prog crc to the serverinfo */
@@ -1964,7 +1964,7 @@ void PR_LoadProgs (void)
 
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
 	pr_strings = (char *)progs + progs->ofs_strings;
-	if (progs->ofs_strings + progs->numstrings >= (int)fs_filesize)
+	if (progs->ofs_strings + progs->numstrings >= fs_filesize)
 		Host_Error ("%s: strings go past end of file\n", progname);
 
 	// initialize the strings

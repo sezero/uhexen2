@@ -289,7 +289,7 @@ static OSStatus GetSequenceAudioUnit(MusicSequence sequence, AudioUnit *aunit)
 static void *MIDI_Play (const char *filename)
 {
 	byte *buf;
-	size_t len;
+	long len;
 	CoreMidiSong *song = NULL;
 	CFDataRef data = NULL;
 

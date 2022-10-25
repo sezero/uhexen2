@@ -162,7 +162,7 @@ byte	*Skin_Cache (skin_t *skin)
 	{
 		for (x = 0; x <= pcx->xmax ; )
 		{
-			if ((size_t)(raw - (byte*)pcx) > fs_filesize)
+			if ((raw - (byte*)pcx) > (ptrdiff_t)fs_filesize)
 			{
 				Cache_Free (&skin->cache);
 				skin->failedload = true;
@@ -174,7 +174,7 @@ byte	*Skin_Cache (skin_t *skin)
 			if ((dataByte & 0xC0) == 0xC0)
 			{
 				runLength = dataByte & 0x3F;
-				if ((size_t)(raw - (byte*)pcx) > fs_filesize)
+				if ((raw - (byte*)pcx) > (ptrdiff_t)fs_filesize)
 				{
 					Cache_Free (&skin->cache);
 					skin->failedload = true;
@@ -199,7 +199,7 @@ byte	*Skin_Cache (skin_t *skin)
 		}
 	}
 
-	if ((size_t)(raw - (byte *)pcx) > fs_filesize)
+	if ((raw - (byte*)pcx) > (ptrdiff_t)fs_filesize)
 	{
 		Cache_Free (&skin->cache);
 		skin->failedload = true;

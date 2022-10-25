@@ -81,17 +81,17 @@ static int MID2STREAM_fileopen(const char *filename)
 {
 	FILE *handle;
 	qboolean pak;
-	size_t length;
+	long length;
 
 	length = FS_OpenFile(filename, &handle, NULL);
 	pak = file_from_pak;
-	if (length == (size_t)-1)
+	if (length < 0)
 		return -1;
 
 	midi_fh.file = handle;
 	midi_fh.start = ftell(handle);
 	midi_fh.pos = 0;
-	midi_fh.length = (long)length;
+	midi_fh.length = length;
 	midi_fh.pak = pak;
 	return 0;
 }

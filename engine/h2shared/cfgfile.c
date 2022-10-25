@@ -153,23 +153,22 @@ void CFG_CloseConfig (void)
 int CFG_OpenConfig (const char *cfg_name)
 {
 	FILE	*f;
-	size_t		length;
+	long	length;
 	qboolean	pak;
 
 	CFG_CloseConfig ();
 
 	length = FS_OpenFile (cfg_name, &f, NULL);
 	pak = file_from_pak;
-	if (length == (size_t)-1)
+	if (length < 0)
 		return -1;
 
 	cfg_file = (fshandle_t *) Z_Malloc(sizeof(fshandle_t), Z_MAINZONE);
 	cfg_file->file = f;
 	cfg_file->start = ftell(f);
 	cfg_file->pos = 0;
-	cfg_file->length = (long)length;
+	cfg_file->length = length;
 	cfg_file->pak = pak;
 
 	return 0;
 }
-

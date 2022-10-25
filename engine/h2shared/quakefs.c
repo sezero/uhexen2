@@ -495,7 +495,7 @@ void FS_Gamedir (const char *dir)
 /* flush all data, so it will be forced to reload */
 #if !defined(SERVERONLY)
 	Cache_Flush ();
-#endif	/* SERVERONLY */
+#endif
 
 /* check for reserved gamedirs */
 	if (!q_strcasecmp(dir, "hw"))
@@ -554,7 +554,7 @@ FILE I/O within QFS
 ==============================================================================
 */
 
-size_t		fs_filesize;	/* size of the last file opened through QFS */
+long		fs_filesize;	/* size of the last file opened through QFS */
 int		file_from_pak;	/* ZOID: global indicating that file came from a pak */
 
 
@@ -760,7 +760,7 @@ FS_OpenFile
 Finds the file in the search path, returns fs_filesize.
 ===========
 */
-size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
+long FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 {
 	searchpath_t	*search;
 	pack_t		*pak;
@@ -781,7 +781,7 @@ size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 				if (strcmp(pak->files[i].name, filename) != 0)
 					continue;
 				/* found it! */
-				fs_filesize = (size_t) pak->files[i].filelen;
+				fs_filesize = pak->files[i].filelen;
 				file_from_pak = 1;
 				if (path_id)
 					*path_id = search->path_id;
@@ -798,8 +798,8 @@ size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 		else	/* check a file in the directory tree */
 		{
 			q_snprintf (ospath, sizeof(ospath), "%s/%s",search->filename, filename);
-			fs_filesize = (size_t) Sys_filesize (ospath);
-			if (fs_filesize == (size_t)-1)
+			fs_filesize = Sys_filesize (ospath);
+			if (fs_filesize < 0)
 				continue;
 			if (path_id)
 				*path_id = search->path_id;
@@ -815,7 +815,7 @@ size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 	Sys_DPrintf ("%s: can't find %s\n", __thisfunc__, filename);
 
 	if (file) *file = NULL;
-	fs_filesize = (size_t)-1;
+	fs_filesize = -1;
 	return fs_filesize;
 }
 
@@ -828,8 +828,8 @@ Returns whether the file is found in the hexen2 filesystem.
 */
 qboolean FS_FileExists (const char *filename, unsigned int *path_id)
 {
-	size_t ret = FS_OpenFile (filename, NULL, path_id);
-	return (ret == (size_t)-1) ? false : true;
+	long ret = FS_OpenFile(filename, NULL, path_id);
+	return (ret < 0) ? false : true;
 }
 
 /*
@@ -872,25 +872,25 @@ Allways appends a 0 byte to the loaded data.
 static byte	*loadbuf;
 #if !defined(SERVERONLY)
 static cache_user_t *loadcache;
-#endif	/* SERVERONLY */
-static size_t		loadsize;
+#endif
+static long		loadsize;
 static int		zone_num;
 
 #if defined (SERVERONLY)
 #define Draw_BeginDisc()
 #define Draw_EndDisc()
-#endif	/* SERVERONLY */
+#endif
 
 static byte *FS_LoadFile (const char *path, int usehunk, unsigned int *path_id)
 {
 	FILE	*h;
 	byte	*buf;
 	char	base[32];
-	size_t	len;
+	long	len;
 
 /* look for it in the filesystem or pack files */
 	len = FS_OpenFile (path, &h, path_id);
-	if (!h)
+	if (len < 0)
 		return NULL;
 
 /* extract the file's base name for hunk tag */
@@ -912,7 +912,7 @@ static byte *FS_LoadFile (const char *path, int usehunk, unsigned int *path_id)
 	case LOADFILE_CACHE:
 		buf = (byte *) Cache_Alloc (loadcache, len+1, base);
 		break;
-#endif	/* SERVERONLY */
+#endif
 	case LOADFILE_STACK:
 		if (len < loadsize)
 			buf = loadbuf;
@@ -932,7 +932,7 @@ static byte *FS_LoadFile (const char *path, int usehunk, unsigned int *path_id)
 	((byte *)buf)[len] = 0;
 
 	Draw_BeginDisc ();
-	fread (buf, 1, len, h);
+	fread (buf, 1, (size_t)len, h);
 	fclose (h);
 	Draw_EndDisc ();
 
@@ -961,10 +961,10 @@ void FS_LoadCacheFile (const char *path, struct cache_user_s *cu, unsigned int *
 	loadcache = cu;
 	FS_LoadFile (path, LOADFILE_CACHE, path_id);
 }
-#endif	/* SERVERONLY */
+#endif
 
 /* uses temp hunk if larger than bufsize */
-byte *FS_LoadStackFile (const char *path, void *buffer, size_t bufsize, unsigned int *path_id)
+byte *FS_LoadStackFile (const char *path, void *buffer, long bufsize, unsigned int *path_id)
 {
 	byte	*buf;
 
@@ -1192,7 +1192,7 @@ void FS_Init (void)
 	Cmd_AddCommand ("path", FS_Path_f);
 #if !defined(SERVERONLY)
 	Cmd_AddCommand ("maplist", FS_Maplist_f);
-#endif	/* SERVERONLY */
+#endif
 
 /* -basedir <path> overrides the system supplied base directory */
 	i = COM_CheckParm ("-basedir");

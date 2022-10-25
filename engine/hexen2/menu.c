@@ -4972,12 +4972,12 @@ void M_Init (void)
 		M_BuildBigCharWidth();
 	else
 	{
-		if (fs_filesize == sizeof(BigCharWidth))
+		if (fs_filesize == (long) sizeof(BigCharWidth))
 			memcpy (BigCharWidth, ptr, sizeof(BigCharWidth));
 		else
 		{
-			Con_Printf ("Unexpected file size (%lu) for %s\n",
-					(unsigned long)fs_filesize, BIGCHAR_WIDTH_FILE);
+			Con_Printf ("Unexpected file size (%ld) for %s\n",
+					fs_filesize, BIGCHAR_WIDTH_FILE);
 			M_BuildBigCharWidth();
 		}
 	}

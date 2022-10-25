@@ -293,12 +293,12 @@ snd_stream_t *S_CodecUtilOpen(const char *filename, snd_codec_t *codec, qboolean
 	snd_stream_t *stream;
 	FILE *handle;
 	qboolean pak;
-	size_t length;
+	long length;
 
 	/* Try to open the file */
 	length = FS_OpenFile(filename, &handle, NULL);
 	pak = file_from_pak;
-	if (length == (size_t)-1)
+	if (length < 0)
 	{
 		Con_DPrintf("Couldn't open %s\n", filename);
 		return NULL;
@@ -311,7 +311,7 @@ snd_stream_t *S_CodecUtilOpen(const char *filename, snd_codec_t *codec, qboolean
 	stream->fh.file = handle;
 	stream->fh.start = ftell(handle);
 	stream->fh.pos = 0;
-	stream->fh.length = (long)length;
+	stream->fh.length = length;
 	stream->fh.pak = stream->pak = pak;
 	q_strlcpy(stream->name, filename, MAX_QPATH);
 

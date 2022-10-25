@@ -63,7 +63,7 @@ void FS_Gamedir (const char *dir);
 
 
 /* file i/o within qfs */
-extern	size_t	fs_filesize;	/* size of the last file opened through QFS api */
+extern	long	fs_filesize;	/* size of the last file opened through QFS api */
 
 extern	int	file_from_pak;	/* global indicating that file came from a pak. */
 
@@ -88,10 +88,10 @@ int FS_CreatePath (char *path);
 	 * be created, it must have the trailing path seperator. Returns 0 on success,
 	 * non-zero on error. */
 
-size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id);
+long FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id);
 	/* Opens a file (a standalone file or a file in pak) in the hexen2 filesystem,
-	 * returns fs_filesize on success or (size_t)-1 on failure.  if path_id is not
-	 * NULL, the id number of the opened file's gamedir is stored in path_id.  */
+	 * returns fs_filesize on success or (-1) on failure.  If path_id is not NULL,
+	 * the id number of the opened file's gamedir is stored in path_id.  */
 
 qboolean FS_FileExists (const char *filename, unsigned int *path_id);
 	/* Returns whether the file is found in the hexen2 filesystem.  if path_id is
@@ -112,7 +112,7 @@ byte *FS_LoadHunkFile (const char *path, unsigned int *path_id);
 	/* allocates the buffer on the hunk.  */
 byte *FS_LoadMallocFile (const char *path, unsigned int *path_id);
 	/* allocates the buffer on the system mem (malloc).  */
-byte *FS_LoadStackFile (const char *path, void *buffer, size_t bufsize,
+byte *FS_LoadStackFile (const char *path, void *buffer, long bufsize,
 							unsigned int *path_id);
 	/* uses the specified stack stack buffer with the specified size
 	 * of bufsize. if bufsize is too short, uses temp hunk. the bufsize

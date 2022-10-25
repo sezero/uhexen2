@@ -162,7 +162,7 @@ extern	cvar_t		bgmvolume;
 void S_LocalSound (const char *name);
 sfxcache_t *S_LoadSound (sfx_t *s);
 
-wavinfo_t GetWavinfo (const char *name, byte *wav, size_t wavlength);
+wavinfo_t GetWavinfo (const char *name, byte *wav, int wavlength);
 
 void SND_InitScaletable (void);
 

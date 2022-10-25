@@ -286,13 +286,13 @@ void R_Init (void)
 	if (!transTable)
 		Sys_Error ("Couldn't load gfx/tinttab.lmp");
 	if (fs_filesize != 65536)
-		Sys_Error ("Unexpected file size (%lu) for %s\n", (unsigned long)fs_filesize, "gfx/tinttab.lmp");
+		Sys_Error ("Unexpected file size (%ld) for %s\n", fs_filesize, "gfx/tinttab.lmp");
 
 	mainTransTable = (byte *)FS_LoadHunkFile ("gfx/tinttab2.lmp", NULL);
 	if (!mainTransTable)
 		Sys_Error ("Couldn't load gfx/tinttab2.lmp");
 	if (fs_filesize != 65536)
-		Sys_Error ("Unexpected file size (%lu) for %s\n", (unsigned long)fs_filesize, "gfx/tinttab2.lmp");
+		Sys_Error ("Unexpected file size (%ld) for %s\n", fs_filesize, "gfx/tinttab2.lmp");
 
 	playerTranslation = (byte *)FS_LoadHunkFile ("gfx/player.lmp", NULL);
 	if (!playerTranslation)

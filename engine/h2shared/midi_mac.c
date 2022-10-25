@@ -165,7 +165,7 @@ static void *MIDI_Play (const char *filename)
 		Con_DPrintf("Couldn't open %s\n", filename);
 		return NULL;
 	}
-	len = fs_filesize;
+	len = (size_t) fs_filesize;
 
 	/* Using NewMovieFromDataRef() to import midi data to QT
 	 * movies would return -2048 if done wrong; using a Data
