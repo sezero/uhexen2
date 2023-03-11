@@ -125,6 +125,10 @@ void pds_dpmi_unmap_physycal_memory(unsigned long linear_addr)
 
   memset(&regs,0,sizeof(union REGS));
 
+ #ifdef __DJGPP__
+  linear_addr -= __djgpp_conventional_base;
+ #endif
+
   regs.w.ax = 0x0801;
   regs.w.bx = (linear_addr>>16);
   regs.w.cx = (linear_addr&0xffff);
