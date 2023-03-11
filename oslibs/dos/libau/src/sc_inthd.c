@@ -765,7 +765,7 @@ static unsigned int snd_ihd_mixer_init(struct intelhd_card_s *card)
 
 #ifdef SDR
  if(card->afg_num_nodes > 64) goto err_out_mixinit;
- card->afg_nodes=(struct hda_gnode *)&stuff;
+ card->afg_nodes=stuff;
 #else
  card->afg_nodes=(struct hda_gnode *)calloc(card->afg_num_nodes,sizeof(struct hda_gnode));
  if(!card->afg_nodes)  goto err_out_mixinit;
