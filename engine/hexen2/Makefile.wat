@@ -237,7 +237,7 @@ LIBS    += $(CODECLIBS)mikmod.lib
 !ifeq USE_CODEC_XMP yes
 CPPFLAGS+= -DUSE_CODEC_XMP
 # for static linkage
-CPPFLAGS+= -DXMP_NO_DLL
+CPPFLAGS+= -DLIBXMP_STATIC
 LIBS    += $(CODECLIBS)libxmp.lib
 !endif
 !ifeq USE_CODEC_MODPLUG yes
