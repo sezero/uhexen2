@@ -1141,7 +1141,7 @@ static int INTELHD_adetect(struct mpxplay_audioout_info_s *aui)
  aui->card_private_data=card;
  card->pci_dev=&libau_pci;
 
- if(pcibios_search_devices(intelhda_devices,card->pci_dev)!=PCI_SUCCESSFUL)
+ if(pcibios_search_devices(&intelhda_devices[0],card->pci_dev)!=PCI_SUCCESSFUL)
   goto err_adetect;
 
  card->iobase = pcibios_ReadConfig_Dword(card->pci_dev, PCIR_NAMBAR);

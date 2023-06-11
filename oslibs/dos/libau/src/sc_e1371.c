@@ -449,7 +449,7 @@ static int ES1371_adetect(struct mpxplay_audioout_info_s *aui)
  aui->card_private_data=card;
  card->pci_dev=&libau_pci;
 
- if(pcibios_search_devices(ensoniq_devices,card->pci_dev)!=PCI_SUCCESSFUL)
+ if(pcibios_search_devices(&ensoniq_devices[0],card->pci_dev)!=PCI_SUCCESSFUL)
   goto err_adetect;
 
  mpxplay_debugf(ENS_DEBUG_OUTPUT,"chip init : enable PCI io and busmaster");
@@ -471,7 +471,7 @@ static int ES1371_adetect(struct mpxplay_audioout_info_s *aui)
   funcbit_enable(card->sctrl,ES_1371_ST_AC97_RST);
  }
 
- if(pcibios_search_devices(amplifier_hack_devices,NULL)==PCI_SUCCESSFUL)
+ if(pcibios_search_devices(&amplifier_hack_devices[0],NULL)==PCI_SUCCESSFUL)
   funcbit_enable(card->ctrl,ES_1371_GPIO_OUT(1)); // turn on amplifier
 
  mpxplay_debugf(ENS_DEBUG_OUTPUT,"vend_id:%4.4X dev_id:%4.4X port:%8.8X irq:%d rev:%2.2X info:%8.8X",

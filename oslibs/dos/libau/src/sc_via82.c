@@ -225,7 +225,7 @@ static int VIA82XX_adetect(struct mpxplay_audioout_info_s *aui)
  aui->card_private_data=card;
  card->pci_dev=&libau_pci;
 
- if(pcibios_search_devices(via_devices,card->pci_dev)!=PCI_SUCCESSFUL)
+ if(pcibios_search_devices(&via_devices[0],card->pci_dev)!=PCI_SUCCESSFUL)
   goto err_adetect;
 
  pcibios_set_master(card->pci_dev);
