@@ -117,7 +117,7 @@ static void via82xx_channel_reset(struct via82xx_card *card)
 {
  unsigned int baseport = card->iobase;
 
- outb(baseport+VIA_REG_OFFSET_CONTROL, VIA_REG_CTRL_PAUSE|VIA_REG_CTRL_TERMINATE|VIA_REG_CTRL_RESET);
+ outb(baseport+VIA_REG_OFFSET_CONTROL, VIA_REG_CTRL_PAUSE|VIA_REG_CTRL_TERMINATE);
  pds_delay_10us(5);
  outb(baseport + VIA_REG_OFFSET_CONTROL, 0x00);
  outb(baseport + VIA_REG_OFFSET_STATUS, 0xFF);
@@ -325,7 +325,10 @@ _farnspokel((unsigned int)&card->virtualpagetable[pagecount*2+1],VIA_TBL_BIT_EOL
 #endif
 
  // ac97 config
- via82xx_ac97_write(card->iobase,AC97_PCM_FRONT_DAC_RATE, aui->freq_card);
+ if(card->pci_dev->device_id==PCI_DEVICE_ID_VT82C686) { // VT8233 set in rbits
+  via82xx_ac97_write(card->iobase,AC97_EXTENDED_STATUS,AC97_EA_VRA);
+  via82xx_ac97_write(card->iobase,AC97_PCM_FRONT_DAC_RATE, aui->freq_card);
+ }
 
  switch(aui->freq_card){
   case 32000:spdif_rate=AC97_SC_SPSR_32K;break;
