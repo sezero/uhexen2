@@ -35,6 +35,7 @@
 
 static double		starttime;
 static qboolean		first = true;
+static qboolean		stdinIsATTY;	/* from ioquake3 source */
 
 #if DO_USERDIRS
 static char	userdir[MAX_OSPATH];
@@ -68,11 +69,15 @@ void Sys_Quit (void)
 
 char *Sys_ConsoleInput (void)
 {
+	static qboolean	con_eof = false;
 	static char	con_text[256];
 	static int	textlen;
 	char		c;
 	fd_set		set;
 	struct timeval	timeout;
+
+	if (!stdinIsATTY || con_eof)
+		return NULL;
 
 	FD_ZERO (&set);
 	FD_SET (0, &set);	// stdin
@@ -81,7 +86,13 @@ char *Sys_ConsoleInput (void)
 
 	while (select (1, &set, NULL, NULL, &timeout))
 	{
-		read (0, &c, 1);
+		if (read(0, &c, 1) <= 0)
+		{
+			// Finish processing whatever is already in the
+			// buffer (if anything), then stop reading
+			con_eof = true;
+			c = '\n';
+		}
 		if (c == '\n' || c == '\r')
 		{
 			con_text[textlen] = '\0';
@@ -177,6 +188,15 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 }
 #endif	/* DO_USERDIRS */
 
+static void Sys_Init (void)
+{
+	const char* term = getenv("TERM");
+	stdinIsATTY = isatty(STDIN_FILENO) &&
+		!(term && (!strcmp(term, "raw") || !strcmp(term, "dumb")));
+	if (!stdinIsATTY)
+		printf("Terminal input not available.\n");
+}
+
 
 //=============================================================================
 
@@ -215,6 +235,8 @@ int main (int argc, char **argv)
 	Sys_mkdir(userdir, true);
 	q_snprintf(filters_file, sizeof(filters_file), "%s/filters.ini", userdir);
 #endif
+
+	Sys_Init ();
 
 	Cbuf_Init();
 	Cmd_Init ();
