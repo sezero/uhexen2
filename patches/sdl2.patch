@@ -1480,10 +1480,10 @@ index 835cda8..ee88f90 100644
  #endif
  }
 diff --git a/engine/hexen2/sys_unix.c b/engine/hexen2/sys_unix.c
-index 66797df..f7554c5 100644
+index 411e400..321ee10 100644
 --- a/engine/hexen2/sys_unix.c
 +++ b/engine/hexen2/sys_unix.c
-@@ -570,8 +570,13 @@ static void Sys_CheckSDL (void)
+@@ -587,8 +587,13 @@ static void Sys_CheckSDL (void)
  {
  #if defined(SDLQUAKE)
  	const SDL_version *sdl_version;

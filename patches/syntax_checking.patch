@@ -11,12 +11,11 @@ options, but also allowing for "+map village1" type args.
 
 stevenaaus@yahoo.com
 
-
 diff --git a/engine/hexen2/sys_unix.c b/engine/hexen2/sys_unix.c
-index 66797df..4e4461f 100644
+index 411e400..1cc4c59 100644
 --- a/engine/hexen2/sys_unix.c
 +++ b/engine/hexen2/sys_unix.c
-@@ -584,65 +584,267 @@ static void PrintVersion (void)
+@@ -601,65 +601,267 @@ static void PrintVersion (void)
  }
  
  #include "snd_sys.h"
@@ -314,7 +313,7 @@ index 66797df..4e4461f 100644
  }
  
  /*
-@@ -665,23 +867,7 @@ int main (int argc, char **argv)
+@@ -682,23 +884,7 @@ int main (int argc, char **argv)
  
  	PrintVersion();
  
@@ -339,7 +338,3 @@ index 66797df..4e4461f 100644
  
  	/* initialize the host params */
  	memset (&parms, 0, sizeof(parms));
-
--- 
-1.7.1
-
