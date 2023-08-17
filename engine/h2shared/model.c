@@ -214,44 +214,41 @@ qmodel_t *Mod_FindName (const char *name)
 	{
 		mod = &mod_known[i];
 		if (!strcmp (mod->name, name) )
-			break;
+			return mod;
 	}
 
-	if (i == -1)
+	if (mod_numknown == MAX_MOD_KNOWN)
 	{
-		if (mod_numknown == MAX_MOD_KNOWN)
+		for (i = 0; i < mod_numknown; i++)
 		{
-			for (i = 0; i < mod_numknown; i++)
+			mod = &mod_known[i];
+			if (mod->needload == NL_UNREFERENCED && mod->type != mod_alias)
+				break;
+		}
+		if (i < mod_numknown)
+		{
+			Hash_Add (&hash_mod, key, i);
+			mod = &mod_known[i];
+			if (mod->type == mod_alias)
 			{
-				mod = &mod_known[i];
-				if (mod->needload == NL_UNREFERENCED && mod->type != mod_alias)
-					break;
+				if (Cache_Check (&mod->cache))
+					Cache_Free (&mod->cache);
 			}
-			if (i < mod_numknown)
-			{
-				Hash_Add (&hash_mod, key, i);
-				mod = &mod_known[i];
-				if (mod->type == mod_alias)
-				{
-					if (Cache_Check (&mod->cache))
-						Cache_Free (&mod->cache);
-				}
-				else if (mod->type == mod_sprite)
-					mod->cache.data = NULL;
-			}
-			else
-				Sys_Error ("mod_numknown == MAX_MOD_KNOWN");
+			else if (mod->type == mod_sprite)
+				mod->cache.data = NULL;
 		}
 		else
-		{
-			Hash_Add (&hash_mod, key, mod_numknown);
-			mod = &mod_known[mod_numknown];
-			mod_numknown++;
-		}
-		q_strlcpy (mod->name, name, MAX_QPATH);
-		mod->needload = NL_NEEDS_LOADED;
+			Sys_Error ("mod_numknown == MAX_MOD_KNOWN");
+	}
+	else
+	{
+		Hash_Add (&hash_mod, key, mod_numknown);
+		mod = &mod_known[mod_numknown];
+		mod_numknown++;
 	}
 
+	q_strlcpy (mod->name, name, MAX_QPATH);
+	mod->needload = NL_NEEDS_LOADED;
 	return mod;
 }
 
