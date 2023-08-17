@@ -240,28 +240,25 @@ qmodel_t *Mod_FindName (const char *name)
 		}
 	}
 
-	if (i == -1)
+	if (mod_numknown == MAX_MOD_KNOWN)
 	{
-		if (mod_numknown == MAX_MOD_KNOWN)
+		for (i = 0; i < mod_numknown; i++)
 		{
-			for (i = 0; i < mod_numknown; i++)
-			{
-				if (mod_known[i].needload == NL_UNREFERENCED)
-					break;
-			}
-			if (i < mod_numknown)
-			{
-				Hash_Add (&hash_mod, key, i);
-				mod = &(mod_known[i]);
-			}
-			else // No free model handle
-				Sys_Error ("mod_numknown == MAX_MOD_KNOWN");
+			if (mod_known[i].needload == NL_UNREFERENCED)
+				break;
+		}
+		if (i < mod_numknown)
+		{
+			Hash_Add (&hash_mod, key, i);
+			mod = &(mod_known[i]);
 		}
 		else
-		{
-			Hash_Add (&hash_mod, key, mod_numknown);
-			mod = &(mod_known[mod_numknown++]);
-		}
+			Sys_Error ("mod_numknown == MAX_MOD_KNOWN");
+	}
+	else
+	{
+		Hash_Add (&hash_mod, key, mod_numknown);
+		mod = &(mod_known[mod_numknown++]);
 	}
 	q_strlcpy (mod->name, name, MAX_QPATH);
 	mod->needload = NL_NEEDS_LOADED;
