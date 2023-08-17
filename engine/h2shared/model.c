@@ -1803,8 +1803,6 @@ static void *Mod_LoadAliasFrame (void *pin, int *pframeindex, int numv,
 
 	for (j = 0; j < numv; j++)
 	{
-		int		k;
-
 		in[0] = pinframe[j].v[0];
 		in[1] = pinframe[j].v[1];
 		in[2] = pinframe[j].v[2];
@@ -1813,14 +1811,14 @@ static void *Mod_LoadAliasFrame (void *pin, int *pframeindex, int numv,
 	// these are all byte values, so no need to deal with endianness
 		pframe[j].lightnormalindex = pinframe[j].lightnormalindex;
 
-		for (k = 0; k < 3; k++)
+		for (i = 0; i < 3; i++)
 		{
-			pframe[j].v[k] = pinframe[j].v[k];
+			pframe[j].v[i] = pinframe[j].v[i];
 
-			if (aliasmins[k] > out[k])
-				aliasmins[k] = out[k];
-			if (aliasmaxs[k] < out[k])
-				aliasmaxs[k] = out[k];
+			if (aliasmins[i] > out[i])
+				aliasmins[i] = out[i];
+			if (aliasmaxs[i] < out[i])
+				aliasmaxs[i] = out[i];
 		}
 	}
 
