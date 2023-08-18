@@ -44,7 +44,7 @@ pack_t *LoadPackFile (const char *packfile)
 	if (!packhandle)
 		return NULL;
 
-	if (!fread(&header, 1, sizeof(header), packhandle) ||
+	if (!fread(&header, sizeof(header), 1, packhandle) ||
 	    header.id[0] != 'P' || header.id[1] != 'A' ||
 	    header.id[2] != 'C' || header.id[3] != 'K') {
 		COM_Error ("%s is not a packfile.", packfile);
