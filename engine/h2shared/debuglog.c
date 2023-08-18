@@ -36,8 +36,8 @@
 #if defined(PLATFORM_OS2)||defined(PLATFORM_DOS)
 #include <io.h>		/* write() */
 #endif
-#if defined(PLATFORM_UNIX) ||	\
-    defined(__DJGPP__) ||	\
+#if defined(PLATFORM_UNIX) || \
+    defined(__DJGPP__)     || \
     defined(PLATFORM_RISCOS)
 #include <unistd.h>	/* write() */
 #endif
@@ -74,7 +74,12 @@ void LOG_Print (const char *logdata)
 	if (log_fd == -1)
 		return;
 
-	write (log_fd, logdata, strlen(logdata));
+	if (write(log_fd, logdata, strlen(logdata)) < 0)
+	{
+		Sys_PrintTerm ("Error writing to log file\n");
+		LOG_Close ();
+		con_debuglog = LOG_NONE;
+	}
 }
 #endif
 

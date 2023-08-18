@@ -323,7 +323,7 @@ int main (int argc, char *argv[])
 	{
 		printf ("RCON> ");
 
-		fgets ((char *)p, p - &packet[0], stdin);
+		(void) fgets((char *)p, p - &packet[0], stdin);
 		len = strlen((char *)p);
 		if (p[len - 1] == '\n')
 			p[--len]= '\0';

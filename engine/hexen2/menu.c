@@ -1011,15 +1011,15 @@ static void M_ScanSaves (void)
 		loadable[i] = false;
 		FS_MakePath_VABUF (FS_USERDIR, NULL, name, sizeof(name), "s%i/info.dat", i);
 		f = fopen (name, "r");
-		if (!f)
+		if (!f) {
 			continue;
-		fscanf (f, "%i\n", &version);
-		if (version != SAVEGAME_VERSION)
-		{
+		}
+		if (fscanf(f, "%i\n", &version) != 1 ||
+		    fscanf(f, "%79s\n", name)   != 1 ||
+		    version != SAVEGAME_VERSION) {
 			fclose (f);
 			continue;
 		}
-		fscanf (f, "%79s\n", name);
 		q_strlcpy (m_filenames[i], name, SAVEGAME_COMMENT_LENGTH+1);
 
 	// change _ back to space
@@ -1201,15 +1201,15 @@ static void M_ScanMSaves (void)
 		loadable[i] = false;
 		FS_MakePath_VABUF (FS_USERDIR, NULL, name, sizeof(name), "ms%i/info.dat", i);
 		f = fopen (name, "r");
-		if (!f)
+		if (!f) {
 			continue;
-		fscanf (f, "%i\n", &version);
-		if (version != SAVEGAME_VERSION)
-		{
+		}
+		if (fscanf(f, "%i\n",&version) != 1 ||
+		    fscanf(f, "%79s\n", name)  != 1 ||
+		    version != SAVEGAME_VERSION) {
 			fclose (f);
 			continue;
 		}
-		fscanf (f, "%79s\n", name);
 		q_strlcpy (m_filenames[i], name, SAVEGAME_COMMENT_LENGTH+1);
 
 	// change _ back to space

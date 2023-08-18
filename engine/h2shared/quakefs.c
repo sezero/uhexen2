@@ -270,8 +270,8 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 	if (!packhandle)
 		return NULL;
 
-	fread (&header, 1, sizeof(header), packhandle);
-	if (header.id[0] != 'P' || header.id[1] != 'A' ||
+	if (!fread(&header, sizeof(header), 1, packhandle) ||
+	    header.id[0] != 'P' || header.id[1] != 'A' ||
 	    header.id[2] != 'C' || header.id[3] != 'K')
 	{
 		Sys_Printf ("WARNING: %s is not a packfile, ignored\n", packfile);
@@ -303,7 +303,8 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 	newfiles = (pakfiles_t *) Z_Malloc (numpackfiles * sizeof(pakfiles_t), Z_MAINZONE);
 
 	fseek (packhandle, header.dirofs, SEEK_SET);
-	fread (info,  1, header.dirlen, packhandle);
+	if (!fread(info, header.dirlen,  1, packhandle))
+		Sys_Error ("Error reading %s", packfile);
 
 	/* crc the directory */
 	CRC_Init (&crc);
@@ -932,7 +933,8 @@ static byte *FS_LoadFile (const char *path, int usehunk, unsigned int *path_id)
 	((byte *)buf)[len] = 0;
 
 	Draw_BeginDisc ();
-	fread (buf, 1, (size_t)len, h);
+	if (!fread(buf, (size_t)len, 1, h))
+		Sys_Error ("%s: Error reading %s", __thisfunc__, path);
 	fclose (h);
 	Draw_EndDisc ();
 
@@ -1161,13 +1163,14 @@ static int CheckRegistered (void)
 	if (!h)
 		return -1;
 
-	fread (check, 1, sizeof(check), h);
+	i = (int) fread(check, sizeof(check), 1, h);
 	fclose (h);
+	if (!i) goto corrupt;
 
 	for (i = 0; i < 128; i++)
 	{
 		if (pop[i] != (unsigned short)BigShort(check[i]))
-		{
+		{  corrupt:
 			Sys_Printf ("Corrupted data file\n");
 			return -1;
 		}
