@@ -1,0 +1,52 @@
+name: Linux CI
+
+on: [push, pull_request]
+
+jobs:
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: ["clang", "gcc"]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: sudo apt update && sudo apt install libsdl1.2-dev libmad0-dev libvorbis-dev
+
+    - name: Build ${{ matrix.compiler }}
+      run: |
+        make CC=${{ matrix.compiler }} -j3 -k -C engine/hexen2 h2
+        # use localclean instead of clean to avoid building timidity every time
+        make CC=${{ matrix.compiler }} -j3 -k -s -C engine/hexen2 localclean
+        make CC=${{ matrix.compiler }} -j3 -k -C engine/hexen2 glh2
+        make CC=${{ matrix.compiler }} -j3 -k -s -C engine/hexen2 localclean
+        make CC=${{ matrix.compiler }} -j3 -k -C engine/hexen2/server
+        # hexenworld
+        make CC=${{ matrix.compiler }} -j3 -k -C engine/hexenworld/server
+        make CC=${{ matrix.compiler }} -j3 -k -C engine/hexenworld/client hw
+        make CC=${{ matrix.compiler }} -j3 -k -s -C engine/hexenworld/client localclean
+        make CC=${{ matrix.compiler }} -j3 -k -C engine/hexenworld/client glhw
+        # h2patch
+        make CC=${{ matrix.compiler }} -j3 -k -C h2patch
+        # hw-utils
+        make CC=${{ matrix.compiler }} -j3 -k -C hw_utils/hwmaster
+        make CC=${{ matrix.compiler }} -j3 -k -C hw_utils/hwmquery
+        make CC=${{ matrix.compiler }} -j3 -k -C hw_utils/hwrcon
+        # utils
+        make CC=${{ matrix.compiler }} -j3 -k -C utils/hcc
+        make CC=${{ matrix.compiler }} -j3 -k -C utils/bsp2map
+        make CC=${{ matrix.compiler }} -j3 -k -C utils/bspinfo
+        make CC=${{ matrix.compiler }} -j3 -k -C utils/qbsp
+        make CC=${{ matrix.compiler }} -j3 -k -C utils/light
+        make CC=${{ matrix.compiler }} -j3 -k -C utils/vis
+        make CC=${{ matrix.compiler }} -j3 -k -C utils/genmodel
+        make CC=${{ matrix.compiler }} -j3 -k -C utils/qfiles
+        make CC=${{ matrix.compiler }} -j3 -k -C utils/dcc
+        make CC=${{ matrix.compiler }} -j3 -k -C utils/pak
+        make CC=${{ matrix.compiler }} -j3 -k -C utils/jsh2color
+        make CC=${{ matrix.compiler }} -j3 -k -C utils/texutils/bsp2wal
+        make CC=${{ matrix.compiler }} -j3 -k -C utils/texutils/lmp2pcx
