@@ -1274,7 +1274,8 @@ void R_DrawName (vec3_t origin, const char *name, int siegestatus)
 	float	zi;
 //	byte	*pdest;
 //	short	*pz;
-	int	izi, u, v;
+//	int	izi;
+	int	u, v;
 
 	if (!name)
 		return;
@@ -1305,9 +1306,8 @@ void R_DrawName (vec3_t origin, const char *name, int siegestatus)
 
 //	pz = d_pzbuffer + (d_zwidth * v) + u;
 //	pdest = d_viewbuffer + d_scantable[v] + u;
-	izi = (int)(zi * 0x8000);
-	izi += 14;
-
+//	izi = (int)(zi * 0x8000);
+//	izi += 14;
 //	if (pz[0] > izi)
 //		return;
 
