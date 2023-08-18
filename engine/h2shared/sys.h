@@ -23,6 +23,10 @@
 #ifndef HX2_SYS_H
 #define HX2_SYS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* file IO */
 
 int Sys_mkdir (const char *path, qboolean crash);
@@ -94,6 +98,10 @@ void Sys_SendKeyEvents (void);
 	/* perform Key_Event () callbacks until the input que is empty */
 
 char *Sys_GetClipboardData (void);
+
+#ifdef __cplusplus
+}
+#endif
 
 
 /* x86 asm support */
