@@ -75,10 +75,9 @@ extern	qboolean	is_progs_v6;
  * do not do this, as they use a combined single progs.dat.
  * When progs.dat exists (it usually does), uHexen2 accepts maplist.txt
  * only if it is from the same game directory as progs.dat itself or if
- * it is from a searchpath with a higher priority. */
+ * it is from a searchpath with a higher priority.
+ * Only for original hexen2, not for hexenworld. */
 #define	USE_MULTIPLE_PROGS	1
-
-/* USE_MULTIPLE_PROGS is only for original hexen2. */
 #if defined(H2W)
 #undef	USE_MULTIPLE_PROGS
 #define	USE_MULTIPLE_PROGS	0
@@ -119,7 +118,7 @@ int NUM_FOR_EDICT(edict_t*);
 
 #define	NEXT_EDICT(e)		((edict_t *)( (byte *)e + pr_edict_size))
 
-#define	EDICT_TO_PROG(e)	((byte *)e - (byte *)sv.edicts)
+#define	EDICT_TO_PROG(e)	(int)((byte *)e - (byte *)sv.edicts)
 #define PROG_TO_EDICT(e)	((edict_t *)((byte *)sv.edicts + e))
 
 #define	G_FLOAT(o)		(pr_globals[o])
