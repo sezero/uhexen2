@@ -323,9 +323,10 @@ int main (int argc, char *argv[])
 	{
 		printf ("RCON> ");
 
-		(void) fgets((char *)p, p - &packet[0], stdin);
+		if (!fgets((char *)p, p - &packet[0], stdin))
+			continue;	/* can it happen??? */
 		len = strlen((char *)p);
-		if (p[len - 1] == '\n')
+		if (len && p[len - 1] == '\n')
 			p[--len]= '\0';
 		if (len == 0)
 			continue;
