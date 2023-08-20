@@ -29,9 +29,6 @@
 #include "mathlib.h"
 #include "bspfile.h"
 #include "bsp5.h"
-#ifdef PLATFORM_WINDOWS
-#include <windows.h>
-#endif
 #include "filenames.h"
 
 
@@ -797,19 +794,23 @@ static void ReadClipHull (int hullnumber)
 	if (!f)
 		COM_Error ("Couldn't open %s", hullfilename);
 
-	if (fscanf (f,"%i\n", &n) != 1)
+	if (fscanf (f,"%i\n", &n) != 1) {
+	fail:
 		COM_Error ("Error parsing %s", hullfilename);
+	}
 
 	if (n != nummodels)
 		COM_Error ("%s: hull had %i models, base had %i", __thisfunc__, n, nummodels);
 
 	for (i = 0 ; i < n ; i++)
 	{
-		fscanf (f, "%i\n", &j);
+		if (fscanf (f, "%i\n", &j) != 1)
+			goto fail;
 		dmodels[i].headnode[hullnumber] = numclipnodes + j;
 	}
 
-	fscanf (f,"\n%i\n", &n);
+	if (fscanf (f,"\n%i\n", &n) != 1)
+		goto fail;
 	firstclipnode = numclipnodes;
 
 	for (i = 0 ; i < n ; i++)
@@ -819,7 +820,7 @@ static void ReadClipHull (int hullnumber)
 		d = &dclipnodes[numclipnodes];
 		numclipnodes++;
 		if (fscanf (f,"%i : %f %f %f %f : %i %i\n", &junk, &f1, &f2, &f3, &f4, &c1, &c2) != 7)
-			COM_Error ("Error parsing %s", hullfilename);
+			goto fail;
 
 		p.normal[0] = f1;
 		p.normal[1] = f2;
@@ -853,19 +854,23 @@ static void ReadClipHull2 (int hullnumber)
 	if (!f)
 		COM_Error ("Couldn't open %s", hullfilename);
 
-	if (fscanf (f,"%i\n", &n) != 1)
+	if (fscanf (f,"%i\n", &n) != 1) {
+	fail:
 		COM_Error ("Error parsing %s", hullfilename);
+	}
 
 	if (n != nummodels)
 		COM_Error ("%s: hull had %i models, base had %i", __thisfunc__, n, nummodels);
 
 	for (i = 0 ; i < n ; i++)
 	{
-		fscanf (f, "%i\n", &j);
+		if (fscanf (f, "%i\n", &j) != 1)
+			goto fail;
 		dmodels[i].headnode[hullnumber] = numclipnodes + j;
 	}
 
-	fscanf (f,"\n%i\n", &n);
+	if (fscanf (f,"\n%i\n", &n) != 1)
+		goto fail;
 	firstclipnode = numclipnodes;
 
 	for (i = 0 ; i < n ; i++)
@@ -875,7 +880,7 @@ static void ReadClipHull2 (int hullnumber)
 		d = &dclipnodes2[numclipnodes];
 		numclipnodes++;
 		if (fscanf (f,"%i : %f %f %f %f : %i %i\n", &junk, &f1, &f2, &f3, &f4, &c1, &c2) != 7)
-			COM_Error ("Error parsing %s", hullfilename);
+			goto fail;
 
 		p.normal[0] = f1;
 		p.normal[1] = f2;
