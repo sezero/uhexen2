@@ -846,84 +846,95 @@ void SV_SaveEffects (FILE *FH)
 void SV_LoadEffects (FILE *FH)
 {
 	int		idx, Total, count;
-	int		c;
+	int		c, err;
 	unsigned int	u;
 
 	Total = idx = -1;
+	err = 0;
 	/* Since the map is freshly loaded, clear out any effects as a result of
 	   the loading */
 	SV_ClearEffects();
 
-	fscanf(FH, "Effects: %d\n", &Total);
-	if (Total < 0 || Total > MAX_EFFECTS)
+	if (fscanf(FH, "Effects: %d\n", &Total) != 1) {
+	fail:
+		fclose (FH);
+		Host_Error ("Error while loading effects.");
+	}
+	if (Total < 0 || Total > MAX_EFFECTS) {
+		fclose (FH);
 		Host_Error ("%s: bad numeffects", __thisfunc__);
+	}
 
 	for (count = 0 ; count < Total ; idx = -1, count++)
 	{
-		fscanf(FH, "Effect: %d ", &idx);
-		if (idx < 0 || idx >= MAX_EFFECTS)
+		if (fscanf(FH, "Effect: %d ", &idx) != 1)
+			goto fail;
+		if (idx < 0 || idx >= MAX_EFFECTS) {
+			fclose (FH);
 			Host_Error ("%s: bad index", __thisfunc__);
-		fscanf(FH, "%d %f: ", &sv.Effects[idx].type, &sv.Effects[idx].expire_time);
+		}
+		err += fscanf(FH, "%d %f: ", &sv.Effects[idx].type, &sv.Effects[idx].expire_time) != 2;
 
 		switch (sv.Effects[idx].type)
 		{
 		case CE_RAIN:
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[2]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[2]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.e_size[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.e_size[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.e_size[2]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[2]);
-			fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.color);
-			fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.count);
-			fscanf(FH, "%f\n", &sv.Effects[idx].ef.Rain.wait);
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[2]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[2]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.e_size[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.e_size[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.e_size[2]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[2]) != 1;
+			err += fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.color) != 1;
+			err += fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.count) != 1;
+			err += fscanf(FH, "%f\n", &sv.Effects[idx].ef.Rain.wait) != 1;
+			if (err) goto fail;
 			break;
 
 		case CE_SNOW:
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[2]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[2]);
-			fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.flags);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[2]);
-			fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.count);
-			//fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.veer);
-			/*
-			O.S:	a linefeed is missing here. not adding
-				it so as not to break existing saves.
-				also see in: SV_SaveEffects().
-			*/
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.min_org[2]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.max_org[2]) != 1;
+			err += fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.flags) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Rain.dir[2]) != 1;
+			err += fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.count) != 1;
+			//err += fscanf(FH, "%d ", &sv.Effects[idx].ef.Rain.veer) != 1;
+			/* O.S: A linefeed is missing here. Not adding it so as not
+			 * to break existing saves. Also see in: SV_SaveEffects(). */
+			if (err) goto fail;
 			break;
 
 		case CE_FOUNTAIN:
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.pos[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.pos[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.pos[2]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.angle[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.angle[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.angle[2]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.movedir[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.movedir[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.movedir[2]);
-			fscanf(FH, "%d ", &sv.Effects[idx].ef.Fountain.color);
-			fscanf(FH, "%d\n", &sv.Effects[idx].ef.Fountain.cnt);
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.pos[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.pos[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.pos[2]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.angle[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.angle[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.angle[2]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.movedir[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.movedir[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Fountain.movedir[2]) != 1;
+			err += fscanf(FH, "%d ", &sv.Effects[idx].ef.Fountain.color) != 1;
+			err += fscanf(FH, "%d\n", &sv.Effects[idx].ef.Fountain.cnt) != 1;
+			if (err) goto fail;
 			break;
 
 		case CE_QUAKE:
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Quake.origin[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Quake.origin[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Quake.origin[2]);
-			fscanf(FH, "%f\n", &sv.Effects[idx].ef.Quake.radius);
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Quake.origin[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Quake.origin[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Quake.origin[2]) != 1;
+			err += fscanf(FH, "%f\n", &sv.Effects[idx].ef.Quake.radius) != 1;
+			if (err) goto fail;
 			break;
 
 		case CE_WHITE_SMOKE:
@@ -940,22 +951,22 @@ void SV_LoadEffects (FILE *FH)
 		case CE_FLAMEWALL:
 		case CE_FLAMEWALL2:
 		case CE_ONFIRE:
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[2]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.velocity[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.velocity[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.velocity[2]);
-		/* smoke frame is a mission pack thing only: read carefully... */
-		//	fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.framelength);
-		//	fscanf(FH, "%f\n", &sv.Effects[idx].ef.Smoke.frame);
-			fscanf(FH, "%f", &sv.Effects[idx].ef.Smoke.framelength);
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[2]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.velocity[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.velocity[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.velocity[2]) != 1;
+			/* smoke frame is a mission pack thing only: read carefully... */
+			//err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.framelength) != 1;
+			//err += fscanf(FH, "%f\n", &sv.Effects[idx].ef.Smoke.frame) != 1;
+			err += fscanf(FH, "%f", &sv.Effects[idx].ef.Smoke.framelength) != 1;
 			c = fgetc (FH);	/* read one char, see what it is: */
 			if (c == '\n' || c == '\r')
 			{	/* 1.11 style */
 				sv.Effects[idx].ef.Smoke.frame = 0;
-				/* read one char until it's not an EOL char, then
-				   go one char back to the correct position.    */
+				/* read one char until it's not an EOL, then
+				 * go one char back to the correct position. */
 				while (!feof(FH) && (c == '\n' || c == '\r'))
 					c = fgetc (FH);
 				if (!feof(FH))
@@ -963,10 +974,10 @@ void SV_LoadEffects (FILE *FH)
 			}
 			else
 			{	/* 1.12 mission pack style */
-				//if (c != ' ')
-				//	Sys_DPrintf ("broken save ??\n");
-				fscanf(FH, " %f\n", &sv.Effects[idx].ef.Smoke.frame);
+				//if (c != ' ') Sys_DPrintf("broken save??\n");
+				err += fscanf(FH, " %f\n", &sv.Effects[idx].ef.Smoke.frame) != 1;
 			}
+			if (err) goto fail;
 			break;
 
 		case CE_SM_WHITE_FLASH:
@@ -1002,89 +1013,91 @@ void SV_LoadEffects (FILE *FH)
 		case CE_FIREWALL_MEDIUM:
 		case CE_FIREWALL_LARGE:
 		case CE_BOMB:
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[1]);
-			fscanf(FH, "%f\n", &sv.Effects[idx].ef.Smoke.origin[2]);
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Smoke.origin[1]) != 1;
+			err += fscanf(FH, "%f\n", &sv.Effects[idx].ef.Smoke.origin[2]) != 1;
+			if (err) goto fail;
 			break;
 
 		case CE_WHITE_FLASH:
 		case CE_BLUE_FLASH:
 		case CE_SM_BLUE_FLASH:
 		case CE_RED_FLASH:
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Flash.origin[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Flash.origin[1]);
-			fscanf(FH, "%f\n", &sv.Effects[idx].ef.Flash.origin[2]);
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Flash.origin[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Flash.origin[1]) != 1;
+			err += fscanf(FH, "%f\n", &sv.Effects[idx].ef.Flash.origin[2]) != 1;
+			if (err) goto fail;
 			break;
 
 		case CE_RIDER_DEATH:
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.RD.origin[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.RD.origin[1]);
-			fscanf(FH, "%f\n", &sv.Effects[idx].ef.RD.origin[2]);
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.RD.origin[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.RD.origin[1]) != 1;
+			err += fscanf(FH, "%f\n", &sv.Effects[idx].ef.RD.origin[2]) != 1;
+			if (err) goto fail;
 			break;
 
 		case CE_GRAVITYWELL:
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.RD.origin[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.RD.origin[1]);
-			fscanf(FH, "%f", &sv.Effects[idx].ef.RD.origin[2]);
-			fscanf(FH, "%d", &sv.Effects[idx].ef.RD.color);
-			fscanf(FH, "%f\n", &sv.Effects[idx].ef.RD.lifetime);
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.RD.origin[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.RD.origin[1]) != 1;
+			err += fscanf(FH, "%f", &sv.Effects[idx].ef.RD.origin[2]) != 1;
+			err += fscanf(FH, "%d", &sv.Effects[idx].ef.RD.color) != 1;
+			err += fscanf(FH, "%f\n", &sv.Effects[idx].ef.RD.lifetime) != 1;
+			if (err) goto fail;
 			break;
 
 		case CE_TELEPORTERPUFFS:
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Teleporter.origin[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Teleporter.origin[1]);
-			fscanf(FH, "%f\n", &sv.Effects[idx].ef.Teleporter.origin[2]);
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Teleporter.origin[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Teleporter.origin[1]) != 1;
+			err += fscanf(FH, "%f\n", &sv.Effects[idx].ef.Teleporter.origin[2]) != 1;
+			if (err) goto fail;
 			break;
 
 		case CE_TELEPORTERBODY:
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Teleporter.origin[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Teleporter.origin[1]);
-			fscanf(FH, "%f\n", &sv.Effects[idx].ef.Teleporter.origin[2]);
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Teleporter.origin[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Teleporter.origin[1]) != 1;
+			err += fscanf(FH, "%f\n", &sv.Effects[idx].ef.Teleporter.origin[2]) != 1;
+			if (err) goto fail;
 			break;
 
 		case CE_BONESHARD:
 		case CE_BONESHRAPNEL:
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[2]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.velocity[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.velocity[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.velocity[2]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.angle[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.angle[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.angle[2]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[2]);
-			/*
-			O.S:	a linefeed is missing here. not adding
-				it so as not to break existing saves.
-				also see in: SV_SaveEffects().
-			*/
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.origin[2]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.velocity[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.velocity[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.velocity[2]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.angle[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.angle[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.angle[2]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Missile.avelocity[2]) != 1;
+			/* O.S: A linefeed is missing here. Not adding it so as not
+			 * to break existing saves. Also see in: SV_SaveEffects(). */
+			if (err) goto fail;
 			break;
 
 		case CE_CHUNK:
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[2]);
-			fscanf(FH, "%u ", &u);
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[2]) != 1;
+			err += fscanf(FH, "%u ", &u) != 1;
 			sv.Effects[idx].ef.Chunk.type = u & 0xff;
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[0]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[1]);
-			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[2]);
-			fscanf(FH, "%u ", &u);
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[0]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[1]) != 1;
+			err += fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[2]) != 1;
+			err += fscanf(FH, "%u ", &u) != 1;
 			sv.Effects[idx].ef.Chunk.numChunks = u & 0xff;
-			/*
-			O.S:	a linefeed is missing here. not adding
-				it so as not to break existing saves.
-				also see in: SV_SaveEffects().
-			*/
+			/* O.S: A linefeed is missing here. Not adding it so as not
+			 * to break existing saves. Also see in: SV_SaveEffects(). */
+			if (err) goto fail;
 			break;
 
 		default:
+			fclose (FH);
 			Host_Error ("%s: bad type", __thisfunc__);
 			break;
 		}
 	}
 }
-
