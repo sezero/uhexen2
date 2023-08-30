@@ -1387,6 +1387,10 @@ void R_DrawParticles (void)
 	float		scale;
 #define	SCALE_BASE	((p->type == pt_snow) ? p->count/10 : 1)
 
+	//ericw -- avoid empty glBegin/glEnd pair below.
+	if (!active_particles)
+		return;
+
 	GL_Bind(particletexture);
 	glEnable_fp (GL_BLEND);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
