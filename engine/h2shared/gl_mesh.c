@@ -28,21 +28,21 @@ ALIAS MODEL DISPLAY LIST GENERATION
 =================================================================
 */
 
-static int		used[8192];
+static unsigned char	used[MAXALIASTRIS];
 
 // the command list holds counts and s/t values that are valid for
 // every frame
-static int		commands[8192];
+static int		commands[MAXALIASTRIS*7 + 1];
 static int		numcommands;
 
 // all frames will have their vertexes rearranged and expanded
 // so they are in the order expected by the command list
-static int		vertexorder[8192];
+static int		vertexorder[MAXALIASTRIS * 3];
 static int		numorder;
 
-static int		stripverts[128];
-static int		striptris[128];
-static int		stripstverts[128];
+static int		stripverts[MAXALIASTRIS + 2];
+static int		striptris[MAXALIASTRIS];
+static int		stripstverts[MAXALIASTRIS + 2];
 static int		stripcount;
 
 /*
@@ -232,9 +232,9 @@ static void BuildTris (void)
 	int		startv;
 	float	s, t;
 	int		len, bestlen, besttype;
-	int		bestverts[1024];
-	int		besttris[1024];
-	int		beststverts[1024];
+	int		bestverts[MAXALIASTRIS + 2];
+	int		besttris[MAXALIASTRIS];
+	int		beststverts[MAXALIASTRIS + 2];
 	int		type;
 
 	//
