@@ -111,11 +111,10 @@ static pakdata_t old_pakdata[] =
 	{ 701,	20870,	23537707, "data1"	},	/* pak0.pak, original demo v0.42 from Aug. 1997
 							 *	(h2.exe -> console -> version says 1.07!)
 							 *	MD5: 208643a09193dafbca4b851762479438	*/
-/* !!! FIXME:  I don't have the original v1.08 of Continent of Blackmarsh. I only know the file sizes.	*/
-	{ -1,	0,	22719295, "data1"	},	/* pak0.pak, original oem (Matrox m3D) v1.08
-							 *	MD5: ????????????????????????????????	*/
-	{ -1,	0,	17739969, "data1"	},	/* pak2.pak, original oem (Matrox m3D) v1.08
-							 *	MD5: ????????????????????????????????	*/
+	{ 697,	43990,	22719295, "data1"	},	/* pak0.pak, original oem (Matrox m3D) v1.08
+							 *	MD5: 0477d62752fb6164a1761fa65b4dc384	*/
+	{ 183,	43596,	17739969, "data1"	},	/* pak2.pak, original oem (Matrox m3D) v1.08
+							 *	MD5: 404a93061049d09a82f609323f2695ae	*/
 	{  98,	25864,	10678369, "hw"	},		/* pak4.pak, Hexen2World v0.11 (ugh..)
 							 *	MD5: c311a30ac8ee1f112019723b4fe42268	*/
 	{  40,	48258,	 3357888, "hw"	},		/* pak4.pak, Hexen2World v0.09 (ugh ugh ugh!)
@@ -179,7 +178,7 @@ static unsigned int check_known_paks (int paknum, int numfiles, unsigned short c
 	if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
 		return GAME_MODIFIED;	/* Raven didn't ship like that */
 
-	if (numfiles != pakdata[paknum].numfiles)
+	if (numfiles != pakdata[paknum].numfiles || crc != pakdata[paknum].crc)
 	{
 		switch (paknum)
 		{
@@ -340,7 +339,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 	pack->numfiles = numpackfiles;
 	pack->files = newfiles;
 
-	Sys_Printf ("Added packfile %s (%i files)\n", packfile, numpackfiles);
+	Sys_Printf ("Added packfile %s (%i files, %i crc)\n", packfile, numpackfiles, crc);
 	return pack;
 pak_error:
 	fclose (packhandle);
@@ -1249,7 +1248,7 @@ void FS_Init (void)
 		Cvar_SetROM ("registered", "1");
 		Sys_Printf ("Playing the registered version.\n");
 	}
-	else if (gameflags & GAME_OEM)
+	else if (gameflags & (GAME_OEM|GAME_OLD_OEM))
 	{
 		Cvar_SetROM ("oem", "1");
 		Sys_Printf ("Playing the oem (Matrox m3D bundle) version \"Continent of Blackmarsh\"\n");

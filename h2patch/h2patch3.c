@@ -65,23 +65,10 @@ struct other_pak
 	struct other_pak const	*next;
 };
 
-static const struct other_pak pak0_oem1 = {
-	22720659,	0xE9D25D16,
-	"Continent of Blackmarsh (m3D, v1.10)",
-	NULL
-};
-
-static const struct other_pak pak0_oem0 = {
-	/* don't have this myself, therefore no patch. */
-	22719295,	/**/ ~0UL,
-	"Continent of Blackmarsh (m3D, v1.08)",
-	&pak0_oem1
-};
-
 static const struct other_pak pak0_demo1 = {
 	27750257,	0xED96172E,
 	"Demo (Nov. 1997, v1.11)",
-	&pak0_oem0
+	NULL
 };
 
 static const struct other_pak pak0_demo0 = {
@@ -89,21 +76,6 @@ static const struct other_pak pak0_demo0 = {
 	"Demo (Aug. 1997, v0.42)",
 	&pak0_demo1
 };
-
-#if 0
-static const struct other_pak pak2_oem1 = {
-	17742721,	0x5595110E,
-	"Continent of Blackmarsh (m3D, v1.10)",
-	NULL
-};
-
-static const struct other_pak pak2_oem0 = {
-	/* don't have this myself, therefore no patch. */
-	17739969,	/**/ ~0UL,
-	"Continent of Blackmarsh (m3D, v1.08)",
-	&pak2_oem1
-};
-#endif
 
 #define NUM_PATCHES	2
 
@@ -121,6 +93,26 @@ struct patch_pak
 
 	unsigned long	old_sum, new_sum;	/* adler32	*/
 	long	old_size, new_size;
+};
+
+static const struct patch_pak patch_oem[NUM_PATCHES] =
+{
+	{  "data1", "pak0.pak",
+	   "oem08pk0.xd3",
+	   "oem, Continent of Blackmarsh (m3D, v1.08)",
+	   "m3D oem, already patched (v1.10)",
+	   &pak0_demo0,
+	   0x5EA1736D, 0xE9D25D16,
+	   22719295, 22720659
+	},
+	{  "data1", "pak2.pak",
+	   "oem08pk2.xd3",
+	   "oem, Continent of Blackmarsh (m3D, v1.08)",
+	   "m3D oem, already patched (v1.10)",
+	   NULL,
+	   0x523C6E88, 0x5595110E,
+	   17739969, 17742721
+	}
 };
 
 static const struct patch_pak patch_data[NUM_PATCHES] =
@@ -632,26 +624,14 @@ static void log_print (const char *fmt, ...)
 	va_end (argptr);
 }
 
-static const char *request_m3d_feedback (const char *desc)
+static const char *other_pak_desc (const struct patch_pak *patchp, int num, long len)
 {
-	static const char msg[] = "Please report this pak to the uHexen2 developers!";
-	static char txt[256];
-	q_snprintf (txt, sizeof(txt), "%s\n... %s", desc, msg);
-	return txt;
-}
-
-static const char *other_pak_desc (int num, long len)
-{
-	const struct other_pak *p = patch_data[num].other_data;
+	const struct other_pak *p = patchp[num].other_data;
 
 	for ( ; p != NULL; p = p->next)
 	{
 		if (len == p->size)
-		{
-			if (p->sum == ~0UL) /* v1.08: wanna hear it */
-				return request_m3d_feedback (p->desc);
 			return p->desc;
-		}
 	}
 
 	return "an unknown pak file";
@@ -660,6 +640,7 @@ static const char *other_pak_desc (int num, long len)
 
 int main (int argc, char **argv)
 {
+	const struct patch_pak	*patches;
 	int	i, num_patched, ret;
 	long		len;
 	unsigned long	csum;
@@ -695,11 +676,28 @@ int main (int argc, char **argv)
 	memset (&h2patch_progress, 0, sizeof(xd3_progress_t));
 	num_patched = 0;
 
+	/* The first pak file is always pak0.pak. The second one is different:
+	 * pak1.pak in the retail, pak2.pak in the oem. Decide which patchset
+	 * to use depending on that: */
+	q_snprintf (dst, sizeof(dst), "%s%c%s", patch_data[1].dir_name,
+					DIR_SEPARATOR_CHAR, patch_data[1].filename);
+	ret = check_access(dst);
+	if (ret & ACCESS_NOFILE)
+	{
+		fprintf (stdout, "Using the Matrox m3D OEM patchset.\n");
+		patches = patch_oem;
+	}
+	else
+	{
+		fprintf (stdout, "Using the Retail Hexen II patchset.\n");
+		patches = patch_data;
+	}
+
 	for (i = 0; i < NUM_PATCHES; i++)
 	{
-		h2patch_progress.total_bytes += patch_data[i].new_size;
+		h2patch_progress.total_bytes += patches[i].new_size;
 		/* delete our temp files from possible previous runs */
-		q_snprintf (out, sizeof(out), "%s%c%s", patch_data[i].dir_name,
+		q_snprintf (out, sizeof(out), "%s%c%s", patches[i].dir_name,
 						DIR_SEPARATOR_CHAR, patch_tmpname);
 		Sys_unlink (out);
 	}
@@ -710,8 +708,8 @@ int main (int argc, char **argv)
 
 	for (i = 0; i < NUM_PATCHES; i++)
 	{
-		q_snprintf (dst, sizeof(dst), "%s%c%s", patch_data[i].dir_name,
-					DIR_SEPARATOR_CHAR, patch_data[i].filename);
+		q_snprintf (dst, sizeof(dst), "%s%c%s", patches[i].dir_name,
+					DIR_SEPARATOR_CHAR, patches[i].filename);
 		fprintf (stdout, "File %s :\n", dst);
 
 		ret = check_access(dst);
@@ -730,42 +728,42 @@ int main (int argc, char **argv)
 
 		len = Sys_filesize (dst);
 
-		if (len == patch_data[i].new_size)
+		if (len == patches[i].new_size)
 		{
-			fprintf (stdout, "... looks like %s\n", patch_data[i].new_desc);
+			fprintf (stdout, "... looks like %s\n", patches[i].new_desc);
 			fprintf (stdout, "... checksumming...");
 			fflush (stdout);
 			csum = xd3_calc_adler32(dst);
-			if (csum == patch_data[i].new_sum)
+			if (csum == patches[i].new_sum)
 				fprintf (stdout, " OK ");
 			else	fprintf (stdout, "\n... WARNING: checksum mismatch! file corrupted?\n");
 			fprintf (stdout, "... skipped.\n\n");
-			h2patch_progress.current_written += patch_data[i].new_size;
+			h2patch_progress.current_written += patches[i].new_size;
 			continue;
 		}
-		if (len != patch_data[i].old_size)
+		if (len != patches[i].old_size)
 		{
-			fprintf (stderr, "... looks like %s\n", other_pak_desc(i, len));
+			fprintf (stderr, "... looks like %s\n", other_pak_desc(patches, i, len));
 			fprintf (stderr, "... Error: not supported by h2patch!\n");
 			return 1;
 		}
 
-		fprintf (stdout, "... looks like %s\n", patch_data[i].old_desc);
+		fprintf (stdout, "... looks like %s\n", patches[i].old_desc);
 
 		q_snprintf (pat, sizeof(pat), "%s%c%s%c%s", DELTA_DIR, DIR_SEPARATOR_CHAR,
-						patch_data[i].dir_name, DIR_SEPARATOR_CHAR,
-								patch_data[i].deltaname);
+						patches[i].dir_name, DIR_SEPARATOR_CHAR,
+								patches[i].deltaname);
 		if (Sys_FileType(pat) != FS_ENT_FILE)
 		{
 			fprintf (stderr, "... Error: delta file not found!\n");
 			return 1;
 		}
 
-		q_snprintf (out, sizeof(out), "%s%c%s", patch_data[i].dir_name,
+		q_snprintf (out, sizeof(out), "%s%c%s", patches[i].dir_name,
 						DIR_SEPARATOR_CHAR, patch_tmpname);
 		fprintf (stdout, "... applying patch...\n");
 
-		start_file_progress (patch_data[i].new_size);
+		start_file_progress (patches[i].new_size);
 		ret = xd3_main_patcher(&h2patch_options, dst, pat, out);
 		finish_file_progress ();
 		if (ret != 0)

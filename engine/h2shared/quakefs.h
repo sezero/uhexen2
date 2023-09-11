@@ -33,8 +33,6 @@
 #define	GAME_PORTALS		(1 << 7)
 #define	GAME_HEXENWORLD		(1 << 8)
 
-/* FIXME: more detailed data needed for the oem
- * (Matrox m3D bundle) original 1.08 version.  */
 #define	GAME_OLD_CDROM0		(1 << 9)
 #define	GAME_OLD_CDROM1		(1 << 10)
 #define	GAME_OLD_DEMO		(1 << 11)

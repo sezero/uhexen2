@@ -228,6 +228,8 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1
 %{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat/data1/data1pk0.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/data1pk0.xd3
 %{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat/data1/data1pk1.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/data1pk1.xd3
+%{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat/data1/oem08pk0.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/oem08pk0.xd3
+%{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat/data1/oem08pk2.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/oem08pk2.xd3
 %{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat.txt %{buildroot}/%{_prefix}/games/%{name}/patchdat.txt
 
 %{__install} -D -m644 engine/resource/hexen2.png %{buildroot}/%{_prefix}/games/%{name}/hexen2.png
@@ -247,6 +249,8 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 %{_prefix}/games/%{name}/h2patch
 %{_prefix}/games/%{name}/patchdat/data1/data1pk0.xd3
 %{_prefix}/games/%{name}/patchdat/data1/data1pk1.xd3
+%{_prefix}/games/%{name}/patchdat/data1/oem08pk0.xd3
+%{_prefix}/games/%{name}/patchdat/data1/oem08pk2.xd3
 %{_prefix}/games/%{name}/patchdat.txt
 %{_prefix}/games/%{name}/data1/progs.dat
 %{_prefix}/games/%{name}/data1/progs2.dat
@@ -318,9 +322,10 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Sun Jul 24 2022 O.Sezer <sezero@users.sourceforge.net> 1.5.10-1
+* Mon Sep 11 2023 O.Sezer <sezero@users.sourceforge.net> 1.5.10-1
 - Version 1.5.10.
 - Bump gamecode version to 1.29c
+- Install oem v1.08 patches
 
 * Tue Feb 20 2018 O.Sezer <sezero@users.sourceforge.net> 1.5.9-1
 - Version 1.5.9.

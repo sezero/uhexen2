@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.10: (Oct. 25, 2022.)
+Changes in v1.5.10: (Sep. 11, 2023.)
 ========================================================================
 
 This is a minor bug fix and maintenance release:
@@ -41,6 +41,9 @@ This is a minor bug fix and maintenance release:
 
 - Utils: light, vis, and jsh2color now default to auto-detecting the
   max number of threads.
+
+- Support for the oem (Matrox m3D bundle) old 1.08 version: h2patch
+  can now detect and patch it.
 
 - Windows: removed the long-obsoleted Scitech MGL video driver.
 
