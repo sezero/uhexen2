@@ -59,12 +59,20 @@ typedef struct _xd3_options_t
 			   for single-threaded command-line versions.  */
 } xd3_options_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern int xd3_main_patcher (xd3_options_t * /* opts */,
 				const char * /* srcfile */,
 				const char * /* deltafile */,
 				const char * /* outfile*/);
 
 extern unsigned long xd3_calc_adler32 (const char *srcfile);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _XD3_MAINOPTS_H_ */
 
