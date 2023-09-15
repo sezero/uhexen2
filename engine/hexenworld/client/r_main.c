@@ -171,9 +171,6 @@ cvar_t	r_teamcolor = {"r_teamcolor", "187", CVAR_ARCHIVE};
 cvar_t	r_texture_external = {"r_texture_external", "0", CVAR_ARCHIVE};
 cvar_t	r_dynamic = {"r_dynamic", "1", CVAR_NONE};
 
-extern void R_NetGraph (void);
-extern void R_ZGraph (void);
-
 //void CreatePassages (void);
 //void SetVisibilityByPassages (void);
 

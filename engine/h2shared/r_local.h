@@ -362,6 +362,10 @@ ASM_LINKAGE_END
 void R_StoreEfrags (efrag_t **ppefrag);
 void R_TimeRefresh_f (void);
 void R_TimeGraph (void);
+#ifdef H2W
+void R_ZGraph (void);
+void R_NetGraph (void);
+#endif
 void R_PrintAliasStats (void);
 void R_PrintTimes (void);
 void R_PrintDSpeeds (void);
