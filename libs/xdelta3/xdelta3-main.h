@@ -1,7 +1,6 @@
-/* xdelta 3 - delta compression tools and library
- * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007,
- * 2008, 2009, 2010, 2011
- * Joshua P. MacDonald
+/* xdelta3 - delta compression tools and library
+ * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008,
+ * 2009, 2010, 2011, 2012, 2013, 2014, 2015 Joshua P. MacDonald
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -148,9 +147,9 @@ struct _main_file
   int                 seek_failed;   /* after seek fails once, try FIFO */
 };
 
-#include "xdelta3-mainopt.h"
-
 #define DEFAULT_VERBOSE 0
+
+static void main_dbgprint (const char *fmt, ...) XD_FUNCP_PRINTF(1,2);
 
 static xd3_options_t default_options =
 {
@@ -164,12 +163,14 @@ static xd3_options_t default_options =
 	1,			/* use_checksum */
 
 	NULL,			/* progress data */
-	NULL,			/* debug_print () */
+	main_dbgprint,		/* debug_print () */
 	NULL			/* progress_log() */
 };
-static xd3_options_t *use_options = &default_options;
+xd3_options_t *use_options = &default_options;
 
 /* Static variables */
+IF_DEBUG(static int main_mallocs = 0;)
+
 static uint8_t*        main_bdata = NULL;
 static usize_t         main_bsize = 0;
 
@@ -195,6 +196,15 @@ static int main_read_primary_input (main_file   *file,
 #include "xdelta3-blkcache.h"
 
 static void
+main_dbgprint (const char *fmt, ...)
+{
+  va_list argptr;
+  va_start (argptr, fmt);
+  vfprintf (stderr, fmt, argptr);
+  va_end (argptr);
+}
+
+static void
 reset_defaults(void)
 {
   use_options = &default_options;
@@ -209,7 +219,7 @@ static void*
 main_malloc1 (usize_t size)
 {
   void* r = malloc (size);
-  if (r == NULL && use_options->debug_print)
+  if (r == NULL)
       use_options->debug_print("malloc: %s\n", xd3_mainerror (ENOMEM));
   return r;
 }
@@ -218,6 +228,7 @@ static void*
 main_malloc (usize_t size)
 {
   void *r = main_malloc1 (size);
+  if (r) { IF_DEBUG (main_mallocs += 1); }
   return r;
 }
 
@@ -240,7 +251,9 @@ main_free (void *ptr)
 {
   if (ptr)
     {
+      IF_DEBUG (main_mallocs -= 1);
       main_free1 (NULL, ptr);
+      IF_DEBUG (XD3_ASSERT(main_mallocs >= 0));
     }
 }
 
@@ -263,13 +276,12 @@ get_errno (void)
   case ERROR_DISK_FULL:
    return ENOSPC;
   default:
-   return EIO; /* better ?? */
+   return EIO;  /* better ?? */
   }
 #else
   if (errno == 0)
     {
-      if (use_options->debug_print)
-	use_options->debug_print("BUG: expected errno != 0\n");
+      use_options->debug_print("BUG: expected errno != 0\n");
       errno = XD3_INTERNAL;
     }
   return errno;
@@ -333,10 +345,8 @@ xd3_mainerror(int err_num) {
 
 #define XF_ERROR(op, name, ret) \
   do {									\
-	if (use_options->debug_print != NULL) {				\
-	   use_options->debug_print("file %s failed: %s: %s: %s\n", (op),	\
+	use_options->debug_print("file %s failed: %s: %s: %s\n", (op),	\
 			  XOPEN_OPNAME, (name), xd3_mainerror (ret));	\
-	}								\
   } while (0)
 
 #if XD3_STDIO
@@ -435,8 +445,7 @@ main_file_open (main_file *xfile, const char* name, int mode)
   XD3_ASSERT (! main_file_isopen (xfile));
   if (name[0] == 0)
     {
-      if (use_options->debug_print)
-	  use_options->debug_print("invalid file name: empty string\n");
+      use_options->debug_print("invalid file name: empty string\n");
       return XD3_INVALID;
     }
 
@@ -446,7 +455,8 @@ main_file_open (main_file *xfile, const char* name, int mode)
   ret = (xfile->file == NULL) ? get_errno () : 0;
 
 #elif XD3_POSIX
-  if ((ret = open (name, XOPEN_POSIX, XOPEN_MODE)) == -1)
+  /* TODO: Should retry this call if interrupted, similar to read/write */
+  if ((ret = open (name, XOPEN_POSIX, XOPEN_MODE)) < 0)
     {
       ret = get_errno ();
     }
@@ -534,7 +544,7 @@ main_file_stat (main_file *xfile, xoff_t *size)
   *size = filesize;
 #else
   struct stat sbuf;
-  if (fstat (XFNO (xfile), & sbuf) == -1)
+  if (fstat (XFNO (xfile), & sbuf) < 0)
     {
       return get_errno ();
     }
@@ -553,7 +563,14 @@ main_file_stat (main_file *xfile, xoff_t *size)
  * This calls the function repeatedly until the buffer is full or EOF.
  * The NREAD parameter is not set for write, NULL is passed.  Return
  * is signed, < 0 indicate errors, otherwise byte count. */
-typedef int (xd3_posix_func) (int fd, uint8_t *buf, usize_t size);
+typedef long (xd3_posix_func) (int fd, uint8_t *buf, usize_t size);
+
+long xd3_posix_read (int fd, uint8_t *buf, usize_t size) {
+  return read (fd, buf, size);
+}
+long xd3_posix_write(int fd, uint8_t *buf, usize_t size) {
+  return write(fd, buf, size);
+}
 
 static int
 xd3_posix_io (int fd, uint8_t *buf, usize_t size,
@@ -564,7 +581,7 @@ xd3_posix_io (int fd, uint8_t *buf, usize_t size,
 
   while (nproc < size)
     {
-      int result = (*func) (fd, buf + nproc, size - nproc);
+      long result = (*func) (fd, buf + nproc, size - nproc);
 
       if (result < 0)
 	{
@@ -623,10 +640,11 @@ xd3_win32_io (HANDLE file, uint8_t *buf, usize_t size,
 
   while (nproc < size)
     {
-      DWORD nproc2;
+      DWORD nproc2 = 0;  /* hmm */
+      const DWORD nremain = size - nproc;
       if ((is_read ?
-	   ReadFile (file, buf + nproc, size - nproc, &nproc2, NULL) :
-	   WriteFile (file, buf + nproc, size - nproc, &nproc2, NULL)) == 0)
+	   ReadFile (file, buf + nproc, nremain, &nproc2, NULL) :
+	   WriteFile (file, buf + nproc, nremain, &nproc2, NULL)) == 0)
 	{
 	  ret = get_errno();
 	  if (ret != ERROR_HANDLE_EOF && ret != ERROR_BROKEN_PIPE)
@@ -637,7 +655,7 @@ xd3_win32_io (HANDLE file, uint8_t *buf, usize_t size,
 	   * read case in case of eof or broken pipe. */
 	}
 
-      nproc += (usize_t) nproc2;
+      nproc += nproc2;
 
       if (nread != NULL && nproc2 == 0) { break; }
     }
@@ -672,7 +690,7 @@ main_file_read (main_file  *ifile,
     }
 
 #elif XD3_POSIX
-  ret = xd3_posix_io (ifile->file, buf, size, (xd3_posix_func*) &read, nread);
+  ret = xd3_posix_io (ifile->file, buf, size, xd3_posix_read, nread);
 #elif XD3_WIN32
   ret = xd3_win32_io (ifile->file, buf, size, 1 /* is_read */, nread);
 #elif XD3_AMIGA
@@ -681,8 +699,7 @@ main_file_read (main_file  *ifile,
 
   if (ret)
     {
-      if (use_options->debug_print)
-	  use_options->debug_print("%s: %s: %s\n", msg, ifile->filename, xd3_mainerror (ret));
+      use_options->debug_print("%s: %s: %s\n", msg, ifile->filename, xd3_mainerror (ret));
     }
   else
     {
@@ -705,7 +722,7 @@ main_file_write (main_file *ofile, uint8_t *buf, usize_t size, const char *msg)
   if (result != size) { ret = get_errno (); }
 
 #elif XD3_POSIX
-  ret = xd3_posix_io (ofile->file, buf, size, (xd3_posix_func*) &write, NULL);
+  ret = xd3_posix_io (ofile->file, buf, size, xd3_posix_write, NULL);
 
 #elif XD3_WIN32
   ret = xd3_win32_io (ofile->file, buf, size, 0, NULL);
@@ -717,8 +734,7 @@ main_file_write (main_file *ofile, uint8_t *buf, usize_t size, const char *msg)
 
   if (ret)
     {
-      if (use_options->debug_print)
-	  use_options->debug_print("%s: %s: %s\n", msg, ofile->filename, xd3_mainerror (ret));
+      use_options->debug_print("%s: %s: %s\n", msg, ofile->filename, xd3_mainerror (ret));
     }
   else
     {
@@ -821,7 +837,7 @@ main_open_output (xd3_stream *stream, main_file *ofile)
 	  return ret;
 	}
 
-      if (use_options->verbose && use_options->debug_print)
+      if (use_options->verbose)
 	{
 	  use_options->debug_print("output %s\n", ofile->filename);
 	}
@@ -836,12 +852,12 @@ main_get_winsize (main_file *ifile) {
 
   if (main_file_stat (ifile, &file_size) == 0)
     {
-      size = (usize_t) xd3_min(file_size, (xoff_t) size);
+      size = (usize_t) xd3_min (file_size, (xoff_t) size);
     }
 
-  size = xd3_max(size, XD3_ALLOCSIZE);
+  size = xd3_max (size, XD3_ALLOCSIZE);
 
-  if (use_options->verbose && use_options->debug_print)
+  if (use_options->verbose)
     {
       use_options->debug_print("input %s window size %u bytes\n",
 	  ifile->filename, size);
@@ -893,14 +909,12 @@ main_input (main_file   *ifile,
     }
 
   config.winsize = winsize;
-  config.srcwin_maxsz = use_options->srcwinsz;
   config.getblk = main_getblk_func;
   config.flags = stream_flags;
 
   if ((ret = xd3_config_stream (& stream, & config)))
     {
-      if (use_options->debug_print)
-	  use_options->debug_print(XD3_LIB_ERRMSG (& stream, ret));
+      use_options->debug_print(XD3_LIB_ERRMSG (& stream, ret));
       return EXIT_FAILURE;
     }
 
@@ -953,8 +967,7 @@ main_input (main_file   *ifile,
 	     * the ofile, and it may contain default/decompression routine for
 	     * the sources. */
 		/* Now open the source file. */
-		  if ((sfile->filename != NULL) &&
-		      (ret = main_set_source (& stream, sfile, & source)))
+		  if ((ret = main_set_source (& stream, sfile, & source)))
 		  {
 		    return EXIT_FAILURE;
 		  }
@@ -1007,8 +1020,7 @@ main_input (main_file   *ifile,
 
 	default:
 	  /* xd3_decode_input() error */
-	  if (use_options->debug_print)
-	      use_options->debug_print(XD3_LIB_ERRMSG (& stream, ret));
+	  use_options->debug_print(XD3_LIB_ERRMSG (& stream, ret));
 	  return EXIT_FAILURE;
 	}
     }
@@ -1030,8 +1042,7 @@ done:
     {
       if (! main_file_isopen (ofile))
 	{
-	  if (use_options->debug_print)
-	      use_options->debug_print("nothing to output: %s\n", ifile->filename);
+	  use_options->debug_print("nothing to output: %s\n", ifile->filename);
 	  return EXIT_FAILURE;
 	}
 
@@ -1045,8 +1056,7 @@ done:
 
   if ((ret = xd3_close_stream (& stream)))
     {
-      if (use_options->debug_print)
-	  use_options->debug_print(XD3_LIB_ERRMSG (& stream, ret));
+      use_options->debug_print(XD3_LIB_ERRMSG (& stream, ret));
       return EXIT_FAILURE;
     }
 
@@ -1116,7 +1126,7 @@ xd3_main_patcher (xd3_options_t *options,
 }
 
 #define READ_BUFSIZE 8192 /* BUFSIZ */
-unsigned long
+uint32_t
 xd3_calc_adler32 (const char *srcfile)
 {
   main_file ifile;

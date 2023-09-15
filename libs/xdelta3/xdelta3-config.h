@@ -1,7 +1,5 @@
 /* xdelta 3 - delta compression tools and library
- * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007,
- * 2008, 2009, 2010, 2011
- * Joshua P. MacDonald
+ * Copyright (C) Joshua P. MacDonald
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef _XDELTA3_SIZDEF_H_
-#define _XDELTA3_SIZDEF_H_
+#ifndef XDELTA3_CONFIG_H_
+#define XDELTA3_CONFIG_H_
 
 /* Default configured value of stream->winsize.  If the program
  * supplies xd3_encode_input() with data smaller than winsize the
@@ -65,14 +63,31 @@
 #define XD3_DEFAULT_SPREVSZ (1U<<18)
 #endif
 
-/* The default compression level
- */
+/* The default compression level */
 #ifndef XD3_DEFAULT_LEVEL
 #define XD3_DEFAULT_LEVEL 3
 #endif
 
+#include "q_stdint.h"
+
 /* Sizes and addresses within VCDIFF windows are represented as usize_t
  */
-typedef unsigned int usize_t;
 
-#endif /* _XDELTA3_SIZDEF_H_ */
+/* TODO: note that SIZEOF_USIZE_T is never set to 8, although it should be for
+ * a 64bit platform.  OTOH, may be that using 32bits is appropriate even on a
+ * 64bit platform because we allocate large arrays of these values. */
+
+typedef unsigned int usize_t;
+#define USIZE_T_MAXBLKSZ 0x80000000U
+
+/* XD3_USE_LARGEFILE64 affects xoff_t:
+ * Using 64 bit xoff_t only on 64 bit platforms here.  */
+#ifndef XD3_USE_LARGEFILE64
+#if defined(_LP64) || defined(__LP64__) || defined(_WIN64)
+#define XD3_USE_LARGEFILE64 1
+#else
+#define XD3_USE_LARGEFILE64 0
+#endif
+#endif
+
+#endif /* XDELTA3_CONFIG_H_ */

@@ -1,7 +1,5 @@
 /* xdelta 3 - delta compression tools and library
- * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007,
- * 2008, 2009, 2010, 2011
- * Joshua P. MacDonald
+ * Copyright (C) Joshua P. MacDonald
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,12 +16,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef _XD3_MAINOPTS_H_
-#define _XD3_MAINOPTS_H_
+#ifndef XD3_IFACE_H_
+#define XD3_IFACE_H_
 
-/* basic interfacing with xdelta3 / xdelta3-main */
+/* interfacing with xdelta3:  */
 
-#include "xdelta3-sizedefs.h"
+#include "xdelta3-config.h"
 
 #if defined(__GNUC__) && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 0))
 #define XD_FUNCP_PRINTF(_one,_two)	__attribute__((__format__ (__printf__,_one,_two)))
@@ -63,16 +61,17 @@ typedef struct _xd3_options_t
 extern "C" {
 #endif
 
-extern int xd3_main_patcher (xd3_options_t * /* opts */,
-				const char * /* srcfile */,
-				const char * /* deltafile */,
-				const char * /* outfile*/);
+extern xd3_options_t *use_options;
 
-extern unsigned long xd3_calc_adler32 (const char *srcfile);
+extern int xd3_main_patcher (xd3_options_t * /* opts   */,
+			     const char * /* srcfile   */,
+			     const char * /* deltafile */,
+			     const char * /* outfile   */);
+
+extern uint32_t xd3_calc_adler32 (const char *srcfile);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _XD3_MAINOPTS_H_ */
-
+#endif /* XD3_IFACE_H_ */

@@ -53,14 +53,14 @@
 #include "qsnprint.h"
 #include "filenames.h"
 
-#include "xdelta3-mainopt.h"
+#include "xdelta3-iface.h"
 
 
 struct other_pak
 {
 	long			patched; /* -1: can not */
 	long			size, newsize;
-	unsigned long		sum, newsum; /* adler32 */
+	uint32_t		sum, newsum; /* adler32 */
 	const char		*desc;
 	const char		*deltaname;
 	/* next same-named pak: */
@@ -596,7 +596,7 @@ static void print_version (void)
 {
 	fprintf (stdout, "Hexen II 1.11 pak patch / Hammer of Thyrion (uHexen2) %d.%d.%d\n",
 			 HOT_VERSION_MAJ, HOT_VERSION_MID, HOT_VERSION_MIN);
-	fprintf (stdout, "Xdelta v3.0.0 backend (C) 2007-2011 by Joshua MacDonald\n\n");
+	fprintf (stdout, "based on Xdelta v3.1.0 backend by Joshua MacDonald.\n\n");
 }
 
 static void print_help (void)
@@ -663,7 +663,7 @@ int main (int argc, char **argv)
 	const struct other_pak	*pakdata;
 	int	i, num_patched, ret;
 	long		len;
-	unsigned long	csum;
+	uint32_t	csum;
 
 	print_version ();
 	for (i = 1; i < argc; ++i)

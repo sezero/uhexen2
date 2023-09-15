@@ -31,12 +31,7 @@ RCFLAGS = -bt=nt
 RC_DEFS = -DWIN32_LEAN_AND_MEAN
 
 XDFLAGS= -DXD3_DEBUG=0
-# when XD3_USE_LARGEFILE64 is not defined, xdelta3 defaults
-# to 64 bit xoff_t.
-# using 32 bit xoff_t is necessary for compatibility
-# with old windows versions, i.e. win9x or nt4.
-XDFLAGS+= -DXD3_USE_LARGEFILE64=0
-# make xdelta3 to use windows api for file i/o:
+# make xdelta3 to use win32 api for file i/o:
 XDFLAGS+= -DXD3_WIN32=1
 
 # Targets

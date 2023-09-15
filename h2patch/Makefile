@@ -28,10 +28,6 @@ LDFLAGS =
 
 XDELTA_DIR:= $(LIBS_DIR)/xdelta3
 XDFLAGS:= -DXD3_DEBUG=0
-# when XD3_USE_LARGEFILE64 is not defined, xdelta3 defaults
-# to 64 bit xoff_t.
-# define XD3_USE_LARGEFILE64 as 0 or 1.
-XDFLAGS+= -DXD3_USE_LARGEFILE64=1
 # make xdelta3 to use stdio:
 XDFLAGS+= -DXD3_STDIO=1
 XDFLAGS+= -I$(XDELTA_DIR) -I$(UHEXEN2_SHARED)

@@ -1,5 +1,6 @@
 /* xdelta 3 - delta compression tools and library
- * Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007.  Joshua P. MacDonald
+ * Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+ * 2011, 2012, 2013, 2014, 2015.  Joshua P. MacDonald
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +23,50 @@
 #define SRCORTGT(x) ((((x) & VCD_SRCORTGT) == VCD_SOURCE) ? \
                      VCD_SOURCE : ((((x) & VCD_SRCORTGT) == \
                                     VCD_TARGET) ? VCD_TARGET : 0))
+
+static inline int
+xd3_decode_byte (xd3_stream *stream, usize_t *val)
+{
+  if (stream->avail_in == 0)
+    {
+      stream->msg = "further input required";
+      return XD3_INPUT;
+    }
+
+  (*val) = stream->next_in[0];
+
+  DECODE_INPUT (1);
+  return 0;
+}
+
+static inline int
+xd3_decode_bytes (xd3_stream *stream, uint8_t *buf, usize_t *pos, usize_t size)
+{
+  usize_t want;
+  usize_t take;
+
+  /* Note: The case where (*pos == size) happens when a zero-length
+   * appheader or code table is transmitted, but there is nothing in
+   * the standard against that. */
+  while (*pos < size)
+    {
+      if (stream->avail_in == 0)
+	{
+	  stream->msg = "further input required";
+	  return XD3_INPUT;
+	}
+
+      want = size - *pos;
+      take = xd3_min (want, stream->avail_in);
+
+      memcpy (buf + *pos, stream->next_in, (size_t) take);
+
+      DECODE_INPUT (take);
+      (*pos) += take;
+    }
+
+  return 0;
+}
 
 /* Initialize the decoder for a new window.  The dec_tgtlen value is
  * preserved across successive window decodings, and the update to
@@ -50,6 +95,15 @@ xd3_decode_setup_buffers (xd3_stream *stream)
   /* If VCD_TARGET is set then the previous buffer may be reused. */
   if (stream->dec_win_ind & VCD_TARGET)
     {
+      /* Note: this implementation is untested, since Xdelta3 itself
+       * does not implement an encoder for VCD_TARGET mode. Thus, mark
+       * unimplemented until needed. */
+      if (1)
+	{
+	  stream->msg = "VCD_TARGET not implemented";
+	  return XD3_UNIMPLEMENTED;
+	}
+
       /* But this implementation only supports copying from the last
        * target window.  If the offset is outside that range, it can't
        * be done. */
@@ -69,7 +123,7 @@ xd3_decode_setup_buffers (xd3_stream *stream)
 	  stream->space_out = 0;
 	}
 
-      // TODO: VCD_TARGET mode, this is broken
+      /* TODO: (See note above, this looks incorrect) */
       stream->dec_cpyaddrbase = stream->dec_lastwin +
 	(usize_t) (stream->dec_cpyoff - stream->dec_laststart);
     }
@@ -306,6 +360,13 @@ xd3_decode_output_halfinst (xd3_stream *stream, xd3_hinst *inst)
    * supplies the data */
   usize_t take = inst->size;
 
+  if (USIZE_T_OVERFLOW (stream->avail_out, take) ||
+      stream->avail_out + take > stream->space_out)
+    {
+      stream->msg = "overflow while decoding";
+      return XD3_INVALID_INPUT;
+    }
+
   XD3_ASSERT (inst->type != XD3_NOOP);
 
   switch (inst->type)
@@ -377,7 +438,8 @@ xd3_decode_output_halfinst (xd3_stream *stream, xd3_hinst *inst)
 	      {
 		/* TODO: Users have requested long-distance copies of
 		 * similar material within a target (e.g., for dup
-		 * supression in backups). */
+		 * supression in backups). This code path is probably
+		 * dead due to XD3_UNIMPLEMENTED in xd3_decode_setup_buffers */
 		inst->size = 0;
 		inst->type = XD3_NOOP;
 		stream->msg = "VCD_TARGET not implemented";
@@ -504,10 +566,23 @@ xd3_decode_sections (xd3_stream *stream)
       return xd3_decode_finish_window (stream);
     }
 
-  /* To avoid copying, need this much data available */
-  need = (stream->inst_sect.size +
-	  stream->addr_sect.size +
-	  stream->data_sect.size);
+  /* To avoid extra copying, allocate three sections at once (but
+   * check for overflow). */
+  need = stream->inst_sect.size;
+
+  if (USIZE_T_OVERFLOW (need, stream->addr_sect.size))
+    {
+      stream->msg = "decoder section size overflow";
+      return XD3_INTERNAL;
+    }
+  need += stream->addr_sect.size;
+
+  if (USIZE_T_OVERFLOW (need, stream->data_sect.size))
+    {
+      stream->msg = "decoder section size overflow";
+      return XD3_INTERNAL;
+    }
+  need += stream->data_sect.size;
 
   /* The window may be entirely processed. */
   XD3_ASSERT (stream->dec_winbytes <= need);
@@ -737,6 +812,8 @@ xd3_decode_input (xd3_stream *stream)
 	      FGK_CASE (stream);
 	    case VCD_DJW_ID:
 	      DJW_CASE (stream);
+	    case VCD_LZMA_ID:
+	      LZMA_CASE (stream);
 	    default:
 	      stream->msg = "unknown secondary compressor ID";
 	      return XD3_INVALID_INPUT;
@@ -769,27 +846,8 @@ xd3_decode_input (xd3_stream *stream)
 
       if ((stream->dec_hdr_ind & VCD_CODETABLE) != 0)
 	{
-	  /* Get the code table data. */
-	  if ((stream->dec_codetbl == NULL) &&
-	      (stream->dec_codetbl =
-	       (uint8_t*) xd3_alloc (stream,
-				     stream->dec_codetblsz, 1)) == NULL)
-	    {
-	      return ENOMEM;
-	    }
-
-	  if ((ret = xd3_decode_bytes (stream, stream->dec_codetbl,
-				       & stream->dec_codetblbytes,
-				       stream->dec_codetblsz)))
-	    {
-	      return ret;
-	    }
-
-	  if ((ret = xd3_apply_table_encoding (stream, stream->dec_codetbl,
-					       stream->dec_codetblbytes)))
-	    {
-	      return ret;
-	    }
+	  stream->msg = "VCD_CODETABLE support was removed";
+	  return XD3_UNIMPLEMENTED;
 	}
       else
 	{
@@ -813,7 +871,13 @@ xd3_decode_input (xd3_stream *stream)
       if (stream->dec_hdr_ind & VCD_APPHEADER)
 	{
 	  /* Note: we add an additional byte for padding, to allow
-	     0-termination. */
+	     0-termination. Check for overflow: */
+	  if (USIZE_T_OVERFLOW(stream->dec_appheadsz, 1))
+	    {
+	      stream->msg = "exceptional appheader size";
+	      return XD3_INVALID_INPUT;
+	    }
+
 	  if ((stream->dec_appheader == NULL) &&
 	      (stream->dec_appheader =
 	       (uint8_t*) xd3_alloc (stream,

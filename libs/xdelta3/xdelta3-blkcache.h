@@ -74,8 +74,8 @@ main_set_source (xd3_stream *stream,
 {
   int ret = 0;
   usize_t i;
-  usize_t blksize;
   xoff_t source_size = 0;
+  usize_t blksize;
 
   XD3_ASSERT (lru == NULL);
   XD3_ASSERT (stream->src == NULL);
@@ -134,6 +134,7 @@ main_set_source (xd3_stream *stream,
   lru[0].blkno = (xoff_t) -1;
   blksize = use_options->srcwinsz;
   main_blklru_list_push_back (& lru_list, & lru[0]);
+  XD3_ASSERT (blksize != 0);
 
   /* Initialize xd3_source. */
   source->blksize  = blksize;
@@ -144,11 +145,9 @@ main_set_source (xd3_stream *stream,
 
   if ((ret = main_getblk_func (stream, source, 0)) != 0)
     {
-      if (use_options->debug_print) {
-	use_options->debug_print("error reading source: %s: %s\n",
+      use_options->debug_print("error reading source: %s: %s\n",
 	  sfile->filename,
 	  xd3_mainerror (ret));
-	}
       return ret;
     }
 
@@ -160,11 +159,14 @@ main_set_source (xd3_stream *stream,
   if (source_size > use_options->srcwinsz)
     {
       /* Modify block 0, change blocksize. */
-      lru_size = MAX_LRU_SIZE;
-      blksize = use_options->srcwinsz / MAX_LRU_SIZE;  /* Power of 2 */
+      blksize = use_options->srcwinsz / MAX_LRU_SIZE;
       source->blksize = blksize;
-      source->onblk = blksize;  /* xd3 sets onblk */
+      source->onblk = blksize;
+      source->onlastblk = blksize;
+      source->max_blkno = MAX_LRU_SIZE - 1;
+
       lru[0].size = blksize;
+      lru_size = MAX_LRU_SIZE;
 
       /* Setup rest of blocks. */
       for (i = 1; i < lru_size; i += 1)
@@ -180,15 +182,14 @@ main_set_source (xd3_stream *stream,
 
   if (ret)
     {
-      if (use_options->debug_print)
-	  use_options->debug_print(XD3_LIB_ERRMSG (stream, ret));
+      use_options->debug_print(XD3_LIB_ERRMSG (stream, ret));
       return ret;
     }
 
   XD3_ASSERT (stream->src == source);
   XD3_ASSERT (source->blksize == blksize);
 
-  if (use_options->verbose && use_options->debug_print)
+  if (use_options->verbose)
     {
       use_options->debug_print("source %s %" Q "u bytes, blksize %u bytes, window %u bytes, #bufs %u\n",
 	  sfile->filename, source_size, blksize, use_options->srcwinsz, lru_size);
@@ -227,7 +228,7 @@ main_getblk_lru (xd3_source *source, xoff_t blkno,
 
   (*is_new) = 1;
   (*blrup) = blru;
-  blru->blkno = blkno;
+  blru->blkno = (xoff_t) -1;
   return 0;
 }
 
@@ -258,7 +259,8 @@ main_read_seek_source (xd3_stream *stream,
        * matter?) */
       if (sfile->source_position > pos)
 	{
-	  if (use_options->debug_print)
+	  /* this shouldn't happen */
+	  if (use_options->verbose)
 	    {
 	      use_options->debug_print("source can't seek backwards; requested block offset "
 		  "%" Q "u source position is %" Q "u\n",
@@ -274,11 +276,10 @@ main_read_seek_source (xd3_stream *stream,
       /* There's a chance here, that an genuine lseek error will cause
        * xdelta3 to shift into non-seekable mode, entering a degraded
        * condition.  */
-      if (!sfile->seek_failed && use_options->verbose && use_options->debug_print)
+      if (!sfile->seek_failed && use_options->verbose)
 	{
-	  use_options->debug_print("seek error at offset %" Q "u: %s\n"
-				   "source can't seek, will use FIFO for %s\n",
-		  pos, xd3_mainerror (ret), sfile->filename);
+	  use_options->debug_print("seek error at offset %" Q "u: %s\n",
+		  pos, xd3_mainerror (ret));
 	}
 
       sfile->seek_failed = 1;
@@ -302,6 +303,7 @@ main_read_seek_source (xd3_stream *stream,
 	    }
 
 	  XD3_ASSERT (is_new);
+	  blru->blkno = skip_blkno;
 
 	  if ((ret = main_read_primary_input (sfile,
 					      (uint8_t*) blru->blk,
@@ -345,7 +347,6 @@ main_getblk_func (xd3_stream *stream,
   main_file *sfile = (main_file*) source->ioh;
   main_blklru *blru;
   int is_new;
-  int did_seek = 0;
   usize_t nread = 0;
 
   if ((ret = main_getblk_lru (source, blkno, & blru, & is_new)))
@@ -370,19 +371,9 @@ main_getblk_func (xd3_stream *stream,
 	{
 	  return ret;
 	}
-
-      /* Indicates that another call to main_getblk_lru() may be
-       * needed */
-      did_seek = 1;
     }
 
   XD3_ASSERT (sfile->source_position == pos);
-
-  if (did_seek &&
-      (ret = main_getblk_lru (source, blkno, & blru, & is_new)))
-    {
-      return ret;
-    }
 
   if ((ret = main_read_primary_input (sfile,
 				      (uint8_t*) blru->blk,
@@ -399,6 +390,7 @@ main_getblk_func (xd3_stream *stream,
   source->curblkno = blkno;
   source->onblk    = nread;
   blru->size       = nread;
+  blru->blkno      = blkno;
 
   return 0;
 }

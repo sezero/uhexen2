@@ -28,11 +28,7 @@ CFLAGS += -d2
 CFLAGS += -I. -I$(XDELTA_DIR) -I$(UHEXEN2_SHARED)
 
 XDFLAGS= -DXD3_DEBUG=0
-# when XD3_USE_LARGEFILE64 is not defined, xdelta3 defaults
-# to 64 bit xoff_t.
-# define XD3_USE_LARGEFILE64 as 0 or 1.
-XDFLAGS+= -DXD3_USE_LARGEFILE64=0
-# make xdelta3 to use open(), close() & co:
+# make xdelta3 to use posix file i/o:
 # they are just fine with OS/2.
 XDFLAGS+= -DXD3_POSIX=1
 
