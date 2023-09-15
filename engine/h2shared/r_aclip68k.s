@@ -59,7 +59,7 @@ _R_Alias_clip_left
 		move.l  (a1)+,d0
 		move.l  (a1)+,d1
 		move.l  REFDEF_ALIASVRECT+VRECT_X(a3),d4
-		cmp.l   d1,d3
+		cmp.l   d0,d2
 		blt.b   .cont
 		sub.l   d2,d4
 		fmove.l d4,fp0
@@ -156,7 +156,7 @@ _R_Alias_clip_right
 		move.l  (a1)+,d0
 		move.l  (a1)+,d1
 		move.l  REFDEF_ALIASVRECTRIGHT(a3),d4
-		cmp.l   d1,d3
+		cmp.l   d0,d2
 		blt.b   .cont
 		sub.l   d2,d4
 		fmove.l d4,fp0
