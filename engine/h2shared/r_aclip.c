@@ -95,7 +95,7 @@ static void R_Alias_clip_left (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t
 	float		scale;
 	int			i;
 
-	if (pfv0->v[1] >= pfv1->v[1])
+	if (pfv0->v[0] >= pfv1->v[0])
 	{
 		scale = (float)(r_refdef.aliasvrect.x - pfv0->v[0]) / (pfv1->v[0] - pfv0->v[0]);
 		for (i = 0; i < 6; i++)
@@ -114,7 +114,7 @@ static void R_Alias_clip_right (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_
 	float		scale;
 	int			i;
 
-	if (pfv0->v[1] >= pfv1->v[1])
+	if (pfv0->v[0] >= pfv1->v[0])
 	{
 		scale = (float)(r_refdef.aliasvrectright - pfv0->v[0]) / (pfv1->v[0] - pfv0->v[0]);
 		for (i = 0; i < 6; i++)
