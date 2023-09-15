@@ -152,8 +152,8 @@ R_Alias_clip_right:
  mov edi, dword [8+8+esp]
  mov eax, dword [r_refdef+48]
 LRightLeftEntry:
- mov edx, dword [0+4+esi]
- mov ecx, dword [0+4+edi]
+ mov edx, dword [0+0+esi]
+ mov ecx, dword [0+0+edi]
  cmp edx,ecx
  mov edx, dword [0+0+esi]
  mov ecx, dword [0+0+edi]

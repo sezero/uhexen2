@@ -42,8 +42,8 @@ _R_Alias_clip_bottom:
  mov edi,ds:dword ptr[8+8+esp]
  mov eax,ds:dword ptr[_r_refdef+52]
 LDoForwardOrBackward:
- mov edx,ds:dword ptr[0+4+esi]
- mov ecx,ds:dword ptr[0+4+edi]
+ mov edx,ds:dword ptr[0+0+esi]
+ mov ecx,ds:dword ptr[0+0+edi]
  cmp edx,ecx
  jl LDoForward
  mov ecx,ds:dword ptr[0+4+esi]
