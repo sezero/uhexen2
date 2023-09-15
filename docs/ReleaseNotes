@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.10: (Sep. 11, 2023.)
+Changes in v1.5.10: (Sep. 15, 2023.)
 ========================================================================
 
 This is a minor bug fix and maintenance release:
@@ -26,6 +26,8 @@ This is a minor bug fix and maintenance release:
 
 - Software renderer: replaced client sin/cos calls with precomputed
   table lookups for better performance especially on old hardware.
+
+- Software renderer: fixed a left/right alias edge clipping bug.
 
 - More performance tweaks mostly targeting the software renderer.
 
