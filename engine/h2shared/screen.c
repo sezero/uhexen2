@@ -424,6 +424,13 @@ static void SCR_CalcRefdef (void)
 	R_ViewChanged (vid.aspect);
 }
 
+void SCR_CalcFOV (float fov)
+{
+	r_refdef.fov_x = AdaptFovx (fov, r_refdef.vrect.width, r_refdef.vrect.height);
+	r_refdef.fov_y = CalcFovy (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
+	R_ViewChanged (vid.aspect);
+}
+
 //=============================================================================
 
 

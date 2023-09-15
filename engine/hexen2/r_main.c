@@ -555,10 +555,7 @@ void R_ViewChanged (float aspect)
 	r_aliastransition = r_aliastransbase.value * res_scale;
 	r_resfudge = r_aliastransadj.value * res_scale;
 
-	if (scr_fov.integer <= 90.0)
-		r_fov_greater_than_90 = false;
-	else
-		r_fov_greater_than_90 = true;
+	r_fov_greater_than_90 = scr_fov.integer > 90;
 
 // TODO: collect 386-specific code in one place
 #if	id386
@@ -850,13 +847,19 @@ static void R_DrawViewModel (void)
 	if ((cl.v.health <= 0)		 ||
 	    (chase_active.integer)	 ||
 //rjr	    (cl.items & IT_INVISIBILITY) ||
-//O.S.	    (r_fov_greater_than_90)	 ||
 	    (!r_drawviewmodel.integer))
 	{
 		return;
 	}
 
+	/* If FOV > 90, just draw the model with a 90 degree FOV. */
+	if (r_fov_greater_than_90)
+		SCR_CalcFOV(90.0f);
+
 	R_AliasDrawModel (&r_viewlighting);
+
+	if (r_fov_greater_than_90)
+		SCR_CalcFOV(scr_fov.value);
 }
 
 

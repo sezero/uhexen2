@@ -22,7 +22,7 @@ This is a minor bug fix and maintenance release:
   new cvar r_clearcolor (palette index from 0 to 255, default is 0)
   can be used to change the clear color (from fitzquake.)
 
-- OpenGL: compensate viewmodel distortion at fov > 90.
+- Render: Compensate viewmodel distortion at fov > 90.
 
 - Software renderer: replaced client sin/cos calls with precomputed
   table lookups for better performance especially on old hardware.

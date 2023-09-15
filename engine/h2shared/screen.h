@@ -39,6 +39,10 @@ void SCR_DrawLoading (void);	// for the Loading plaque
 void SCR_SetPlaqueMessage (const char *msg);	// set pointer to current plaque message
 int SCR_ModalMessage (const char *text);
 
+#ifndef GLQUAKE
+void SCR_CalcFOV (float fov);	// for R_DrawViewModel at fov > 90. calls R_ViewChanged.
+#endif
+
 #ifndef H2W
 extern	int			total_loading_size;	// global vars for
 extern	int			current_loading_size;	// the Loading screen
