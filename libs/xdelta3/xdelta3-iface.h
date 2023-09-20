@@ -39,10 +39,8 @@ typedef struct _xd3_progress_t
 
 typedef struct _xd3_options_t
 {
-	usize_t		iopt_size;
 	usize_t		winsize;
 	usize_t		srcwinsz;
-	usize_t		sprevsz;
 /* booleans: */
 	int		overwrite; /* force overwrite */
 	int		verbose;

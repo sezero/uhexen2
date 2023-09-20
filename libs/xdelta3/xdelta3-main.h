@@ -153,10 +153,8 @@ static void main_dbgprint (const char *fmt, ...) XD_FUNCP_PRINTF(1,2);
 
 static xd3_options_t default_options =
 {
-	XD3_DEFAULT_IOPT_SIZE,	/* iopt_size */
 	XD3_DEFAULT_WINSIZE,	/* winsize */
 	XD3_DEFAULT_SRCWINSZ,	/* srcwinsz */
-	XD3_DEFAULT_SPREVSZ,	/* sprevsz */
 
 	1,			/* force overwrite */ /* was 0. */
 	DEFAULT_VERBOSE,	/* verbose */
@@ -237,12 +235,14 @@ main_alloc (void   *opaque,
 	    usize_t  items,
 	    usize_t  size)
 {
+  (void) opaque;
   return main_malloc1 (items * size);
 }
 
 static void
 main_free1 (void *opaque, void *ptr)
 {
+  (void) opaque;
   free (ptr);
 }
 
@@ -797,7 +797,7 @@ main_write_output (xd3_stream* stream, main_file *ofile)
 
   if (stream->avail_out > 0 &&
       (ret = main_file_write (ofile, stream->next_out,
-			      stream->avail_out, "write failed")))
+			      stream->avail_out, "write failed")) != 0)
     {
       return ret;
     }
@@ -832,7 +832,7 @@ main_open_output (xd3_stream *stream, main_file *ofile)
 
   (void) stream;
 
-      if ((ret = main_file_open (ofile, ofile->filename, XO_WRITE)))
+      if ((ret = main_file_open (ofile, ofile->filename, XO_WRITE)) != 0)
 	{
 	  return ret;
 	}
@@ -894,9 +894,6 @@ main_input (main_file   *ifile,
   config.alloc = main_alloc;
   config.freef = main_free1;
 
-  config.iopt_size = use_options->iopt_size;
-  config.sprevsz = use_options->sprevsz;
-
   if (use_options->use_checksum == 0)
     {
       stream_flags |= XD3_ADLER32_NOVER;
@@ -912,7 +909,7 @@ main_input (main_file   *ifile,
   config.getblk = main_getblk_func;
   config.flags = stream_flags;
 
-  if ((ret = xd3_config_stream (& stream, & config)))
+  if ((ret = xd3_config_stream (& stream, & config)) != 0)
     {
       use_options->debug_print(XD3_LIB_ERRMSG (& stream, ret));
       return EXIT_FAILURE;
@@ -932,7 +929,7 @@ main_input (main_file   *ifile,
       try_read = (usize_t) xd3_min ((xoff_t) config.winsize, input_remain);
 
       if ((ret = main_read_primary_input (ifile, main_bdata,
-					  try_read, & nread)))
+					  try_read, & nread)) != 0)
 	{
 	  return EXIT_FAILURE;
 	}
@@ -967,7 +964,7 @@ main_input (main_file   *ifile,
 	     * the ofile, and it may contain default/decompression routine for
 	     * the sources. */
 		/* Now open the source file. */
-		  if ((ret = main_set_source (& stream, sfile, & source)))
+		  if ((ret = main_set_source (& stream, sfile, & source)) != 0)
 		  {
 		    return EXIT_FAILURE;
 		  }
@@ -994,7 +991,7 @@ main_input (main_file   *ifile,
 		return EXIT_FAILURE;
 	      }
 
-	    if ((ret = main_write_output(& stream, ofile)) &&
+	    if ((ret = main_write_output(& stream, ofile)) != 0 &&
 		(ret != PRINTHDR_SPECIAL))
 	      {
 		return EXIT_FAILURE;
@@ -1054,7 +1051,7 @@ done:
 	}
     }
 
-  if ((ret = xd3_close_stream (& stream)))
+  if ((ret = xd3_close_stream (& stream)) != 0)
     {
       use_options->debug_print(XD3_LIB_ERRMSG (& stream, ret));
       return EXIT_FAILURE;
@@ -1105,7 +1102,7 @@ xd3_main_patcher (xd3_options_t *options,
   ofile.filename = outfile;
   ifile.filename = deltafile;
 
-      if ((ret = main_file_open (& ifile, ifile.filename, XO_READ)))
+      if ((ret = main_file_open (& ifile, ifile.filename, XO_READ)) != 0)
 	{
 	  ret = EXIT_FAILURE;
 	  goto cleanup;

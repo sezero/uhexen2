@@ -90,12 +90,12 @@ main_set_source (xd3_stream *stream,
 
       /* Either a regular file (possibly compressed) or a FIFO
        * (possibly compressed). */
-      if ((ret = main_file_open (sfile, sfile->filename, XO_READ)))
+      if ((ret = main_file_open (sfile, sfile->filename, XO_READ)) != 0)
 	{
 	  return ret;
 	}
 
-      if ((ret = main_file_stat (sfile, &source_size)))
+      if ((ret = main_file_stat (sfile, &source_size)) != 0)
         {
 	  return ret;
         }
@@ -297,7 +297,7 @@ main_read_seek_source (xd3_stream *stream,
 	  XD3_ASSERT (skip_offset == 0);
 
 	  if ((ret = main_getblk_lru (source, skip_blkno,
-				      & blru, & is_new)))
+				      & blru, & is_new)) != 0)
 	    {
 	      return ret;
 	    }
@@ -308,7 +308,7 @@ main_read_seek_source (xd3_stream *stream,
 	  if ((ret = main_read_primary_input (sfile,
 					      (uint8_t*) blru->blk,
 					      source->blksize,
-					      & nread)))
+					      & nread)) != 0)
 	    {
 	      return ret;
 	    }
@@ -349,7 +349,7 @@ main_getblk_func (xd3_stream *stream,
   int is_new;
   usize_t nread = 0;
 
-  if ((ret = main_getblk_lru (source, blkno, & blru, & is_new)))
+  if ((ret = main_getblk_lru (source, blkno, & blru, & is_new)) != 0)
     {
       return ret;
     }
@@ -367,7 +367,7 @@ main_getblk_func (xd3_stream *stream,
       /* Only try to seek when the position is wrong.  This means the
        * decoder will fail when the source buffer is too small, but
        * only when the input is non-seekable. */
-      if ((ret = main_read_seek_source (stream, source, blkno)))
+      if ((ret = main_read_seek_source (stream, source, blkno)) != 0)
 	{
 	  return ret;
 	}
@@ -378,7 +378,7 @@ main_getblk_func (xd3_stream *stream,
   if ((ret = main_read_primary_input (sfile,
 				      (uint8_t*) blru->blk,
 				      source->blksize,
-				      & nread)))
+				      & nread)) != 0)
     {
       return ret;
     }

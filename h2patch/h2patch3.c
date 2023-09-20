@@ -1,5 +1,5 @@
 /* h2patch3 -- hexen2 pak patch application using xdelta3
- * Copyright (C) 2007-2017  O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2007-2023  O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -196,10 +196,8 @@ static void progress_print (void);
 
 static xd3_options_t h2patch_options =
 {
-	XD3_DEFAULT_IOPT_SIZE,	/* iopt_size */
 	XD3_DEFAULT_WINSIZE,	/* winsize */
 	H2PATCH_SRCWINSZ,	/* srcwinsz */
-	XD3_DEFAULT_SPREVSZ,	/* sprevsz */
 
 	1,			/* force overwrite */
 	0,			/* verbose */
@@ -425,11 +423,11 @@ static void Sys_TimerInit (void)
 			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
 					(struct IORequest *) timerio, 0) == 0)
 			{
-#if defined(__MORPHOS__) || defined(__VBCC__)
+				#if defined(__MORPHOS__) || defined(__VBCC__)
 				TimerBase = (struct Library *)timerio->tr_node.io_Device;
-#else
+				#else
 				TimerBase = timerio->tr_node.io_Device;
-#endif
+				#endif
 			}
 			else
 			{

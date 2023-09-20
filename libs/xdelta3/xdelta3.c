@@ -299,13 +299,6 @@ typedef enum {
 } xd3_secondary_ids;
 
 typedef enum {
-  SEC_NOFLAGS     = 0,
-
-  /* Note: SEC_COUNT_FREQS Not implemented (to eliminate 1st Huffman pass) */
-  SEC_COUNT_FREQS = (1 << 0)
-} xd3_secondary_flags;
-
-typedef enum {
   DATA_SECTION, /* These indicate which section to the secondary
                  * compressor. */
   INST_SECTION, /* The header section is not compressed, therefore not
@@ -927,7 +920,7 @@ xd3_decode_address (xd3_stream *stream, usize_t here,
 
   if (mode < same_start)
     {
-      if ((ret = xd3_read_size (stream, inpp, max, valp))) { return ret; }
+      if ((ret = xd3_read_size (stream, inpp, max, valp)) != 0) { return ret; }
 
       switch (mode)
 	{
@@ -968,12 +961,14 @@ xd3_decode_address (xd3_stream *stream, usize_t here,
 static void*
 __xd3_alloc_func (void* opaque, usize_t items, usize_t size)
 {
+  (void) opaque;
   return malloc ((size_t) items * (size_t) size);
 }
 
 static void
 __xd3_free_func (void* opaque, void* address)
 {
+  (void) opaque;
   free (address);
 }
 
@@ -1005,16 +1000,6 @@ xd3_free (xd3_stream *stream,
 void
 xd3_free_stream (xd3_stream *stream)
 {
-  xd3_iopt_buflist *blist = stream->iopt_alloc;
-
-  while (blist != NULL)
-    {
-      xd3_iopt_buflist *tmp = blist;
-      blist = blist->next;
-      xd3_free (stream, tmp->buffer);
-      xd3_free (stream, tmp);
-    }
-
   xd3_free (stream, stream->acache.near_array);
   xd3_free (stream, stream->acache.same_array);
 
@@ -1028,14 +1013,9 @@ xd3_free_stream (xd3_stream *stream)
     }
   xd3_free (stream, stream->dec_buffer);
 
-  xd3_free (stream, stream->buf_in);
   xd3_free (stream, stream->dec_appheader);
   xd3_free (stream, stream->dec_codetbl);
   xd3_free (stream, stream->code_table_alloc);
-
-  xd3_free (stream, stream->whole_target.adds);
-  xd3_free (stream, stream->whole_target.inst);
-  xd3_free (stream, stream->whole_target.wininfo);
 
   memset (stream, 0, sizeof (xd3_stream));
 }
@@ -1050,7 +1030,6 @@ xd3_config_stream(xd3_stream *stream,
 {
   int ret;
   xd3_config defcfg;
-  xd3_smatcher *smatcher = &stream->smatcher;
 
   if (config == NULL)
     {
@@ -1062,17 +1041,6 @@ xd3_config_stream(xd3_stream *stream,
   memset (stream, 0, sizeof (*stream));
 
   stream->winsize = config->winsize ? config->winsize : XD3_DEFAULT_WINSIZE;
-  stream->sprevsz = config->sprevsz ? config->sprevsz : XD3_DEFAULT_SPREVSZ;
-
-  if (config->iopt_size == 0)
-    {
-      stream->iopt_size = XD3_ALLOCSIZE / sizeof(xd3_rinst);
-      stream->iopt_unlimited = 1;
-    }
-  else
-    {
-      stream->iopt_size = config->iopt_size;
-    }
 
   stream->getblk    = config->getblk;
   stream->alloc     = config->alloc ? config->alloc : __xd3_alloc_func;
@@ -1080,19 +1048,10 @@ xd3_config_stream(xd3_stream *stream,
   stream->opaque    = config->opaque;
   stream->flags     = config->flags;
 
-  /* Secondary setup. */
-  stream->sec_data  = config->sec_data;
-  stream->sec_inst  = config->sec_inst;
-  stream->sec_addr  = config->sec_addr;
-
-  stream->sec_data.data_type = DATA_SECTION;
-  stream->sec_inst.data_type = INST_SECTION;
-  stream->sec_addr.data_type = ADDR_SECTION;
-
   /* Check static sizes. */
   if (sizeof (usize_t) != SIZEOF_USIZE_T ||
       sizeof (xoff_t) != SIZEOF_XOFF_T ||
-      (ret = xd3_check_pow2(XD3_ALLOCSIZE, NULL)))
+      (ret = xd3_check_pow2(XD3_ALLOCSIZE, NULL)) != 0)
     {
       stream->msg = "incorrect compilation: wrong integer sizes";
       return XD3_INTERNAL;
@@ -1122,23 +1081,6 @@ xd3_config_stream(xd3_stream *stream,
   stream->code_table_desc = & __rfc3284_code_table_desc;
   stream->code_table_func = xd3_rfc3284_code_table;
 
-  /* Check sprevsz */
-  if (smatcher->small_chain == 1 &&
-      smatcher->small_lchain == 1)
-    {
-      stream->sprevsz = 0;
-    }
-  else
-    {
-      if ((ret = xd3_check_pow2 (stream->sprevsz, NULL)))
-	{
-	  stream->msg = "sprevsz is required to be a power of two";
-	  return XD3_INTERNAL;
-	}
-
-      stream->sprevmask = stream->sprevsz - 1;
-    }
-
   return 0;
 }
 
@@ -1146,24 +1088,8 @@ xd3_config_stream(xd3_stream *stream,
  Getblk interface
  ***********************************************************/
 
-static inline
-xoff_t xd3_source_eof(const xd3_source *src)
-{
-  xoff_t r = (src->max_blkno << src->shiftby) + (xoff_t)src->onlastblk;
-  return r;
-}
-
-static inline
-usize_t xd3_bytes_on_srcblk (xd3_source *src, xoff_t blkno)
-{
-  usize_t r = (blkno == src->max_blkno ?
-	       src->onlastblk :
-	       src->blksize);
-  return r;
-}
-
 /* This function interfaces with the client getblk function, checks
- * its results, updates max_blkno, onlastblk, eof_known. */
+ * its results, updates max_blkno, onlastblk. */
 static int
 xd3_getblk (xd3_stream *stream, xoff_t blkno)
 {
@@ -1190,14 +1116,6 @@ xd3_getblk (xd3_stream *stream, xoff_t blkno)
   if (blkno > source->max_blkno)
     {
       source->max_blkno = blkno;
-
-      if (source->onblk == source->blksize)
-	{
-	}
-      else if (!source->eof_known)
-	{
-	  source->eof_known = 1;
-	}
     }
 
   XD3_ASSERT (source->curblk != NULL);
@@ -1245,7 +1163,6 @@ xd3_set_source_and_size (xd3_stream *stream,
   int ret = xd3_set_source (stream, user_source);
   if (ret == 0)
     {
-      stream->src->eof_known = 1;
       xd3_blksize_div(source_size,
 		      stream->src,
 		      &stream->src->max_blkno,
@@ -1258,36 +1175,11 @@ void
 xd3_abort_stream (xd3_stream *stream)
 {
   stream->dec_state = DEC_ABORTED;
-  stream->enc_state = ENC_ABORTED;
 }
 
 int
 xd3_close_stream (xd3_stream *stream)
 {
-  if (stream->enc_state != 0 && stream->enc_state != ENC_ABORTED)
-    {
-      if (stream->buf_leftover != NULL)
-	{
-	  stream->msg = "encoding is incomplete";
-	  return XD3_INTERNAL;
-	}
-
-      if (stream->enc_state == ENC_POSTWIN)
-	{
-	  stream->current_window += 1;
-	  stream->enc_state = ENC_INPUT;
-	}
-
-      /* If encoding, should be ready for more input but not actually
-	 have any. */
-      if (stream->enc_state != ENC_INPUT || stream->avail_in != 0)
-	{
-	  stream->msg = "encoding is incomplete";
-	  return XD3_INTERNAL;
-	}
-    }
-  else
-    {
       switch (stream->dec_state)
 	{
 	case DEC_VCHEAD:
@@ -1303,7 +1195,6 @@ xd3_close_stream (xd3_stream *stream)
 	  stream->msg = "eof in decode";
 	  return XD3_INVALID_INPUT;
 	}
-    }
 
   return 0;
 }

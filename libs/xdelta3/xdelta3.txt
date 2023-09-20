@@ -1,0 +1,6 @@
+This is a butcher'ed version of xdelta3, based largely on version 3.1.0
+Keeps _only_ the decoder functionality, using seekable input files.
+
+Original xdelta3 is at:
+https://github.com/jmacd/xdelta-gpl (original, under GPLv2 license)
+or: https://github.com/jmacd/xdelta (re-licensed under Apache v2.0)

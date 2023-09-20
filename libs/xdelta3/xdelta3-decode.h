@@ -98,12 +98,12 @@ xd3_decode_setup_buffers (xd3_stream *stream)
       /* Note: this implementation is untested, since Xdelta3 itself
        * does not implement an encoder for VCD_TARGET mode. Thus, mark
        * unimplemented until needed. */
-      if (1)
+      #if 1
 	{
 	  stream->msg = "VCD_TARGET not implemented";
 	  return XD3_UNIMPLEMENTED;
 	}
-
+      #else
       /* But this implementation only supports copying from the last
        * target window.  If the offset is outside that range, it can't
        * be done. */
@@ -126,6 +126,7 @@ xd3_decode_setup_buffers (xd3_stream *stream)
       /* TODO: (See note above, this looks incorrect) */
       stream->dec_cpyaddrbase = stream->dec_lastwin +
 	(usize_t) (stream->dec_cpyoff - stream->dec_laststart);
+      #endif
     }
 
   /* See if the current output window is large enough. */
@@ -212,12 +213,12 @@ xd3_decode_section (xd3_stream *stream,
 
 	  if (section->pos == 0)
 	    {
-	      int ret;
-
-	      if ((ret = xd3_decode_allocate (stream,
+	      int ret = xd3_decode_allocate (stream,
 					      section->size,
 					      & section->copied1,
-					      & section->alloc1)))
+					      & section->alloc1);
+
+	      if (ret)
 		{
 		  return ret;
 		}
@@ -266,7 +267,7 @@ xd3_decode_parse_halfinst (xd3_stream *stream, xd3_hinst *inst)
       (ret = xd3_read_size (stream,
  			    & stream->inst_sect.buf,
 			      stream->inst_sect.buf_max,
-			    & inst->size)))
+			    & inst->size)) != 0)
     {
       return XD3_INVALID_INPUT;
     }
@@ -279,7 +280,7 @@ xd3_decode_parse_halfinst (xd3_stream *stream, xd3_hinst *inst)
 				     inst->type - XD3_CPY,
 				     & stream->addr_sect.buf,
 				     stream->addr_sect.buf_max,
-				     & inst->addr)))
+				     & inst->addr)) != 0)
 	{
 	  return ret;
 	}
@@ -337,12 +338,12 @@ xd3_decode_instruction (xd3_stream *stream)
    * code-table may have NOOP in either position, although this is
    * unlikely. */
   if (inst->type1 != XD3_NOOP &&
-      (ret = xd3_decode_parse_halfinst (stream, & stream->dec_current1)))
+      (ret = xd3_decode_parse_halfinst (stream, & stream->dec_current1)) != 0)
     {
       return ret;
     }
   if (inst->type2 != XD3_NOOP &&
-      (ret = xd3_decode_parse_halfinst (stream, & stream->dec_current2)))
+      (ret = xd3_decode_parse_halfinst (stream, & stream->dec_current2)) != 0)
     {
       return ret;
     }
@@ -460,7 +461,7 @@ xd3_decode_output_halfinst (xd3_stream *stream, xd3_hinst *inst)
 		xd3_blksize_add (&block, &blkoff, source, inst->addr);
 		XD3_ASSERT (blkoff < blksize);
 
-		if ((ret = xd3_getblk (stream, block)))
+		if ((ret = xd3_getblk (stream, block)) != 0)
 		  {
 		    /* could be a XD3_GETSRCBLK failure. */
 		    if (ret == XD3_TOOFARBACK)
@@ -622,13 +623,13 @@ xd3_decode_sections (xd3_stream *stream)
 
     case DEC_DATA:
       if ((ret = xd3_decode_section (stream, & stream->data_sect,
-				     DEC_INST, copy))) { return ret; }
+				     DEC_INST, copy)) != 0) { return ret; }
     case DEC_INST:
       if ((ret = xd3_decode_section (stream, & stream->inst_sect,
-				     DEC_ADDR, copy))) { return ret; }
+				     DEC_ADDR, copy)) != 0) { return ret; }
     case DEC_ADDR:
       if ((ret = xd3_decode_section (stream, & stream->addr_sect,
-				     DEC_EMIT, copy))) { return ret; }
+				     DEC_EMIT, copy)) != 0) { return ret; }
     }
 
   XD3_ASSERT (stream->dec_winbytes == need);
@@ -641,7 +642,7 @@ xd3_decode_sections (xd3_stream *stream)
   /* OPT: A possible optimization is to avoid allocating memory in
    * decode_setup_buffers and to avoid a large memcpy when the window
    * consists of a single VCD_SOURCE copy instruction. */
-  if ((ret = xd3_decode_setup_buffers (stream))) { return ret; }
+  if ((ret = xd3_decode_setup_buffers (stream)) != 0) { return ret; }
 
   return 0;
 }
@@ -671,12 +672,12 @@ xd3_decode_emit (xd3_stream *stream)
       /* Decode next instruction pair. */
       if ((stream->dec_current1.type == XD3_NOOP) &&
 	  (stream->dec_current2.type == XD3_NOOP) &&
-	  (ret = xd3_decode_instruction (stream))) { return ret; }
+	  (ret = xd3_decode_instruction (stream)) != 0) { return ret; }
 
       /* Output dec_current1 */
       while ((stream->dec_current1.type != XD3_NOOP))
 	{
-	  if ((ret = xd3_decode_output_halfinst (stream, & stream->dec_current1)))
+	  if ((ret = xd3_decode_output_halfinst (stream, & stream->dec_current1)) != 0)
 	    {
 	      return ret;
 	    }
@@ -684,7 +685,7 @@ xd3_decode_emit (xd3_stream *stream)
       /* Output dec_current2 */
       while (stream->dec_current2.type != XD3_NOOP)
 	{
-	  if ((ret = xd3_decode_output_halfinst (stream, & stream->dec_current2)))
+	  if ((ret = xd3_decode_output_halfinst (stream, & stream->dec_current2)) != 0)
 	    {
 	      return ret;
 	    }
@@ -731,12 +732,6 @@ xd3_decode_input (xd3_stream *stream)
 {
   int ret;
 
-  if (stream->enc_state != 0)
-    {
-      stream->msg = "encoder/decoder transition";
-      return XD3_INVALID_INPUT;
-    }
-
 #define BYTE_CASE(expr,x,nstate) \
       do { \
       if ( (expr) && \
@@ -763,7 +758,7 @@ xd3_decode_input (xd3_stream *stream)
     case DEC_VCHEAD:
       {
 	if ((ret = xd3_decode_bytes (stream, stream->dec_magic,
-				     & stream->dec_magicbytes, 4)))
+				     & stream->dec_magicbytes, 4)) != 0)
 	  {
 	    return ret;
 	  }
@@ -786,7 +781,7 @@ xd3_decode_input (xd3_stream *stream)
       }
     case DEC_HDRIND:
       {
-	if ((ret = xd3_decode_byte (stream, & stream->dec_hdr_ind)))
+	if ((ret = xd3_decode_byte (stream, & stream->dec_hdr_ind)) != 0)
 	  {
 	    return ret;
 	  }
@@ -857,7 +852,7 @@ xd3_decode_input (xd3_stream *stream)
 	  stream->code_table    = xd3_rfc3284_code_table ();
 	}
 
-      if ((ret = xd3_alloc_cache (stream))) { return ret; }
+      if ((ret = xd3_alloc_cache (stream)) != 0) { return ret; }
 
       stream->dec_state = DEC_APPLEN;
 
@@ -890,7 +885,7 @@ xd3_decode_input (xd3_stream *stream)
 
 	  if ((ret = xd3_decode_bytes (stream, stream->dec_appheader,
 				       & stream->dec_appheadbytes,
-				       stream->dec_appheadsz)))
+				       stream->dec_appheadsz)) != 0)
 	    {
 	      return ret;
 	    }
@@ -903,7 +898,7 @@ xd3_decode_input (xd3_stream *stream)
     case DEC_WININD:
       {
 	/* Start of a window: the window indicator */
-	if ((ret = xd3_decode_byte (stream, & stream->dec_win_ind)))
+	if ((ret = xd3_decode_byte (stream, & stream->dec_win_ind)) != 0)
 	  {
 	    return ret;
 	  }
@@ -924,7 +919,7 @@ xd3_decode_input (xd3_stream *stream)
 	    return XD3_INVALID_INPUT;
 	  }
 
-	if ((ret = xd3_decode_init_window (stream))) { return ret; }
+	if ((ret = xd3_decode_init_window (stream)) != 0) { return ret; }
 
 	stream->dec_state = DEC_CPYLEN;
       }
@@ -998,7 +993,7 @@ xd3_decode_input (xd3_stream *stream)
 	}
 
       /* Delta indicator is only used with secondary compression. */
-      if ((stream->dec_del_ind != 0) && (stream->sec_type == NULL))
+      if (stream->dec_del_ind != 0)
 	{
 	  stream->msg = "invalid delta indicator bits set";
 	  return XD3_INVALID_INPUT;
@@ -1019,7 +1014,7 @@ xd3_decode_input (xd3_stream *stream)
 	  int i;
 
 	  if ((ret = xd3_decode_bytes (stream, stream->dec_cksum,
-				       & stream->dec_cksumbytes, 4)))
+				       & stream->dec_cksumbytes, 4)) != 0)
 	    {
 	      return ret;
 	    }
@@ -1061,7 +1056,7 @@ xd3_decode_input (xd3_stream *stream)
     case DEC_INST:
     case DEC_ADDR:
       /* Next read the three sections. */
-     if ((ret = xd3_decode_sections (stream))) { return ret; }
+     if ((ret = xd3_decode_sections (stream)) != 0) { return ret; }
 
     case DEC_EMIT:
 
