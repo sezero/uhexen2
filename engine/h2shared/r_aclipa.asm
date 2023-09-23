@@ -155,14 +155,11 @@ LRightLeftEntry:
  mov edx, dword [0+0+esi]
  mov ecx, dword [0+0+edi]
  cmp edx,ecx
- mov edx, dword [0+0+esi]
- mov ecx, dword [0+0+edi]
- jl LDoForward2
+ jl LDoForward
  mov ecx, dword [0+0+esi]
  mov edx, dword [0+0+edi]
  mov edi, dword [8+4+esp]
  mov esi, dword [8+8+esp]
-LDoForward2:
  jmp LDoForward
 
 
