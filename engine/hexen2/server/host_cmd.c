@@ -399,16 +399,16 @@ Host_SavegameComment
 Writes a SAVEGAME_COMMENT_LENGTH character comment describing the game saved
 ===============
 */
-static void Host_SavegameComment (char *text)
+static void Host_SavegameComment (char text[SAVEGAME_COMMENT_LENGTH + 1])
 {
 	size_t		i;
 	char		temp[20];
 	const char	*levelname;
+	char		*p;
 
 	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
-	{
 		text[i] = ' ';
-	}
+	text[SAVEGAME_COMMENT_LENGTH] = '\0';
 
 /* see SAVEGAME_COMMENT_LENGTH definition in quakedef.h */
 	levelname = SV_GetLevelname ();
@@ -416,6 +416,12 @@ static void Host_SavegameComment (char *text)
 	if (i > 20)
 		i = 20;
 	memcpy (text, levelname, i);
+
+/* remove CR/LFs from level name to avoid broken saves */
+	while ((p = strchr(text, '\n')) != NULL)
+		*p = ' ';
+	while ((p = strchr(text, '\r')) != NULL)
+		*p = ' ';
 
 	Sys_DateTimeString (temp);
 	temp[16] = '\0'; // eliminate seconds
@@ -428,8 +434,6 @@ static void Host_SavegameComment (char *text)
 		if (text[i] == ' ')
 			text[i] = '_';
 	}
-
-	text[SAVEGAME_COMMENT_LENGTH] = '\0';
 }
 
 /*
