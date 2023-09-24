@@ -77,7 +77,14 @@ extern char *q_strupr (char *str);
 extern	char		com_token[1024];
 extern	qboolean	com_eof;
 
+typedef enum
+{
+	CPE_NOTRUNC,		// return parse error in case of overflow
+	CPE_ALLOWTRUNC		// truncate com_token in case of overflow
+} cpe_mode;
+
 const char *COM_Parse (const char *data);
+const char *COM_ParseEx (const char *data, cpe_mode mode);
 
 extern	int		safemode;
 /* safe mode: if true, the engine will behave as if one of these
