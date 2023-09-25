@@ -85,8 +85,10 @@ skipwhite:
 				com_token[len] = 0;
 				return data;
 			}
-			com_token[len] = c;
-			len++;
+			if (len < Q_COUNTOF(com_token) - 1)
+				com_token[len++] = c;
+			else /* overflow: */
+				return NULL;
 		}
 	}
 
@@ -94,8 +96,10 @@ skipwhite:
 // parse single characters
 	if (c == '{' || c == '}' || c == '(' || c == ')' || c == '\'' || c == ':')
 	{
-		com_token[len] = c;
-		len++;
+		if (len < Q_COUNTOF(com_token) - 1)
+			com_token[len++] = c;
+		else /* overflow: */
+			return NULL;
 		com_token[len] = 0;
 		return data+1;
 	}
@@ -104,9 +108,11 @@ skipwhite:
 // parse a regular word
 	do
 	{
-		com_token[len] = c;
+		if (len < Q_COUNTOF(com_token) - 1)
+			com_token[len++] = c;
+		else /* overflow: */
+			return NULL;
 		data++;
-		len++;
 		c = *data;
 #if 0
 		if (c == '{' || c == '}' || c == '(' || c == ')' || c == '\'' || c == ':')
