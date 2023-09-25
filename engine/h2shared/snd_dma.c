@@ -84,7 +84,7 @@ int		desired_speed = 22050;
 int		desired_bits = 16;
 int		desired_channels = 2;
 const int	tryrates[] = { 11025, 22050, 44100, 48000, 96000, 16000, 24000, 8000 };
-const int	MAX_TRYRATES = sizeof(tryrates)/sizeof(tryrates[0]);
+const int	MAX_TRYRATES = Q_COUNTOF(tryrates);
 
 cvar_t		bgmvolume = {"bgmvolume", "1", CVAR_ARCHIVE};
 cvar_t		bgmtype = {"bgmtype", "cd", CVAR_ARCHIVE};	// cd or midi
@@ -228,7 +228,7 @@ static const char *read_vars[] =
 	"bgmvolume",
 	"volume"
 };
-#define num_readvars	(int)(sizeof(read_vars) / sizeof(read_vars[0]))
+#define num_readvars	(int)Q_COUNTOF(read_vars)
 
 void S_Init (void)
 {
@@ -1172,7 +1172,7 @@ static void S_SoundList (void)
 	int		i;
 	sfx_t	*sfx;
 	sfxcache_t	*sc;
-	int		size, total;
+	int	size, total;
 
 	total = 0;
 	for (sfx = known_sfx, i = 0; i < num_sfx; i++, sfx++)
@@ -1215,13 +1215,10 @@ void S_ClearPrecache (void)
 {
 }
 
-
 void S_BeginPrecaching (void)
 {
 }
 
-
 void S_EndPrecaching (void)
 {
 }
-

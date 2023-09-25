@@ -57,7 +57,7 @@ static int buttonremap[] =
 	K_MOUSE4,
 	K_MOUSE5
 };
-#define	NUM_MOUSEBUTTONS	(sizeof(buttonremap) / sizeof(buttonremap[0]))
+#define	NUM_MOUSEBUTTONS	Q_COUNTOF(buttonremap)
 
 /* DirectInput mouse control: */
 qboolean			dinput_init;
@@ -102,7 +102,7 @@ static DIOBJECTDATAFORMAT rgodf[] =
 	{ 0,		FIELD_OFFSET(MYDATA, bButtonD),	0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE,	0,},
 };
 
-#define NUM_OBJECTS (sizeof(rgodf) / sizeof(rgodf[0]))
+#define NUM_OBJECTS Q_COUNTOF(rgodf)
 
 static DIDATAFORMAT	diformat =
 {
@@ -117,7 +117,7 @@ static DIDATAFORMAT	diformat =
 static HINSTANCE	hInstDI;
 static HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion, LPDIRECTINPUT *lplpDirectInput, LPUNKNOWN punkOuter);
 
-#else	/* ! DX_DLSYM : we're linked to dinput */
+#else	/* ! DX_DLSYM : linked to dinput */
 
 #define	diformat			c_dfDIMouse
 #define	pDirectInputCreate		DirectInputCreateA
@@ -1342,4 +1342,3 @@ static void IN_JoyMove (usercmd_t *cmd)
 	if (cl.viewangles[PITCH] < -70.0)
 		cl.viewangles[PITCH] = -70.0;
 }
-

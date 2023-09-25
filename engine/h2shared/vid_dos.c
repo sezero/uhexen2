@@ -91,7 +91,7 @@ void    VID_Init (const unsigned char *palette)
 {
 	const char	*read_vars[] = {
 				"_vid_default_mode" };
-#define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
+#define num_readvars	Q_COUNTOF(read_vars)
 
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&vid_wait);
@@ -545,9 +545,9 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 void D_ShowLoadingSize (void)
 {
-#if defined(DRAW_PROGRESSBARS)
-/* to be implemented. */
-#endif	/* !DRAW_PROGRESSBARS */
+	#ifdef DRAW_PROGRESSBARS
+	/* to be implemented. */
+	#endif
 }
 
 void VID_LockBuffer (void)

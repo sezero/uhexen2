@@ -1089,7 +1089,7 @@ void IN_SendKeyEvents (void)
 			if (!mouseactive || in_mode_set)
 				break;
 			if (event.button.button < 1 ||
-			    event.button.button > sizeof(buttonremap) / sizeof(buttonremap[0]))
+			    event.button.button > Q_COUNTOF(buttonremap))
 			{
 				Con_Printf ("Ignored event for mouse button %d\n",
 							event.button.button);
@@ -1129,4 +1129,3 @@ void IN_SendKeyEvents (void)
 		}
 	}
 }
-

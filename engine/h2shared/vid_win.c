@@ -1223,7 +1223,7 @@ void	VID_Init (const unsigned char *palette)
 	byte		*ptmp;
 	const char	*read_vars[] = {
 				"_vid_default_mode_win" };
-#define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
+#define num_readvars	Q_COUNTOF(read_vars)
 
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&_vid_default_mode);
@@ -1507,11 +1507,10 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 }
 
 
-#ifndef H2W
-/* unused in hexenworld */
+#ifndef H2W /* not used in hexenworld */
 void D_ShowLoadingSize (void)
 {
-#if defined(DRAW_PROGRESSBARS)
+	#ifdef DRAW_PROGRESSBARS
 	static int prev_perc;
 	int		cur_perc;
 	vrect_t		rect;
@@ -1541,15 +1540,15 @@ void D_ShowLoadingSize (void)
 
 		VID_UnlockBuffer ();
 
-#if 1	/* original code */
+		#if 1	/* original code */
 		rect.x = 0;
 		rect.y = 0;
 		rect.width = vid.width;
-#else	/* Pa3PyX: tweaking sizes - faster redraw */
+		#else	/* Pa3PyX: tweaking sizes - faster redraw */
 		rect.x = (vid.width >> 1) - 100;
 		rect.y = 0;
 		rect.width = 200;
-#endif
+		#endif
 		rect.height = 112;
 		rect.pnext = NULL;
 
@@ -1560,7 +1559,7 @@ void D_ShowLoadingSize (void)
 //	}
 
 	vid = save_vid;
-#endif	/* !DRAW_PROGRESSBARS */
+	#endif
 }
 #endif	/* ! H2W */
 
@@ -2249,7 +2248,6 @@ static void VID_MenuDraw (void)
 			}
 		}
 	}
-
 
 	M_Print (13*8, 60, "Windowed Modes");
 

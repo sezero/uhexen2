@@ -102,13 +102,13 @@ static fxmode_t fx_modes[] = {
 	{ 1280,1024,GR_RESOLUTION_1280x1024 },
 	{ 1600,1200,GR_RESOLUTION_1600x1200 },
 };
-#define MAX_FXMODES (int)(sizeof(fx_modes) / sizeof(fx_modes[0]))
+#define MAX_FXMODES Q_COUNTOF(fx_modes)
 
 static GrScreenResolution_t findres (int *width, int *height)
 {
 	int i;
 
-	for (i = 0; i < MAX_FXMODES; i++) {
+	for (i = 0; i < (int)MAX_FXMODES; i++) {
 		if (*width <= fx_modes[i].width && *height <= fx_modes[i].height) {
 			*width = fx_modes[i].width;
 			*height = fx_modes[i].height;

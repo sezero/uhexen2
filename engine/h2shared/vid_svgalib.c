@@ -733,9 +733,9 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 void D_ShowLoadingSize (void)
 {
-#if defined(DRAW_PROGRESSBARS)
-/* to be implemented. */
-#endif	/* !DRAW_PROGRESSBARS */
+	#ifdef DRAW_PROGRESSBARS
+	/* to be implemented. */
+	#endif
 }
 
 void VID_LockBuffer (void)

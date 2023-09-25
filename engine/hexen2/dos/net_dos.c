@@ -35,10 +35,10 @@ net_driver_t net_drivers[] =
 		false,
 		Loop_Init,
 		Loop_Listen,
-#if !defined(SERVERONLY)
+#ifndef SERVERONLY
 		Loop_SearchForHosts,
 		Loop_Connect,
-#endif	/* SERVERONLY */
+#endif
 		Loop_CheckNewConnections,
 		Loop_GetMessage,
 		Loop_SendMessage,
@@ -48,16 +48,16 @@ net_driver_t net_drivers[] =
 		Loop_Close,
 		Loop_Shutdown
 	},
-#endif	/* NO_LOOP_DRIVER */
+#endif
 
 	{	"Datagram",
 		false,
 		Datagram_Init,
 		Datagram_Listen,
-#if !defined(SERVERONLY)
+#ifndef SERVERONLY
 		Datagram_SearchForHosts,
 		Datagram_Connect,
-#endif	/* SERVERONLY */
+#endif
 		Datagram_CheckNewConnections,
 		Datagram_GetMessage,
 		Datagram_SendMessage,
@@ -73,10 +73,10 @@ net_driver_t net_drivers[] =
 		false,
 		Serial_Init,
 		Serial_Listen,
-#if !defined(SERVERONLY)
+#ifndef SERVERONLY
 		Serial_SearchForHosts,
 		Serial_Connect,
-#endif	/* SERVERONLY */
+#endif
 		Serial_CheckNewConnections,
 		Serial_GetMessage,
 		Serial_SendMessage,
@@ -86,10 +86,10 @@ net_driver_t net_drivers[] =
 		Serial_Close,
 		Serial_Shutdown
 	}
-#endif	/* NET_USE_SERIAL */
+#endif
 };
 
-const int net_numdrivers = (sizeof(net_drivers) / sizeof(net_drivers[0]));
+const int net_numdrivers = Q_COUNTOF(net_drivers);
 
 
 #include "net_ipx.h"
@@ -146,8 +146,7 @@ net_landriver_t	net_landrivers[] =
 		UDP_GetSocketPort,
 		UDP_SetSocketPort
 	},
-#endif /* USE_WATT32 */
+#endif
 };
 
-const int net_numlandrivers = (sizeof(net_landrivers) / sizeof(net_landrivers[0]));
-
+const int net_numlandrivers = Q_COUNTOF(net_landrivers);

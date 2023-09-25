@@ -126,7 +126,7 @@ static const char *svc_strings[] =
 	"NEW PROTOCOL",
 	"NEW PROTOCOL"
 };
-#define	NUM_SVC_STRINGS	(sizeof(svc_strings) / sizeof(svc_strings[0]))
+#define NUM_SVC_STRINGS Q_COUNTOF(svc_strings)
 
 int		parsecountmod;
 double		parsecounttime;

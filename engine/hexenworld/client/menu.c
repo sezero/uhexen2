@@ -960,7 +960,7 @@ static const struct
 	{ " ",			"Unknown value (?)",	0		}
 };
 
-#define	MAX_LMFORMATS	(sizeof(lm_formats) / sizeof(lm_formats[0]))
+#define	MAX_LMFORMATS	Q_COUNTOF(lm_formats)
 
 static int	tex_mode;
 static int	lm_format;
@@ -1259,7 +1259,7 @@ static const char *bindnames[][2] =
 	{"impulse 114",		"inv:icon defn"}
 };
 
-#define	NUMCOMMANDS	(sizeof(bindnames)/sizeof(bindnames[0]))
+#define	NUMCOMMANDS	Q_COUNTOF(bindnames)
 
 #define KEYS_SIZE 14
 

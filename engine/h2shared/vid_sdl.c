@@ -117,7 +117,7 @@ static const stdmode_t	std_modes[] = {
 };
 
 #define MAX_MODE_LIST	64
-#define MAX_STDMODES	(sizeof(std_modes) / sizeof(std_modes[0]))
+#define MAX_STDMODES	Q_COUNTOF(std_modes)
 #define NUM_LOWRESMODES	(RES_640X480)
 static vmode_t	fmodelist[MAX_MODE_LIST+1];	// list of enumerated fullscreen modes
 static vmode_t	wmodelist[MAX_STDMODES +1];	// list of standart 4:3 windowed modes
@@ -688,7 +688,7 @@ void VID_Init (const unsigned char *palette)
 				"vid_config_fscr",
 				"vid_config_swx",
 				"vid_config_swy" };
-#define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
+#define num_readvars	Q_COUNTOF(read_vars)
 
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
@@ -918,11 +918,10 @@ void D_EndDirectRect (int x, int y, int width, int height)
 }
 
 
-#ifndef H2W
-// unused in hexenworld
+#ifndef H2W /* not used in hexenworld */
 void D_ShowLoadingSize (void)
 {
-#if defined(DRAW_PROGRESSBARS)
+	#ifdef DRAW_PROGRESSBARS
 	static int prev_perc;
 	int		cur_perc;
 	vrect_t		rect;
@@ -972,7 +971,7 @@ void D_ShowLoadingSize (void)
 	}
 
 	vid = save_vid;
-#endif	/* DRAW_PROGRESSBARS */
+	#endif
 }
 #endif
 
@@ -1250,4 +1249,3 @@ static void VID_MenuKey (int key)
 		return;
 	}
 }
-
