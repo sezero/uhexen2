@@ -2490,7 +2490,7 @@ static const char *bindnames[][2] =
 	{"+movedown",		"swim down"},
 	{"impulse 13",		"lift object"},
 	{"invuse",		"use inv item"},
-	{"impulse 44",		"drop inv item"},
+	{"invdrop",		"drop inv item"},
 	{"+showinfo",		"full inventory"},
 	{"+showdm",		"info / frags"},
 	{"toggle_dm",		"toggle frags"},

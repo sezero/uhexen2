@@ -31,6 +31,11 @@ This is a minor bug fix and maintenance release:
 
 - More performance tweaks mostly targeting the software renderer.
 
+- Fixed hexen2 inventory item drop to take effect immediately: New
+  command 'invdrop' which was actually present in hexenworld. Users
+  must bind their key again in the menu system in order for that to
+  work. (sf.net bug 58.)
+
 - Windows, midi: Fixed volume reseting after loop (sf.net bug 66.)
 
 - Improvements to mp3 tag detection / skipping.

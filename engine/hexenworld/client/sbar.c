@@ -381,7 +381,6 @@ void Sbar_Draw(void)
 	if (sb_updates >= vid.numpages)
 		return;
 #endif
-
 //	if (BarHeight == BarTargetHeight)
 //		return;
 
@@ -1757,8 +1756,6 @@ static void InvDrop_f(void)
 {
 	if (!cl.inv_count || cl.intermission)
 		return;
-	S_LocalSound("misc/invuse.wav");
-	//Inv_Update(false);
 	Inv_Update(true);
 	inv_flg = false;
 	if (scr_viewsize.integer < 100)
@@ -1960,4 +1957,3 @@ static void DrawBarArtifactNumber(int x, int y, int number)
 	artiNumName[11] = '0'+number%10;
 	Sbar_DrawTransPic(x, y, Draw_CachePic(artiNumName));
 }
-
