@@ -59,7 +59,7 @@ int			r_anumverts;
 
 float			aliastransform[3][4];
 
-float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
+const float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
 #include "anorms.h"
 };
 ASM_LINKAGE_END
@@ -564,7 +564,8 @@ R_AliasTransformFinalVert
 static void R_AliasTransformFinalVert (finalvert_t *fv, auxvert_t *av, trivertx_t *pverts)
 {
 	int		temp;
-	float	lightcos, *plightnormal;
+	float		lightcos;
+	const float *plightnormal;
 
 	av->fv[0] = DotProduct(pverts->v, aliastransform[0]) + aliastransform[0][3];
 	av->fv[1] = DotProduct(pverts->v, aliastransform[1]) + aliastransform[1][3];
@@ -600,8 +601,9 @@ R_AliasTransformAndProjectFinalVerts
 static void R_AliasTransformAndProjectFinalVerts (finalvert_t *fv, stvert_t *pstverts)
 {
 	int			i, temp;
-	float		lightcos, *plightnormal, zi;
-	trivertx_t	*pverts;
+	float		lightcos, zi;
+	const float *plightnormal;
+	const trivertx_t *pverts;
 
 	pverts = r_apverts;
 

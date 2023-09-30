@@ -181,7 +181,7 @@ extern	byte	*mainTransTable;
 extern	byte	*transTable;	/* the particle table */
 
 #define NUMVERTEXNORMALS 162
-extern float	r_avertexnormals[NUMVERTEXNORMALS][3];
+extern const float	r_avertexnormals[NUMVERTEXNORMALS][3];
 ASM_LINKAGE_END
 
 extern	byte	*playerTranslation;

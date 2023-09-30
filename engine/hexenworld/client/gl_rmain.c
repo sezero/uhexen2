@@ -510,12 +510,11 @@ static float	shadelight, ambientlight;
 
 // precalculated dot products for quantized angles
 #define SHADEDOT_QUANT		16
-static float	r_avertexnormal_dots[SHADEDOT_QUANT][256] =
-{
+static const float	r_avertexnormal_dots[SHADEDOT_QUANT][256] = {
 #include "anorm_dots.h"
 };
 
-static float	*shadedots = r_avertexnormal_dots[0];
+static const float	*shadedots = r_avertexnormal_dots[0];
 
 static int	lastposenum;
 
