@@ -358,9 +358,6 @@ struct cmi8x38_card
 
 static struct cmi8x38_card	cmi;
 
-//static void cmi8x38_ac97_write(unsigned int baseport,unsigned int reg, unsigned int value);
-//static unsigned int cmi8x38_ac97_read(unsigned int baseport, unsigned int reg);
-
 //-------------------------------------------------------------------------
 // low level write & read
 
@@ -600,7 +597,6 @@ static int CMI8X38_adetect(struct mpxplay_audioout_info_s *aui)
  card->pcmout_buffer=(char *)(((uint32_t)card->dm->linearptr+PCMBUFFERPAGESIZE-1)&(~(PCMBUFFERPAGESIZE-1))); // buffer begins on page (4096 bytes) boundary
 
  aui->card_DMABUFF=card->pcmout_buffer;
-
 #ifdef __DJGPP__
  aui->card_DMABUFF=(char *)((unsigned int)aui->card_DMABUFF + __djgpp_conventional_base);
 #endif
@@ -619,7 +615,8 @@ static void CMI8X38_close(struct mpxplay_audioout_info_s *aui)
 {
  struct cmi8x38_card *card=(struct cmi8x38_card *)aui->card_private_data;
  if(card){
-  if(card->iobase)   cmi8x38_chip_close(card);
+  if(card->iobase)
+   cmi8x38_chip_close(card);
   pds_dpmi_dos_freemem();
   aui->card_private_data=NULL;
  }
@@ -734,8 +731,10 @@ static long CMI8X38_getbufpos(struct mpxplay_audioout_info_s *aui)
   //if(aui->chan_card > 2)
   // bufpos = (bufpos * 2) / aui->chan_card;
 
-  if(bufpos<aui->card_dmasize)   aui->card_dma_lastgoodpos=bufpos;
+  if(bufpos<aui->card_dmasize)
+   aui->card_dma_lastgoodpos=bufpos;
  }
+
  return aui->card_dma_lastgoodpos;
 }
 

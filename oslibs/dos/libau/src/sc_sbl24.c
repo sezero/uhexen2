@@ -16,7 +16,7 @@
 //based on the ALSA (http://www.alsa-project.org)
 
 //#define MPXPLAY_USE_DEBUGF
-#define SBL_DEBUG_OUTPUT stdout
+//#define SBL_DEBUG_OUTPUT stdout
 
 #include "libaudef.h"
 #include "pcibios.h"

@@ -104,7 +104,7 @@ struct via82xx_card
  int pcmout_pages;
 };
 
-struct	via82xx_card	via;
+static struct via82xx_card	via;
 
 static void via82xx_AC97Codec_ready(unsigned int baseport);
 static void via82xx_ac97_write(unsigned int baseport,unsigned int reg, unsigned int value);
@@ -243,7 +243,8 @@ static int VIA82XX_adetect(struct mpxplay_audioout_info_s *aui)
  card->dm=pds_dpmi_dos_allocmem( VIRTUALPAGETABLESIZE   // virtualpagetable
 			    +card->pcmout_bufsize   // pcm output
 			    +4096 );                // to round
-if(!card->dm) goto err_adetect;
+ if(!card->dm) goto err_adetect;
+
  card->virtualpagetable=(unsigned long *)(((uint32_t)card->dm->linearptr+4095)&(~4095));
  card->pcmout_buffer=(char *)card->virtualpagetable+VIRTUALPAGETABLESIZE;
 
@@ -266,7 +267,8 @@ static void VIA82XX_close(struct mpxplay_audioout_info_s *aui)
 {
  struct via82xx_card *card=(struct via82xx_card *)aui->card_private_data;
  if(card){
-  if(card->iobase)   via82xx_chip_close(card);
+  if(card->iobase)
+   via82xx_chip_close(card);
   pds_dpmi_dos_freemem();
   aui->card_private_data=NULL;
  }
@@ -407,7 +409,8 @@ static long VIA82XX_getbufpos(struct mpxplay_audioout_info_s *aui)
 
   bufpos = (idx * PCMBUFFERPAGESIZE) + PCMBUFFERPAGESIZE - count;
 
-  if(bufpos<aui->card_dmasize)   aui->card_dma_lastgoodpos=bufpos;
+  if(bufpos<aui->card_dmasize)
+   aui->card_dma_lastgoodpos=bufpos;
  }
 
  return aui->card_dma_lastgoodpos;

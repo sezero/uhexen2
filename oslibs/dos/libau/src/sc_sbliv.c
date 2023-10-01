@@ -17,7 +17,7 @@
 //         and ALSA (http://www.alsa-project.org) drivers
 
 //#define MPXPLAY_USE_DEBUGF
-#define SBL_DEBUG_OUTPUT stdout
+//#define SBL_DEBUG_OUTPUT stdout
 
 #include "libaudef.h"
 #include "pcibios.h"
@@ -25,7 +25,7 @@
 #include "emu10k1.h"
 #include "sc_sbliv.h"
 
-struct emu10k1_card sba;
+static struct emu10k1_card	sba;
 
 #define VOICE_FLAGS_MASTER      0x01
 #define VOICE_FLAGS_STEREO	0x02
@@ -809,11 +809,9 @@ static unsigned int snd_emu10kx_buffer_init(struct emu10k1_card *card,struct mpx
 
  pcmbufp=(uint32_t)card->pcmout_buffer;
  pcmbufp<<=1;
-
 #ifdef __DJGPP__
  card->virtualpagetable=(uint32_t*)((unsigned int)card->virtualpagetable +__djgpp_conventional_base);
 #endif
-
 #ifdef ZDM
 _farsetsel(_dos_ds);
  for(pagecount = 0; pagecount < (card->pcmout_bufsize/EMUPAGESIZE); pagecount++){
@@ -830,10 +828,10 @@ _farnspokel((unsigned int)&card->virtualpagetable[pagecount],((uint32_t)card->si
  for( ; pagecount<MAXPAGES; pagecount++)
   card->virtualpagetable[pagecount] = ((uint32_t)card->silentpage)<<1;
 #endif
-
 #ifdef __DJGPP__
  card->virtualpagetable=(uint32_t*)((unsigned int)card->virtualpagetable - __djgpp_conventional_base);
 #endif
+
  return 1;
 }
 
@@ -981,7 +979,6 @@ static void snd_p16v_pcm_prepare_playback(struct emu10k1_card *card,unsigned int
 #ifdef __DJGPP__
  table_base=(uint32_t *)((unsigned int)table_base + __djgpp_conventional_base);
 #endif
-
 #ifdef ZDM
 _farsetsel(_dos_ds);
  for(i=0; i<AUDIGY2_P16V_PERIODS; i++) {
@@ -1208,6 +1205,7 @@ static int SBLIVE_adetect(struct mpxplay_audioout_info_s *aui)
  struct emu10k1_card *card=&sba;
  struct emu_card_version_s *emucv;
  struct emu_driver_func_s **edaf;
+
  aui->card_private_data=card;
  card->pci_dev=&libau_pci;
 
@@ -1325,7 +1323,8 @@ static long SBLIVE_getbufpos(struct mpxplay_audioout_info_s *aui)
  bufpos*=aui->chan_card;
  bufpos*=aui->bits_card>>3;
 
- if(bufpos<aui->card_dmasize)  aui->card_dma_lastgoodpos=bufpos;
+ if(bufpos<aui->card_dmasize)
+  aui->card_dma_lastgoodpos=bufpos;
 
  return aui->card_dma_lastgoodpos;
 }
@@ -1334,7 +1333,8 @@ static void SBLIVE_clearbuf(struct mpxplay_audioout_info_s *aui)
 {
  struct emu10k1_card *card=(struct emu10k1_card *)aui->card_private_data;
  MDma_clearbuf(aui);
- if(card->driver_funcs->clear_cache)  card->driver_funcs->clear_cache(card);
+ if(card->driver_funcs->clear_cache)
+  card->driver_funcs->clear_cache(card);
 }
 
 static void SBLIVE_writeMIXER(struct mpxplay_audioout_info_s *aui,unsigned long reg, unsigned long val)

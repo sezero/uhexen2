@@ -317,7 +317,6 @@ static unsigned int snd_es1371_buffer_init(struct ensoniq_card_s *card,struct mp
  if(!card->dm)	return 0;
  card->pcmout_buffer=(char *)card->dm->linearptr;
  aui->card_DMABUFF=card->pcmout_buffer;
-
 #ifdef __DJGPP__
  aui->card_DMABUFF=(char*)((unsigned int)aui->card_DMABUFF + __djgpp_conventional_base);
 #endif
@@ -544,7 +543,8 @@ static long ES1371_getbufpos(struct mpxplay_audioout_info_s *aui)
  if(inl(card->port + ES_REG_CONTROL) & ES_DAC1_EN) {
   outl((card->port + ES_REG_MEM_PAGE), ES_MEM_PAGEO(ES_PAGE_DAC));
   bufpos = ES_REG_FCURR_COUNTI(inl(card->port + ES_REG_DAC1_SIZE));
-  if(bufpos<aui->card_dmasize)    aui->card_dma_lastgoodpos=bufpos;
+  if(bufpos<aui->card_dmasize)
+   aui->card_dma_lastgoodpos=bufpos;
  }
  mpxplay_debugf(ENS_DEBUG_OUTPUT,"bufpos:%5d gpos:%5d dmasize:%5d",bufpos,aui->card_dma_lastgoodpos,aui->card_dmasize);
 

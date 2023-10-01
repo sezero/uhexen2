@@ -21,31 +21,7 @@ typedef struct emu_card_version_s{
  uint8_t  max_channels;
 }emu_card_version_s;
 
-typedef struct emu10k1_card
-{
- unsigned long   iobase;
- unsigned int    irq;
- unsigned short	 model;
- unsigned char   chiprev;
- unsigned long   serial;
- unsigned char   chips;
- unsigned char   chip_select;
- struct pci_config_s  *pci_dev;
- struct emu_card_version_s *card_capabilities;
- struct emu_driver_func_s *driver_funcs;
-
- struct dosmem_t *dm;                     // now it's ca. 72k only
- //char *cardbuf_mem;              // but later we should use DPMI memory
- uint32_t *virtualpagetable;
- void *silentpage;
- unsigned long period_size;
- char *pcmout_buffer;
- long pcmout_bufsize;
- //unsigned long pcmout_dmasize;
-
- unsigned int voice_initial_pitch;
- unsigned int voice_pitch_target;
-}emu10k1_card;
+struct emu10k1_card;
 
 typedef struct emu_driver_func_s{
  unsigned int (*selector)(struct emu10k1_card *card,struct mpxplay_audioout_info_s *aui);
@@ -61,5 +37,31 @@ typedef struct emu_driver_func_s{
  void (*mixer_write)(struct emu10k1_card *card,unsigned int reg,unsigned int value);
  aucards_allmixerchan_s *mixerset;
 }emu_driver_func_s;
+
+typedef struct emu10k1_card
+{
+ unsigned long   iobase;
+ unsigned int    irq;
+ unsigned short	 model;
+ unsigned char   chiprev;
+ unsigned long   serial;
+ unsigned char   chips;
+ unsigned char   chip_select;
+ struct pci_config_s  *pci_dev;
+ struct emu_card_version_s *card_capabilities;
+ struct emu_driver_func_s *driver_funcs;
+
+ struct dosmem_t *dm;              // now it's ca. 72k only
+ //char *cardbuf_mem;              // but later we should use DPMI memory
+ uint32_t *virtualpagetable;
+ void *silentpage;
+ unsigned long period_size;
+ char *pcmout_buffer;
+ long pcmout_bufsize;
+ //unsigned long pcmout_dmasize;
+
+ unsigned int voice_initial_pitch;
+ unsigned int voice_pitch_target;
+}emu10k1_card;
 
 #endif // SC_SBLIV_H

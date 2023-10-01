@@ -16,7 +16,7 @@
 //based on: ALSA (http://www.alsa-project.org) and ICH-DOS wav player from Jeff Leyda
 
 //#define MPXPLAY_USE_DEBUGF
-#define ICH_DEBUG_OUTPUT stdout
+//#define ICH_DEBUG_OUTPUT stdout
 
 #include "libaudef.h"
 #include "pcibios.h"
@@ -80,7 +80,7 @@ struct intel_card_s
  float ac97_clock_corrector;
 };
 
-struct	intel_card_s	ich;
+static struct intel_card_s	ich;
 
 enum { DEVICE_INTEL, DEVICE_INTEL_ICH4, DEVICE_NFORCE };
 static const char *ich_devnames[3]={"ICH","ICH4","NForce"};
@@ -167,7 +167,6 @@ static unsigned int snd_intel_buffer_init(struct intel_card_s *card,struct mpxpl
  card->virtualpagetable=(uint32_t *)card->dm->linearptr; // pagetable requires 8 byte align, but dos-allocmem gives 16 byte align (so we don't need alignment correction)
  card->pcmout_buffer=((char *)card->virtualpagetable)+ICH_DMABUF_PERIODS*2*sizeof(uint32_t);
  aui->card_DMABUFF=card->pcmout_buffer;
-
 #ifdef __DJGPP__
  aui->card_DMABUFF=(char *)((unsigned int)aui->card_DMABUFF + __djgpp_conventional_base);
 #endif
@@ -289,7 +288,6 @@ static void snd_intel_prepare_playback(struct intel_card_s *card,struct mpxplay_
 
  //set period table
  table_base=card->virtualpagetable;
-
 #ifdef __DJGPP__
  table_base=(uint32_t *)((unsigned int)table_base + __djgpp_conventional_base);
 #endif
@@ -534,7 +532,8 @@ static long INTELICH_getbufpos(struct mpxplay_audioout_info_s *aui)
   index=snd_intel_read_8(card,ICH_PO_CIV_REG);    // number of current period
   //mpxplay_debugf(ICH_DEBUG_OUTPUT,"index1: %d",index);
   if(index>=ICH_DMABUF_PERIODS){
-   if(retry>1)    continue;
+   if(retry>1)
+    continue;
    MDma_clearbuf(aui);
    snd_intel_write_8(card,ICH_PO_LVI_REG,(ICH_DMABUF_PERIODS-1));
    //snd_intel_write_8(card,ICH_PO_CIV_REG,0); // RO

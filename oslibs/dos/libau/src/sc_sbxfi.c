@@ -17,7 +17,7 @@
 // doesn't work yet
 
 //#define MPXPLAY_USE_DEBUGF
-#define XFI_DEBUG_OUTPUT stdout
+//#define XFI_DEBUG_OUTPUT stdout
 
 #include "libaudef.h"
 #include "pcibios.h"
@@ -197,7 +197,7 @@ struct emu20kx_card_s
 
 };
 
-struct	emu20kx_card_s	xfi;
+static struct emu20kx_card_s	xfi;
 
 //-------------------------------------------------------------------------
 static inline uint32_t hw_read_20kx(struct emu20kx_card_s *card,uint32_t reg)
@@ -294,7 +294,7 @@ static int snd_emu20kx_select_rom(unsigned int pitch)
 }
 
 // Map integer value ranging from 0 to 65535 to 14-bit float value ranging from 2^-6 to (1+1023/1024)
-/*
+#if 0
 static unsigned int uint16_to_float14(unsigned int x)
 {
  unsigned int i;
@@ -331,7 +331,7 @@ static unsigned int float14_to_uint16(unsigned int x)
 
  return x;
 }
-*/
+#endif
 
 //-------------------------------------------------------------------------
 static int hw_pll_init(struct emu20kx_card_s *card)

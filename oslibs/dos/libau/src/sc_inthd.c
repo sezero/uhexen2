@@ -65,7 +65,7 @@ struct intelhd_card_s
  unsigned int  config_select;
 };
 
-struct	intelhd_card_s	ihd;
+static struct intelhd_card_s	ihd;
 
 struct codec_vendor_list_s{
  unsigned short vendor_id;
