@@ -5,18 +5,15 @@ CPPFLAGS = -DHAVE_STDINT_H
 #CPPFLAGS+= -DZDM
 AR = ar
 OBJS = au.o ac97_def.o dpmi_c.o mdma.o pcibios.o sc_cmi.o sc_e1371.o sc_ich.o sc_inthd.o sc_sbl24.o sc_sbliv.o sc_sbxfi.o sc_via82.o tim.o
-# __udivdi3() is generated for the uint64 division in tim.c.
-# use a local x86 asm version from llvm compiler_rt project,
-# instead of making the dxe to rely on libgcc symbols..
-DXE_OBJS = udivdi3.o
+DXE_LIBS = -lgcc
 
 all: libau.a sndpci.dxe
 
 libau.a:	$(OBJS)
 	$(AR) rs libau.a $(OBJS)
 
-sndpci.dxe: $(OBJS) $(DXE_OBJS)
-	-dxe3gen -o sndpci.dxe -E _AU_ -U $(OBJS) $(DXE_OBJS)
+sndpci.dxe: $(OBJS)
+	-dxe3gen -o sndpci.dxe -E _AU_ -U $(OBJS) $(DXE_LIBS)
 
 clean:
 	rm -f *.o
@@ -25,5 +22,3 @@ distclean: clean
 
 %.o : %.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-%.o : %.S
-	$(CC) $(CFLAGS) $(CPPFLAGS) -x assembler-with-cpp -c $< -o $@

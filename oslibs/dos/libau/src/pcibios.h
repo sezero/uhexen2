@@ -1,18 +1,7 @@
 #ifndef pcibios_h
 #define pcibios_h
 
-#if defined(HAVE_STDINT_H) || (defined(__WATCOMC__) && __WATCOMC__ >= 1240) /* OW 1.4 */
-
 #include <stdint.h>
-
-#else
-
-typedef unsigned char	uint8_t;
-typedef unsigned short	uint16_t;
-typedef long            int32_t;
-typedef unsigned long	uint32_t;
-
-#endif
 
 #define	HiW(dw)	(uint16_t)((uint32_t)dw >> 16)
 #define	LoW(dw)	(uint16_t)((uint32_t)dw & 0xFFFF)

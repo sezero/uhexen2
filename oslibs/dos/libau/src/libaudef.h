@@ -1,11 +1,10 @@
 #ifndef LIBAU_DEF_H
 #define LIBAU_DEF_H
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <io.h>
-#include <fcntl.h>
 
 #include <dos.h>
 
@@ -32,21 +31,14 @@ struct dosmem_t{
  char *linearptr;
 };
 
-typedef long long		mpxp_int64_t;
-typedef unsigned long long	mpxp_uint64_t;
-typedef long			mpxp_int32_t;
-typedef unsigned long           mpxp_uint32_t;
-typedef short                   mpxp_int16_t;
-typedef unsigned short          mpxp_uint16_t;
-typedef signed char             mpxp_int8_t;
-typedef unsigned char           mpxp_uint8_t;
-typedef float                   mpxp_float_t;
-typedef double                  mpxp_double_t;
-typedef char                    mpxp_char_t;
-typedef long                    mpxp_ptrsize_t;
+#ifdef __WATCOMC__
+ #define outb(reg,val) outp(reg,val)
+ #define outw(reg,val) outpw(reg,val)
+ #define outl(reg,val) outpd(reg,val)
+ #define inb(reg) inp(reg)
+ #define inw(reg) inpw(reg)
+ #define inl(reg) inpd(reg)
 
-#define NEWFUNC_ASM
-#if defined(NEWFUNC_ASM) && defined(__WATCOMC__)
 #define ENTER_CRITICAL IRQ_PUSH_OFF()
  void IRQ_PUSH_OFF (void);
 #pragma aux IRQ_PUSH_OFF = \
@@ -60,15 +52,6 @@ typedef long                    mpxp_ptrsize_t;
 		"popfd" \
 		"sti"   \
 		modify [esp];
-#endif
-
-#ifdef __WATCOMC__
- #define outb(reg,val) outp(reg,val)
- #define outw(reg,val) outpw(reg,val)
- #define outl(reg,val) outpd(reg,val)
- #define inb(reg) inp(reg)
- #define inw(reg) inpw(reg)
- #define inl(reg) inpd(reg)
 #endif
 
 #ifdef __DJGPP__
@@ -88,15 +71,15 @@ typedef long                    mpxp_ptrsize_t;
 #endif
 
 // note LE: lowest byte first, highest byte last
-#define PDS_GETB_8S(p)	  *((mpxp_int8_t *)p)               // signed 8 bit (1 byte)
-#define PDS_GETB_8U(p)    *((mpxp_uint8_t *)p)              // unsigned 8 bit (1 byte)
-#define PDS_GETB_LE16(p)  *((mpxp_int16_t *)p)              // 2bytes LE to short
-#define PDS_GETB_LEU16(p) *((mpxp_uint16_t *)p)             // 2bytes LE to unsigned short
-#define PDS_GETB_LE32(p)  *((mpxp_int32_t *)p)              // 4bytes LE to long
+#define PDS_GETB_8S(p)    *((int8_t *)p)               // signed 8 bit (1 byte)
+#define PDS_GETB_8U(p)    *((uint8_t *)p)              // unsigned 8 bit (1 byte)
+#define PDS_GETB_LE16(p)  *((int16_t *)p)              // 2bytes LE to short
+#define PDS_GETB_LEU16(p) *((uint16_t *)p)             // 2bytes LE to unsigned short
+#define PDS_GETB_LE32(p)  *((int32_t *)p)              // 4bytes LE to long
 #define PDS_GETB_LE24(p) ((PDS_GETB_LE32(p))&0x00ffffff)
 
-#define PDS_PUTB_LE16(p,v) *((mpxp_int16_t *)p)=v              //
-#define PDS_PUTB_LE32(p,v) *((mpxp_int32_t *)p)=v              // long to 4bytes LE
+#define PDS_PUTB_LE16(p,v) *((int16_t *)p)=v           //
+#define PDS_PUTB_LE32(p,v) *((int32_t *)p)=v           // long to 4bytes LE
 
 #define funcbit_test(var,bit)       ((var)&(bit))
 #define funcbit_enable(var,bit)     ((var)|=(bit))
@@ -118,6 +101,8 @@ typedef long                    mpxp_ptrsize_t;
 #define funcbit_smp_value_increment(var) var++
 #define funcbit_smp_value_decrement(var) var--
 
+struct mpxplay_audioout_info_s;
+
 //dpmi.c
 extern struct dosmem_t *pds_dpmi_dos_allocmem(unsigned int size);
 extern void pds_dpmi_dos_freemem(void);
@@ -132,7 +117,6 @@ extern void pds_dpmi_unmap_physycal_memory(unsigned long linear_address);
 #define DMAMODE_AUTOINIT_OFF 0
 #define DMAMODE_AUTOINIT_ON  0x10
 
-struct mpxplay_audioout_info_s;
 extern unsigned int MDma_get_max_pcmoutbufsize(unsigned int pagesize,unsigned int samplesize);
 extern unsigned int MDma_init_pcmoutbuf(struct mpxplay_audioout_info_s *aui,unsigned int maxbufsize,unsigned int pagesize);
 extern void MDma_clearbuf(struct mpxplay_audioout_info_s *aui);
@@ -286,8 +270,6 @@ typedef struct aucards_onemixerchan_s{
 
 typedef struct aucards_onemixerchan_s* aucards_allmixerchan_s;
 
-struct mpxplay_audioout_info_s;
-
 typedef struct one_sndcard_info{
  const char *shortname;
  unsigned long infobits;
@@ -347,7 +329,7 @@ typedef struct mpxplay_audioout_info_s{
 }mpxplay_audioout_info_s;
 
 extern void pds_delay_10us(unsigned int ticks);
-extern mpxp_uint64_t pds_gettimeu(void); // usec
+extern int64_t pds_gettimeu(void); // usec
 
 #ifdef MPXPLAY_USE_DEBUGF
 #include <stdarg.h>

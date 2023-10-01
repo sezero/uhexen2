@@ -569,7 +569,7 @@ static int snd_hda_parse_output(struct intelhd_card_s *card)
 {
  struct hda_gnode *node;
  int i = 0;
- mpxp_int8_t *po,parseorder[] = {AC_JACK_SPEAKER, AC_JACK_LINE_OUT, AC_JACK_HP_OUT, -1};
+ int8_t *po,parseorder[] = {AC_JACK_SPEAKER, AC_JACK_LINE_OUT, AC_JACK_HP_OUT, -1};
 
  po=(card->config_select)? &parseorder[0]:&parseorder[1];
 

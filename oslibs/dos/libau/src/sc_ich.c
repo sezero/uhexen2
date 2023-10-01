@@ -470,7 +470,7 @@ static void INTELICH_stop(struct mpxplay_audioout_info_s *aui)
 static void snd_intel_measure_ac97_clock(struct mpxplay_audioout_info_s *aui)
 {
  struct intel_card_s *card=(struct intel_card_s *)aui->card_private_data;
- mpxp_int64_t starttime,endtime,timelen; // in usecs
+ int64_t starttime,endtime,timelen; // in usecs
  long freq_save=aui->freq_card,dmabufsize;
 
  aui->freq_card=48000;
