@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#define	HiW(dw)	(uint16_t)((uint32_t)dw >> 16)
 #define	LoW(dw)	(uint16_t)((uint32_t)dw & 0xFFFF)
+#define	HiW(dw)	(uint16_t)((uint32_t)dw >> 16)
 
 #define PCI_FUNCTION_ID		0xB1
 #define PCI_BIOS_PRESENT	0x01

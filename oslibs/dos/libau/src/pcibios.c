@@ -19,7 +19,7 @@
 #include <dos.h>
 #include "pcibios.h"
 
-struct pci_config_s libau_pci;
+struct pci_config_s libau_pci = { 0,0,0,0,0,NULL,0 };
 
 #define PCIDEVNUM(bParam)      (bParam >> 3)
 #define PCIFUNCNUM(bParam)     (bParam & 0x07)
@@ -87,7 +87,7 @@ uint8_t pcibios_search_devices(pci_device_s devices[],pci_config_s *ppkey)
   return PCI_DEVICE_NOTFOUND;
 }
 
-uint8_t pcibios_ReadConfig_Byte(pci_config_s * ppkey, uint16_t wAdr)
+uint8_t pcibios_ReadConfig_Byte(pci_config_s *ppkey, uint16_t wAdr)
 {
   union REGS reg;
 
@@ -103,7 +103,7 @@ uint8_t pcibios_ReadConfig_Byte(pci_config_s * ppkey, uint16_t wAdr)
   return reg.h.cl;
 }
 
-uint16_t pcibios_ReadConfig_Word(pci_config_s * ppkey, uint16_t wAdr)
+uint16_t pcibios_ReadConfig_Word(pci_config_s *ppkey, uint16_t wAdr)
 {
   union REGS reg;
 
@@ -119,7 +119,7 @@ uint16_t pcibios_ReadConfig_Word(pci_config_s * ppkey, uint16_t wAdr)
   return reg.w.cx;
 }
 
-uint32_t pcibios_ReadConfig_Dword(pci_config_s * ppkey, uint16_t wAdr)
+uint32_t pcibios_ReadConfig_Dword(pci_config_s *ppkey, uint16_t wAdr)
 {
   uint32_t dwData;
 
@@ -129,7 +129,7 @@ uint32_t pcibios_ReadConfig_Dword(pci_config_s * ppkey, uint16_t wAdr)
   return dwData;
 }
 
-void pcibios_WriteConfig_Byte(pci_config_s * ppkey, uint16_t wAdr, uint8_t bData)
+void pcibios_WriteConfig_Byte(pci_config_s *ppkey, uint16_t wAdr, uint8_t bData)
 {
   union REGS reg;
 
@@ -144,7 +144,7 @@ void pcibios_WriteConfig_Byte(pci_config_s * ppkey, uint16_t wAdr, uint8_t bData
   int386(PCI_SERVICE, &reg, &reg);
 }
 
-void pcibios_WriteConfig_Word(pci_config_s * ppkey, uint16_t wAdr, uint16_t wData)
+void pcibios_WriteConfig_Word(pci_config_s *ppkey, uint16_t wAdr, uint16_t wData)
 {
   union REGS reg;
 
@@ -159,9 +159,9 @@ void pcibios_WriteConfig_Word(pci_config_s * ppkey, uint16_t wAdr, uint16_t wDat
   int386(PCI_SERVICE, &reg, &reg);
 }
 
-void pcibios_WriteConfig_Dword(pci_config_s * ppkey, uint16_t wAdr, uint32_t dwData)
+void pcibios_WriteConfig_Dword(pci_config_s *ppkey, uint16_t wAdr, uint32_t dwData)
 {
-  pcibios_WriteConfig_Word(ppkey, wAdr, LoW(dwData ));
+  pcibios_WriteConfig_Word(ppkey, wAdr    , LoW(dwData));
   pcibios_WriteConfig_Word(ppkey, wAdr + 2, HiW(dwData));
 }
 
