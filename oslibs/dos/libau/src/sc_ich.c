@@ -22,6 +22,14 @@
 #include "pcibios.h"
 #include "ac97_def.h"
 
+// https://www.analog.com/media/en/technical-documentation/data-sheets/AD1980.pdf
+#define AC97_VENDOR_ID1_AD 0x4144 /* 'A' 'D' */
+#define AC97_VENDOR_ID2_AD1980 0x5370 /* 'S' + 0x70 for AD1980 */
+#define AC97_AD_MISC 0x76    /* Misc Control Bits */
+#define AC97_AD_MISC_AC97NC 0x4000 /* AC'97 No Compatibility Mode (aka ADI compatibility mode) */
+#define AC97_AD_MISC_HPSEL 0x0400 /* Headphone Amplifier Input Select */
+#define AC97_AD_MISC_LOSEL 0x0020 /* LINE_OUT Amplifiers Input Select */
+
 #define ICH_PO_CR_REG     0x1b  // PCM out Control Register
 #define ICH_PO_CR_START   0x01  // start codec
 #define ICH_PO_CR_RESET   0x02  // reset codec
@@ -238,6 +246,7 @@ static void snd_intel_prepare_playback(struct intel_card_s *card,struct mpxplay_
 {
  uint32_t *table_base;
  unsigned int i,cmd,retry,spdif_rate,period_size_samples;
+ uint16_t vid1,vid2;
 
  mpxplay_debugf(ICH_DEBUG_OUTPUT,"prepare playback: period_size_bytes:%d",card->period_size_bytes);
  // wait until DMA stopped ???
@@ -274,6 +283,17 @@ static void snd_intel_prepare_playback(struct intel_card_s *card,struct mpxplay_
  cmd|=spdif_rate;
  snd_intel_codec_write(card,AC97_SPDIF_CONTROL,cmd);
  pds_delay_10us(10);
+
+ // Analog Devices AD1980: Fix audio routing (set AC97NC, HPSEL and LOSEL bits)
+ // Thanks to dr.zeissler on the Vogons forum for providing register dumps + testing
+ // https://www.analog.com/media/en/technical-documentation/data-sheets/AD1980.pdf
+ // https://cgit.freebsd.org/src/tree/sys/dev/sound/pcm/ac97_patch.c#n49
+ // https://github.com/torvalds/linux/blob/master/sound/soc/codecs/ad1980.c#L133
+ vid1 = snd_intel_codec_read(card, AC97_VENDOR_ID1);
+ vid2 = snd_intel_codec_read(card, AC97_VENDOR_ID2);
+ if (vid1 == AC97_VENDOR_ID1_AD && vid2 == AC97_VENDOR_ID2_AD1980) {
+   snd_intel_codec_write(card, AC97_AD_MISC, AC97_AD_MISC_AC97NC | AC97_AD_MISC_HPSEL | AC97_AD_MISC_LOSEL);
+ }
 
  //set analog ac97 freq
  mpxplay_debugf(ICH_DEBUG_OUTPUT,"AC97 front dac freq:%d ",aui->freq_card);
