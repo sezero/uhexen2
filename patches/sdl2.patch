@@ -5,7 +5,7 @@ Things seem to work but needs some polishing and tidy-up before applying:
 One of the most important things is handling SDL2 text input mode.
 
 diff --git a/engine/h2shared/gl_vidsdl.c b/engine/h2shared/gl_vidsdl.c
-index aea2e7a..8a123e0 100644
+index 5865fea..19fbf0a 100644
 --- a/engine/h2shared/gl_vidsdl.c
 +++ b/engine/h2shared/gl_vidsdl.c
 @@ -115,8 +115,13 @@ typedef struct {
@@ -491,7 +491,7 @@ index aea2e7a..8a123e0 100644
  		modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
  		if (is_fullscreen)
 diff --git a/engine/h2shared/in_sdl.c b/engine/h2shared/in_sdl.c
-index a0ceeec..d768d2d 100644
+index 0b722a4..5fbbbd6 100644
 --- a/engine/h2shared/in_sdl.c
 +++ b/engine/h2shared/in_sdl.c
 @@ -42,8 +42,10 @@ static int buttonremap[] =
@@ -801,7 +801,7 @@ index e27a9c5..e0ce259 100644
  	Con_Printf ("SDL audio driver: %s, %d bytes buffer\n", drivername, buffersize);
  
 diff --git a/engine/h2shared/vid_sdl.c b/engine/h2shared/vid_sdl.c
-index 7fa6d6b..8775038 100644
+index 384a402..dc0eed8 100644
 --- a/engine/h2shared/vid_sdl.c
 +++ b/engine/h2shared/vid_sdl.c
 @@ -60,6 +60,12 @@ static int	num_fmodes;
@@ -1187,7 +1187,7 @@ index 7fa6d6b..8775038 100644
  }
  
  
-@@ -1030,8 +1277,16 @@ extern qboolean menu_disabled_mouse;
+@@ -1029,8 +1276,16 @@ extern qboolean menu_disabled_mouse;
  void VID_ToggleFullscreen (void)
  {
  	int	is_fullscreen;
@@ -1204,7 +1204,7 @@ index 7fa6d6b..8775038 100644
  	if (!fs_toggle_works)
  		return;
  	if (!num_fmodes)
-@@ -1039,10 +1294,42 @@ void VID_ToggleFullscreen (void)
+@@ -1038,10 +1293,42 @@ void VID_ToggleFullscreen (void)
  
  	S_ClearBuffer ();
  

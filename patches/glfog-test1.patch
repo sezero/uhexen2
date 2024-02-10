@@ -86,7 +86,7 @@ index 04232df..0c8437c 100644
  extern	cvar_t	gl_colored_dynamic_lights;
  extern	cvar_t	gl_extra_dynamic_lights;
 diff --git a/engine/hexen2/gl_rmain.c b/engine/hexen2/gl_rmain.c
-index 971f5b0..a7721ea 100644
+index 3fb0c13..5569af4 100644
 --- a/engine/hexen2/gl_rmain.c
 +++ b/engine/hexen2/gl_rmain.c
 @@ -44,6 +44,8 @@ mplane_t	*mirror_plane;
@@ -113,7 +113,7 @@ index 971f5b0..a7721ea 100644
  
  cvar_t	gl_coloredlight = {"gl_coloredlight", "0", CVAR_ARCHIVE};
  cvar_t	gl_colored_dynamic_lights = {"gl_colored_dynamic_lights", "0", CVAR_ARCHIVE};
-@@ -1338,6 +1348,9 @@ static void R_DrawAllGlows (void)
+@@ -1337,6 +1347,9 @@ static void R_DrawAllGlows (void)
  	if (!r_drawentities.integer)
  		return;
  
@@ -123,7 +123,7 @@ index 971f5b0..a7721ea 100644
  	glDepthMask_fp (0);
  	glDisable_fp (GL_TEXTURE_2D);
  	glShadeModel_fp (GL_SMOOTH);
-@@ -1352,6 +1365,9 @@ static void R_DrawAllGlows (void)
+@@ -1351,6 +1364,9 @@ static void R_DrawAllGlows (void)
  			R_DrawGlow (e);
  	}
  
@@ -133,7 +133,7 @@ index 971f5b0..a7721ea 100644
  	glDisable_fp (GL_BLEND);
  	glEnable_fp (GL_TEXTURE_2D);
  	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-@@ -1778,6 +1794,23 @@ static void R_RenderScene (void)
+@@ -1777,6 +1793,23 @@ static void R_RenderScene (void)
  
  	R_MarkLeaves ();	// done here so we know if we're in water
  
@@ -157,7 +157,7 @@ index 971f5b0..a7721ea 100644
  	R_DrawWorld ();		// adds static entities to the list
  
  	S_ExtraUpdate ();	// don't let sound get messed up if going slow
-@@ -1786,6 +1819,8 @@ static void R_RenderScene (void)
+@@ -1785,6 +1818,8 @@ static void R_RenderScene (void)
  
  	R_DrawAllGlows();
  
@@ -166,7 +166,7 @@ index 971f5b0..a7721ea 100644
  	R_RenderDlights ();
  }
  
-@@ -1981,6 +2016,39 @@ void R_RenderView (void)
+@@ -1980,6 +2015,39 @@ void R_RenderView (void)
  
  	R_Clear ();
  
@@ -206,7 +206,7 @@ index 971f5b0..a7721ea 100644
  	// render normal view
  	R_RenderScene ();
  
-@@ -1996,6 +2064,9 @@ void R_RenderView (void)
+@@ -1995,6 +2063,9 @@ void R_RenderView (void)
  
  	R_DrawViewModel();
  
@@ -216,7 +216,7 @@ index 971f5b0..a7721ea 100644
  	// render mirror view
  	R_Mirror ();
  
-@@ -2003,5 +2074,7 @@ void R_RenderView (void)
+@@ -2002,5 +2073,7 @@ void R_RenderView (void)
  
  	if (r_speeds.integer)
  		R_PrintTimes ();

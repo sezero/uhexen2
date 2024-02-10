@@ -1065,7 +1065,7 @@ index 93519ff..f324ddd 100644
  	size = scr_viewsize.integer > 100 ? 100.0 : scr_viewsize.integer;
  	if (cl.intermission)
 diff --git a/engine/h2shared/screen.c b/engine/h2shared/screen.c
-index 100cbb9..ed6c37e 100644
+index bfd7524..6be2afe 100644
 --- a/engine/h2shared/screen.c
 +++ b/engine/h2shared/screen.c
 @@ -271,7 +271,7 @@ static void SCR_DrawCenterString (void)
@@ -1086,7 +1086,7 @@ index 100cbb9..ed6c37e 100644
  
  // these calculations mirror those in R_Init() for r_refdef, but take no
  // account of water warping
-@@ -640,7 +640,7 @@ static void SCR_DrawPause (void)
+@@ -647,7 +647,7 @@ static void SCR_DrawPause (void)
  	}
  
  	finaly = ((float)pic->height * LogoPercent) - pic->height;
@@ -1095,7 +1095,7 @@ index 100cbb9..ed6c37e 100644
  }
  
  #if !defined(H2W)
-@@ -672,8 +672,8 @@ void SCR_DrawLoading (void)
+@@ -679,8 +679,8 @@ void SCR_DrawLoading (void)
  		return;
  
  	pic = Draw_CachePic ("gfx/menu/loading.lmp");
@@ -1106,7 +1106,7 @@ index 100cbb9..ed6c37e 100644
  
  	if (loading_stage == 0)
  		return;
-@@ -685,17 +685,17 @@ void SCR_DrawLoading (void)
+@@ -692,17 +692,17 @@ void SCR_DrawLoading (void)
  	count = (loading_stage == 1) ? size : 106;
  	if (count)
  	{
@@ -1130,7 +1130,7 @@ index 100cbb9..ed6c37e 100644
  	}
  }
  #endif	/* !DRAW_PROGRESSBARS */
-@@ -779,13 +779,13 @@ static void SCR_SetUpToDrawConsole (void)
+@@ -786,13 +786,13 @@ static void SCR_SetUpToDrawConsole (void)
  
  	if (scr_conlines < scr_con_current)
  	{
@@ -1146,7 +1146,7 @@ index 100cbb9..ed6c37e 100644
  		if (scr_conlines < scr_con_current)
  			scr_con_current = scr_conlines;
  	}
-@@ -1063,7 +1063,7 @@ static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
+@@ -1070,7 +1070,7 @@ static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
  
  	FindTextBreaks(message, PLAQUE_WIDTH);
  
@@ -1155,7 +1155,7 @@ index 100cbb9..ed6c37e 100644
  	M_DrawTextBox (32, by - 16, PLAQUE_WIDTH + 4, lines + 2);
  
  	for (i = 0; i < lines; i++, by += 8)
-@@ -1099,7 +1099,7 @@ static void Info_Plaque_Draw (const char *message)
+@@ -1106,7 +1106,7 @@ static void Info_Plaque_Draw (const char *message)
  		lines = MAXLINES-1;
  	}
  
@@ -1164,7 +1164,7 @@ index 100cbb9..ed6c37e 100644
  	M_DrawTextBox (15, by - 16, PLAQUE_WIDTH + 4 + 4, lines + 2);
  
  	for (i = 0; i < lines; i++, by += 8)
-@@ -1125,7 +1125,7 @@ static void Bottom_Plaque_Draw (const char *message)
+@@ -1132,7 +1132,7 @@ static void Bottom_Plaque_Draw (const char *message)
  
  	FindTextBreaks(message, PLAQUE_WIDTH);
  
@@ -1173,7 +1173,7 @@ index 100cbb9..ed6c37e 100644
  	M_DrawTextBox (32, by - 16, PLAQUE_WIDTH + 4, lines + 2);
  
  	for (i = 0; i < lines; i++, by += 8)
-@@ -1146,10 +1146,10 @@ static void I_Print (int cx, int cy, const char *str, int flags)
+@@ -1153,10 +1153,10 @@ static void I_Print (int cx, int cy, const char *str, int flags)
  	int	num, x, y;
  	const char	*s;
  
@@ -1186,7 +1186,7 @@ index 100cbb9..ed6c37e 100644
  	s = str;
  
  	while (*s)
-@@ -1157,7 +1157,7 @@ static void I_Print (int cx, int cy, const char *str, int flags)
+@@ -1164,7 +1164,7 @@ static void I_Print (int cx, int cy, const char *str, int flags)
  		num = (unsigned char)(*s);
  		if (!(flags & INTERMISSION_PRINT_WHITE))
  			num += 256;
@@ -1196,7 +1196,7 @@ index 100cbb9..ed6c37e 100644
  		x += 8;
  	}
 diff --git a/engine/h2shared/vid_sdl.c b/engine/h2shared/vid_sdl.c
-index 7fa6d6b..62abb5b 100644
+index 384a402..98c9f7f 100644
 --- a/engine/h2shared/vid_sdl.c
 +++ b/engine/h2shared/vid_sdl.c
 @@ -524,8 +524,10 @@ static qboolean VID_SetMode (int modenum, const unsigned char *palette)
@@ -1213,7 +1213,7 @@ index 7fa6d6b..62abb5b 100644
  	vid.rowbytes = vid.conrowbytes = screen->pitch;
  	vid.numpages = 1;
 diff --git a/engine/h2shared/vid_win.c b/engine/h2shared/vid_win.c
-index a95fe45..14bc32a 100644
+index e6c2b6b..ac054ab 100644
 --- a/engine/h2shared/vid_win.c
 +++ b/engine/h2shared/vid_win.c
 @@ -776,8 +776,10 @@ static qboolean VID_SetWindowedMode (int modenum)
@@ -1280,7 +1280,7 @@ index 4f7cf0b..ccc63e2 100644
  	}
  
 diff --git a/engine/hexen2/menu.c b/engine/hexen2/menu.c
-index 76bc30e..a5e1c1a 100644
+index 902985e..eb67df8 100644
 --- a/engine/hexen2/menu.c
 +++ b/engine/hexen2/menu.c
 @@ -207,7 +207,7 @@ Draws one solid graphics character, centered, on line
@@ -1359,10 +1359,10 @@ index 76bc30e..a5e1c1a 100644
  
  
 diff --git a/engine/hexen2/sbar.c b/engine/hexen2/sbar.c
-index 445d28c..1f3be76 100644
+index 3bb1b1c..c3028e4 100644
 --- a/engine/hexen2/sbar.c
 +++ b/engine/hexen2/sbar.c
-@@ -219,7 +219,7 @@ void Sbar_Draw(void)
+@@ -221,7 +221,7 @@ void Sbar_Draw(void)
  		return;
  	}
  
@@ -1371,7 +1371,7 @@ index 445d28c..1f3be76 100644
  		return;
  
  	DrawArtifactInventory();
-@@ -850,7 +850,7 @@ void Sbar_DeathmatchOverlay(void)
+@@ -851,7 +851,7 @@ void Sbar_DeathmatchOverlay(void)
  
  	for (i = 0; i < l; i++)
  	{
@@ -1380,7 +1380,7 @@ index 445d28c..1f3be76 100644
  			break;
  
  		k = fragsort[i];
-@@ -981,7 +981,7 @@ static void Sbar_SmallDeathmatchOverlay(void)
+@@ -982,7 +982,7 @@ static void Sbar_SmallDeathmatchOverlay(void)
  	{
  		if (l > 4)
  			l = 4;
@@ -1389,7 +1389,7 @@ index 445d28c..1f3be76 100644
  	}
  
  	x = 10;
-@@ -1042,7 +1042,7 @@ static void DrawActiveRings(void)
+@@ -1043,7 +1043,7 @@ static void DrawActiveRings(void)
  	int		frame;
  	char	tempStr[24];
  
@@ -1398,7 +1398,7 @@ index 445d28c..1f3be76 100644
  		return;		// console is full screen
  
  	ring_row = 1;
-@@ -1053,7 +1053,7 @@ static void DrawActiveRings(void)
+@@ -1054,7 +1054,7 @@ static void DrawActiveRings(void)
  	{
  		frame = 1 + ((int)(cl.time * 16) & 15);
  		sprintf(tempStr, "gfx/rngtrn%d.lmp", frame);
@@ -1407,7 +1407,7 @@ index 445d28c..1f3be76 100644
  		ring_row += 33;
  	}
  
-@@ -1071,7 +1071,7 @@ static void DrawActiveRings(void)
+@@ -1072,7 +1072,7 @@ static void DrawActiveRings(void)
  	{
  		frame = 1 + ((int)(cl.time * 16) & 15);
  		sprintf(tempStr, "gfx/rngwtr%d.lmp", frame);
@@ -1416,7 +1416,7 @@ index 445d28c..1f3be76 100644
  		ring_row += 33;
  	}
  
-@@ -1079,7 +1079,7 @@ static void DrawActiveRings(void)
+@@ -1080,7 +1080,7 @@ static void DrawActiveRings(void)
  	{
  		frame = 1 + ((int)(cl.time * 16) & 15);
  		sprintf(tempStr, "gfx/rngfly%d.lmp", frame);
@@ -1425,7 +1425,7 @@ index 445d28c..1f3be76 100644
  		ring_row += 33;
  	}
  }
-@@ -1109,7 +1109,7 @@ static void DrawActiveArtifacts(void)
+@@ -1110,7 +1110,7 @@ static void DrawActiveArtifacts(void)
  	{
  		frame = 1 + ((int)(cl.time * 16) & 15);
  		sprintf(tempStr, "gfx/pwrbook%d.lmp", frame);
@@ -1434,7 +1434,7 @@ index 445d28c..1f3be76 100644
  		art_col += 50;
  		scr_topupdate = 0;
  	}
-@@ -1122,7 +1122,7 @@ static void DrawActiveArtifacts(void)
+@@ -1123,7 +1123,7 @@ static void DrawActiveArtifacts(void)
  	{
  		frame = 1 + ((int)(cl.time * 16) & 15);
  		sprintf(tempStr, "gfx/durhst%d.lmp", frame);
@@ -1443,7 +1443,7 @@ index 445d28c..1f3be76 100644
  		art_col += 50;
  		scr_topupdate = 0;
  	}
-@@ -1135,7 +1135,7 @@ static void DrawActiveArtifacts(void)
+@@ -1136,7 +1136,7 @@ static void DrawActiveArtifacts(void)
  	{
  		frame = 1 + ((int)(cl.time * 16) & 15);
  		sprintf(tempStr, "gfx/durshd%d.lmp", frame);
@@ -1452,7 +1452,7 @@ index 445d28c..1f3be76 100644
  		art_col += 50;
  		scr_topupdate = 0;
  	}
-@@ -1533,12 +1533,12 @@ void SB_ViewSizeChanged(void)
+@@ -1551,12 +1551,12 @@ void SB_ViewSizeChanged(void)
  
  static void Sbar_DrawPic(int x, int y, qpic_t *pic)
  {
@@ -1467,7 +1467,7 @@ index 445d28c..1f3be76 100644
  }
  
  #if 0	/* no callers */
-@@ -1560,7 +1560,7 @@ static void Sbar_DrawSmallCharacter(int x, int y, int num)
+@@ -1578,7 +1578,7 @@ static void Sbar_DrawSmallCharacter(int x, int y, int num)
  
  static void Sbar_DrawSmallString(int x, int y, const char *str)
  {
