@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.10: (Sep. 30, 2023.)
+Changes in v1.5.10: (Feb. 15, 2024.)
 ========================================================================
 
 This is a minor bug fix and maintenance release:
@@ -13,23 +13,21 @@ This is a minor bug fix and maintenance release:
 - Fixed getting stuck with loading plaque upon attempting to load a
   bad save from the menu.
 
-- OpenGL: Fixed dark dynamic lights -- e.g. when Necromancer uses
+- OpenGL: Fixed dark dynamic lights, e.g. when Necromancer uses
   invulnerability. (thanks to Shanjaq Astraljam, sf.net bug 48.)
 
 - OpenGL: Fixed graphical artifacts with scaled UI (sf.net bug 59.)
 
 - OpenGL: gl_clear now defaults to 1 and glClearColor is black. The
   new cvar r_clearcolor (palette index from 0 to 255, default is 0)
-  can be used to change the clear color (from fitzquake.)
+  can be used to change the clear color. (from fitzquake.)
 
 - Render: Compensate viewmodel distortion at fov > 90.
 
-- Software renderer: replaced client sin/cos calls with precomputed
-  table lookups for better performance especially on old hardware.
-
 - Software renderer: fixed a left/right alias edge clipping bug.
 
-- More performance tweaks mostly targeting the software renderer.
+- Multiple performance tweaks mostly targeting the software renderer
+  especially when running on old hardware (thanks to Szilard Biro.)
 
 - Fixed hexen2 inventory item drop to take effect immediately: New
   command 'invdrop' which was actually present in hexenworld. Users

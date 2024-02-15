@@ -3,8 +3,9 @@ Hexen II: Hammer of Thyrion (uHexen2)
 TODO:
 -------------------------------------
 
+- Port code to SDL2 (see initial work: patches/sdl2.patch
+  which is actually in good shape.)
 - Add a pak-patch application and a launcher for Mac OS X.
-- Port code to SDL2.
 - Re-visit the messy mouse grab code and clean it up.
 - Clean-up the opengl code, modernize it.
 - Proper vsync support for opengl.

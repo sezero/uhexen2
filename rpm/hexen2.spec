@@ -12,6 +12,7 @@
 # --without ogg: build without ogg/vorbis music streaming support
 # --with flac: build with flac music streaming support
 # --with opus: build with opus music streaming support
+# --with xmp: build with libxmp (tracker) music streaming support
 # --with mikmod: build with mikmod (tracker) music streaming support
 # --with umx: build with unreal umx music streaming support
 # --without asm: do not use x86 assembly even on an intel cpu
@@ -31,6 +32,7 @@
 %{!?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=yes}
 %{!?_with_flac:%define flac_buildopt USE_CODEC_FLAC=no}
 %{!?_with_opus:%define opus_buildopt USE_CODEC_OPUS=no}
+%{!?_with_xmp:%define xmp_buildopt USE_CODEC_XMP=no}
 %{!?_with_mikmod:%define mikmod_buildopt USE_CODEC_MIKMOD=no}
 %{!?_with_umx:%define umx_buildopt USE_CODEC_UMX=no}
 # build option overrides
@@ -44,10 +46,11 @@
 %{?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=no}
 %{?_with_flac:%define flac_buildopt USE_CODEC_FLAC=yes}
 %{?_with_opus:%define opus_buildopt USE_CODEC_OPUS=yes}
+%{?_with_xmp:%define xmp_buildopt USE_CODEC_XMP=yes}
 %{?_with_mikmod:%define mikmod_buildopt USE_CODEC_MIKMOD=yes}
 %{?_with_umx:%define umx_buildopt USE_CODEC_UMX=yes}
 # all build options passed to makefile
-%define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{mp3_libraryopt} %{ogg_buildopt} %{opus_buildopt} %{flac_buildopt} %{mikmod_buildopt} %{umx_buildopt}
+%define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{mp3_libraryopt} %{ogg_buildopt} %{opus_buildopt} %{flac_buildopt} %{xmp_buildopt} %{mikmod_buildopt} %{umx_buildopt}
 
 %define gamecode_ver	1.29c
 
@@ -59,14 +62,14 @@ Release:	1
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
 Source:		http://download.sourceforge.net/uhexen2/hexen2source-%{version}.tgz
-Source1:	http://download.sourceforge.net/uhexen2/hexen2source-gamecode-%{version}.tgz
-Source2:	http://download.sourceforge.net/uhexen2/hexenworld-pakfiles-0.15.tgz
+Source1:	http://download.sourceforge.net/uhexen2/hexenworld-pakfiles-0.15.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SDL-devel >= 1.2.4
 %{!?_without_mp3:BuildRequires:  %{!?_with_mpg123:libmad-devel}%{?_with_mpg123:libmpg123-devel >= 1.12.0}}
 %{!?_without_ogg:BuildRequires:  libogg-devel libvorbis-devel}
 %{?_with_flac:BuildRequires:  flac-devel}
 %{?_with_opus:BuildRequires:  opus-devel opusfile-devel}
+%{?_with_xmp:BuildRequires:  libxmp-devel}
 %{?_with_mikmod:BuildRequires:  libmikmod-devel}
 %{!?_without_asm:BuildRequires:  nasm >= 0.98.38}
 Obsoletes:	hexen2-missionpack
@@ -78,6 +81,7 @@ Requires:	SDL >= 1.2.4
 #%{?_with_opus:Requires: opus opusfile}
 #%{!?_without_mp3:Requires: %{!?_with_mpg123:libmad}%{?_with_mpg123:libmpg123 >= 1.12.0}}
 #%{!?_without_ogg:Requires: libvorbis}
+#%{?_with_xmp:Requires: libxmp}
 #%{?_with_mikmod:Requires: libmikmod}
 
 %description
@@ -100,7 +104,7 @@ This package contains the files which are required to run a HexenWorld
 server or client, and a master server application.
 
 %prep
-%setup -q -n hexen2source-%{version} -a1 -a2
+%setup -q -n hexen2source-%{version} -a1
 
 %build
 # Build the main game binaries
@@ -125,11 +129,11 @@ server or client, and a master server application.
 # Build the hcode compiler
 %{__make} -C utils/hcc
 # Build the game-code
-utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/h2 -os
-utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/h2 -os -name progs2.src
-utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/portals -os -oi -on
-utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
-#utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/siege -os -oi -on
+utils/hcc/hcc -src gamecode/hc/h2 -os
+utils/hcc/hcc -src gamecode/hc/h2 -os -name progs2.src
+utils/hcc/hcc -src gamecode/hc/portals -os -oi -on
+utils/hcc/hcc -src gamecode/hc/hw -os -oi -on
+#utils/hcc/hcc -src gamecode/hc/siege -os -oi -on
 
 # Done building
 
@@ -168,69 +172,65 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 %{__install} -D -m644 docs/ABOUT %{buildroot}/%{_prefix}/games/%{name}/docs/ABOUT
 %{__install} -D -m644 docs/AUTHORS %{buildroot}/%{_prefix}/games/%{name}/docs/AUTHORS
 %{__install} -D -m644 docs/Features %{buildroot}/%{_prefix}/games/%{name}/docs/Features
-%{__install} -D -m644 docs/CHANGES %{buildroot}/%{_prefix}/games/%{name}/docs/CHANGES
-%{__install} -D -m644 docs/CHANGES.old %{buildroot}/%{_prefix}/games/%{name}/docs/CHANGES.old
 %{__install} -D -m644 docs/README.music %{buildroot}/%{_prefix}/games/%{name}/docs/README.music
-%{__install} -D -m644 docs/README.3dfx %{buildroot}/%{_prefix}/games/%{name}/docs/README.3dfx
 %{__install} -D -m644 docs/README.hwcl %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwcl
 %{__install} -D -m644 docs/README.hwsv %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwsv
 %{__install} -D -m644 docs/README.hwmaster %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwmaster
-%{__install} -D -m644 docs/SrcNotes.txt %{buildroot}/%{_prefix}/games/%{name}/docs/SrcNotes.txt
 %{__install} -D -m644 docs/ReleaseNotes %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes
 %{__install} -D -m644 docs/ReleaseNotes.old %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes.old
 
 # Install the gamedata
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/
-%{__install} -D -m644 gamecode-%{gamecode_ver}/hc/h2/progs.dat %{buildroot}/%{_prefix}/games/%{name}/data1/progs.dat
-%{__install} -D -m644 gamecode-%{gamecode_ver}/hc/h2/progs2.dat %{buildroot}/%{_prefix}/games/%{name}/data1/progs2.dat
-%{__install} -D -m644 gamecode-%{gamecode_ver}/res/h2/hexen.rc %{buildroot}/%{_prefix}/games/%{name}/data1/hexen.rc
-%{__install} -D -m644 gamecode-%{gamecode_ver}/res/h2/strings.txt %{buildroot}/%{_prefix}/games/%{name}/data1/strings.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/res/h2/default.cfg %{buildroot}/%{_prefix}/games/%{name}/data1/default.cfg
+%{__install} -D -m644 gamecode/hc/h2/progs.dat %{buildroot}/%{_prefix}/games/%{name}/data1/progs.dat
+%{__install} -D -m644 gamecode/hc/h2/progs2.dat %{buildroot}/%{_prefix}/games/%{name}/data1/progs2.dat
+%{__install} -D -m644 gamecode/res/h2/hexen.rc %{buildroot}/%{_prefix}/games/%{name}/data1/hexen.rc
+%{__install} -D -m644 gamecode/res/h2/strings.txt %{buildroot}/%{_prefix}/games/%{name}/data1/strings.txt
+%{__install} -D -m644 gamecode/res/h2/default.cfg %{buildroot}/%{_prefix}/games/%{name}/data1/default.cfg
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/portals/
-%{__install} -D -m644 gamecode-%{gamecode_ver}/hc/portals/progs.dat %{buildroot}/%{_prefix}/games/%{name}/portals/progs.dat
-%{__install} -D -m644 gamecode-%{gamecode_ver}/res/portals/hexen.rc %{buildroot}/%{_prefix}/games/%{name}/portals/hexen.rc
-%{__install} -D -m644 gamecode-%{gamecode_ver}/res/portals/strings.txt %{buildroot}/%{_prefix}/games/%{name}/portals/strings.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/res/portals/infolist.txt %{buildroot}/%{_prefix}/games/%{name}/portals/infolist.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/res/portals/maplist.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maplist.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/res/portals/puzzles.txt %{buildroot}/%{_prefix}/games/%{name}/portals/puzzles.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/res/portals/default.cfg %{buildroot}/%{_prefix}/games/%{name}/portals/default.cfg
+%{__install} -D -m644 gamecode/hc/portals/progs.dat %{buildroot}/%{_prefix}/games/%{name}/portals/progs.dat
+%{__install} -D -m644 gamecode/res/portals/hexen.rc %{buildroot}/%{_prefix}/games/%{name}/portals/hexen.rc
+%{__install} -D -m644 gamecode/res/portals/strings.txt %{buildroot}/%{_prefix}/games/%{name}/portals/strings.txt
+%{__install} -D -m644 gamecode/res/portals/infolist.txt %{buildroot}/%{_prefix}/games/%{name}/portals/infolist.txt
+%{__install} -D -m644 gamecode/res/portals/maplist.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maplist.txt
+%{__install} -D -m644 gamecode/res/portals/puzzles.txt %{buildroot}/%{_prefix}/games/%{name}/portals/puzzles.txt
+%{__install} -D -m644 gamecode/res/portals/default.cfg %{buildroot}/%{_prefix}/games/%{name}/portals/default.cfg
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/hw/
-%{__install} -D -m644 gamecode-%{gamecode_ver}/hc/hw/hwprogs.dat %{buildroot}/%{_prefix}/games/%{name}/hw/hwprogs.dat
-%{__install} -D -m644 gamecode-%{gamecode_ver}/res/hw/mapcycle.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/mapcycle.cfg
-%{__install} -D -m644 gamecode-%{gamecode_ver}/res/hw/server.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/server.cfg
-%{__install} -D -m644 gamecode-%{gamecode_ver}/res/hw/strings.txt %{buildroot}/%{_prefix}/games/%{name}/hw/strings.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/res/hw/default.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/default.cfg
+%{__install} -D -m644 gamecode/hc/hw/hwprogs.dat %{buildroot}/%{_prefix}/games/%{name}/hw/hwprogs.dat
+%{__install} -D -m644 gamecode/res/hw/mapcycle.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/mapcycle.cfg
+%{__install} -D -m644 gamecode/res/hw/server.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/server.cfg
+%{__install} -D -m644 gamecode/res/hw/strings.txt %{buildroot}/%{_prefix}/games/%{name}/hw/strings.txt
+%{__install} -D -m644 gamecode/res/hw/default.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/default.cfg
 %{__install} -D -m644 hw/pak4.pak %{buildroot}/%{_prefix}/games/%{name}/hw/pak4.pak
 
 # Install ent fixes handling map quirks
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/maps/
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/README.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/README.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/cath.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/cath.ent
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/cath.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/cath.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/demo2.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/demo2.ent
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/demo2.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/demo2.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/egypt4.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt4.ent
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/egypt4.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt4.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/egypt5.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt5.ent
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/egypt5.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt5.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/romeric5.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/romeric5.ent
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/romeric5.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/romeric5.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/tower.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/tower.ent
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/tower.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/tower.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/README.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maps/README.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet2.ent %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet2.ent
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet2.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet2.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet9.ent %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet9.ent
-%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet9.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet9.txt
+%{__install} -D -m644 gamecode/mapfixes/data1/maps/README.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/README.txt
+%{__install} -D -m644 gamecode/mapfixes/data1/maps/cath.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/cath.ent
+%{__install} -D -m644 gamecode/mapfixes/data1/maps/cath.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/cath.txt
+%{__install} -D -m644 gamecode/mapfixes/data1/maps/demo2.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/demo2.ent
+%{__install} -D -m644 gamecode/mapfixes/data1/maps/demo2.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/demo2.txt
+%{__install} -D -m644 gamecode/mapfixes/data1/maps/egypt4.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt4.ent
+%{__install} -D -m644 gamecode/mapfixes/data1/maps/egypt4.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt4.txt
+%{__install} -D -m644 gamecode/mapfixes/data1/maps/egypt5.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt5.ent
+%{__install} -D -m644 gamecode/mapfixes/data1/maps/egypt5.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt5.txt
+%{__install} -D -m644 gamecode/mapfixes/data1/maps/romeric5.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/romeric5.ent
+%{__install} -D -m644 gamecode/mapfixes/data1/maps/romeric5.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/romeric5.txt
+%{__install} -D -m644 gamecode/mapfixes/data1/maps/tower.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/tower.ent
+%{__install} -D -m644 gamecode/mapfixes/data1/maps/tower.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/tower.txt
+%{__install} -D -m644 gamecode/mapfixes/portals/maps/README.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maps/README.txt
+%{__install} -D -m644 gamecode/mapfixes/portals/maps/tibet2.ent %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet2.ent
+%{__install} -D -m644 gamecode/mapfixes/portals/maps/tibet2.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet2.txt
+%{__install} -D -m644 gamecode/mapfixes/portals/maps/tibet9.ent %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet9.ent
+%{__install} -D -m644 gamecode/mapfixes/portals/maps/tibet9.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet9.txt
 
 # Install the pak deltas
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdat/
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1
-%{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat/data1/data1pk0.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/data1pk0.xd3
-%{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat/data1/data1pk1.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/data1pk1.xd3
-%{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat/data1/oem08pk0.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/oem08pk0.xd3
-%{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat/data1/oem08pk2.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/oem08pk2.xd3
-%{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat.txt %{buildroot}/%{_prefix}/games/%{name}/patchdat.txt
+%{__install} -D -m644 gamecode/patch111/patchdat/data1/data1pk0.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/data1pk0.xd3
+%{__install} -D -m644 gamecode/patch111/patchdat/data1/data1pk1.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/data1pk1.xd3
+%{__install} -D -m644 gamecode/patch111/patchdat/data1/oem08pk0.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/oem08pk0.xd3
+%{__install} -D -m644 gamecode/patch111/patchdat/data1/oem08pk2.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/oem08pk2.xd3
+%{__install} -D -m644 gamecode/patch111/patchdat.txt %{buildroot}/%{_prefix}/games/%{name}/patchdat.txt
 
 %{__install} -D -m644 engine/resource/hexen2.png %{buildroot}/%{_prefix}/games/%{name}/hexen2.png
 
@@ -292,12 +292,8 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 %{_prefix}/games/%{name}/docs/ABOUT
 %{_prefix}/games/%{name}/docs/AUTHORS
 %{_prefix}/games/%{name}/docs/Features
-%{_prefix}/games/%{name}/docs/CHANGES
-%{_prefix}/games/%{name}/docs/CHANGES.old
 %{_prefix}/games/%{name}/docs/README.music
-%{_prefix}/games/%{name}/docs/README.3dfx
 %{_prefix}/games/%{name}/docs/TODO
-%{_prefix}/games/%{name}/docs/SrcNotes.txt
 %{_prefix}/games/%{name}/docs/ReleaseNotes
 %{_prefix}/games/%{name}/docs/ReleaseNotes.old
 %{_prefix}/games/%{name}/hexen2.png
@@ -322,10 +318,11 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Mon Sep 11 2023 O.Sezer <sezero@users.sourceforge.net> 1.5.10-1
+* Thu Feb 15 2024 O.Sezer <sezero@users.sourceforge.net> 1.5.10-1
 - Version 1.5.10.
 - Bump gamecode version to 1.29c
 - Install oem v1.08 patches
+- Added --with xmp build option.
 
 * Tue Feb 20 2018 O.Sezer <sezero@users.sourceforge.net> 1.5.9-1
 - Version 1.5.9.
