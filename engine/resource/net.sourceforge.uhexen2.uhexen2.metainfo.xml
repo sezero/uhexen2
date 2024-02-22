@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<application>
-  <id type="desktop">net.sourceforge.uhexen2.uhexen2</id>
+<component>
+  <id>net.sourceforge.uhexen2.uhexen2</id>
   <name>Hexen II: Hammer of Thyrion</name>
-  <developer_name>uHexen2 Contributors</developer_name>
-  <summary>A modernized source port of Hexen II.</summary>
+  <developer id="uhexen2.sourceforge.net"><name>uHexen2 Contributors</name></developer>
+  <summary>A modernized source port of Hexen II</summary>
+  <launchable type="desktop-id">net.sourceforge.uhexen2.uhexen2.desktop</launchable>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0-only</project_license>
   <url type="homepage">https://uhexen2.sourceforge.net/</url>
   <description>
-    <p> In 2000, Raven Software released the source code to their class based shooter game Hexen II and its multiplayer extension
-        HexenWorld. Since then, there has been some source ports of this game, such as the now discontinued Anvil of Thyrion project,
-        but nothing has been done for Linux since the beginning of 2002.</p>
+    <p>In 2000, Raven Software released the source code to their class based shooter game Hexen II and its multiplayer extension
+       HexenWorld. Since then, there has been some source ports of this game, such as the now discontinued Anvil of Thyrion project,
+       but nothing has been done for Linux since the beginning of 2002.</p>
     <p>The Hammer of Thyrion project is a cross-platform source port effort: We continue the development for Linux, BSD and Mac OS X people,
-        with continued support for Windows users as well. Many bugs are fixed and even new features are added: New sound modes, improved
-        mouse handling, improved video modes, OpenGL glows and more. You can go to our project page for more information.</p>
+       with continued support for Windows users as well. Many bugs are fixed and even new features are added: New sound modes, improved
+       mouse handling, improved video modes, OpenGL glows and more.</p>
+    <p>Hexen II: Hammer of Thyrion requires a copy of the Hexen II game data to function. Simply copy the game data directory <code>data1</code>
+       from a regular copy of Hexen II into <code>~/.var/app/net.sourceforge.uhexen2.uhexen2/.hexen2/</code> - if this is missing, you will
+       be reminded when starting Hexen II: Hammer of Thyrion.</p>
   </description>
   <screenshots>
     <screenshot type="default">
@@ -49,4 +53,4 @@
     <content_attribute id="violence-desecration">moderate</content_attribute>
   </content_rating>
   <update_contact>https://github.com/sezero/uhexen2/issues</update_contact>
-</application>
+</component>
