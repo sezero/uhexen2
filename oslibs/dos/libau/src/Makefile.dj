@@ -1,5 +1,4 @@
 CC = gcc
-# NOTE: -O2, -O3 and -Os are borked
 CFLAGS = -O1 -Wall
 CPPFLAGS = -DHAVE_STDINT_H
 #CPPFLAGS+= -DZDM
