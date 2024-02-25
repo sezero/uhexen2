@@ -23,6 +23,8 @@
 
 #if HAVE_DOS_PCI_SOUND
 
+#include <dpmi.h>
+#include <dos.h>
 #include "snd_pci.h"
 #include "sys_dxe.h"
 #include "libau.h"
@@ -81,13 +83,55 @@ static void close_sndpci_dxe(void)
 }
 #endif
 
+/* detect for SBEMU: returns INT 2D multiplex or -1 if not found */
+/* inspired from code found in https://github.com/wbcbz7/sndlib-watcom */
+static int sbemu_detect(void)
+{
+	__dpmi_raddr addr;
+	__dpmi_regs  regs;
+	uint32_t r_addr;
+	char appstring[16];
+	int mx;
+
+	/* check for INT2D vector == NULL */
+	__dpmi_get_real_mode_interrupt_vector(0x2D, &addr);
+	if (!addr.segment || !addr.offset16) return -1;
+
+	/* scan all multiplexes of INT 2D */
+	for (mx = 0; mx < 256; mx++)
+	{
+		memset(&regs, 0, sizeof(regs));
+		regs.h.ah = mx;
+		__dpmi_int(0x2D, &regs);
+		if (regs.h.al != 0xFF)
+			continue;
+
+		/* check for SBEMU application string */
+		r_addr = ((uint32_t)regs.x.dx<<4) + (uint32_t)regs.x.di;
+		if (!r_addr) continue;
+		dosmemget(r_addr, 16, appstring);
+		if (memcmp(appstring + 8, "SBEMU", 5) == 0)
+			return mx;
+	}
+
+	return -1;
+}
+
 static qboolean S_PCI_Init(dma_t *dma)
 {
 	const struct auinfo_s *aui;
 	unsigned int speed, samplebits, channels;
+	int sbemu_multiplex;
 
 	if (!COM_CheckParm("-sndpci"))
 		return false;
+
+	sbemu_multiplex = sbemu_detect();
+	if (sbemu_multiplex >= 0)
+	{
+		Con_Printf("PCI Audio: refusing to work with SBEMU present (multiplex=%d)\n", sbemu_multiplex);
+		return false;
+	}
 
 #ifdef SNDPCI_DXE
 	if (load_sndpci_dxe() < 0)
