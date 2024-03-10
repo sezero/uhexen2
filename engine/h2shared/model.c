@@ -1778,12 +1778,11 @@ static void *Mod_LoadAliasFrame (void *pin, int *pframeindex, int numv,
 
 	pdaliasframe = (daliasframe_t *)pin;
 
-	strcpy (name, pdaliasframe->name);
+	q_strlcpy (name, pdaliasframe->name, sizeof(pheader->frames[0].name));
 
 	for (i = 0; i < 3; i++)
 	{
-	// these are byte values, so we don't have to worry about
-	// endianness
+	// these are byte values, we don't have to worry about endianness.
 		pbboxmin->v[i] = pdaliasframe->bboxmin.v[i];
 		pbboxmax->v[i] = pdaliasframe->bboxmax.v[i];
 	}
