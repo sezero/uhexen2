@@ -115,6 +115,7 @@ NOTES:
 
   You can also try using SBEMU, a legacy sound blaster emulator for DOS,
   with your PCI sound card: https://github.com/crazii/SBEMU
+  Another one is VSBHDA: https://github.com/Baron-von-Riedesel/VSBHDA
 
 * CDAUDIO:  The cdrom device driver (cdrom.sys, etc.) must be loaded,
   and mscdex 2.0 or compatible (such as shsucdx) must be running.
