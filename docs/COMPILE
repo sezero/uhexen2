@@ -127,9 +127,10 @@ Compiling for Windows:
 
 uHexen2 developers usually cross-compile to windows using MinGW-w64 and
 MinGW.  The project can be built using Microsoft Visual Studio 2005 and
-newer versions, too. (Note that older MSVC versions eg. Visual Studio 6
-aren't supported: parts of our code make use of a few C99 features such
-as variadic macros which require Visual Studio 2005 or newer versions.)
+newer versions, too -- Visual Studio 2010 and newer recommended.  (Note
+that older MSVC versions eg. Visual Studio 6 aren't supported: parts of
+our code make use of a few C99 features, such as variadic macros, which
+require Visual Studio 2005 or newer versions.)
 
 
 Compiling for Mac OS X:
