@@ -766,4 +766,6 @@ void D_DrawSprite (void)
 		D_SpriteDrawSpansT2 (sprite_spans);
 	else
 		D_SpriteDrawSpans (sprite_spans);
+
+	sprite_spans = NULL; /* silence -Wdangling-pointer warnings */
 }

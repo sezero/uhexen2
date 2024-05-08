@@ -541,6 +541,7 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 	}
 
 // if no edges made it out, return without posting the surface
+	r_pedge = NULL; /* silence -Wdangling-pointer warnings */
 	if (!r_emitted)
 		return;
 
@@ -658,6 +659,7 @@ void R_RenderBmodelFace (bedge_t *pedges, msurface_t *psurf)
 	}
 
 // if no edges made it out, return without posting the surface
+	r_pedge = NULL; /* silence -Wdangling-pointer warnings */
 	if (!r_emitted)
 		return;
 

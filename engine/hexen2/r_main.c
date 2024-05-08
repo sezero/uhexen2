@@ -860,6 +860,8 @@ static void R_DrawViewModel (void)
 
 	if (r_fov_greater_than_90)
 		SCR_CalcFOV(scr_fov.value);
+
+	r_viewlighting.plightvec = NULL; /* silence -Wdangling-pointer warnings */
 }
 
 

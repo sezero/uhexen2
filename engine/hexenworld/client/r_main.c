@@ -886,6 +886,8 @@ static void R_DrawViewModel (void)
 
 	if (r_fov_greater_than_90)
 		SCR_CalcFOV(scr_fov.value);
+
+	r_viewlighting.plightvec = NULL; /* silence -Wdangling-pointer warnings */
 }
 
 
@@ -1268,6 +1270,11 @@ static void R_EdgeDrawing (qboolean Translucent)
 }
 
 
+/*
+=============
+R_DrawName
+=============
+*/
 void R_DrawName (vec3_t origin, const char *name, int siegestatus)
 {
 	vec3_t	local, transformed;
