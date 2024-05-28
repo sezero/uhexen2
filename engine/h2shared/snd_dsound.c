@@ -41,8 +41,8 @@ static LPDIRECTSOUND		pDS;
 static LPDIRECTSOUNDBUFFER	pDSBuf, pDSPBuf;
 
 #if defined(DX_DLSYM)	/* dynamic loading of dsound symbols */
-static HINSTANCE	hInstDS;
-static HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplpDS, IUnknown FAR *pUnkOuter);
+static HMODULE	hInstDS;
+static HRESULT (WINAPI *pDirectSoundCreate)(LPGUID,LPDIRECTSOUND*,LPUNKNOWN);
 #else	/* ! DX_DLSYM : we're linked to dsound */
 #define	pDirectSoundCreate		DirectSoundCreate
 #endif	/* DX_DLSYM */
@@ -129,15 +129,14 @@ static qboolean S_DS_Init (dma_t *dma)
 #if defined(DX_DLSYM)
 	if (!hInstDS)
 	{
-		hInstDS = LoadLibrary("dsound.dll");
-
+		hInstDS = LoadLibraryA("dsound.dll");
 		if (hInstDS == NULL)
 		{
 			Con_SafePrintf ("Couldn't load dsound.dll\n");
 			return false;
 		}
 
-		pDirectSoundCreate = (HRESULT (WINAPI *)(GUID FAR *, LPDIRECTSOUND FAR *, IUnknown FAR *))
+		pDirectSoundCreate = (HRESULT (WINAPI *)(LPGUID,LPDIRECTSOUND*,LPUNKNOWN))
 								GetProcAddress(hInstDS,"DirectSoundCreate");
 
 		if (!pDirectSoundCreate)

@@ -188,7 +188,7 @@ unsigned char	*inverse_pal;
 // gl stuff
 static void GL_Init (void);
 
-static HINSTANCE	hInstGL;
+static HMODULE		hInstGL;
 #ifdef GL_DLSYM
 static const char	*gl_library;
 #endif
@@ -904,7 +904,8 @@ static qboolean GL_OpenLibrary (const char *name)
 	Con_SafePrintf("Loading OpenGL library %s\n", name);
 
 	// open the library
-	if (!(hInstGL = LoadLibrary(name)))
+	hInstGL = LoadLibraryA(name);
+	if (hInstGL == NULL)
 	{
 		Con_SafePrintf("Unable to LoadLibrary %s\n", name);
 		return false;

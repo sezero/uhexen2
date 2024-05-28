@@ -33,6 +33,12 @@
 #define	CINTERFACE	/* for directx macros. */
 #endif
 
+#if defined(__cplusplus)	/* for REFGUID */
+#define D3D_GUID(X)		 (X)
+#else
+#define D3D_GUID(X)		&(X)
+#endif
+
 extern	HINSTANCE	global_hInstance;
 extern	int		global_nCmdShow;
 

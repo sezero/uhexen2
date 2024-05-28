@@ -49,15 +49,14 @@ static qboolean	mouseparmsvalid, mouseactivatetoggle;
 static qboolean	mouseshowtoggle = 1;
 
 /* do NOT include the wheel enums below */
-static int buttonremap[] =
-{
+static int buttonremap[] = {
 	K_MOUSE1,
 	K_MOUSE2,
 	K_MOUSE3,
 	K_MOUSE4,
 	K_MOUSE5
 };
-#define	NUM_MOUSEBUTTONS	Q_COUNTOF(buttonremap)
+static const int	NUM_MOUSEBUTTONS = Q_COUNTOF(buttonremap);
 
 /* DirectInput mouse control: */
 qboolean			dinput_init;
@@ -71,56 +70,38 @@ static LPDIRECTINPUTDEVICE	g_pMouse;
 
 #if defined(DX_DLSYM)	/* dynamic loading of dinput symbols */
 
-#undef	DEFINE_GUID
-#define	DEFINE_GUID(name, l, w1, w2,   b1, b2, b3, b4, b5, b6, b7, b8)	\
-	const GUID name =						\
-			{ l, w1, w2, { b1, b2, b3, b4, b5, b6, b7, b8 } }
+static const GUID Q_GUID_SysMouse = { 0x6F1D2B60, 0xD5A0, 0x11CF, { 0xBF, 0xC7, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00 } };
+static const GUID Q_GUID_XAxis    = { 0xA36D02E0, 0xC9F3, 0x11CF, { 0xBF, 0xC7, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00 } };
+static const GUID Q_GUID_YAxis    = { 0xA36D02E1, 0xC9F3, 0x11CF, { 0xBF, 0xC7, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00 } };
+static const GUID Q_GUID_ZAxis    = { 0xA36D02E2, 0xC9F3, 0x11CF, { 0xBF, 0xC7, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00 } };
 
-DEFINE_GUID(GUID_SysMouse,   0x6F1D2B60,0xD5A0,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
-DEFINE_GUID(GUID_XAxis,   0xA36D02E0,0xC9F3,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
-DEFINE_GUID(GUID_YAxis,   0xA36D02E1,0xC9F3,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
-DEFINE_GUID(GUID_ZAxis,   0xA36D02E2,0xC9F3,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
-
-typedef struct MYDATA {
-	LONG	lX;		// X axis goes here
-	LONG	lY;		// Y axis goes here
-	LONG	lZ;		// Z axis goes here
-	BYTE	bButtonA;	// One button goes here
-	BYTE	bButtonB;	// Another button goes here
-	BYTE	bButtonC;	// Another button goes here
-	BYTE	bButtonD;	// Another button goes here
-} MYDATA;
-
-static DIOBJECTDATAFORMAT rgodf[] =
-{
-	{ &GUID_XAxis,	FIELD_OFFSET(MYDATA, lX),	DIDFT_AXIS | DIDFT_ANYINSTANCE,			0,},
-	{ &GUID_YAxis,	FIELD_OFFSET(MYDATA, lY),	DIDFT_AXIS | DIDFT_ANYINSTANCE,			0,},
-	{ &GUID_ZAxis,	FIELD_OFFSET(MYDATA, lZ),	0x80000000 | DIDFT_AXIS | DIDFT_ANYINSTANCE,	0,},
-	{ 0,		FIELD_OFFSET(MYDATA, bButtonA),	DIDFT_BUTTON | DIDFT_ANYINSTANCE,		0,},
-	{ 0,		FIELD_OFFSET(MYDATA, bButtonB),	DIDFT_BUTTON | DIDFT_ANYINSTANCE,		0,},
-	{ 0,		FIELD_OFFSET(MYDATA, bButtonC),	0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE,	0,},
-	{ 0,		FIELD_OFFSET(MYDATA, bButtonD),	0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE,	0,},
+static DIOBJECTDATAFORMAT rgodf[] = {
+	{ &Q_GUID_XAxis, FIELD_OFFSET(DIMOUSESTATE,lX),            DIDFT_AXIS   | DIDFT_ANYINSTANCE,              0 },
+	{ &Q_GUID_YAxis, FIELD_OFFSET(DIMOUSESTATE,lY),            DIDFT_AXIS   | DIDFT_ANYINSTANCE,              0 },
+	{ &Q_GUID_ZAxis, FIELD_OFFSET(DIMOUSESTATE,lZ),            DIDFT_AXIS   | DIDFT_ANYINSTANCE | 0x80000000, 0 },
+	{ NULL,          FIELD_OFFSET(DIMOUSESTATE,rgbButtons[0]), DIDFT_BUTTON | DIDFT_ANYINSTANCE,              0 },
+	{ NULL,          FIELD_OFFSET(DIMOUSESTATE,rgbButtons[1]), DIDFT_BUTTON | DIDFT_ANYINSTANCE,              0 },
+	{ NULL,          FIELD_OFFSET(DIMOUSESTATE,rgbButtons[2]), DIDFT_BUTTON | DIDFT_ANYINSTANCE | 0x80000000, 0 },
+	{ NULL,          FIELD_OFFSET(DIMOUSESTATE,rgbButtons[3]), DIDFT_BUTTON | DIDFT_ANYINSTANCE | 0x80000000, 0 }
 };
 
-#define NUM_OBJECTS Q_COUNTOF(rgodf)
-
-static DIDATAFORMAT	diformat =
-{
+static DIDATAFORMAT diformat = {
 	sizeof(DIDATAFORMAT),		// this structure
 	sizeof(DIOBJECTDATAFORMAT),	// size of object data format
 	DIDF_RELAXIS,			// absolute axis coordinates
-	sizeof(MYDATA),			// device data size
-	NUM_OBJECTS,			// number of objects
-	rgodf,				// and here they are
+	sizeof(DIMOUSESTATE),		// device data size
+	Q_COUNTOF(rgodf),		// number of objects
+	rgodf				// and here they are
 };
 
-static HINSTANCE	hInstDI;
-static HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion, LPDIRECTINPUT *lplpDirectInput, LPUNKNOWN punkOuter);
+static HMODULE hInstDI;
+static HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE, DWORD, LPDIRECTINPUT*, LPUNKNOWN);
 
 #else	/* ! DX_DLSYM : linked to dinput */
 
-#define	diformat			c_dfDIMouse
-#define	pDirectInputCreate		DirectInputCreateA
+#define diformat           c_dfDIMouse
+#define pDirectInputCreate DirectInputCreateA
+#define Q_GUID_SysMouse    GUID_SysMouse
 
 #endif	/* DX_DLSYM */
 
@@ -385,8 +366,7 @@ static qboolean IN_InitDInput (void)
 #if defined(DX_DLSYM)	/* dynamic loading of dinput symbols */
 	if (!hInstDI)
 	{
-		hInstDI = LoadLibrary("dinput.dll");
-
+		hInstDI = LoadLibraryA("dinput.dll");
 		if (hInstDI == NULL)
 		{
 			Con_SafePrintf ("Couldn't load dinput.dll\n");
@@ -398,7 +378,6 @@ static qboolean IN_InitDInput (void)
 	{
 		pDirectInputCreate = (HRESULT (WINAPI *)(HINSTANCE, DWORD, LPDIRECTINPUT *, LPUNKNOWN))
 								GetProcAddress(hInstDI, "DirectInputCreateA");
-
 		if (!pDirectInputCreate)
 		{
 			Con_SafePrintf ("Couldn't get DI proc addr\n");
@@ -409,19 +388,13 @@ static qboolean IN_InitDInput (void)
 
 // register with DirectInput and get an IDirectInput to play with.
 	hr = pDirectInputCreate(global_hInstance, DIRECTINPUT_VERSION, &g_pdi, NULL);
-
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
 // obtain an interface to the system mouse device.
-#if defined(__cplusplus)
-	hr = IDirectInput_CreateDevice(g_pdi, GUID_SysMouse, &g_pMouse, NULL);
-#else
-	hr = IDirectInput_CreateDevice(g_pdi, &GUID_SysMouse, &g_pMouse, NULL);
-#endif
-
+	hr = IDirectInput_CreateDevice(g_pdi, D3D_GUID(Q_GUID_SysMouse), &g_pMouse, NULL);
 	if (FAILED(hr))
 	{
 		Con_SafePrintf ("Couldn't open DI mouse device\n");
@@ -430,7 +403,6 @@ static qboolean IN_InitDInput (void)
 
 // set the data format to "mouse format".
 	hr = IDirectInputDevice_SetDataFormat(g_pMouse, &diformat);
-
 	if (FAILED(hr))
 	{
 		Con_SafePrintf ("Couldn't set DI mouse format\n");
@@ -440,7 +412,6 @@ static qboolean IN_InitDInput (void)
 // set the cooperativity level.
 	hr = IDirectInputDevice_SetCooperativeLevel(g_pMouse, mainwindow,
 			DISCL_EXCLUSIVE | DISCL_FOREGROUND);
-
 	if (FAILED(hr))
 	{
 		Con_SafePrintf ("Couldn't set DI coop level\n");
@@ -450,7 +421,6 @@ static qboolean IN_InitDInput (void)
 // set the buffer size to DINPUT_BUFFERSIZE elements.
 // the buffer size is a DWORD property associated with the device
 	hr = IDirectInputDevice_SetProperty(g_pMouse, DIPROP_BUFFERSIZE, &dipdw.diph);
-
 	if (FAILED(hr))
 	{
 		Con_SafePrintf ("Couldn't set DI buffersize\n");
@@ -626,7 +596,7 @@ void IN_MouseEvent (int mstate)
 	if (mouseactive && !dinput_init)
 	{
 	// perform button actions
-		for (i = 0; i < (int)NUM_MOUSEBUTTONS; i++)
+		for (i = 0; i < NUM_MOUSEBUTTONS; i++)
 		{
 			if ((mstate ^ mouse_oldbuttonstate) & (1<<i))
 				Key_Event (buttonremap[i], (mstate & (1<<i)) != 0);
@@ -732,7 +702,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 		}
 
 	// perform button actions
-		for (i = 0; i < (int)NUM_MOUSEBUTTONS; i++)
+		for (i = 0; i < NUM_MOUSEBUTTONS; i++)
 		{
 			if ((mstate_di ^ mouse_oldbuttonstate) & (1<<i))
 				Key_Event (buttonremap[i], (mstate_di & (1<<i)) != 0);
@@ -880,7 +850,6 @@ IN_ClearStates
 */
 void IN_ClearStates (void)
 {
-
 	if (mouseactive)
 	{
 		mx_accum = 0;
