@@ -1579,6 +1579,7 @@
 				OTHER_LDFLAGS = (
 					"-rpath",
 					"@executable_path/../Frameworks",
+					"-ld_classic",
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = net.sf.uhexen2.glhexen2;
@@ -1637,6 +1638,7 @@
 				OTHER_LDFLAGS = (
 					"-rpath",
 					"@executable_path/../Frameworks",
+					"-ld_classic",
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = net.sf.uhexen2.glhexen2;
