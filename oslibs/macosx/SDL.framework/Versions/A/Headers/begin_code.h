@@ -1,116 +1,99 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2012 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2021 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Library General Public
-    License as published by the Free Software Foundation; either
-    version 2 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Library General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Library General Public
-    License along with this library; if not, write to the Free
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 
-/** 
- *  @file begin_code.h
- *  This file sets things up for C dynamic library function definitions,
- *  static inlined functions, and structures aligned at 4-byte alignment.
- *  If you don't like ugly C preprocessor code, don't look at this file. :)
- */
+/* These headers are from sdl12-compat, and are intended to give just enough
+functionality to let you build an SDL-1.2-based project without having the
+real SDL-1.2 available to you. */
 
-/** 
- *  @file begin_code.h
- *  This shouldn't be nested -- included it around code only.
- */
-#ifdef _begin_code_h
-#error Nested inclusion of begin_code.h
-#endif
+#ifndef _begin_code_h
 #define _begin_code_h
 
-/** 
- *  @def DECLSPEC
- *  Some compilers use a special export keyword
- */
+#ifdef __BUILDING_SDL12_COMPAT__
+#error You should not use these headers to build sdl12-compat. Use the real SDL2 headers instead.
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* In case we need to distinguish. */
+#ifndef SDL12_COMPAT_HEADERS
+#define SDL12_COMPAT_HEADERS 1
+#endif
+
+/* set up DECLSPEC, SDLCALL, struct packing, __inline__ and NULL... taken from SDL2 zlib-licensed headers or rewritten. */
+
 #ifndef DECLSPEC
-# if defined(__BEOS__) || defined(__HAIKU__)
-#  if defined(__GNUC__)
+# if defined(__WIN32__) || defined(__WINRT__) || defined(__CYGWIN__)
+#  ifdef DLL_EXPORT
+#   define DECLSPEC __declspec(dllexport)
+#  else
 #   define DECLSPEC
-#  else
-#   define DECLSPEC	__declspec(export)
-#  endif
-# elif defined(__WIN32__)
-#  ifdef __BORLANDC__
-#   ifdef BUILD_SDL
-#    define DECLSPEC 
-#   else
-#    define DECLSPEC	__declspec(dllimport)
-#   endif
-#  else
-#   define DECLSPEC	__declspec(dllexport)
 #  endif
 # elif defined(__OS2__)
 #   ifdef BUILD_SDL
-#    define DECLSPEC	__declspec(dllexport)
+#    define DECLSPEC    __declspec(dllexport)
 #   else
 #    define DECLSPEC
 #   endif
 # else
 #  if defined(__GNUC__) && __GNUC__ >= 4
-#   define DECLSPEC	__attribute__ ((visibility("default")))
+#   define DECLSPEC __attribute__ ((visibility("default")))
 #  else
 #   define DECLSPEC
 #  endif
 # endif
 #endif
 
-/** 
- *  @def SDLCALL
- *  By default SDL uses the C calling convention
- */
+/* By default SDL uses the C calling convention */
 #ifndef SDLCALL
-# if defined(__WIN32__) && !defined(__GNUC__)
-#  define SDLCALL __cdecl
-# elif defined(__OS2__)
-   /* But on OS/2, we use the _System calling convention */
-   /* to be compatible with every compiler */
-#  if defined (__GNUC__) && !defined(_System)
-#   define _System /* For compatibility with old GCC/EMX */
-#  endif
-#  define SDLCALL _System
-# else
-#  define SDLCALL
+#if (defined(__WIN32__) || defined(__WINRT__)) && !defined(__GNUC__)
+#define SDLCALL __cdecl
+#elif defined(__OS2__) || defined(__EMX__)
+#define SDLCALL _System
+# if defined (__GNUC__) && !defined(_System)
+#  define _System /* for old EMX/GCC compat.  */
 # endif
+#else
+#define SDLCALL
+#endif
 #endif /* SDLCALL */
 
-#ifdef __SYMBIAN32__ 
-#ifndef EKA2 
+/* Removed DECLSPEC on Symbian OS because SDL cannot be a DLL in EPOC */
+#ifdef __SYMBIAN32__
 #undef DECLSPEC
 #define DECLSPEC
-#elif !defined(__WINS__)
-#undef DECLSPEC
-#define DECLSPEC __declspec(dllexport)
-#endif /* !EKA2 */
 #endif /* __SYMBIAN32__ */
 
-/**
- *  @file begin_code.h
- *  Force structure packing at 4 byte alignment.
- *  This is necessary if the header is included in code which has structure
- *  packing set to an alternate value, say for loading structures from disk.
- *  The packing is reset to the previous value in close_code.h 
+/* Force structure packing at 4 byte alignment.
+   This is necessary if the header is included in code which has structure
+   packing set to an alternate value, say for loading structures from disk.
+   The packing is reset to the previous value in close_code.h
  */
 #if defined(_MSC_VER) || defined(__MWERKS__) || defined(__BORLANDC__)
 #ifdef _MSC_VER
 #pragma warning(disable: 4103)
+#endif
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wpragma-pack"
 #endif
 #ifdef __BORLANDC__
 #pragma nopackwarning
@@ -121,59 +104,35 @@
 #else
 #pragma pack(push,4)
 #endif
-#elif (defined(__MWERKS__) && defined(__MACOS__))
-#pragma options align=mac68k4byte
-#pragma enumsalwaysint on
 #endif /* Compiler needs structure packing set */
 
-/**
- *  @def SDL_INLINE_OKAY
- *  Set up compiler-specific options for inlining functions
- */
-#ifndef SDL_INLINE_OKAY
-#ifdef __GNUC__
-#define SDL_INLINE_OKAY
-#else
-/* Add any special compiler-specific cases here */
-#if defined(_MSC_VER) || defined(__BORLANDC__) || \
-    defined(__DMC__) || defined(__SC__) || \
-    defined(__WATCOMC__) || defined(__LCC__) || \
-    defined(__DECC) || defined(__EABI__)
+/* modified from SDL2's SDL_INLINE defines */
 #ifndef __inline__
-#define __inline__	__inline
-#endif
-#define SDL_INLINE_OKAY
-#else
-#if !defined(__MRC__) && !defined(_SGI_SOURCE)
-#ifndef __inline__
-#define __inline__ inline
-#endif
-#define SDL_INLINE_OKAY
-#endif /* Not a funky compiler */
-#endif /* Visual C++ */
-#endif /* GNU C */
-#endif /* SDL_INLINE_OKAY */
+  #if defined(__GNUC__) || defined(__clang__)
+    #define __inline__ __inline__
+  #elif defined(_MSC_VER) || defined(__BORLANDC__) || \
+      defined(__DMC__) || defined(__SC__) || \
+      defined(__WATCOMC__) || defined(__LCC__) || \
+      defined(__DECC) || defined(__CC_ARM)
+      #define __inline__ __inline
+  #else
+    #define __inline__ inline
+  #endif
+  #define SDL_INLINE_OKAY
+#endif /* SDL_INLINE not defined */
 
-/**
- *  @def __inline__
- *  If inlining isn't supported, remove "__inline__", turning static
- *  inlined functions into static functions (resulting in code bloat
- *  in all files which include the offending header files)
- */
-#ifndef SDL_INLINE_OKAY
-#define __inline__
+#ifndef __APPLE__  /* precompiled headers get upset here, or did 20 years ago... */
+  #ifndef NULL
+    #ifdef __cplusplus
+      #define NULL 0
+    #else
+      #define NULL ((void *) 0)
+    #endif
+  #endif
 #endif
 
-/**
- *  @def NULL
- *  Apparently this is needed by several Windows compilers
- */
-#if !defined(__MACH__)
-#ifndef NULL
-#ifdef __cplusplus
-#define NULL 0
+
 #else
-#define NULL ((void *)0)
+#error begin_code.h included twice without an end_code.h
 #endif
-#endif /* NULL */
-#endif /* ! Mac OS X - breaks precompiled headers */
+
