@@ -1129,30 +1129,24 @@ static void R_DrawBEntitiesOnList (void)
 R_EdgeDrawing
 ================
 */
+FUNC_NOINLINE
 static void R_EdgeDrawing (qboolean Translucent)
 {
-#if id386
-# define static_in_C_ /* nothing */
+/* R_EdgeDrawing() is called twice by R_RenderView_(): First with
+ * Translucent as false, where the three pointers r_edges, surfaces
+ * and surf_max are set to the ledges[] and lsurfs[] arrays,  and
+ * then with Translucent as true in which case the code assumes
+ * those pointers to be still valid, but they pointed to variables
+ * which went out of scope by that time. The x86 asm code actually
+ * handles that, i.e. see: R_SurfacePatch() -> R_SurfacePatchT(),
+ * but the C-only code surely does not..  */
+#if !id386
+static edge_t	ledges[NUMSTACKEDGES + ((CACHE_SIZE - 1) / sizeof(edge_t)) + 1];
+static surf_t	lsurfs[NUMSTACKSURFACES + ((CACHE_SIZE - 1) / sizeof(surf_t)) + 1];
 #else
-# define static_in_C_ static
+	edge_t	ledges[NUMSTACKEDGES + ((CACHE_SIZE - 1) / sizeof(edge_t)) + 1];
+	surf_t	lsurfs[NUMSTACKSURFACES + ((CACHE_SIZE - 1) / sizeof(surf_t)) + 1];
 #endif
-/* R_EdgeDrawing() is called twice by R_RenderView_():
- * First with Translucent as false, where the three pointers r_edges,
- * surfaces and surf_max are set to the ledges[] and lsurfs[] arrays,
- * and then with Translucent as true in which case R_EdgeDrawing()
- * does *not* set the pointers and the code assumes them to be still
- * valid, but they pointed to variables which went out of scope by
- * that time.
- * The x86 assembler code actually handles that (R_SurfacePatch() ->
- * R_SurfacePatchT(), I think) and if you make those arrays static,
- * then you may as well get a segmentation fault.
- * For C-only code, however, the ledges[] and lsurfs[] arrays *must*
- * be static in order to keep r_edges, surfaces and surf_max pointers
- * valid during the second call of R_EdgeDrawing(true).  */
-	static_in_C_ edge_t
-		ledges[NUMSTACKEDGES + ((CACHE_SIZE - 1) / sizeof(edge_t)) + 1];
-	static_in_C_ surf_t
-		lsurfs[NUMSTACKSURFACES + ((CACHE_SIZE - 1) / sizeof(surf_t)) + 1];
 	int	EdgesSize, SurfacesSize;
 
 	if (!Translucent)
