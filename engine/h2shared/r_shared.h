@@ -125,9 +125,6 @@ ASM_LINKAGE_END
 
 //===================================================================
 
-extern	vec3_t	sxformaxis[4];	// s axis transformed into viewspace
-extern	vec3_t	txformaxis[4];	// t axis transformed into viewspac
-
 ASM_LINKAGE_BEGIN
 extern	vec3_t	modelorg, base_modelorg;
 

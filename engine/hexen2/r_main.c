@@ -38,11 +38,6 @@ float		r_lasttime1 = 0;
 
 int		r_numallocatededges;
 
-#if 0
-qboolean	r_drawpolys;
-qboolean	r_drawculledpolys;
-qboolean	r_worldpolysbacktofront;
-#endif
 qboolean	r_recursiveaffinetriangles = true;
 
 int		r_pixbytes = 1;
@@ -68,8 +63,6 @@ const int	color_offsets[MAX_PLAYER_CLASS] =
 
 qboolean	r_dowarp, r_dowarpold, r_viewchanged;
 
-int		numbtofpolys;
-btofpoly_t	*pbtofpolys;
 mvertex_t	*r_pcurrentvertbase;
 
 int		c_surf;
@@ -1055,46 +1048,34 @@ static void R_DrawBEntitiesOnList (void)
 					}
 				}
 
-#if 0
-				// if the driver wants polygons, deliver those. Z-buffering is on
-				// at this point, so no clipping to the world tree is needed, just
-				// frustum clipping
-				if (r_drawpolys | r_drawculledpolys)
+				r_pefragtopnode = NULL;
+
+				for (j = 0; j < 3; j++)
 				{
-					R_ZDrawSubmodelPolys (clmodel);
+					r_emins[j] = minmaxs[j];
+					r_emaxs[j] = minmaxs[3+j];
 				}
-				else
-#endif
+
+				R_SplitEntityOnNode2 (cl.worldmodel->nodes);
+				if (r_pefragtopnode)
 				{
-					r_pefragtopnode = NULL;
+					currententity->topnode = r_pefragtopnode;
 
-					for (j = 0; j < 3; j++)
+					if (r_pefragtopnode->contents >= 0)
 					{
-						r_emins[j] = minmaxs[j];
-						r_emaxs[j] = minmaxs[3+j];
+						// not a leaf; has to be clipped to the world BSP
+						r_clipflags = clipflags;
+						R_DrawSolidClippedSubmodelPolygons (clmodel);
 					}
-
-					R_SplitEntityOnNode2 (cl.worldmodel->nodes);
-					if (r_pefragtopnode)
+					else
 					{
-						currententity->topnode = r_pefragtopnode;
+						// falls entirely in one leaf, so we just put all the
+						// edges in the edge list and let 1/z sorting handle
+						// drawing order
 
-						if (r_pefragtopnode->contents >= 0)
-						{
-							// not a leaf; has to be clipped to the world BSP
-							r_clipflags = clipflags;
-							R_DrawSolidClippedSubmodelPolygons (clmodel);
-						}
-						else
-						{
-							// falls entirely in one leaf, so we just put all the
-							// edges in the edge list and let 1/z sorting handle
-							// drawing order
-
-							R_DrawSubmodelPolygons (clmodel, clipflags);
-						}
-						currententity->topnode = NULL;
+						R_DrawSubmodelPolygons (clmodel, clipflags);
 					}
+					currententity->topnode = NULL;
 				}
 
 				// put back world rotation and frustum clipping
@@ -1186,11 +1167,6 @@ static void R_EdgeDrawing (qboolean Translucent)
 		memcpy(surfaces,SaveSurfaces,SaveSurfacesCount * sizeof(surf_t));
 	}
 
-#if 0
-	if (r_drawculledpolys)
-		R_ScanEdges (Translucent);
-#endif
-
 // only the world can be drawn back to front with no z reads or compares, just
 // z writes, so have the driver turn z compares on now
 	if (!Translucent)
@@ -1236,10 +1212,7 @@ static void R_EdgeDrawing (qboolean Translucent)
 		}
 	}
 
-#if 0
-	if (!(r_drawpolys | r_drawculledpolys))
-#endif
-		R_ScanEdges (Translucent);
+	R_ScanEdges (Translucent);
 }
 
 

@@ -35,20 +35,6 @@ extern void	R_RotateBmodel (void);
 vec3_t		transformed_modelorg;
 
 
-#if 0
-/*
-==============
-D_DrawPoly
-
-==============
-*/
-void D_DrawPoly (void)
-{
-// this driver takes spans, not polygons
-}
-#endif
-
-
 /*
 =============
 D_MipLevelForScale
@@ -301,11 +287,11 @@ void D_DrawSurfaces (qboolean Translucent)
 			//	if (!strncmp(pface->texinfo->texture->name,"*BLACK",6))
 				if (s->flags & SURF_DRAWBLACK)	// black vis-breaker, no turb
 				{
-#	if defined (H2W)
+					#if defined (H2W)
 					if (cl_siege)
 						D_DrawSolidSurface (s, SiegeFlatSkyFadeTable[(int)floor(d_lightstylevalue[0]/22)]);
 					else
-#	endif	/* H2W */
+					#endif
 						D_DrawSolidSurface (s, 0);
 					D_DrawZSpans (s->spans);
 					continue;
@@ -463,11 +449,11 @@ void D_DrawSurfaces (qboolean Translucent)
 			//	if (!strncmp(pface->texinfo->texture->name, "*BLACK", 6))
 				if (s->flags & SURF_DRAWBLACK)	// black vis-breaker, no turb
 				{
-#	if defined (H2W)
+					#if defined (H2W)
 					if (cl_siege)
 						D_DrawSolidSurface (s, SiegeFlatSkyFadeTable[(int)floor(d_lightstylevalue[0]/22)]);
 					else
-#	endif	/* H2W */
+					#endif
 						D_DrawSolidSurface (s, 0);
 					D_DrawZSpans (s->spans);
 					continue;

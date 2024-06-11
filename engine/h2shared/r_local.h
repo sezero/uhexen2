@@ -140,9 +140,6 @@ extern	qboolean	insubmodel;
 
 void R_DrawSprite (void);
 void R_RenderFace (msurface_t *fa, int clipflags);
-void R_RenderPoly (msurface_t *fa, int clipflags);
-void R_DrawPolyList (void);
-void R_ClearPolyList (void);
 void R_RenderBmodelFace (bedge_t *pedges, msurface_t *psurf);
 void R_RotateBmodel (void);
 void R_TransformPlane (mplane_t *p, float *normal, float *dist);
@@ -155,8 +152,6 @@ void R_GenSkyTile16 (void *pdest);
 void R_DrawSubmodelPolygons (qmodel_t *pmodel, int clipflags);
 void R_DrawSolidClippedSubmodelPolygons (qmodel_t *pmodel);
 
-void R_AddPolygonEdges (emitpoint_t *pverts, int numverts, int miplevel);
-surf_t *R_GetSurf (void);
 void R_AliasDrawModel (alight_t *plighting);
 void R_BeginEdgeFrame (void);
 void R_ScanEdges (qboolean Translucent);
@@ -259,19 +254,6 @@ extern	float	entity_rotation[3][3];
 extern	int	r_currentkey;
 extern	int	r_currentbkey;
 
-typedef struct btofpoly_s
-{
-	int			clipflags;
-	msurface_t	*psurf;
-} btofpoly_t;
-
-#define MAX_BTOFPOLYS	5000	// FIXME: tune this
-
-extern	int	numbtofpolys;
-extern	btofpoly_t	*pbtofpolys;
-
-void R_ZDrawSubmodelPolys (qmodel_t *clmodel);
-
 //=========================================================
 // Alias models
 //=========================================================
@@ -318,11 +300,7 @@ extern	edge_t	edge_head;
 extern	edge_t	edge_tail;
 extern	edge_t	edge_aftertail;
 extern	int	r_bmodelactive;
-ASM_LINKAGE_END
 
-extern	vrect_t	*pconupdate;
-
-ASM_LINKAGE_BEGIN
 extern	float	aliasxscale, aliasyscale, aliasxcenter, aliasycenter;
 ASM_LINKAGE_END
 extern	float	r_aliastransition, r_resfudge;
@@ -331,7 +309,6 @@ extern	int	r_outofsurfaces;
 extern	int	r_outofedges;
 
 extern	mvertex_t	*r_pcurrentvertbase;
-extern	int	r_maxvalidedgeoffset;
 
 void R_AliasClipTriangle (mtriangle_t *ptri);
 
@@ -341,7 +318,6 @@ extern	float	se_time1, se_time2, de_time1, de_time2, dv_time1, dv_time2;
 extern	int	r_frustum_indexes[4*6];
 extern	int	r_maxsurfsseen, r_maxedgesseen, r_cnumsurfs;
 extern	qboolean	r_surfsonstack;
-extern	cshift_t	cshift_water;
 extern	qboolean	r_dowarpold, r_viewchanged;
 
 extern	float	r_lasttime1;
@@ -373,7 +349,6 @@ void R_AnimateLight (void);
 int R_LightPoint (vec3_t p);
 int *R_LightPointColour (vec3_t p);
 void R_SetupFrame (void);
-void R_cshift_f (void);
 void R_SplitEntityOnNode2 (mnode_t *node);
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
 

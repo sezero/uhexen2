@@ -100,13 +100,6 @@ ASM_LINKAGE_BEGIN
 extern int		r_framecount;	// sequence # of current frame since Quake
 					//  started
 ASM_LINKAGE_END
-extern qboolean	r_drawpolys;		// 1 if driver wants clipped polygons
-					//  rather than a span list
-extern qboolean	r_drawculledpolys;	// 1 if driver wants clipped polygons that
-					//  have been culled by the edge list
-extern qboolean	r_worldpolysbacktofront;	// 1 if driver wants polygons
-						//  delivered back to front rather
-						//  than front to back
 extern qboolean	r_recursiveaffinetriangles;	// true if a driver wants to use
 						//  recursive triangular subdivison
 						//  and vertex drawing via
@@ -134,7 +127,6 @@ extern vec3_t	r_pright, r_pup, r_ppn;
 ASM_LINKAGE_END
 
 
-void D_DrawPoly (void);
 void D_DrawSprite (void);
 void D_DrawSurfaces (qboolean Translucent);
 

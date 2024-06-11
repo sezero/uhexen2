@@ -119,7 +119,7 @@ diff --git a/engine/hexen2/r_main.c b/engine/hexen2/r_main.c
 index ca67c78..7e9c59a 100644
 --- a/engine/hexen2/r_main.c
 +++ b/engine/hexen2/r_main.c
-@@ -950,8 +950,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
+@@ -945,8 +945,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
  
  	for (i = 0; i < 3; i++)
  	{
@@ -149,7 +149,7 @@ diff --git a/engine/hexenworld/client/r_main.c b/engine/hexenworld/client/r_main
 index 2bd29d1..edda49a 100644
 --- a/engine/hexenworld/client/r_main.c
 +++ b/engine/hexenworld/client/r_main.c
-@@ -976,8 +976,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
+@@ -971,8 +971,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
  
  	for (i = 0; i < 3; i++)
  	{

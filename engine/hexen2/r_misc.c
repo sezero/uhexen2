@@ -308,9 +308,7 @@ void R_TransformFrustum (void)
 }
 #endif
 
-
 #if	!id386 && !id68k
-
 /*
 ================
 TransformVector
@@ -322,7 +320,6 @@ void TransformVector (vec3_t in, vec3_t out)
 	out[1] = DotProduct(in,vup);
 	out[2] = DotProduct(in,vpn);
 }
-
 #endif
 
 
@@ -429,8 +426,6 @@ void R_SetupFrame (void)
 	R_AnimateLight ();
 
 	r_framecount++;
-
-	numbtofpolys = 0;
 
 #if 0
 // debugging
