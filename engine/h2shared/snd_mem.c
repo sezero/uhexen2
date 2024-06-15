@@ -345,8 +345,14 @@ wavinfo_t GetWavinfo (const char *name, byte *wav, int wavlength)
 	else
 		info.samples = samples;
 
+	if (info.loopstart >= info.samples)
+	{
+		Con_Printf ("%s has loop start >= end\n", name);
+		info.loopstart = -1;
+		info.samples = samples;
+	}
+
 	info.dataofs = data_p - wav;
 
 	return info;
 }
-
