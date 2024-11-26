@@ -1,11 +1,11 @@
-name: Linux CI
+name: Linux
 
 on: [push, pull_request]
 
 jobs:
   build-linux:
     name: Build Linux
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -20,15 +20,15 @@ jobs:
     - name: Build ${{ matrix.compiler }}
       run: |
         make CC=${{ matrix.compiler }} -j3 -k -C engine/hexen2 h2
-        # use localclean instead of clean to avoid building timidity every time
-        make CC=${{ matrix.compiler }} -j3 -k -s -C engine/hexen2 localclean
+        # run 'localclean' instead of 'clean' to not build libtimidity every time
+        make -s -C engine/hexen2 localclean
         make CC=${{ matrix.compiler }} -j3 -k -C engine/hexen2 glh2
-        make CC=${{ matrix.compiler }} -j3 -k -s -C engine/hexen2 localclean
+        make -s -C engine/hexen2 localclean
         make CC=${{ matrix.compiler }} -j3 -k -C engine/hexen2/server
         # hexenworld
         make CC=${{ matrix.compiler }} -j3 -k -C engine/hexenworld/server
         make CC=${{ matrix.compiler }} -j3 -k -C engine/hexenworld/client hw
-        make CC=${{ matrix.compiler }} -j3 -k -s -C engine/hexenworld/client localclean
+        make -s -C engine/hexenworld/client localclean
         make CC=${{ matrix.compiler }} -j3 -k -C engine/hexenworld/client glhw
         # h2patch
         make CC=${{ matrix.compiler }} -j3 -k -C h2patch
