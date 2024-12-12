@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.10: (Feb. 15, 2024.)
+Changes in v1.5.10: (Dec. 12, 2024.)
 ========================================================================
 
 This is a minor bug fix and maintenance release:
@@ -12,6 +12,9 @@ This is a minor bug fix and maintenance release:
 
 - Fixed getting stuck with loading plaque upon attempting to load a
   bad save from the menu.
+
+- Support for -userdir command line argument to override the hardcoded
+  user directory in unix builds
 
 - OpenGL: Fixed dark dynamic lights, e.g. when Necromancer uses
   invulnerability. (thanks to Shanjaq Astraljam, sf.net bug 48.)
