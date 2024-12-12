@@ -41,7 +41,7 @@
 #define STD_MEM_ALLOC	0x1000000
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
-int		devlog;	/* log the Con_DPrintf and Sys_DPrintf content when !developer.integer */
+int		devlog; /* log the Con_DPrintf / Sys_DPrintf content when not in developer mode. */
 
 static double		starttime;
 static qboolean		first = true;
@@ -462,11 +462,43 @@ static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 }
 
 #if DO_USERDIRS
-static int Sys_GetUserdir (char *dst, size_t dstsize)
+static qboolean Sys_GetUserdirArgs (int argc, char **argv, char *dst, size_t dstsize)
+{
+	int i = 1;
+	for (; i < argc - 1; ++i)
+	{
+		if (strcmp(argv[i], "-userdir") == 0)
+		{
+			char *p = dst;
+			const char * arg = argv[i + 1];
+			const int n = (int)strlen(arg);
+			if (n < 1) Sys_Error("Bad argument to -userdir");
+			if (q_strlcpy(dst, arg, dstsize) >= dstsize)
+				Sys_Error ("Insufficient array size for userspace directory");
+			if (dst[n - 1] == '/') dst[n - 1] = 0;
+			if (*p == '/') p++;
+			for (; *p; p++) {
+				const char c = *p;
+				if (c == '/') {
+					*p = 0;
+					Sys_mkdir (dst, true);
+					*p = c;
+				}
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
+static int Sys_GetUserdir (int argc, char **argv, char *dst, size_t dstsize)
 {
 	size_t		n;
 	const char	*home_dir = NULL;
 	struct passwd	*pwent;
+
+	if (Sys_GetUserdirArgs(argc, argv, dst, dstsize))
+		return 0;
 
 	pwent = getpwuid(getuid());
 	if (pwent == NULL)
@@ -552,7 +584,7 @@ int main (int argc, char **argv)
 
 #if DO_USERDIRS
 	memset (userdir, 0, sizeof(userdir));
-	if (Sys_GetUserdir(userdir, sizeof(userdir)) != 0)
+	if (Sys_GetUserdir(argc, argv, userdir, sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
 	Sys_mkdir(userdir, true);
 	parms.userdir = userdir;
