@@ -36,12 +36,11 @@
 %idefine offset
 
 ;
-; OS/2 special handlings
-;(see the nasm documentation for obj format.)
+; OBJ format handlings (see nasm documentation.)
 ;
-%ifdef __OS2__
+%ifdef OBJ_FORMAT_obj
 BITS 32
-; declare segments with proper attributes for OS/2 builds
+; declare segments with proper attributes
 SEGMENT .data CLASS=DATA ALIGN=16 USE32 FLAT
 SEGMENT .text CLASS=CODE ALIGN=16 USE32 FLAT
 %endif

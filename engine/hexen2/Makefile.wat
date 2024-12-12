@@ -145,7 +145,7 @@ USE_CODEC_OPUS=no
 
 RC_DEFS=$(CPPFLAGS)
 RCFLAGS=-bt=nt
-NASMFLAGS=-f win32 -d_NO_PREFIX
+NASMFLAGS=-f obj -dOBJ_FORMAT_obj -d_NO_PREFIX
 
 !ifndef __UNIX__
 INCLUDES+= -I$(OSLIBS)\windows\dxsdk\include

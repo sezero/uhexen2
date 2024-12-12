@@ -126,7 +126,7 @@ USE_CODEC_OPUS=no
 # OS/2 flags/settings and overrides:
 #############################################################
 
-NASMFLAGS=-f obj -d__OS2__ -d_NO_PREFIX
+NASMFLAGS=-f obj -dOBJ_FORMAT_obj -d_NO_PREFIX
 
 !ifndef __UNIX__
 INCLUDES+= -I$(OSLIBS)\os2\codecs\include
