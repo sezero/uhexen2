@@ -19,9 +19,16 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
+/* These headers are from sdl12-compat, and are intended to give just enough
+functionality to let you build an SDL-1.2-based project without having the
+real SDL-1.2 available to you. */
+
+/* This file is a verbatim copy of SDL 1.2's, except for the
+   MacOS Classic include fixes being removed. */
+
 /* This is a simple file to encapsulate the OpenGL API headers */
 
-#include "SDL_config.h"
+#include <SDL/SDL_config.h>
 
 #ifdef __WIN32__
 #ifndef WIN32_LEAN_AND_MEAN
@@ -39,9 +46,6 @@
 #if defined(__MACOSX__)
 #include <OpenGL/gl.h>  /* Header File For The OpenGL Library */
 #include <OpenGL/glu.h> /* Header File For The GLU Library */
-#elif defined(__MACOS__)
-#include <gl.h>         /* Header File For The OpenGL Library */
-#include <glu.h>        /* Header File For The GLU Library */
 #else
 #include <GL/gl.h>      /* Header File For The OpenGL Library */
 #include <GL/glu.h>     /* Header File For The GLU Library */
@@ -3525,7 +3529,6 @@ typedef __int32 int32_t;
 typedef __int64 int64_t;
 typedef unsigned __int64 uint64_t;
 #endif /* */
-#elif defined(__MACOS__)  /* handled by SDL_config_macos.h */
 #else
 #include <inttypes.h>     /* Fallback option */
 #endif

@@ -1,0 +1,6 @@
+framework module SDL {
+  umbrella header "SDL.h"
+
+  export *
+  module * { export * }
+}
