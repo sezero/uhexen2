@@ -318,7 +318,7 @@ utils/hcc/hcc -src gamecode/hc/hw -os -oi -on
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Thu Feb 15 2024 O.Sezer <sezero@users.sourceforge.net> 1.5.10-1
+* Fri Feb 28 2025 O.Sezer <sezero@users.sourceforge.net> 1.5.10-1
 - Version 1.5.10.
 - Bump gamecode version to 1.29c
 - Install oem v1.08 patches
