@@ -12,10 +12,10 @@ options, but also allowing for "+map village1" type args.
 stevenaaus@yahoo.com
 
 diff --git a/engine/hexen2/sys_unix.c b/engine/hexen2/sys_unix.c
-index 411e400..1cc4c59 100644
+index 1a2bda5..7683360 100644
 --- a/engine/hexen2/sys_unix.c
 +++ b/engine/hexen2/sys_unix.c
-@@ -601,65 +601,267 @@ static void PrintVersion (void)
+@@ -633,65 +633,267 @@ static void PrintVersion (void)
  }
  
  #include "snd_sys.h"
@@ -195,12 +195,12 @@ index 411e400..1cc4c59 100644
 +			break;
 +	}
 +	num_avail_options = i;
-+
-+	if (argc <= 1)
-+		return;
  
 -	Sys_Printf ("Usage: %s [options]\n", name);
 -	while (help_strings[i])
++	if (argc <= 1)
++		return;
++
 +	skip = 0;
 +
 +	for (i = 1; i < argc; i++)
@@ -313,7 +313,7 @@ index 411e400..1cc4c59 100644
  }
  
  /*
-@@ -682,23 +884,7 @@ int main (int argc, char **argv)
+@@ -714,23 +916,7 @@ int main (int argc, char **argv)
  
  	PrintVersion();
  
