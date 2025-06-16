@@ -30,7 +30,7 @@ NOIXEMUL= 1
 
 ifeq ($(AOS3),1)
 # use Bebbo's GCC6 toolchain
-BEBBO_TOOLCHAIN=yes
+BEBBO_TOOLCHAIN=no
 # crt: libnix or clib2:
 USE_CLIB2=yes
 ifeq ($(BEBBO_TOOLCHAIN),yes)

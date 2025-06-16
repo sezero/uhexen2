@@ -1007,7 +1007,7 @@ endif
 ifeq ($(TARGET_OS),amigaos)
 
 # use Bebbo's GCC6 toolchain
-BEBBO_TOOLCHAIN=yes
+BEBBO_TOOLCHAIN=no
 
 # crt: libnix or clib2:
 USE_CLIB2=yes
