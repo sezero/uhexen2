@@ -356,30 +356,6 @@ qboolean	Cvar_Command (void)
 	return true;
 }
 
-/*
-============
-Cvar_MoveToFront
-============
-*/
-void Cvar_MoveToFront (const char *name)
-{
-	cvar_t	*var, *next;
-
-	for (var = cvar_vars; var; var = var->next)
-	{
-		next = var->next;
-		if (next && !strcmp(name, next->name))
-		{
-			// remove from the list
-			var->next = next->next;
-			// move to the front
-			next->next = cvar_vars;
-			cvar_vars = next;
-			break;
-		}
-	}
-}
-
 
 /*
 ============
