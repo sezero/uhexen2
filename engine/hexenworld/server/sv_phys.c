@@ -1327,12 +1327,7 @@ static void SV_Physics_Pusher (edict_t *ent)
 			SV_PushMove (ent, movetime, true);	// advances ent->v.ltime if not blocked
 	}
 
-#ifdef PLATFORM_AMIGAOS3
-	// SV_SpawnServer race condition workaround for meso2 and romeric5
-	if (thinktime > oldltime && (thinktime - 0.00000001) <= ent->v.ltime)
-#else
 	if (thinktime > oldltime && thinktime <= ent->v.ltime)
-#endif
 	{
 		VectorCopy (ent->v.origin, oldorg);
 
