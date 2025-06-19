@@ -56,10 +56,6 @@ SDL_LIBS   = $(shell $(SDL_CONFIG) --libs 2> /dev/null)
 # any other cpu.)
 USE_X86_ASM=yes
 
-# use optimized m68k assembly for amiga
-# requires vasm from http://sun.hasenbraten.de/vasm/
-USE_M68K_ASM=yes
-
 # link to the opengl libraries at compile time? (defaults
 # to no, so the binaries will dynamically load the necessary
 # libraries and functions at runtime.)
@@ -218,11 +214,6 @@ RC_INC  = -I. -I$(COMMONDIR)
 # disable x86 assembly if it is not an x86.
 ifneq ($(MACH_TYPE),x86)
 USE_X86_ASM=no
-endif
-
-# disable m68k assembly if it is not a m68k.
-ifneq ($(MACH_TYPE),m68k)
-USE_M68K_ASM=no
 endif
 
 ifdef DEMO
@@ -1158,34 +1149,11 @@ WORLD_ASM = worlda.o
 
 else
 
-# M68K asm objects
-ifeq ($(USE_M68K_ASM),yes)
-SOFT_ASM = \
-	amiga_r_68k.o \
-	d_part68k.o \
-	d_polyse68k.o \
-	d_scan68k.o \
-	d_sky68k.o \
-	d_sprite68k.o \
-	r_aclip68k.o \
-	r_alias68k.o \
-	r_bsp68k.o \
-	r_edge68k.o \
-	r_sky68k.o \
-	r_surf68k.o
-
-COMMON_ASM = swap_68k.o
-SOUND_ASM = snd_mixamiga68k.o
-WORLD_ASM =
-
-else
-
 SOFT_ASM =
 COMMON_ASM =
 SOUND_ASM =
 WORLD_ASM =
 
-endif
 endif
 
 # Sound objects

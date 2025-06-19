@@ -112,25 +112,8 @@ char *Sys_GetClipboardData (void);
 #	define	id386		0
 #endif
 
-/* m68k asm support */
-#if defined(USE_M68K_ASM) && \
-   (defined(__mc68000__) || defined(__M68K__) || defined(__m68k__) || defined(__MC68K__))
-#	define	id68k		1
-#else /* !m68k or no m68k asm */
-#	define	id68k		0
-#endif
-
 /* C-linkage for C-ASM shared global vars and functions */
 #if id386
-#   if defined(__cplusplus)
-#	define	ASM_LINKAGE_BEGIN	extern "C" {
-#	define	ASM_LINKAGE_END			}
-#   else
-#	define	ASM_LINKAGE_BEGIN
-#	define	ASM_LINKAGE_END
-#   endif
-
-#elif id68k
 #   if defined(__cplusplus)
 #	define	ASM_LINKAGE_BEGIN	extern "C" {
 #	define	ASM_LINKAGE_END			}

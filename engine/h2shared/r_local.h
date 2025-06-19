@@ -143,6 +143,7 @@ void R_RenderFace (msurface_t *fa, int clipflags);
 void R_RenderBmodelFace (bedge_t *pedges, msurface_t *psurf);
 void R_RotateBmodel (void);
 void R_TransformPlane (mplane_t *p, float *normal, float *dist);
+void R_TransformFrustum (void);
 void R_SetSkyFrame (void);
 texture_t *R_TextureAnimation (texture_t *base);
 
@@ -193,32 +194,6 @@ void R_Alias_clip_right (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out)
 void R_AliasTransformAndProjectFinalVerts (finalvert_t *fv, stvert_t *pstverts);
 
 void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
-#endif
-
-#if id68k
-void R_DrawSurfaceBlock16 (void);
-void R_DrawSurfaceBlock8_mip0 (void);
-void R_DrawSurfaceBlock8_mip1 (void);
-void R_DrawSurfaceBlock8_mip2 (void);
-void R_DrawSurfaceBlock8_mip3 (void);
-
-void R_GenerateSpans (void);
-void R_GenerateTSpans (void);
-void R_InsertNewEdges (edge_t *edgestoadd, edge_t *edgelist);
-void R_RemoveEdges (edge_t *pedge);
-void R_StepActiveU (edge_t *pedge);
-
-void R_Alias_clip_top (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
-void R_Alias_clip_bottom (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
-void R_Alias_clip_left (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
-void R_Alias_clip_right (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
-
-void R_AliasTransformAndProjectFinalVerts (finalvert_t *fv, stvert_t *pstverts);
-
-void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
-
-void R_AliasTransformVector (vec3_t in, vec3_t out);
-void R_AliasTransformFinalVert (finalvert_t *fv, auxvert_t *av, trivertx_t *pverts);
 #endif
 
 ASM_LINKAGE_END

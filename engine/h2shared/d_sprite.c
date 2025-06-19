@@ -28,7 +28,7 @@ static int		sprite_height;
 static int		minindex, maxindex;
 static sspan_t	*sprite_spans;
 
-#if	!id386 && !id68k
+#if	!id386
 
 /*
 =====================

@@ -27,7 +27,6 @@
 #define SKY_SPAN_MAX	(1 << SKY_SPAN_SHIFT)
 
 
-#if !id68k
 /*
 =================
 D_Sky_uv_To_st
@@ -148,5 +147,4 @@ void D_DrawSkyScans8 (espan_t *pspan)
 
 	} while ((pspan = pspan->pnext) != NULL);
 }
-#endif /* !id68k */
 

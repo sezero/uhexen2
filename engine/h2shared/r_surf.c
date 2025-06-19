@@ -41,7 +41,7 @@ ASM_LINKAGE_END
 
 static unsigned int	blocklights[18*18];
 
-#if !id386 && !id68k
+#if !id386
 static void R_DrawSurfaceBlock16 (void);
 static void R_DrawSurfaceBlock8_mip0 (void);
 static void R_DrawSurfaceBlock8_mip1 (void);
@@ -358,7 +358,7 @@ void R_DrawSurface (void)
 
 //=============================================================================
 
-#if	!id386 && !id68k
+#if	!id386
 /*
 ================
 R_DrawSurfaceBlock8_mip0

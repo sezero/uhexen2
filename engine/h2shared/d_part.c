@@ -47,7 +47,7 @@ void D_StartParticles (void)
 }
 
 
-#if	!id386 && !id68k
+#if	!id386
 
 /*
 ==============

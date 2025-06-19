@@ -27,7 +27,7 @@
 static finalvert_t		fv[2][8];
 static auxvert_t		av[8];
 
-#if !id386 && !id68k
+#if !id386
 static void R_Alias_clip_top (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
 static void R_Alias_clip_bottom (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
 static void R_Alias_clip_left (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
@@ -88,7 +88,7 @@ static void R_Alias_clip_z (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *o
 }
 
 
-#if	!id386 && !id68k
+#if	!id386
 
 static void R_Alias_clip_left (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out)
 {

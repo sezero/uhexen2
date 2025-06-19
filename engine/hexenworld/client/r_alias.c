@@ -77,14 +77,12 @@ static aedge_t	aedges[12] =
 };
 
 
-#if !id386 && !id68k
+#if !id386
 static void R_AliasTransformAndProjectFinalVerts (finalvert_t *fv, stvert_t *pstverts);
 #endif
 static void R_AliasSetUpTransform (int trivial_accept);
-#if !id68k
 static void R_AliasTransformVector (vec3_t in, vec3_t out);
 static void R_AliasTransformFinalVert (finalvert_t *fv, auxvert_t *av, trivertx_t *pverts);
-#endif
 
 
 /*
@@ -264,7 +262,6 @@ qboolean R_AliasCheckBBox (void)
 }
 
 
-#if !id68k
 /*
 ================
 R_AliasTransformVector
@@ -276,7 +273,6 @@ static void R_AliasTransformVector (vec3_t in, vec3_t out)
 	out[1] = DotProduct(in, aliastransform[1]) + aliastransform[1][3];
 	out[2] = DotProduct(in, aliastransform[2]) + aliastransform[2][3];
 }
-#endif
 
 
 /*
@@ -555,7 +551,6 @@ static void R_AliasSetUpTransform (int trivial_accept)
 }
 
 
-#if !id68k
 /*
 ================
 R_AliasTransformFinalVert
@@ -588,10 +583,9 @@ static void R_AliasTransformFinalVert (finalvert_t *fv, auxvert_t *av, trivertx_
 
 	fv->v[4] = temp;
 }
-#endif
 
 
-#if	!id386 && !id68k
+#if	!id386
 
 /*
 ================

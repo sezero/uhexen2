@@ -31,6 +31,7 @@ int		vstartscan;
 
 // FIXME: should go away
 extern void	R_RotateBmodel (void);
+extern void	R_TransformFrustum (void);
 
 vec3_t		transformed_modelorg;
 
@@ -549,7 +550,7 @@ void D_DrawSurfaces (qboolean Translucent)
 						D_CalcGradients (pface);
 
 					//	(*d_drawspans) (s->spans);
-#if id386 || id68k
+#if id386
 						D_DrawSpans16T(s->spans);
 #else
 						D_DrawSpans8T(s->spans);
