@@ -57,15 +57,9 @@ This is a minor bug fix and maintenance release:
 
 - DOS: removed the long-obsoleted MPATH and BW-TCP network drivers.
 
-- Amiga (m68k): multiple updates/optimizations thanks to Szilard Biro.
-
-- Amiga (m68k): support for PSX controller, cdplayer.library and Paula
-  audio support, thanks to Szilard Biro.
-
-- Amiga (m68k): added support for Bebbo's gcc6/libnix based toolchain,
-  dropped support for VBCC compiler.
-
 - AROS: initial x86_64 support.
+
+- Dropped support for m68k-amigaos
 
 - All platforms: Several HexenC (hcode) tweaks and clean-ups.
 
