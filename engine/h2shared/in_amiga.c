@@ -44,17 +44,9 @@
 #endif
 
 #include "quakedef.h"
-#ifdef PLATFORM_AMIGAOS3
-#include <devices/gameport.h>
-#include <psxport.h>
-#else
 #include <libraries/lowlevel_ext.h>
-#endif
 
 struct Library *LowLevelBase = NULL;
-#ifdef __CLIB2__
-struct Library *KeymapBase = NULL;
-#endif
 
 extern struct Window *window;
 static struct Interrupt InputHandler;
@@ -85,21 +77,6 @@ static int joy_available = 0;
 static ULONG oldjoyflag = 0;
 static int joynumaxes = 0;
 static int joyaxis[4];
-#ifdef PLATFORM_AMIGAOS3
-static int analog_centered=FALSE;
-static int analog_clx, analog_cly;
-static int analog_crx, analog_cry;
-static struct GamePortTrigger gameport_gpt = {
-	GPTF_UPKEYS | GPTF_DOWNKEYS,	/* gpt_Keys */
-	0,				/* gpt_Timeout */
-	1,				/* gpt_XDelta */
-	1				/* gpt_YDelta */
-};
-static struct MsgPort *gameport_mp = NULL;
-static struct IOStdReq *gameport_io = NULL;
-static struct InputEvent gameport_ie;
-static int gameport_is_open = FALSE;
-#endif
 
 static	cvar_t	in_joystick = {"joystick", "1", CVAR_ARCHIVE};		/* enable/disable joystick */
 static	cvar_t	joy_index = {"joy_index", "1", CVAR_NONE};		/* joystick to use when have multiple */
@@ -124,22 +101,6 @@ static void IN_StartupJoystick (void);
 static void IN_Callback_JoyEnable (cvar_t *var);
 static void IN_Callback_JoyIndex (cvar_t *var);
 
-#ifdef PLATFORM_AMIGAOS3
-static unsigned char keyconv[] =
-{
-	'`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',							/*  10 */
-	'-', '=', '\\', 0, K_KP_INS, 'q', 'w', 'e', 'r', 't',							/*  20 */
-	'y', 'u', 'i', 'o', 'p', '[', ']', 0, K_KP_END, K_KP_DOWNARROW,						/*  30 */
-	K_KP_PGDN, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l',							/*  40 */
-	';', '\'', 0, 0, K_KP_LEFTARROW, K_KP_5, K_KP_RIGHTARROW, '<', 'z', 'x',				/*  50 */
-	'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0, K_KP_DEL,							/*  60 */
-	K_KP_HOME, K_KP_UPARROW, K_KP_PGUP, ' ', K_BACKSPACE, K_TAB, K_KP_ENTER, K_ENTER, K_ESCAPE, K_DEL,	/*  70 */
-	0, 0, 0, K_KP_MINUS, 0, K_UPARROW, K_DOWNARROW, K_RIGHTARROW, K_LEFTARROW, K_F1,	/*  80 */
-	K_F2, K_F3, K_F4, K_F5, K_F6, K_F7, K_F8, K_F9, K_F10, K_KP_NUMLOCK,						/*  90 */
-	0, K_KP_SLASH, K_KP_STAR, K_KP_PLUS, K_PAUSE, K_SHIFT, K_SHIFT, 0, K_CTRL, K_ALT,					/* 100 */
-	K_ALT, 0, 0, 0, 0, 0, 0, 0, 0, 0,									/* 110 */
-};
-#else
 static unsigned char keyconv[] =
 {
 	'`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',							/*  10 */
@@ -155,7 +116,6 @@ static unsigned char keyconv[] =
 	K_ALT, 0, 0, 0, 0, 0, 0, 0, K_KP_NUMLOCK, K_PAUSE,									/* 110 */
 	K_F12, K_HOME, K_END, 0, 0, 0, 0, 0, 0, 0,								/* 120 */
 };
-#endif
 #define MAX_KEYCONV (sizeof keyconv / sizeof keyconv[0])
 
 
@@ -513,38 +473,9 @@ void IN_Shutdown (void)
 		LowLevelBase = NULL;
 	}
 
-#ifdef PLATFORM_AMIGAOS3
-	if (gameport_is_open) {
-		BYTE gameport_ct = GPCT_NOCONTROLLER;
-		AbortIO((struct IORequest *)gameport_io);
-		WaitIO((struct IORequest *)gameport_io);
-		gameport_io->io_Command = GPD_SETCTYPE;
-		gameport_io->io_Length = 1;
-		gameport_io->io_Data = &gameport_ct;
-		DoIO((struct IORequest *)gameport_io);
-		CloseDevice((struct IORequest *)gameport_io);
-		gameport_is_open = FALSE;
-	}
-	if (gameport_io != NULL) {
-		DeleteIORequest((struct IORequest *)gameport_io);
-		gameport_io = NULL;
-	}
-	if (gameport_mp != NULL) {
-		DeleteMsgPort(gameport_mp);
-		gameport_mp = NULL;
-	}
-#endif
-
 	joy_port = -1;
 	joy_available = 0;
 	oldjoyflag = 0;
-
-#ifdef __CLIB2__
-	if (KeymapBase) {
-		CloseLibrary(KeymapBase);
-		KeymapBase = NULL;
-	}
-#endif
 }
 
 /*
@@ -751,59 +682,6 @@ static void IN_StartupJoystick (void)
 	if (safemode || COM_CheckParm ("-nojoy"))
 		return;
 
-#ifdef __CLIB2__
-	KeymapBase = OpenLibrary("keymap.library", 37);
-#endif
-
-#ifdef PLATFORM_AMIGAOS3
-	if ((gameport_mp = CreateMsgPort())) {
-		if ((gameport_io = (struct IOStdReq *)CreateIORequest(gameport_mp, sizeof(struct IOStdReq)))) {
-			BYTE gameport_ct;
-			for (i=0; i<4; i++) {
-				if (!OpenDevice((STRPTR)"psxport.device", i, (struct IORequest *)gameport_io, 0)) {
-					Con_Printf("psxport.device unit %d opened.\n", i);
-					Forbid();
-					gameport_io->io_Command = GPD_ASKCTYPE;
-					gameport_io->io_Length = 1;
-					gameport_io->io_Data = &gameport_ct;
-					DoIO((struct IORequest *)gameport_io);
-					if (gameport_ct == GPCT_NOCONTROLLER) {
-						gameport_ct = GPCT_ALLOCATED;
-						gameport_io->io_Command = GPD_SETCTYPE;
-						gameport_io->io_Length = 1;
-						gameport_io->io_Data = &gameport_ct;
-						DoIO((struct IORequest *)gameport_io);
-
-						Permit();
-
-						gameport_io->io_Command = GPD_SETTRIGGER;
-						gameport_io->io_Length = sizeof(struct GamePortTrigger);
-						gameport_io->io_Data = &gameport_gpt;
-						DoIO((struct IORequest *)gameport_io);
-
-						gameport_io->io_Command = GPD_READEVENT;
-						gameport_io->io_Length = sizeof(struct InputEvent);
-						gameport_io->io_Data = &gameport_ie;
-						SendIO((struct IORequest *)gameport_io);
-						gameport_is_open = TRUE;
-
-						joynumaxes = 4;
-						joy_available = 1;
-
-						break;
-					} else {
-						Permit();
-						Con_Printf("psxport.device unit %d in use.\n", i);
-						CloseDevice((struct IORequest *)gameport_io);
-					}
-				} else {
-					Con_Printf("psxport.device unit %d won't open.\n", i);
-				}
-			}
-		}
-	}
-#endif
-
 	if (!LowLevelBase)
 		LowLevelBase = OpenLibrary("lowlevel.library", 37);
 
@@ -822,10 +700,8 @@ static void IN_StartupJoystick (void)
 		}
 		*/
 		joynumaxes = 0;
-#ifndef PLATFORM_AMIGAOS3
 		if (LowLevelBase->lib_Version > 50 || (LowLevelBase->lib_Version >= 50 && LowLevelBase->lib_Revision >= 17))
 			joynumaxes = 2;
-#endif
 		joy_available = 4;
 	}
 	else
@@ -845,12 +721,10 @@ static void IN_StartupJoystick (void)
 	*/
 
 	Con_Printf ("lowlevel.library: %d devices are reported\n", joy_available);
-#ifndef PLATFORM_AMIGAOS3
 	for (i = 0; i < joy_available; i++)
 	{
 		Con_Printf("#%d: \"%s\"\n", i, JoystickName(i));
 	}
-#endif
 
 	if (in_joystick.integer)
 		IN_Callback_JoyIndex(&joy_index);
@@ -910,66 +784,6 @@ static void IN_HandleJoystick (void)
 	if (window->WScreen != IntuitionBase->FirstScreen)
 		return;
 
-#ifdef PLATFORM_AMIGAOS3
-	if (gameport_is_open) {
-		if (GetMsg(gameport_mp) != NULL) {
-			if ((PSX_CLASS(gameport_ie) == PSX_CLASS_JOYPAD) || (PSX_CLASS(gameport_ie) == PSX_CLASS_WHEEL))
-				analog_centered = FALSE;
-
-			if (PSX_CLASS(gameport_ie) != PSX_CLASS_MOUSE) {
-				ULONG joyflag = ~PSX_BUTTONS(gameport_ie);
-				if (joyflag != oldjoyflag)
-				{
-					ULONG oldflag = oldjoyflag;
-					Check_Joy_Event(K_JOY1, joyflag, oldflag, PSX_TRIANGLE);
-					Check_Joy_Event(K_JOY2, joyflag, oldflag, PSX_CIRCLE);
-					Check_Joy_Event(K_JOY3, joyflag, oldflag, PSX_CROSS);
-					Check_Joy_Event(K_JOY4, joyflag, oldflag, PSX_SQUARE);
-					Check_Joy_Event(K_AUX1, joyflag, oldflag, PSX_START);
-					Check_Joy_Event(K_AUX2, joyflag, oldflag, PSX_SELECT);
-					Check_Joy_Event(K_AUX3, joyflag, oldflag, PSX_L1);
-					Check_Joy_Event(K_AUX4, joyflag, oldflag, PSX_R1);
-					Check_Joy_Event(K_AUX5, joyflag, oldflag, PSX_L2);
-					Check_Joy_Event(K_AUX6, joyflag, oldflag, PSX_R2);
-					Check_Joy_Event(K_AUX7, joyflag, oldflag, PSX_L3);
-					Check_Joy_Event(K_AUX8, joyflag, oldflag, PSX_R3);
-					Check_Joy_Event(K_AUX29, joyflag, oldflag, PSX_UP);
-					Check_Joy_Event(K_AUX30, joyflag, oldflag, PSX_DOWN);
-					Check_Joy_Event(K_AUX31, joyflag, oldflag, PSX_LEFT);
-					Check_Joy_Event(K_AUX32, joyflag, oldflag, PSX_RIGHT);
-					oldjoyflag = joyflag;
-				}
-			}
-
-			if ((PSX_CLASS(gameport_ie) == PSX_CLASS_ANALOG) || (PSX_CLASS(gameport_ie) == PSX_CLASS_ANALOG2) || (PSX_CLASS(gameport_ie) == PSX_CLASS_ANALOG_MODE2)) {
-				int analog_lx = PSX_LEFTX(gameport_ie);
-				int analog_ly = PSX_LEFTY(gameport_ie);
-				int analog_rx = PSX_RIGHTX(gameport_ie);
-				int analog_ry = PSX_RIGHTY(gameport_ie);
-
-				if (!analog_centered) {
-					analog_clx = analog_lx;
-					analog_cly = analog_ly;
-					analog_crx = analog_rx;
-					analog_cry = analog_ry;
-					analog_centered = TRUE;
-				}
-
-				joyaxis[0] = analog_lx - analog_clx;
-				joyaxis[1] = analog_ly - analog_cly;
-				joyaxis[2] = analog_rx - analog_crx;
-				joyaxis[3] = analog_ry - analog_cry;
-			}
-
-			gameport_io->io_Command = GPD_READEVENT;
-			gameport_io->io_Length = sizeof(struct InputEvent);
-			gameport_io->io_Data = &gameport_ie;
-			SendIO((struct IORequest *)gameport_io);
-		}
-		return;
-	}
-#endif
-
 	if (!LowLevelBase || joy_port == -1)
 		return;
 
@@ -992,7 +806,6 @@ static void IN_HandleJoystick (void)
 		oldjoyflag = joyflag;
 	}
 
-#ifndef PLATFORM_AMIGAOS3
 	if (joynumaxes > 0)
 	{
 		joyflag = ReadJoyPort(joy_port + JP_ANALOGUE_PORT_MAGIC);
@@ -1002,7 +815,6 @@ static void IN_HandleJoystick (void)
 			joyaxis[1] = (int)((joyflag & JP_YAXIS_MASK) >> 8) - 128;
 		}
 	}
-#endif
 }
 
 /*

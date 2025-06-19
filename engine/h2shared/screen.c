@@ -334,10 +334,6 @@ static float AdaptFovx (float fov_x, float width, float height)
 	if (vid.aspect > 1.10f)
 		return fov_x;		/* no fov_adapt for weird VGA modes */
 #endif
-#ifdef PLATFORM_AMIGAOS3
-	if (vid.noadapt)
-		return fov_x;		/* not for Amiga native chipset modes */
-#endif
 	if (!scr_fov_adapt.integer)
 		return fov_x;
 	if ((x = height / width) == 0.75)

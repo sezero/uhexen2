@@ -58,7 +58,7 @@ char		com_token[1024];
 #ifdef PLATFORM_AMIGA
 struct timerequest	*timerio;
 struct MsgPort		*timerport;
-#if defined(__MORPHOS__) || defined(__VBCC__)
+#if defined(__MORPHOS__)
 struct Library		*TimerBase;
 #else
 struct Device		*TimerBase;
@@ -241,7 +241,7 @@ static void AMIGA_TimerInit (void)
 			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
 					(struct IORequest *) timerio, 0) == 0)
 			{
-				#if defined(__MORPHOS__) || defined(__VBCC__)
+				#if defined(__MORPHOS__)
 				TimerBase = (struct Library *)timerio->tr_node.io_Device;
 				#else
 				TimerBase = timerio->tr_node.io_Device;

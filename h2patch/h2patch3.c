@@ -397,7 +397,7 @@ static long get_millisecs (void)
 #elif defined(PLATFORM_AMIGA)
 static struct timerequest *timerio;
 static struct MsgPort   *timerport;
-#if defined(__MORPHOS__) || defined(__VBCC__)
+#if defined(__MORPHOS__)
 struct Library *TimerBase = NULL;
 #else
 struct Device  *TimerBase = NULL;
@@ -423,7 +423,7 @@ static void Sys_TimerInit (void)
 			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
 					(struct IORequest *) timerio, 0) == 0)
 			{
-				#if defined(__MORPHOS__) || defined(__VBCC__)
+				#if defined(__MORPHOS__)
 				TimerBase = (struct Library *)timerio->tr_node.io_Device;
 				#else
 				TimerBase = timerio->tr_node.io_Device;
