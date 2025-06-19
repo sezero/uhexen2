@@ -133,32 +133,6 @@ CFLAGS  += -noixemul
 LDFLAGS += -noixemul
 endif
 
-ifeq ($(TARGET_OS),amigaos)
-# use Bebbo's GCC6 toolchain
-BEBBO_TOOLCHAIN=no
-# crt: libnix or clib2:
-USE_CLIB2=yes
-ifeq ($(BEBBO_TOOLCHAIN),yes)
-USE_CLIB2=no
-endif
-ifeq ($(USE_CLIB2),yes)
-CRT_FLAGS=-mcrt=clib2
-else
-CRT_FLAGS=-noixemul
-endif
-CFLAGS  += $(CRT_FLAGS) -m68020-60
-LDFLAGS += $(CRT_FLAGS) -m68020
-ifndef DEBUG
-CFLAGS  += -fno-omit-frame-pointer
-endif
-# for extra missing headers
-INCLUDES += -I$(OSLIBS)/amigaos/include
-ifneq ($(BEBBO_TOOLCHAIN),yes)
-# Roadshow SDK
-NET_INC   = -I$(OSLIBS)/amigaos/netinclude
-endif
-endif
-
 
 # Rules for turning source files into .o files
 %.o: %.c
@@ -190,9 +164,6 @@ endif
 ifeq ($(TARGET_OS),morphos)
 SYSOBJ_SYS = sys_amiga.o
 endif
-ifeq ($(TARGET_OS),amigaos)
-SYSOBJ_SYS = sys_amiga.o
-endif
 
 OBJECTS = qsnprint.o sizebuf.o msg_io.o cmds.o common.o net.o master.o $(SYSOBJ_SYS)
 
@@ -204,12 +175,6 @@ all: default
 
 $(BINARY) : $(OBJECTS)
 	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@
-
-ifeq ($(TARGET_OS),amigaos)
-# workaround stupid AmiTCP SDK mess for old aos3
-net.o: INCLUDES+= $(NET_INC)
-master.o: INCLUDES+= $(NET_INC)
-endif
 
 clean:
 	rm -f *.o core

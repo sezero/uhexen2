@@ -84,28 +84,6 @@ CFLAGS  += -noixemul
 LDFLAGS += -noixemul
 LDLIBS  += -lm
 endif
-ifeq ($(TARGET_OS),amigaos)
-# use Bebbo's GCC6 toolchain
-BEBBO_TOOLCHAIN=no
-# crt: libnix or clib2:
-USE_CLIB2=yes
-ifeq ($(BEBBO_TOOLCHAIN),yes)
-USE_CLIB2=no
-endif
-ifeq ($(USE_CLIB2),yes)
-CRT_FLAGS=-mcrt=clib2
-else
-CRT_FLAGS=-noixemul
-endif
-CFLAGS  += $(CRT_FLAGS) -m68020-60
-LDFLAGS += $(CRT_FLAGS) -m68020
-LDLIBS  += -lm
-ifndef DEBUG
-CFLAGS  += -fno-omit-frame-pointer
-endif
-# for extra missing headers
-INCLUDES += -I$(OSLIBS)/amigaos/include
-endif
 ifeq ($(TARGET_OS),darwin)
 CPUFLAGS=
 # require 10.5 for 64 bit builds

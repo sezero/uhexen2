@@ -266,50 +266,6 @@ endif
 #############################################################
 
 
-#############################################################
-# AmigaOS flags/settings and overrides:
-#############################################################
-ifeq ($(TARGET_OS),amigaos)
-
-# use Bebbo's GCC6 toolchain
-BEBBO_TOOLCHAIN=no
-
-# crt: libnix or clib2:
-USE_CLIB2=yes
-ifeq ($(BEBBO_TOOLCHAIN),yes)
-USE_CLIB2=no
-endif
-
-ifndef DEBUG
-ifneq ($(BEBBO_TOOLCHAIN),yes)
-# -fomit-frame-pointer / -ffast-math causes trouble with gcc2.95
-CFLAGS  += -fno-omit-frame-pointer
-else
-# these break the game with GCC6
-CFLAGS  += -fbbb=- -fno-tree-forwprop -fno-tree-ter -fno-move-loop-invariants
-endif
-endif
-ifeq ($(USE_CLIB2),yes)
-CRT_FLAGS=-mcrt=clib2
-else
-CRT_FLAGS=-noixemul
-endif
-CFLAGS  += $(CRT_FLAGS) -m68060 -m68881
-LDFLAGS += $(CRT_FLAGS) -m68060 -m68881
-SYSLIBS += -lm
-
-# for extra missing headers
-INCLUDES += -I$(OSLIBS)/amigaos/include
-ifneq ($(BEBBO_TOOLCHAIN),yes)
-# Roadshow SDK
-NET_INC   = -I$(OSLIBS)/amigaos/netinclude
-endif
-
-endif
-# End of AmigaOS settings
-#############################################################
-
-
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
@@ -364,10 +320,6 @@ ifeq ($(TARGET_OS),morphos)
 SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_amiga.o
 endif
-ifeq ($(TARGET_OS),amigaos)
-SYSOBJ_NET := net_bsd.o net_udp.o
-SYSOBJ_SYS := sys_amiga.o
-endif
 
 # Final list of objects
 OBJECTS = \
@@ -414,15 +366,6 @@ all: default
 
 $(BINARY): $(OBJECTS)
 	$(LINKER) $(OBJECTS) $(LDFLAGS) $(SYSLIBS) -o $@
-
-ifeq ($(TARGET_OS),amigaos)
-# workaround stupid AmiTCP SDK mess for old aos3
-net_bsd.o: INCLUDES+= $(NET_INC)
-net_udp.o: INCLUDES+= $(NET_INC)
-net_dgrm.o: INCLUDES+= $(NET_INC)
-net_loop.o: INCLUDES+= $(NET_INC)
-net_main.o: INCLUDES+= $(NET_INC)
-endif
 
 # deps for *.c including another *.c
 dos/net_ser.o: ../dos/net_comx.c
