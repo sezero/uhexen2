@@ -821,9 +821,6 @@ static const char *help_strings[] = {
 #if HAVE_AHI_SOUND
 	"     [-sndahi]               Use AHI audio system",
 #endif
-#if HAVE_PAULA_SOUND
-	"     [-sndpaula]             Use Paula DMA audio",
-#endif
 #endif	/*  SOUND_NUMDRIVERS */
 #endif	/* _NO_SOUND */
 	"     [-nomouse]              Disable mouse usage",
