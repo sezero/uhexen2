@@ -1,6 +1,5 @@
 initial patch for SDL2 support: based on the original work by jpernst at
 https://github.com/jpernst/uhexen2-sdl2.git
-
 Things seem to work but needs some polishing and tidy-up before applying:
 One of the most important things is handling SDL2 text input mode.
 
@@ -1248,7 +1247,7 @@ index 384a402..dc0eed8 100644
  		modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
  		if (is_fullscreen)
 diff --git a/engine/hexen2/Makefile b/engine/hexen2/Makefile
-index 0773047..13c998d 100644
+index 1f1cb91..9c6bc8d 100644
 --- a/engine/hexen2/Makefile
 +++ b/engine/hexen2/Makefile
 @@ -47,8 +47,17 @@
@@ -1269,7 +1268,7 @@ index 0773047..13c998d 100644
  SDL_CFLAGS = $(shell $(SDL_CONFIG) --cflags 2> /dev/null)
  SDL_LIBS   = $(shell $(SDL_CONFIG) --libs 2> /dev/null)
  
-@@ -284,10 +293,17 @@
+@@ -271,10 +280,17 @@
  # @rpath can be used when targeting 10.5+
  USE_RPATH=no
  ifeq ($(MACH_TYPE),x86)
@@ -1287,7 +1286,7 @@ index 0773047..13c998d 100644
  ifeq ($(MACH_TYPE),ppc)
  # require 10.2 for ppc builds (midi_osx.c requirement.)
  CFLAGS  +=-mmacosx-version-min=10.2
-@@ -340,7 +356,7 @@
+@@ -327,7 +343,7 @@
  
  # Unix builds rely on SDL:
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1296,7 +1295,7 @@ index 0773047..13c998d 100644
  # not relying on sdl-config command and assuming
  # /Library/Frameworks/SDL.framework is available
  SDL_CFLAGS =-D_GNU_SOURCE=1 -D_THREAD_SAFE
-@@ -352,7 +368,12 @@
+@@ -339,7 +355,12 @@
  SDL_LIBS  +=-F$(SDL_FRAMEWORK_PATH)
  SDL_CFLAGS+=-F$(SDL_FRAMEWORK_PATH)
  endif
@@ -1310,7 +1309,7 @@ index 0773047..13c998d 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -452,7 +473,7 @@
+@@ -439,7 +460,7 @@
  
  # Unix builds rely on SDL:
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1319,7 +1318,7 @@ index 0773047..13c998d 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -485,8 +506,16 @@
+@@ -472,8 +493,16 @@
  CFLAGS  += -fno-omit-frame-pointer
  endif
  # using SDL for now:
@@ -1338,7 +1337,7 @@ index 0773047..13c998d 100644
  USE_SDLCD=yes
  USE_SDLAUDIO=yes
  
-@@ -510,7 +539,7 @@
+@@ -497,7 +526,7 @@
  endif
  
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1347,7 +1346,7 @@ index 0773047..13c998d 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -846,6 +875,8 @@
+@@ -833,6 +862,8 @@
  
  # MorphOS builds can use SDL or native code
  USE_SDL=no
@@ -1356,7 +1355,7 @@ index 0773047..13c998d 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -906,7 +937,7 @@
+@@ -893,7 +924,7 @@
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1365,7 +1364,7 @@ index 0773047..13c998d 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -925,6 +956,8 @@
+@@ -912,6 +943,8 @@
  
  # AROS builds can use SDL or native code
  USE_SDL=no
@@ -1374,7 +1373,7 @@ index 0773047..13c998d 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -991,7 +1024,7 @@
+@@ -978,7 +1011,7 @@
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1383,25 +1382,7 @@ index 0773047..13c998d 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -1017,6 +1050,8 @@
- 
- # Don't use SDL on AmigaOS
- USE_SDL=no
-+# Use SDL-1.2 for now, if actually using SDL.
-+SDL_API=1
- ifneq ($(USE_SDL),yes)
- USE_SDLCD=no
- USE_SDLAUDIO=no
-@@ -1107,7 +1142,7 @@
- 
- ifeq ($(USE_SDL),yes)
- # SDLQUAKE must be defined for all SDL using platforms/targets
--CPPFLAGS+= -DSDLQUAKE
-+CPPFLAGS+= -DSDLQUAKE=$(SDL_API)
- CFLAGS  += $(SDL_CFLAGS)
- LDFLAGS += $(SDL_LIBS)
- endif
-@@ -1516,8 +1551,10 @@
+@@ -1347,8 +1380,10 @@
  SYSOBJ_NET := net_bsd.o net_udp.o
  SYSOBJ_SYS := sys_unix.o
  SYSOBJ_SYS += sys_osx.o
@@ -1499,7 +1480,7 @@ index 1a2bda5..3f7fbcf 100644
  #endif
  }
 diff --git a/engine/hexenworld/client/Makefile b/engine/hexenworld/client/Makefile
-index 8b240a8..c9c0a25 100644
+index 0f85270..d8e5efe 100644
 --- a/engine/hexenworld/client/Makefile
 +++ b/engine/hexenworld/client/Makefile
 @@ -49,8 +49,17 @@
@@ -1520,7 +1501,7 @@ index 8b240a8..c9c0a25 100644
  SDL_CFLAGS = $(shell $(SDL_CONFIG) --cflags 2> /dev/null)
  SDL_LIBS   = $(shell $(SDL_CONFIG) --libs 2> /dev/null)
  
-@@ -249,10 +258,17 @@
+@@ -240,10 +249,17 @@
  # @rpath can be used when targeting 10.5+
  USE_RPATH=no
  ifeq ($(MACH_TYPE),x86)
@@ -1538,7 +1519,7 @@ index 8b240a8..c9c0a25 100644
  ifeq ($(MACH_TYPE),ppc)
  # require 10.2 for ppc builds (midi_osx.c requirement.)
  CFLAGS  +=-mmacosx-version-min=10.2
-@@ -305,7 +321,7 @@
+@@ -296,7 +312,7 @@
  
  # Unix builds rely on SDL:
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1547,7 +1528,7 @@ index 8b240a8..c9c0a25 100644
  # not relying on sdl-config command and assuming
  # /Library/Frameworks/SDL.framework is available
  SDL_CFLAGS =-D_GNU_SOURCE=1 -D_THREAD_SAFE
-@@ -317,7 +333,12 @@
+@@ -308,7 +324,12 @@
  SDL_LIBS  +=-F$(SDL_FRAMEWORK_PATH)
  SDL_CFLAGS+=-F$(SDL_FRAMEWORK_PATH)
  endif
@@ -1561,7 +1542,7 @@ index 8b240a8..c9c0a25 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -417,7 +438,7 @@
+@@ -408,7 +429,7 @@
  
  # Unix builds rely on SDL:
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1570,7 +1551,7 @@ index 8b240a8..c9c0a25 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -450,8 +471,16 @@
+@@ -441,8 +462,16 @@
  CFLAGS  += -fno-omit-frame-pointer
  endif
  # using SDL for now:
@@ -1589,7 +1570,7 @@ index 8b240a8..c9c0a25 100644
  USE_SDLCD=yes
  USE_SDLAUDIO=yes
  
-@@ -475,7 +504,7 @@
+@@ -466,7 +495,7 @@
  endif
  
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1598,7 +1579,7 @@ index 8b240a8..c9c0a25 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  
-@@ -807,6 +836,8 @@
+@@ -798,6 +827,8 @@
  
  # MorphOS builds can use SDL or native code
  USE_SDL=no
@@ -1607,7 +1588,7 @@ index 8b240a8..c9c0a25 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -867,7 +898,7 @@
+@@ -858,7 +889,7 @@
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1616,7 +1597,7 @@ index 8b240a8..c9c0a25 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -886,6 +917,8 @@
+@@ -877,6 +908,8 @@
  
  # AROS builds can use SDL or native code
  USE_SDL=no
@@ -1625,7 +1606,7 @@ index 8b240a8..c9c0a25 100644
  ifneq ($(USE_SDL),yes)
  USE_SDLCD=no
  USE_SDLAUDIO=no
-@@ -952,7 +985,7 @@
+@@ -943,7 +976,7 @@
  
  ifeq ($(USE_SDL),yes)
  # SDLQUAKE must be defined for all SDL using platforms/targets
@@ -1634,25 +1615,7 @@ index 8b240a8..c9c0a25 100644
  CFLAGS  += $(SDL_CFLAGS)
  LDFLAGS += $(SDL_LIBS)
  endif
-@@ -978,6 +1011,8 @@
- 
- # Don't use SDL on AmigaOS
- USE_SDL=no
-+# Use SDL-1.2 for now, if actually using SDL.
-+SDL_API=1
- ifneq ($(USE_SDL),yes)
- USE_SDLCD=no
- USE_SDLAUDIO=no
-@@ -1068,7 +1103,7 @@
- 
- ifeq ($(USE_SDL),yes)
- # SDLQUAKE must be defined for all SDL using platforms/targets
--CPPFLAGS+= -DSDLQUAKE
-+CPPFLAGS+= -DSDLQUAKE=$(SDL_API)
- CFLAGS  += $(SDL_CFLAGS)
- LDFLAGS += $(SDL_LIBS)
- endif
-@@ -1468,8 +1503,10 @@
+@@ -1304,8 +1337,10 @@
  SYSOBJ_SOFT_VID:= vid_sdl.o
  SYSOBJ_SYS := sys_unix.o
  SYSOBJ_SYS += sys_osx.o

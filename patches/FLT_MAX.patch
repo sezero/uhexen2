@@ -3,7 +3,7 @@ implementation defined type limits:  Similar changes are in quakespasm,
 tyr-quake, and tyr-utils.
 
 diff --git a/engine/h2shared/d_sprite.c b/engine/h2shared/d_sprite.c
-index e89b60d..e508ba1 100644
+index b146c8d..a946c78 100644
 --- a/engine/h2shared/d_sprite.c
 +++ b/engine/h2shared/d_sprite.c
 @@ -707,8 +707,8 @@ void D_DrawSprite (void)
@@ -18,7 +18,7 @@ index e89b60d..e508ba1 100644
  
  	for (i = 0; i < r_spritedesc.nump; i++)
 diff --git a/engine/h2shared/gl_model.c b/engine/h2shared/gl_model.c
-index 862b8e2..74c9eaf 100644
+index 32be778..ef5e8d2 100644
 --- a/engine/h2shared/gl_model.c
 +++ b/engine/h2shared/gl_model.c
 @@ -1088,8 +1088,8 @@ static void CalcSurfaceExtents (msurface_t *s)
@@ -71,7 +71,7 @@ index ab2a64b..3d3395d 100644
  
  #ifndef M_PI
 diff --git a/engine/h2shared/model.c b/engine/h2shared/model.c
-index 8989fa5..2bdd322 100644
+index 1200352..bfff6f5 100644
 --- a/engine/h2shared/model.c
 +++ b/engine/h2shared/model.c
 @@ -877,8 +877,8 @@ static void CalcSurfaceExtents (msurface_t *s)
@@ -116,10 +116,10 @@ index 40d818e..36c7695 100644
  	tex = s->texinfo;
  
 diff --git a/engine/hexen2/r_main.c b/engine/hexen2/r_main.c
-index ca67c78..7e9c59a 100644
+index 8d6a7f9..8065b90 100644
 --- a/engine/hexen2/r_main.c
 +++ b/engine/hexen2/r_main.c
-@@ -945,8 +945,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
+@@ -943,8 +943,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
  
  	for (i = 0; i < 3; i++)
  	{
@@ -146,10 +146,10 @@ index c95439a..779f23d 100644
  	int		i;
  
 diff --git a/engine/hexenworld/client/r_main.c b/engine/hexenworld/client/r_main.c
-index 2bd29d1..edda49a 100644
+index f752577..52d8aba 100644
 --- a/engine/hexenworld/client/r_main.c
 +++ b/engine/hexenworld/client/r_main.c
-@@ -971,8 +971,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
+@@ -969,8 +969,8 @@ static void RotatedBBox (vec3_t mins, vec3_t maxs, vec3_t angles, vec3_t tmins,
  
  	for (i = 0; i < 3; i++)
  	{

@@ -1065,7 +1065,7 @@ index 93519ff..f324ddd 100644
  	size = scr_viewsize.integer > 100 ? 100.0 : scr_viewsize.integer;
  	if (cl.intermission)
 diff --git a/engine/h2shared/screen.c b/engine/h2shared/screen.c
-index bfd7524..6be2afe 100644
+index 1e4c628..8bc8980 100644
 --- a/engine/h2shared/screen.c
 +++ b/engine/h2shared/screen.c
 @@ -271,7 +271,7 @@ static void SCR_DrawCenterString (void)
@@ -1077,7 +1077,7 @@ index bfd7524..6be2afe 100644
  
  	for (i = 0; i < lines; i++, by += 8)
  	{
-@@ -401,7 +401,7 @@ static void SCR_CalcRefdef (void)
+@@ -397,7 +397,7 @@ static void SCR_CalcRefdef (void)
  	if (scr_viewsize.integer >= 110 || cl.intermission)
  		sb_lines = 0;		// no status bar
  	else
@@ -1086,7 +1086,7 @@ index bfd7524..6be2afe 100644
  
  // these calculations mirror those in R_Init() for r_refdef, but take no
  // account of water warping
-@@ -647,7 +647,7 @@ static void SCR_DrawPause (void)
+@@ -643,7 +643,7 @@ static void SCR_DrawPause (void)
  	}
  
  	finaly = ((float)pic->height * LogoPercent) - pic->height;
@@ -1095,7 +1095,7 @@ index bfd7524..6be2afe 100644
  }
  
  #if !defined(H2W)
-@@ -679,8 +679,8 @@ void SCR_DrawLoading (void)
+@@ -675,8 +675,8 @@ void SCR_DrawLoading (void)
  		return;
  
  	pic = Draw_CachePic ("gfx/menu/loading.lmp");
@@ -1106,7 +1106,7 @@ index bfd7524..6be2afe 100644
  
  	if (loading_stage == 0)
  		return;
-@@ -692,17 +692,17 @@ void SCR_DrawLoading (void)
+@@ -688,17 +688,17 @@ void SCR_DrawLoading (void)
  	count = (loading_stage == 1) ? size : 106;
  	if (count)
  	{
@@ -1130,7 +1130,7 @@ index bfd7524..6be2afe 100644
  	}
  }
  #endif	/* !DRAW_PROGRESSBARS */
-@@ -786,13 +786,13 @@ static void SCR_SetUpToDrawConsole (void)
+@@ -782,13 +782,13 @@ static void SCR_SetUpToDrawConsole (void)
  
  	if (scr_conlines < scr_con_current)
  	{
@@ -1146,7 +1146,7 @@ index bfd7524..6be2afe 100644
  		if (scr_conlines < scr_con_current)
  			scr_con_current = scr_conlines;
  	}
-@@ -1070,7 +1070,7 @@ static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
+@@ -1066,7 +1066,7 @@ static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
  
  	FindTextBreaks(message, PLAQUE_WIDTH);
  
@@ -1155,7 +1155,7 @@ index bfd7524..6be2afe 100644
  	M_DrawTextBox (32, by - 16, PLAQUE_WIDTH + 4, lines + 2);
  
  	for (i = 0; i < lines; i++, by += 8)
-@@ -1106,7 +1106,7 @@ static void Info_Plaque_Draw (const char *message)
+@@ -1102,7 +1102,7 @@ static void Info_Plaque_Draw (const char *message)
  		lines = MAXLINES-1;
  	}
  
@@ -1164,7 +1164,7 @@ index bfd7524..6be2afe 100644
  	M_DrawTextBox (15, by - 16, PLAQUE_WIDTH + 4 + 4, lines + 2);
  
  	for (i = 0; i < lines; i++, by += 8)
-@@ -1132,7 +1132,7 @@ static void Bottom_Plaque_Draw (const char *message)
+@@ -1128,7 +1128,7 @@ static void Bottom_Plaque_Draw (const char *message)
  
  	FindTextBreaks(message, PLAQUE_WIDTH);
  
@@ -1173,7 +1173,7 @@ index bfd7524..6be2afe 100644
  	M_DrawTextBox (32, by - 16, PLAQUE_WIDTH + 4, lines + 2);
  
  	for (i = 0; i < lines; i++, by += 8)
-@@ -1153,10 +1153,10 @@ static void I_Print (int cx, int cy, const char *str, int flags)
+@@ -1149,10 +1149,10 @@ static void I_Print (int cx, int cy, const char *str, int flags)
  	int	num, x, y;
  	const char	*s;
  
@@ -1186,7 +1186,7 @@ index bfd7524..6be2afe 100644
  	s = str;
  
  	while (*s)
-@@ -1164,7 +1164,7 @@ static void I_Print (int cx, int cy, const char *str, int flags)
+@@ -1160,7 +1160,7 @@ static void I_Print (int cx, int cy, const char *str, int flags)
  		num = (unsigned char)(*s);
  		if (!(flags & INTERMISSION_PRINT_WHITE))
  			num += 256;
@@ -1476,6 +1476,3 @@ index 3bb1b1c..c3028e4 100644
  }
  
  static void DrawBarArtifactNumber(int x, int y, int number)
-
--- 
-1.7.1
