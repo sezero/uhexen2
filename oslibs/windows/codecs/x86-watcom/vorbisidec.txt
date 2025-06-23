@@ -1,5 +1,5 @@
 https://github.com/sezero/tremor.git - sezero-lowmem branch
-configured with: --enable-low-accuracy --enable-64kHz-limit
+configured with: --enable-low-accuracy --enable-64kHz-limit --disable-comments
 
 removed procedures not used in uhexen2:
 
