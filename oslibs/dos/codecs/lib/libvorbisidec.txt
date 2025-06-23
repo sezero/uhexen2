@@ -1,7 +1,8 @@
 https://github.com/sezero/tremor.git - sezero-lowmem branch
 configured with: --enable-low-accuracy --enable-64kHz-limit --disable-comments
 
-removed procedures not used in uhexen2:
+-- using Z_Malloc and friends as memory allocators (see os_types.h)
+-- removed procedures not used in uhexen2.
 
 diff --git a/info.c b/info.c
 index 416e40b..4c9c266 100644
