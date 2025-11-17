@@ -907,9 +907,6 @@ void CL_SendCmd (void)
 {
 	usercmd_t	cmd;
 
-	if (cls.state != ca_connected)
-		return;
-
 	if (cls.signon == SIGNONS)
 	{
 	// get basic movement from keyboard
@@ -921,6 +918,14 @@ void CL_SendCmd (void)
 	// send the unreliable message
 		CL_SendMove (&cmd);
 	}
+	else
+	{
+	// enable directional joypad input in menus
+		IN_Move (&cmd);
+	}
+
+	if (cls.state != ca_connected)
+		return;
 
 	if (cls.demoplayback)
 	{
