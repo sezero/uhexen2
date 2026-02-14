@@ -4,7 +4,7 @@
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
- * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2005-2026  O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -220,6 +220,101 @@ typedef struct
 	/* SmitePlayer only in v0.15 */
 } globalvars_v011_t;
 
+/* hexenworld v0.12 progdefs: */
+typedef struct
+{	int	pad[28];
+	int	self;
+	int	other;
+	int	world;
+	float	time;
+	float	frametime;
+	int	newmis;
+	float	force_retouch;
+	string_t	mapname;
+	string_t	startspot;
+	float	deathmatch;
+	float	randomclass;
+	float	damageScale;
+	float	meleeDamScale;
+	float	shyRespawn;
+	float	spartanPrint;	/* in v0.12 and newer */
+	float	manaScale;
+	float	tomeMode;
+	float	tomeRespawn;
+	float	w2Respawn;
+	float	altRespawn;
+	float	fixedLevel;
+	float	autoItems;
+	float	dmMode;
+	float	easyFourth;
+	float	patternRunner;
+	float	coop;
+	float	teamplay;
+	float	serverflags;
+	float	total_secrets;
+	float	total_monsters;
+	float	found_secrets;
+	float	killed_monsters;
+	float	chunk_cnt;
+	float	done_precache;
+	float	parm1;
+	float	parm2;
+	float	parm4;
+	float	parm5;
+	float	parm6;
+	float	parm7;
+	float	parm8;
+	float	parm9;
+	float	parm10;
+	float	parm11;
+	float	parm12;
+	float	parm13;
+	float	parm14;
+	float	parm15;
+	float	parm16;
+	string_t	parm3;
+	vec3_t	v_forward;
+	vec3_t	v_up;
+	vec3_t	v_right;
+	float	trace_allsolid;
+	float	trace_startsolid;
+	float	trace_fraction;
+	vec3_t	trace_endpos;
+	vec3_t	trace_plane_normal;
+	float	trace_plane_dist;
+	int	trace_ent;
+	float	trace_inopen;
+	float	trace_inwater;
+	int	msg_entity;
+	float	cycle_wrapped;
+	float	crouch_cnt;
+	float	modelindex_assassin;
+	float	modelindex_crusader;
+	float	modelindex_paladin;
+	float	modelindex_necromancer;
+	float	modelindex_sheep;
+	float	num_players;
+	/* max_players in v0.12 and newer.
+	 * Is below exp_mult in v0.14 !! */
+	float	max_players;
+	float	exp_mult;
+	/* defLosses and attLosses are
+	 * for Siege:  v0.14 and newer.  */
+	func_t	main;
+	func_t	StartFrame;
+	func_t	PlayerPreThink;
+	func_t	PlayerPostThink;
+	func_t	ClientKill;
+	func_t	ClientConnect;
+	func_t	PutClientInServer;
+	func_t	ClientReEnter;
+	func_t	ClientDisconnect;
+	func_t	ClassChangeWeapon;
+	func_t	SetNewParms;
+	func_t	SetChangeParms;
+	/* SmitePlayer only in v0.15 */
+} globalvars_v012_t;
+
 /* hexenworld v0.14 progdefs: */
 typedef struct
 {	int	pad[28];
@@ -237,7 +332,7 @@ typedef struct
 	float	damageScale;
 	float	meleeDamScale;
 	float	shyRespawn;
-	float	spartanPrint;	/* in v0.14 and newer */
+	float	spartanPrint;	/* in v0.12 and newer */
 	float	manaScale;
 	float	tomeMode;
 	float	tomeRespawn;
@@ -295,9 +390,11 @@ typedef struct
 	float	modelindex_sheep;
 	float	num_players;
 	float	exp_mult;
-	/* max_players, defLosses and attLosses
-	 * are for Siege:  in v0.14 and newer. */
+	/* max_players in v0.12 and newer.
+	 * Was above exp_mult in v0.12 ! */
 	float	max_players;
+	/* defLosses and attLosses are
+	 * for Siege:  v0.14 and newer.  */
 	float	defLosses;
 	float	attLosses;
 	func_t	main;
@@ -390,9 +487,11 @@ typedef struct
 	float	modelindex_sheep;
 	float	num_players;
 	float	exp_mult;
-	/* max_players, defLosses and attLosses
-	 * are for Siege:  in v0.14 and newer. */
+	/* max_players in v0.12 and newer.
+	 * Was above exp_mult in v0.12 ! */
 	float	max_players;
+	/* defLosses and attLosses are
+	 * for Siege:  v0.14 and newer.  */
 	float	defLosses;
 	float	attLosses;
 	func_t	main;
@@ -471,9 +570,11 @@ typedef struct
 	float	*modelindex_sheep;
 	float	*num_players;
 	float	*exp_mult;
-	/* max_players, defLosses and attLosses
-	 * are for Siege:  in v0.14 and newer. */
+	/* max_players in v0.12 and newer.
+	 * Was above exp_mult in v0.12 ! */
 	float	*max_players;
+	/* defLosses and attLosses are
+	 * for Siege:  v0.14 and newer.  */
 	float	*defLosses;
 	float	*attLosses;
 	/* functions */
@@ -640,7 +741,7 @@ typedef struct
 	func_t	chainmoved;
 	float	string_index;
 	float	gravity;	/* gravity is not in v0.09 */
-	float	siege_team;	/* siege support: in v0.14 (0.12?) and newer */
+	float	siege_team;	/* siege support, in v0.12 and newer */
 } entvars_t;
 
 /* crc for HexenWorld v0.09 hwprogs.dat headers	*/
@@ -648,6 +749,9 @@ typedef struct
 
 /* crc for HexenWorld v0.11 hwprogs.dat headers	*/
 #define	PROGS_V011_CRC		48691
+
+/* crc for HexenWorld v0.12 hwprogs.dat headers	*/
+#define	PROGS_V012_CRC		40218
 
 /* crc for HexenWorld v0.14 hwprogs.dat headers	*/
 #define	PROGS_V014_CRC		61593
@@ -659,4 +763,3 @@ typedef struct
 #define	PROGHEADER_CRC		(PROGS_V015_CRC)
 
 #endif	/* __PROGDEFS_H */
-

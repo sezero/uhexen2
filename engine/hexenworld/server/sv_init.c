@@ -393,7 +393,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	*sv_globals.randomclass = randomclass.value;
 	*sv_globals.damageScale = damageScale.value;
 	*sv_globals.shyRespawn = shyRespawn.value;
-	if (sv_globals.spartanPrint)	/* need v0.14 or newer */
+	if (sv_globals.spartanPrint)	/* need v0.12 or newer */
 		*sv_globals.spartanPrint = spartanPrint.value;
 	*sv_globals.meleeDamScale = meleeDamScale.value;
 	*sv_globals.manaScale = manaScale.value;
@@ -406,7 +406,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	*sv_globals.dmMode = dmMode.value;
 	*sv_globals.easyFourth = easyFourth.value;
 	*sv_globals.patternRunner = patternRunner.value;
-	if (sv_globals.max_players)	/* need v0.14 or newer */
+	if (sv_globals.max_players)	/* need v0.12 or newer */
 		*sv_globals.max_players = maxclients.value;
 
 	*sv_globals.startspot = PR_SetEngineString(sv.startspot);
