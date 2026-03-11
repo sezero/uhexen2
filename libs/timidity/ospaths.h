@@ -61,7 +61,7 @@ static inline const char *get_last_dirsep (const char *p) {
 static inline char *get_last_dirsep (const char *p) {
     char *p1 = (char *) strrchr(p, '/');
     if (p1) return p1;
-    return  strchr(p, ':');
+    return  (char *) strchr(p, ':');
 }
 #else
 static inline char *get_last_dirsep (char *p) {
@@ -77,7 +77,7 @@ static inline const char *get_last_dirsep (const char *p) {
 #endif /* C++ */
 
 /* ---------------------- assumed UNIX-ish : ---------------------- */
-#else /**/
+#else /* */
 
 #define CHAR_DIRSEP '/'
 #define is_dirsep(c) ((c) == '/')
