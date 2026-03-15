@@ -32,6 +32,7 @@
 #if defined(PLATFORM_BSD) || defined(PLATFORM_OSX)	|| \
     defined(PLATFORM_AMIGA) /* bsdsocket.library */	|| \
     (defined(PLATFORM_OS2) && !defined(__EMX__))	|| \
+    (defined(__INNOTEK_LIBC__) || defined(__KLIBC__))	|| \
     defined(__GNU__) /* GNU/Hurd */			|| \
     defined(__riscos__) || defined(__HAIKU__)
 /* struct sockaddr has unsigned char sa_len as the first member in BSD
@@ -109,8 +110,10 @@ typedef int	sys_socket_t;
 #define	INVALID_SOCKET	(-1)
 #define	SOCKET_ERROR	(-1)
 
+#if !(defined(__INNOTEK_LIBC__) || defined(__KLIBC__))
 typedef u_long	in_addr_t;	/* u_int32_t */
 typedef int	socklen_t;
+#endif
 
 #ifdef __EMX__
 #include <sys/select.h>
