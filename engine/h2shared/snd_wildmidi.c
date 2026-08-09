@@ -1,6 +1,6 @@
 /* MIDI streaming music support using WildMIDI library.
  * wildmidi at least v0.2.3.x is required at both compile and runtime:
- * Latest stable v0.3.14 (as of this writing) is highly recommended:
+ * Latest stable version 0.5.0, as of this writing, is recommended.
  * - wildmidi-0.2.2 has a horrific mistake of freeing the buffer that
  *   you pass with WildMidi_OpenBuffer() when you do WildMidi_Close().
  * - wildmidi-0.2.3.x-0.3.x had a regression, resulting in perversely
@@ -14,8 +14,10 @@
  * - the new wildmidi-0.4.x has some api changes against 0.2.3/0.3.x.
  *   our client is adjusted for them, see LIBWILDMIDI_VERSION ifdefs
  *   below.
+ * - the new wildmidi-0.5.x versions have many major updates including
+ *   soundfont support.
  *
- * Copyright (C) 2010-2015 O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2010-2026 O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,6 +120,9 @@ static int WILDMIDI_InitHelper (const char *cfgdir)
 static qboolean S_WILDMIDI_CodecInitialize (void)
 {
 	const char *timi_env;
+	#if (LIBWILDMIDI_VERSION >= 0x000500L)
+	const char *sf2_env;
+	#endif
 	int i, err;
 
 	if (wildmidi_codec.initialized)
@@ -131,6 +136,17 @@ static qboolean S_WILDMIDI_CodecInitialize (void)
 	else	wildmidi_rate = shm->speed;
 
 	err = -1;
+	#if (LIBWILDMIDI_VERSION >= 0x000500L)
+	sf2_env = getenv("WILDMIDI_SOUNDFONT");
+	if (sf2_env == NULL)
+		sf2_env = getenv("TIMIDITY_SOUNDFONT");
+	if (sf2_env) /* user override, no cfg: */
+	{
+		Con_DPrintf("WildMIDI: setting soundfont: %s\n", sf2_env);
+		err = WildMidi_Init(sf2_env, wildmidi_rate, wildmidi_opts);
+		goto _finish;
+	}
+	#endif
 	timi_env = getenv("WILDMIDI_CFG");
 	if (timi_env == NULL)
 		timi_env = getenv("TIMIDITY_CFG");

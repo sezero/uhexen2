@@ -2,7 +2,7 @@
  * libTiMidity v0.2.0 or newer needed
  * https://sf.net/p/libtimidity/ (local copy included under libs/)
  *
- * Copyright (C) 2010-2015 O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2010-2026 O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,6 +107,9 @@ static int TIMIDITY_InitHelper (const char *cfgdir)
 static qboolean S_TIMIDITY_CodecInitialize (void)
 {
 	const char *timi_env;
+	#if (LIBTIMIDITY_VERSION >= 0x000208L)
+	const char *sf2_env;
+	#endif
 	int i, err;
 	long ver;
 
@@ -114,6 +117,16 @@ static qboolean S_TIMIDITY_CodecInitialize (void)
 		return true;
 
 	err = -1;
+	#if (LIBTIMIDITY_VERSION >= 0x000208L)
+	sf2_env = getenv("TIMIDITY_SOUNDFONT");
+	if (sf2_env) /* user override, no cfg: */
+	{
+		Con_DPrintf("Timidity: setting soundfont: %s\n", sf2_env);
+		mid_set_soundfont(sf2_env);
+		err = mid_init(NULL);
+		goto _finish;
+	}
+	#endif
 	timi_env = getenv("TIMIDITY_CFG");
 	if (timi_env)
 	{

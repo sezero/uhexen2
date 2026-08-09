@@ -326,6 +326,14 @@ in this order. Full absolute path of timidity.cfg can be specified by
 setting the TIMIDITY_CFG environment variable as an override too, e.g.:
   export TIMIDITY_CFG=/usr/local/share/timidity/timidity.cfg
 
+Apart from GUS patches, the included timidity supports soundfonts (sf2),
+too. So, if timidity.cfg has a soundfont directive, it will be utilized.
+You can also specify full path of a soundfont using TIMITIDY_SOUNDFONT
+environment variable, e.g.:
+  export TIMIDITY_SOUNDFONT=/usr/local/share/sfbank/chaos12m.sf2
+If such an environment variable is found, the specified soundfont will
+be directly used by the backend library.
+
 Hammer of Thyrion supports OGG, MP3 and WAV external music files to be
 played instead of the original midi files, so you can enjoy the hexen2
 music in good quality like they are from the hexen2 cdrom audio tracks.
