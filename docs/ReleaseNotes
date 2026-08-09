@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.10: (Jun. 20, 2025.)
+Changes in v1.5.10: (Aug. 10, 2026.)
 ========================================================================
 
 This is a minor bug fix and maintenance release:
@@ -36,6 +36,10 @@ This is a minor bug fix and maintenance release:
   command 'invdrop' which was actually present in hexenworld. Users
   must bind their key again in the menu system in order for that to
   work. (sf.net bug 58.)
+
+- Unix, midi: Updated included libtimidity for soundfont support.
+  The music player layer reacts to TIMITIDY_SOUNDFONT environment
+  variable, too. (See README for more details.)
 
 - Windows, midi: Fixed volume reseting after loop (sf.net bug 66.)
 
