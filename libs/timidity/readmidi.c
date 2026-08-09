@@ -79,7 +79,9 @@ static int read_meta_data(MidIStream *stream, MidSong *song, sint32 len, uint8 t
   static const char *label[] = {
     "Text event: ", "Text: ", "Copyright: ", "Track name: ",
     "Instrument: ", "Lyric: ", "Marker: ", "Cue point: " };
+#endif
 
+  MidSongMetaId id;
   char *s = (char *)timi_malloc(len+1);
 
   if (!s)
@@ -101,13 +103,16 @@ static int read_meta_data(MidIStream *stream, MidSong *song, sint32 len, uint8 t
     }
   DEBUG_MSG("%s%s\n", label[(type > 7) ? 0 : type], s);
 
-  timi_free(s);
+  switch (type) {
+    case 1: id = MID_SONG_TEXT; break;
+    case 2: id = MID_SONG_COPYRIGHT; break;
+  /* others not stored in song
+     but debug-printed above */
+    default: timi_free(s); return 0;
+  }
+  timi_free(song->meta_data[id]);
+  song->meta_data[id] = s;
   return 0;
-#else
-  TIMI_UNUSED(song);
-  TIMI_UNUSED(type);
-  return mid_istream_skip(stream, len);
-#endif
 }
 
 #define MIDIEVENT(at,t,ch,pa,pb)				\

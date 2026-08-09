@@ -133,6 +133,16 @@ void timi_free_pathlist(void)
     pathlist = NULL;
 }
 
+char *timi_strdup(const char *str)
+{
+    size_t len = strlen(str) + 1;
+    char *newstr = (char *) timi_malloc(len);
+    if (newstr) {
+        memcpy(newstr, str, len);
+    }
+    return newstr;
+}
+
 /* returns the number of chars written, including NULL */
 /* see: https://github.com/attractivechaos/strxcpy.git */
 size_t timi_strxcpy(char *dst, const char *src, size_t size)

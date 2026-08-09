@@ -28,28 +28,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef TIMIDITY_COMMON_H
-#define TIMIDITY_COMMON_H
+#ifndef TIMIDITY_SNDFONT_H /* sndfont.h: soundfont loader public api */
+#define TIMIDITY_SNDFONT_H
 
-extern FILE *timi_openfile(const char *name);
+#define init_soundfont    TIMI_NAMESPACE(init_soundfont)
+#define end_soundfont     TIMI_NAMESPACE(end_soundfont)
+#define load_soundfont    TIMI_NAMESPACE(load_soundfont)
+#define exclude_soundfont TIMI_NAMESPACE(exclude_soundfont)
+#define order_soundfont   TIMI_NAMESPACE(order_soundfont)
 
-/* pathlist funcs only to be used during mid_init/mid_exit */
-typedef struct _PathList PathList;
-extern int  timi_add_pathlist(const char *s, size_t len);
-extern void timi_free_pathlist(void);
+void init_soundfont(MidSong *song, const char *fname, int order);
+void end_soundfont(void);
+MidInstrument *load_soundfont(MidSong *song, int order, int bank, int preset, int keynote);
+void exclude_soundfont(int bank, int preset, int keynote);
+void order_soundfont(int bank, int preset, int keynote, int order);
 
-/* in case someone wants to compile with a different malloc() than stdlib */
-#define timi_malloc  malloc
-#define timi_calloc  calloc
-#define timi_realloc realloc
-#define timi_free    free
-
-char *timi_strdup(const char *str);
-
-/* timi_strtokr() is a strtok_r() replacement */
-char *timi_strtokr(char *s1, const char *s2, char **ptr);
-
-/* returns the number of chars written, including NULL */
-size_t timi_strxcpy(char *dst, const char *src, size_t size);
-
-#endif /* TIMIDITY_COMMON_H */
+#endif /* TIMIDITY_SNDFONT_H */

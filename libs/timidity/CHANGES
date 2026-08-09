@@ -1,11 +1,19 @@
-uHexen2-specific changes:
+Changes by libtimidity-0.2.8:
 -----------------------------
 
-* read_meta_data(), api change: removed altogether. metadata is no
-  longer stored in the song. text stuff are either skipped or printed
-  to stderr if the library is compiled with TIMIDITY_DEBUG defined.
-
-------------------------------------------------------------------------
+- Soundfont support, based on a timidity-0.2i patch by Takashi Iwai
+  dating from 1997. Note that more than one soundfont directives in
+  the config file is not supported: Only the first encountered font
+  in timidity.cfg will be used.
+- New function mid_set_soundfont() added to api in order to set the
+  full path of a soundfont to use. Must be called before mid_init().
+  If a soundfont is set, config file will not be parsed by mid_init.
+- Support quoted strings in config file.
+- Added back optional use a lookup table for sine values (configure
+  with --enable-lookup-sine to enable.)
+- Several code clean-ups.
+- Updated MS Visual Studio project files.
+- Autotools / build system updates.
 
 
 Changes by libtimidity-0.2.7:

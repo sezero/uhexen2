@@ -19,7 +19,7 @@ LIBSTATIC=timidity.lib
 
 COMPILE=wcc386 $(CFLAGS) $(CPPFLAGS) $(INCLUDES)
 
-OBJ=common.obj instrum.obj mix.obj output.obj playmidi.obj readmidi.obj resample.obj stream.obj tables.obj timidity.obj
+OBJ=common.obj readsbk.obj sndfont.obj instrum.obj mix.obj output.obj playmidi.obj readmidi.obj resample.obj stream.obj tables.obj timidity.obj
 
 all: $(LIBSTATIC)
 

@@ -44,7 +44,7 @@ extern "C" {
 
 #define LIBTIMIDITY_VERSION_MAJOR 0L
 #define LIBTIMIDITY_VERSION_MINOR 2L
-#define LIBTIMIDITY_PATCHLEVEL    7L
+#define LIBTIMIDITY_PATCHLEVEL    8L
 
 #define LIBTIMIDITY_VERSION               \
         ((LIBTIMIDITY_VERSION_MAJOR<<16)| \
@@ -98,6 +98,12 @@ extern "C" {
     uint16 _reserved;
   };
 
+  typedef int MidSongMetaId;
+#define MID_SONG_TEXT       0
+#define MID_SONG_COPYRIGHT  1
+#define MID_META_MAX        8
+
+
 /* Compiler magic for shared libraries
  * ===================================
  */
@@ -136,6 +142,13 @@ extern "C" {
 /* Retrieve library version
  */
   TIMI_EXPORT extern long mid_get_version (void);
+
+/* Set the full path of a soundfont (sf2) to use.
+ * Must be called before mid_init().
+ * If a soundfont is set, config file will not be parsed
+ * by mid_init().
+ */
+  TIMI_EXPORT extern int mid_set_soundfont (const char *sf2_file);
 
 /* Initialize the library. If config_file is NULL
  * search for configuratin file in default directories
@@ -198,19 +211,6 @@ extern "C" {
   TIMI_EXPORT extern int mid_istream_close (MidIStream *stream);
 
 
-/* DLS Patch Functions
- * ===================
- */
-
-/* Load DLS patches - No longer supported:  Always returns NULL.
- */
-  TIMI_EXPORT extern MidDLSPatches *mid_dlspatches_load (MidIStream *stream);
-
-/* Destroy DLS patches
- */
-  TIMI_EXPORT extern void mid_dlspatches_free (MidDLSPatches *data);
-
-
 /* MIDI Song Functions
  * ===================
  */
@@ -219,13 +219,6 @@ extern "C" {
  */
   TIMI_EXPORT extern MidSong *mid_song_load (MidIStream *stream,
                                              MidSongOptions *options);
-
-/* Load MIDI song with specified DLS patches
- * No longer supported:  Always returns NULL.
- */
-  TIMI_EXPORT extern MidSong *mid_song_load_dls (MidIStream *stream,
-                                                 MidDLSPatches *dlspatches,
-                                                 MidSongOptions *options);
 
 /* Set song amplification value
  */
@@ -251,9 +244,34 @@ extern "C" {
  */
   TIMI_EXPORT extern uint32 mid_song_get_time (MidSong *song);
 
+/* Get song meta data. Return NULL if no meta data.
+ */
+  TIMI_EXPORT extern char *mid_song_get_meta (MidSong *song, MidSongMetaId what);
+
 /* Destroy song
  */
   TIMI_EXPORT extern void mid_song_free (MidSong *song);
+
+
+/* DEPRECATED Functions:
+ * These are stubs that always fail.
+ * =================================
+ */
+
+/* Load DLS patches - No longer supported:  Always returns NULL.
+ */
+  TIMI_EXPORT extern MidDLSPatches *mid_dlspatches_load (MidIStream *stream);
+
+/* Destroy DLS patches
+ */
+  TIMI_EXPORT extern void mid_dlspatches_free (MidDLSPatches *data);
+
+/* Load MIDI song with specified DLS patches
+ * No longer supported:  Always returns NULL.
+ */
+  TIMI_EXPORT extern MidSong *mid_song_load_dls (MidIStream *stream,
+                                                 MidDLSPatches *dlspatches,
+                                                 MidSongOptions *options);
 
 #ifdef __cplusplus
 }

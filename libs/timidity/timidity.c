@@ -43,6 +43,7 @@
 #include "timidity_internal.h"
 #include "common.h"
 #include "instrum.h"
+#include "sndfont.h"
 #include "playmidi.h"
 #include "readmidi.h"
 #include "output.h"
@@ -87,6 +88,9 @@ static char *timi_fgets(char *s, int size, FILE *fp)
     return (num_read != 0)? s : NULL;
 }
 
+static char *sf_file = NULL;
+static int sf_order = 0;
+
 static int read_config_file(const char *name, int rcf_count)
 {
   FILE *fp;
@@ -124,10 +128,53 @@ static int read_config_file(const char *name, int rcf_count)
     if (*w[0] == '#')
       continue;
 
-    while (w[words] && *w[words] != '#') {
-      if (++words == MAXWORDS) break;
-      w[words]=timi_strtokr(NULL, " \t\240", &endp);
+    while (words < MAXWORDS - 1) /* -1 : next arg */
+    {
+      while (*endp == ' ' || *endp == '\t' || *endp == '\240')
+        endp++;
+
+      if (*endp == '\0' || *endp == '#')
+        break;
+
+      if (*endp == '"' || *endp == '\'') { /* quoted string */
+        char *terminator = strchr(endp + 1, *endp);
+        if (terminator != NULL) { /* terminated */
+          if (terminator[1] == ' ' || terminator[1] == '\t' || terminator[1] == '\240' || terminator[1] == '\0') {
+            char *extraQuote = strchr(endp + 1, *endp == '"' ? '\'' : '"');
+            if (extraQuote != NULL && extraQuote < terminator) {
+                DEBUG_MSG("%s: line %d: Quote characters are not allowed inside a quoted string", name, line);
+                goto fail;
+            }
+            w[++words] = endp + 1;
+            endp = terminator + 1;
+            *terminator = '\0';
+          }
+          else { /* no space after quoted string */
+            DEBUG_MSG("%s: line %d: There must be at least one whitespace between string terminator (%c) and the next parameter", name, line, *endp);
+            goto fail;
+          }
+        }
+        else { /* not terminated */
+          DEBUG_MSG("%s: line %d: The quoted string is not terminated", name, line);
+          goto fail;
+        }
+      }
+      else { /* not quoted string */
+        w[++words] = endp;
+        while (!(*endp == ' ' || *endp == '\t' || *endp == '\240' || *endp == '\0')) {
+          if (*endp == '"' || *endp == '\'') { /* no space before quoted string */
+              DEBUG_MSG("%s: line %d: There must be at least one whitespace between previous parameter and a beginning of the quoted string (%c)", name, line, *endp);
+              goto fail;
+          }
+          endp++;
+        }
+        if (*endp != '\0') { /* unless at the end-of-string (i.e. EOF) */
+          *endp = '\0';    /* terminate the token */
+          endp++;
+        }
+      }
     }
+    w[++words] = NULL;
 
     /* TiMidity++ adds a number of extensions to the config file format.
      * Many of them are completely irrelevant to SDL_sound, but at least
@@ -180,17 +227,6 @@ static int read_config_file(const char *name, int rcf_count)
        * supposed to mean.
        */
       DEBUG_MSG("FIXME: Implement \"altassign\" in TiMidity config.\n");
-    }
-    else if (!strcmp(w[0], "soundfont") ||
-	     !strcmp(w[0], "font"))
-    {
-      /* "soundfont" sf_file "remove"
-       * "soundfont" sf_file ["order=" order] ["cutoff=" cutoff]
-       *                     ["reso=" reso] ["amp=" amp]
-       * "font" "exclude" bank preset keynote
-       * "font" "order" order bank preset keynote
-       */
-      DEBUG_MSG("FIXME: Implmement \"%s\" in TiMidity config.\n", w[0]);
     }
     else if (!strcmp(w[0], "progbase"))
     {
@@ -277,9 +313,66 @@ static int read_config_file(const char *name, int rcf_count)
       }
       bank=master_tonebank[i];
     }
+    else if (!strcmp(w[0], "soundfont"))
+    {
+      if (words < 2) {
+	DEBUG_MSG("%s: line %d: No soundfont file given\n", name, line);
+	goto fail;
+      }
+      if (sf_file) {
+	DEBUG_MSG("%s: line %d: Ignoring multiple \"soundfont\" directives.\n", name, line);
+      }
+     else {
+      sf_file=timi_strdup(w[1]);
+      if (!sf_file) goto fail;
+      for (j = 2; j < words; j++) {
+	if (!(cp = strchr(w[j], '='))) {
+	  DEBUG_MSG("%s: line %d: bad patch option %s\n", name, line, w[j]);
+	  goto fail;
+	}
+	*cp++=0;
+	if (!strcmp(w[j], "order")) {
+	  k = atoi(cp);
+	  if (k < 0 || (*cp < '0' || *cp > '9')) {
+	    DEBUG_MSG("%s: line %d: order must be a digit", name, line);
+	    goto fail;
+	  }
+	  sf_order = k;
+	}
+      }
+     }
+    }
+    else if (!strcmp(w[0], "font"))
+    {
+      int bank, preset, keynote;
+      if (words < 2) {
+	DEBUG_MSG("%s: line %d: no font command\n", name, line);
+	goto fail;
+      }
+      if (!strcmp(w[1], "exclude")) {
+	if (words < 3) {
+	  DEBUG_MSG("%s: line %d: No bank/preset/key is given\n", name, line);
+	  goto fail;
+	}
+	bank = atoi(w[2]);
+	preset = (words >= 4)? atoi(w[3]) : -1;
+	keynote = (words >= 5)? atoi(w[4]) : -1;
+	exclude_soundfont(bank, preset, keynote);
+      } else if (!strcmp(w[1], "order")) {
+	int order;
+	if (words < 4) {
+	  DEBUG_MSG("%s: line %d: No order/bank is given\n", name, line);
+	  goto fail;
+	}
+	order = atoi(w[2]);
+	bank = atoi(w[3]);
+	preset = (words >= 5)? atoi(w[4]) : -1;
+	keynote = (words >= 6)? atoi(w[5]) : -1;
+	order_soundfont(bank, preset, keynote, order);
+      }
+    }
     else
     {
-      size_t sz;
       if ((words < 2) || (*w[0] < '0' || *w[0] > '9')) {
 	DEBUG_MSG("%s: line %d: syntax error\n", name, line);
 	goto fail;
@@ -294,10 +387,8 @@ static int read_config_file(const char *name, int rcf_count)
 	goto fail;
       }
       timi_free(bank->tone[i].name);
-      sz = strlen(w[1])+1;
-      bank->tone[i].name = (char *) timi_malloc(sz);
+      bank->tone[i].name = timi_strdup(w[1]);
       if (!bank->tone[i].name) goto fail;
-      memcpy(bank->tone[i].name,w[1],sz);
       bank->tone[i].note=bank->tone[i].amp=bank->tone[i].pan=
       bank->tone[i].strip_loop=bank->tone[i].strip_envelope=
       bank->tone[i].strip_tail=-1;
@@ -431,10 +522,26 @@ int mid_init(const char *config_file)
   if (rc != 0) {
       return rc;
   }
+  if (sf_file) {
+      /* a soundfont specified by mid_set_soundfont().
+       * skip config parsing. */
+      return 0;
+  }
   if (config_file == NULL || *config_file == '\0') {
       return init_with_config(TIMIDITY_CFG);
   }
   return init_with_config(config_file);
+}
+
+int mid_set_soundfont(const char *file)
+{
+  if (file) {
+      char *fname = timi_strdup(file);
+      if (!fname) return -1;
+      timi_free(sf_file);
+      sf_file = fname;
+  }
+  return 0;
 }
 
 static void do_song_load(MidIStream *stream, MidSongOptions *options, MidSong **out)
@@ -546,6 +653,9 @@ static void do_song_load(MidIStream *stream, MidSongOptions *options, MidSong **
   song->default_instrument = NULL;
   song->default_program = DEFAULT_PROGRAM;
 
+  if (sf_file)
+    init_soundfont(song, sf_file, sf_order);
+
   if (*def_instr_name)
     set_default_instrument(song, def_instr_name);
 
@@ -567,13 +677,23 @@ MidSong *mid_song_load(MidIStream *stream, MidSongOptions *options)
 
 void mid_song_free(MidSong *song)
 {
-  int i;
+  int i, j;
 
   if (!song) return;
 
   free_instruments(song);
 
   for (i = 0; i < 128; i++) {
+    if (!master_tonebank[i] && song->tonebank[i]) { /* might be alloc'ed by sndfont */
+      for (j = 0; j < 128; j++)
+        timi_free(song->tonebank[i]->tone[j].name);
+      timi_free(song->tonebank[i]->tone);
+    }
+    if (!master_drumset[i] && song->drumset[i]) {   /* might be alloc'ed by sndfont */
+      for (j = 0; j < 128; j++)
+        timi_free(song->drumset[i]->tone[j].name);
+      timi_free(song->drumset[i]->tone);
+    }
     timi_free(song->tonebank[i]);
     timi_free(song->drumset[i]);
   }
@@ -581,6 +701,10 @@ void mid_song_free(MidSong *song)
   timi_free(song->common_buffer);
   timi_free(song->resample_buffer);
   timi_free(song->events);
+
+  for (i = 0; i < MID_META_MAX; i++) {
+    timi_free(song->meta_data[i]);
+  }
 
   timi_free(song);
 }
@@ -613,6 +737,11 @@ void mid_exit(void)
       master_drumset[i] = NULL;
     }
   }
+
+  end_soundfont();
+  timi_free(sf_file);
+  sf_file = NULL;
+  sf_order = 0;
 
   timi_free_pathlist();
 }

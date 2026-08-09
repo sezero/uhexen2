@@ -94,6 +94,8 @@ endif
 TARGETS:= $(LIBTIMIDITY)
 
 OBJECTS = common.o \
+	readsbk.o \
+	sndfont.o \
 	instrum.o \
 	mix.o \
 	output.o \
@@ -115,7 +117,9 @@ all: $(TARGETS)
 
 # object dependencies:
 common.o: common.c common.h ospaths.h timidity_internal.h
-instrum.o: instrum.c common.h instrum.h resample.h tables.h timidity_internal.h
+readsbk.o: readsbk.c sbk.h common.h timidity_internal.h
+sndfont.o: sndfont.c sbk.h sflayer.h sndfont.h common.h instrum.h tables.h resample.h timidity_internal.h
+instrum.o: instrum.c common.h instrum.h resample.h sndfont.h tables.h timidity_internal.h
 mix.o: mix.c instrum.h mix.h output.h playmidi.h resample.h tables.h timidity_internal.h
 output.o: output.c output.h timidity_internal.h
 playmidi.o: playmidi.c instrum.h mix.h output.h playmidi.h tables.h timidity_internal.h
@@ -123,7 +127,7 @@ readmidi.o: readmidi.c common.h instrum.h playmidi.h timidity_internal.h
 resample.o: resample.c common.h instrum.h playmidi.h resample.h tables.h timidity_internal.h
 stream.o: stream.c common.h timidity_internal.h
 tables.o: tables.c tables.h timidity_internal.h
-timidity.o: timidity.c common.h instrum.h ospaths.h output.h playmidi.h readmidi.h tables.h timidity_internal.h
+timidity.o: timidity.c common.h instrum.h ospaths.h output.h playmidi.h readmidi.h sndfont.h tables.h timidity_internal.h
 timidity_internal.h: options.h timi_endian.h timidity.h
 
 # rule for target:
@@ -135,4 +139,3 @@ clean:
 	rm -f *.o libtimidity.a timidity.a timidity.lib
 
 distclean: clean
-

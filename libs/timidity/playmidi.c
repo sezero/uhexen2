@@ -82,52 +82,6 @@ static void reset_midi(MidSong *song)
   reset_voices(song);
 }
 
-static void select_sample(MidSong *song, int v, MidInstrument *ip)
-{
-  sint32 f, cdiff, diff;
-  int s,i;
-  MidSample *sp, *closest;
-
-  s=ip->samples;
-  sp=ip->sample;
-
-  if (s==1)
-    {
-      song->voice[v].sample=sp;
-      return;
-    }
-
-  f=song->voice[v].orig_frequency;
-  for (i=0; i<s; i++, sp++)
-    {
-      if (sp->low_freq <= f && sp->high_freq >= f)
-	{
-	  song->voice[v].sample=sp;
-	  return;
-	}
-    }
-
-  /*
-     No suitable sample found! We'll select the sample whose root
-     frequency is closest to the one we want. (Actually we should
-     probably convert the low, high, and root frequencies to MIDI
-     note values and compare those.)
-   */
-  cdiff=0x7FFFFFFF;
-  closest=sp=ip->sample;
-  for(i=0; i<s; i++, sp++)
-    {
-      diff=sp->root_freq - f;
-      if (diff<0) diff=-diff;
-      if (diff<cdiff)
-	{
-	  cdiff=diff;
-	  closest=sp;
-	}
-    }
-  song->voice[v].sample=closest;
-}
-
 static void recompute_freq(MidSong *song, int v)
 {
   int 
@@ -241,31 +195,27 @@ static void recompute_amp(MidSong *song, int v)
     }
 }
 
-static void start_note(MidSong *song, MidEvent *e, int i)
+static int find_voice(MidSong *song, MidEvent *e);
+
+static int find_samples(MidSong *song, MidEvent *e, int *vlist)
 {
   MidInstrument *ip;
-  int j;
+  MidSample *sp, *closest;
+  sint32 f, cdiff, diff;
+  int i, nv, maxnv, note;
 
   if (ISDRUMCHANNEL(song, e->channel))
     {
       if (!(ip=song->drumset[song->channel[e->channel].bank]->instrument[e->a]))
 	{
 	  if (!(ip=song->drumset[0]->instrument[e->a]))
-	    return; /* No instrument? Then we can't play. */
+	    return 0; /* No instrument? Then we can't play. */
 	}
-      if (ip->samples != 1)
+      if (ip->type == INST_GUS && ip->samples != 1)
 	{
 	  DEBUG_MSG("Strange: percussion instrument with %d samples!\n",
 		  ip->samples);
 	}
-
-      if (ip->sample->note_to_use) /* Do we have a fixed pitch? */
-	song->voice[i].orig_frequency = freq_table[(int)(ip->sample->note_to_use)];
-      else
-	song->voice[i].orig_frequency = freq_table[e->a & 0x7F];
-
-      /* drums are supposed to have only one sample */
-      song->voice[i].sample = ip->sample;
     }
   else
     {
@@ -275,15 +225,55 @@ static void start_note(MidSong *song, MidEvent *e, int i)
 		 instrument[song->channel[e->channel].program]))
 	{
 	  if (!(ip=song->tonebank[0]->instrument[song->channel[e->channel].program]))
-	    return; /* No instrument? Then we can't play. */
+	    return 0; /* No instrument? Then we can't play. */
 	}
-
-      if (ip->sample->note_to_use) /* Fixed-pitch instrument? */
-	song->voice[i].orig_frequency = freq_table[(int)(ip->sample->note_to_use)];
-      else
-	song->voice[i].orig_frequency = freq_table[e->a & 0x7F];
-      select_sample(song, i, ip);
     }
+
+  if (ip->sample->note_to_use)
+    note = ip->sample->note_to_use;
+  else
+    note = e->a & 0x7f;
+  f = freq_table[note];
+
+  nv = 0;
+  maxnv = (ip->type != INST_GUS) ? 32 : 1; /* GUS: emulate timidity-0.2i start_note() */
+  for (i = 0, sp = ip->sample; i < ip->samples; i++, sp++)
+    {
+      if (sp->low_freq <= f && sp->high_freq >= f)
+	{
+	  vlist[nv] = find_voice(song, e);
+	  song->voice[vlist[nv]].orig_frequency = f;
+	  song->voice[vlist[nv]].sample = sp;
+	  if (++nv == maxnv) break;
+	}
+    }
+
+  if (nv == 0)
+    {
+      cdiff = 0x7FFFFFFF;
+      closest = sp = ip->sample;
+      for (i = 0; i < ip->samples; i++, sp++)
+	{
+	  diff = sp->root_freq - f;
+	  if (diff < 0) diff = -diff;
+	  if (diff < cdiff)
+	    {
+	      cdiff = diff;
+	      closest = sp;
+	    }
+	}
+      vlist[nv] = find_voice(song, e);
+      song->voice[vlist[nv]].orig_frequency = f;
+      song->voice[vlist[nv]].sample = closest;
+      nv++;
+    }
+
+  return nv;
+}
+
+static void start_note(MidSong *song, MidEvent *e, int i)
+{
+  int j;
 
   song->voice[i].status = VOICE_ON;
   song->voice[i].channel = e->channel;
@@ -333,11 +323,10 @@ static void kill_note(MidSong *song, int i)
 }
 
 /* Only one instance of a note can be playing on a single channel. */
-static void note_on(MidSong *song)
+static int find_voice(MidSong *song, MidEvent *e)
 {
   int i = song->voices, lowest=-1;
   sint32 lv=0x7FFFFFFF, v;
-  MidEvent *e = song->current_event;
 
   while (i--)
     {
@@ -351,8 +340,7 @@ static void note_on(MidSong *song)
   if (lowest != -1)
     {
       /* Found a free voice. */
-      start_note(song,e,lowest);
-      return;
+      return lowest;
     }
 
   /* Look for the decaying note with the lowest volume */
@@ -383,11 +371,24 @@ static void note_on(MidSong *song)
 
       song->cut_notes++;
       song->voice[lowest].status=VOICE_FREE;
-      start_note(song,e,lowest);
+      return lowest;
     }
   else
     song->lost_notes++;
+  return 0;
 }
+
+static void note_on(MidSong *song)
+{
+  MidEvent *e = song->current_event;
+  int i, nv;
+  int vlist[32];
+
+  nv = find_samples(song, e, vlist);
+  for (i = 0; i < nv; i++)
+    start_note(song, e, vlist[i]);
+}
+
 
 static void finish_note(MidSong *song, int i)
 {
@@ -424,7 +425,6 @@ static void note_off(MidSong *song)
 	  }
 	else
 	  finish_note(song, i);
-	return;
       }
 }
 
@@ -659,6 +659,11 @@ uint32 mid_song_get_time(MidSong *song)
   uint32 retvalue = (song->current_sample / song->rate) * 1000;
   retvalue       += (song->current_sample % song->rate) * 1000 / song->rate;
   return retvalue;
+}
+
+char *mid_song_get_meta(MidSong *song, MidSongMetaId what)
+{
+  return (what < 0 || what >= MID_META_MAX)? NULL : song->meta_data[what];
 }
 
 size_t mid_song_read_wave(MidSong *song, sint8 *ptr, size_t size)
