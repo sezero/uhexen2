@@ -357,7 +357,8 @@ static int read_config_file(const char *name, int rcf_count)
 	bank = atoi(w[2]);
 	preset = (words >= 4)? atoi(w[3]) : -1;
 	keynote = (words >= 5)? atoi(w[4]) : -1;
-	exclude_soundfont(bank, preset, keynote);
+	if (exclude_soundfont(bank, preset, keynote) < 0)
+	  goto fail;
       } else if (!strcmp(w[1], "order")) {
 	int order;
 	if (words < 4) {
@@ -368,7 +369,8 @@ static int read_config_file(const char *name, int rcf_count)
 	bank = atoi(w[3]);
 	preset = (words >= 5)? atoi(w[4]) : -1;
 	keynote = (words >= 6)? atoi(w[5]) : -1;
-	order_soundfont(bank, preset, keynote, order);
+	if (order_soundfont(bank, preset, keynote, order) < 0)
+	  goto fail;
       }
     }
     else
@@ -460,6 +462,8 @@ static int read_config_file(const char *name, int rcf_count)
       }
     }
   }
+
+  TIMI_UNUSED(line);
 
   r = 0; /* we're good. */
 fail:
@@ -653,8 +657,10 @@ static void do_song_load(MidIStream *stream, MidSongOptions *options, MidSong **
   song->default_instrument = NULL;
   song->default_program = DEFAULT_PROGRAM;
 
-  if (sf_file)
-    init_soundfont(song, sf_file, sf_order);
+  if (sf_file) {
+    if (init_soundfont(song, sf_file, sf_order) < 0)
+      goto fail;
+  }
 
   if (*def_instr_name)
     set_default_instrument(song, def_instr_name);

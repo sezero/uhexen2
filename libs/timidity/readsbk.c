@@ -51,23 +51,38 @@
 
 static int READCHUNK(tchunk *vp, FILE *fd)
 {
-	if (fread(vp, 8, 1, fd) != 1) return -1;
+	if (fread(vp, 8, 1, fd) != 1) {
+		memset(vp, 0, sizeof(*vp));
+		return -1;
+	}
 	vp->size = SWAPLE32(vp->size);
-	return 1;
+	return 0;
+}
+
+static int READID(char var[4], FILE *fd)
+{
+	if ((fread(var, 4, 1, fd)) != 1) return -1;
+	return 0;
 }
 
 static int READDW(sint32 *vp, FILE *fd)
 {
 	if (fread(vp, 4, 1, fd) != 1) return -1;
 	*vp = SWAPLE32(*vp);
-	return 1;
+	return 0;
 }
 
 static int READW(uint16 *vp, FILE *fd)
 {
 	if (fread(vp, 2, 1, fd) != 1) return -1;
 	*vp = SWAPLE16(*vp);
-	return 1;
+	return 0;
+}
+
+static int READB(uint8 *vp, FILE *fd)
+{
+	if (fread(vp, 1, 1, fd) != 1) return -1;
+	return 0;
 }
 
 static int READSTR(char *str, FILE *fd)
@@ -75,15 +90,13 @@ static int READSTR(char *str, FILE *fd)
 	int n;
 	if (fread(str, 20, 1, fd) != 1) return -1;
 	str[19] = '\0';
-	n = strlen(str);
+	n = (int) strlen(str);
 	while (n > 0 && str[n - 1] == ' ')
 		n--;
 	str[n] = '\0';
-	return n;
+	return 0;
 }
 
-#define READID(var,fd)	fread(var, 1, 4, fd)
-#define READB(var,fd)	fread(var, 1, 1, fd)
 #define SKIPB(fd)	fseek(fd, 1, SEEK_CUR)
 #define SKIPW(fd)	fseek(fd, 2, SEEK_CUR)
 #define SKIPDW(fd)	fseek(fd, 4, SEEK_CUR)
@@ -100,13 +113,13 @@ static long FILESIZE(FILE *fd)
 }
 
 static int getchunk(const char *id);
-static void process_chunk(int id, int s, SFInfo *sf, FILE *fd);
-static void load_sample_names(int size, SFInfo *sf, FILE *fd);
-static void load_preset_header(int size, SFInfo *sf, FILE *fd);
-static void load_inst_header(int size, SFInfo *sf, FILE *fd);
-static void load_bag(int size, SFInfo *sf, FILE *fd, int *totalp, uint16 **bufp);
-static void load_gen(int size, SFInfo *sf, FILE *fd, int *totalp, tgenrec **bufp);
-static void load_sample_info(int size, SFInfo *sf, FILE *fd);
+static int process_chunk(int id, int s, SFInfo *sf, FILE *fd);
+static int load_sample_names(int size, SFInfo *sf, FILE *fd);
+static int load_preset_header(int size, SFInfo *sf, FILE *fd);
+static int load_inst_header(int size, SFInfo *sf, FILE *fd);
+static int load_bag(int size, SFInfo *sf, FILE *fd, int *totalp, uint16 **bufp);
+static int load_gen(int size, SFInfo *sf, FILE *fd, int *totalp, tgenrec **bufp);
+static int load_sample_info(int size, SFInfo *sf, FILE *fd);
 
 
 enum {
@@ -169,21 +182,22 @@ int load_sbk(FILE *fd, SFInfo *sf)
 	if (len < 32) /* better?? */
 		return -1;
 
-	READCHUNK(&chunk, fd);
+	if (READCHUNK(&chunk, fd) < 0) return -1;
 	if (getchunk(chunk.id) != RIFF_ID) return -1;
 	if (chunk.size != len - 8) return -1;
 
-	READID(chunk.id, fd);
+	if (READID(chunk.id, fd) < 0) return -1;
 	if (getchunk(chunk.id) != SFBK_ID) return -1;
 
 	sf->in_rom = 1;
 	while (! feof(fd)) {
-		READID(chunk.id, fd);
+		if (READID(chunk.id, fd) < 0) return -1;
 		switch (getchunk(chunk.id)) {
 		case LIST_ID:
-			READDW(&chunk.size, fd);
-			READID(subchunk.id, fd);
-			process_chunk(getchunk(subchunk.id), chunk.size - 4, sf, fd);
+			if (READDW(&chunk.size, fd) < 0) return -1;
+			if (READID(subchunk.id, fd) < 0) return -1;
+			if (process_chunk(getchunk(subchunk.id), chunk.size - 4, sf, fd) < 0)
+				return -1;
 			break;
 		}
 	}
@@ -267,45 +281,52 @@ static int getchunk(const char *id)
 }
 
 
-static void load_sample_names(int size, SFInfo *sf, FILE *fd)
+static int load_sample_names(int size, SFInfo *sf, FILE *fd)
 {
 	int i;
 	sf->nrsamples = size / 20;
 	sf->samplenames = NEW(tsamplenames, sf->nrsamples);
+	if (!sf->samplenames) return -1;
 	for (i = 0; i < sf->nrsamples; i++) {
-		READSTR(sf->samplenames[i].name, fd);
+		if (READSTR(sf->samplenames[i].name, fd) < 0)
+			return -1;
 	}
+	return 0;
 }
 
-static void load_preset_header(int size, SFInfo *sf, FILE *fd)
+static int load_preset_header(int size, SFInfo *sf, FILE *fd)
 {
 	int i;
 	sf->nrpresets = size / 38;
 	sf->presethdr = NEW(tpresethdr, sf->nrpresets);
+	if (!sf->presethdr) return -1;
 	for (i = 0; i < sf->nrpresets; i++) {
-		READSTR(sf->presethdr[i].name, fd);
-		READW(&sf->presethdr[i].preset, fd);
-		READW(&sf->presethdr[i].bank, fd);
-		READW(&sf->presethdr[i].bagNdx, fd);
+		if (READSTR(sf->presethdr[i].name, fd) < 0) return -1;
+		if (READW(&sf->presethdr[i].preset, fd) < 0) return -1;
+		if (READW(&sf->presethdr[i].bank, fd) < 0) return -1;
+		if (READW(&sf->presethdr[i].bagNdx, fd) < 0) return -1;
 		SKIPDW(fd); /* lib */
 		SKIPDW(fd); /* genre */
 		SKIPDW(fd); /* morph */
 	}
+	return 0;
 }
 
-static void load_inst_header(int size, SFInfo *sf, FILE *fd)
+static int load_inst_header(int size, SFInfo *sf, FILE *fd)
 {
 	int i;
 
 	sf->nrinsts = size / 22;
 	sf->insthdr = NEW(tinsthdr, sf->nrinsts);
+	if (!sf->insthdr) return -1;
 	for (i = 0; i < sf->nrinsts; i++) {
-		READSTR(sf->insthdr[i].name, fd);
-		READW(&sf->insthdr[i].bagNdx, fd);
+		if (READSTR(sf->insthdr[i].name, fd)  < 0) return -1;
+		if (READW(&sf->insthdr[i].bagNdx, fd) < 0) return -1;
 	}
+	return 0;
 }
 
-static void load_bag(int size, SFInfo *sf, FILE *fd, int *totalp, uint16 **bufp)
+static int load_bag(int size, SFInfo *sf, FILE *fd, int *totalp, uint16 **bufp)
 {
 	uint16 *buf;
 	int i;
@@ -314,15 +335,18 @@ static void load_bag(int size, SFInfo *sf, FILE *fd, int *totalp, uint16 **bufp)
 	debugval("bagsize", size);
 	size /= 4;
 	buf = NEW(uint16, size);
+	if (!buf) return -1;
 	for (i = 0; i < size; i++) {
-		READW(&buf[i], fd);
+		if (READW(&buf[i],fd) < 0)
+			return -1;
 		SKIPW(fd); /* mod */
 	}
 	*totalp = size;
 	*bufp = buf;
+	return 0;
 }
 
-static void load_gen(int size, SFInfo *sf, FILE *fd, int *totalp, tgenrec **bufp)
+static int load_gen(int size, SFInfo *sf, FILE *fd, int *totalp, tgenrec **bufp)
 {
 	tgenrec *buf;
 	int i;
@@ -331,15 +355,17 @@ static void load_gen(int size, SFInfo *sf, FILE *fd, int *totalp, tgenrec **bufp
 	debugval("gensize", size);
 	size /= 4;
 	buf = NEW(tgenrec, size);
+	if (!buf) return -1;
 	for (i = 0; i < size; i++) {
-		READW((uint16 *)&buf[i].oper, fd);
-		READW((uint16 *)&buf[i].amount, fd);
+		if (READW((uint16 *)&buf[i].oper, fd)   < 0) return -1;
+		if (READW((uint16 *)&buf[i].amount, fd) < 0) return -1;
 	}
 	*totalp = size;
 	*bufp = buf;
+	return 0;
 }
 
-static void load_sample_info(int size, SFInfo *sf, FILE *fd)
+static int load_sample_info(int size, SFInfo *sf, FILE *fd)
 {
 	int i;
 
@@ -349,25 +375,31 @@ static void load_sample_info(int size, SFInfo *sf, FILE *fd)
 		sf->nrsamples = sf->nrinfos;
 		sf->sampleinfo = NEW(tsampleinfo, sf->nrinfos);
 		sf->samplenames = NEW(tsamplenames, sf->nrsamples);
+		if (!sf->sampleinfo || !sf->samplenames)
+			return -1;
 	}
 	else  {
 		sf->nrinfos = size / 16;
 		sf->sampleinfo = NEW(tsampleinfo, sf->nrinfos);
+		if (!sf->sampleinfo)
+			return -1;
 	}
 
 	for (i = 0; i < sf->nrinfos; i++) {
-		if (sf->version > 1)
-			READSTR(sf->samplenames[i].name, fd);
-		READDW(&sf->sampleinfo[i].startsample, fd);
-		READDW(&sf->sampleinfo[i].endsample, fd);
-		READDW(&sf->sampleinfo[i].startloop, fd);
-		READDW(&sf->sampleinfo[i].endloop, fd);
 		if (sf->version > 1) {
-			READDW(&sf->sampleinfo[i].samplerate, fd);
-			READB(&sf->sampleinfo[i].originalPitch, fd);
-			READB(&sf->sampleinfo[i].pitchCorrection, fd);
-			READW(&sf->sampleinfo[i].samplelink, fd);
-			READW(&sf->sampleinfo[i].sampletype, fd);
+			if (READSTR(sf->samplenames[i].name, fd) < 0)
+				return -1;
+		}
+		if (READDW(&sf->sampleinfo[i].startsample, fd) < 0) return -1;
+		if (READDW(&sf->sampleinfo[i].endsample, fd) < 0) return -1;
+		if (READDW(&sf->sampleinfo[i].startloop, fd) < 0) return -1;
+		if (READDW(&sf->sampleinfo[i].endloop, fd) < 0) return -1;
+		if (sf->version > 1) {
+			if (READDW(&sf->sampleinfo[i].samplerate, fd) < 0) return -1;
+			if (READB(&sf->sampleinfo[i].originalPitch, fd) < 0) return -1;
+			if (READB(&sf->sampleinfo[i].pitchCorrection, fd) < 0) return -1;
+			if (READW(&sf->sampleinfo[i].samplelink, fd) < 0) return -1;
+			if (READW(&sf->sampleinfo[i].sampletype, fd) < 0) return -1;
 		} else {
 			if (sf->sampleinfo[i].startsample == 0)
 				sf->in_rom = 0;
@@ -383,9 +415,10 @@ static void load_sample_info(int size, SFInfo *sf, FILE *fd)
 				sf->sampleinfo[i].sampletype = 1;
 		}
 	}
+	return 0;
 }
 
-static void process_chunk(int id, int s, SFInfo *sf, FILE *fd)
+static int process_chunk(int id, int s, SFInfo *sf, FILE *fd)
 {
 	int cid;
 	tchunk subchunk;
@@ -398,12 +431,13 @@ static void process_chunk(int id, int s, SFInfo *sf, FILE *fd)
 		while ((cid = getchunk(subchunk.id)) != LIST_ID) {
 			switch (cid) {
 			case IFIL_ID:
-				READW(&sf->version, fd);
-				READW(&sf->minorversion, fd);
+				if (READW(&sf->version, fd) < 0) return -1;
+				if (READW(&sf->minorversion, fd) < 0) return -1;
 				break;
 			/*
 			case INAM_ID:
 				sf->sf_name = (char *)timi_malloc(subchunk.size + 1);
+				if (!sf->sf_name) return -1;
 				fread(sf->sf_name, 1, subchunk.size, fd);
 				sf->sf_name[subchunk.size] = 0;
 				break;
@@ -414,7 +448,7 @@ static void process_chunk(int id, int s, SFInfo *sf, FILE *fd)
 			}
 			READCHUNK(&subchunk, fd);
 			if (feof(fd))
-				return;
+				return 0;
 		}
 		fseek(fd, -8, SEEK_CUR); /* seek back */
 		break;
@@ -427,8 +461,10 @@ static void process_chunk(int id, int s, SFInfo *sf, FILE *fd)
 				if (sf->version > 1) {
 					DEBUG_MSG("**** version 2 has obsolete format??\n");
 					fseek(fd, subchunk.size, SEEK_CUR);
-				} else
-					load_sample_names(subchunk.size, sf, fd);
+				} else {
+					if (load_sample_names(subchunk.size, sf, fd) < 0)
+						return -1;
+				}
 				break;
 			case SMPL_ID:
 				sf->samplepos = ftell(fd);
@@ -437,7 +473,7 @@ static void process_chunk(int id, int s, SFInfo *sf, FILE *fd)
 			}
 			READCHUNK(&subchunk, fd);
 			if (feof(fd))
-				return;
+				return 0;
 		}
 		fseek(fd, -8, SEEK_CUR); /* seek back */
 		break;
@@ -447,12 +483,14 @@ static void process_chunk(int id, int s, SFInfo *sf, FILE *fd)
 		while ((cid = getchunk(subchunk.id)) != LIST_ID) {
 			switch (cid) {
 			case PHDR_ID:
-				load_preset_header(subchunk.size, sf, fd);
+				if (load_preset_header(subchunk.size, sf, fd) < 0)
+					return -1;
 				break;
 
 			case PBAG_ID:
-				load_bag(subchunk.size, sf, fd,
-					 &sf->nrpbags, &sf->presetbag);
+				if (load_bag(subchunk.size, sf, fd,
+					 &sf->nrpbags, &sf->presetbag) < 0)
+					return -1;
 				break;
 
 			case PMOD_ID: /* ignored */
@@ -460,17 +498,20 @@ static void process_chunk(int id, int s, SFInfo *sf, FILE *fd)
 				break;
 
 			case PGEN_ID:
-				load_gen(subchunk.size, sf, fd,
-					 &sf->nrpgens, &sf->presetgen);
+				if (load_gen(subchunk.size, sf, fd,
+					 &sf->nrpgens, &sf->presetgen) < 0)
+					return -1;
 				break;
 
 			case INST_ID:
-				load_inst_header(subchunk.size, sf, fd);
+				if (load_inst_header(subchunk.size, sf, fd) < 0)
+					return -1;
 				break;
 
 			case IBAG_ID:
-				load_bag(subchunk.size, sf, fd,
-					 &sf->nribags, &sf->instbag);
+				if (load_bag(subchunk.size, sf, fd,
+					 &sf->nribags, &sf->instbag) < 0)
+					return -1;
 				break;
 
 			case IMOD_ID: /* ingored */
@@ -478,12 +519,14 @@ static void process_chunk(int id, int s, SFInfo *sf, FILE *fd)
 				break;
 
 			case IGEN_ID:
-				load_gen(subchunk.size, sf, fd,
-					 &sf->nrigens, &sf->instgen);
+				if (load_gen(subchunk.size, sf, fd,
+					 &sf->nrigens, &sf->instgen) < 0)
+					return -1;
 				break;
 
 			case SHDR_ID:
-				load_sample_info(subchunk.size, sf, fd);
+				if (load_sample_info(subchunk.size, sf, fd) < 0)
+					return -1;
 				break;
 
 			default:
@@ -494,11 +537,12 @@ static void process_chunk(int id, int s, SFInfo *sf, FILE *fd)
 			READCHUNK(&subchunk, fd);
 			if (feof(fd)) {
 				debugid("file", "EOF");
-				return;
+				return 0;
 			}
 		}
 		fseek(fd, -8, SEEK_CUR); /* rewind */
 		break;
 	}
+	return 0;
 }
 

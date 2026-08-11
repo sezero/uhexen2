@@ -37,10 +37,10 @@
 #define exclude_soundfont TIMI_NAMESPACE(exclude_soundfont)
 #define order_soundfont   TIMI_NAMESPACE(order_soundfont)
 
-void init_soundfont(MidSong *song, const char *fname, int order);
+int init_soundfont(MidSong *song, const char *fname, int order);
 void end_soundfont(void);
 MidInstrument *load_soundfont(MidSong *song, int order, int bank, int preset, int keynote);
-void exclude_soundfont(int bank, int preset, int keynote);
-void order_soundfont(int bank, int preset, int keynote, int order);
+int exclude_soundfont(int bank, int preset, int keynote);
+int order_soundfont(int bank, int preset, int keynote, int order);
 
 #endif /* TIMIDITY_SNDFONT_H */

@@ -159,7 +159,7 @@ static const int cutoff_allowed = 0;
 #endif
 
 
-void init_soundfont(MidSong *song, const char *fname, int order)
+int init_soundfont(MidSong *song, const char *fname, int order)
 {
 	static SFInfo sfinfo;
 	int i;
@@ -168,7 +168,7 @@ void init_soundfont(MidSong *song, const char *fname, int order)
 
 	if ((sfrec.fd = timi_openfile(fname)) == NULL) {
 		DEBUG_MSG("can't open soundfont file %s\n", fname);
-		return;
+		return -1;
 	}
 	sfrec.fname = timi_strdup(fname);
 	if (load_sbk(sfrec.fd, &sfinfo) < 0) {
@@ -178,7 +178,7 @@ void init_soundfont(MidSong *song, const char *fname, int order)
 		timi_free(sfrec.fname);
 		sfrec.fname = NULL;
 		free_sbk(&sfinfo);
-		return;
+		return -1;
 	}
 
 	for (i = 0; i < sfinfo.nrpresets - 1; i++) {
@@ -189,12 +189,16 @@ void init_soundfont(MidSong *song, const char *fname, int order)
 		if (bank == 128) {
 			if (!song->drumset[preset]) {
 				song->drumset[preset] = (MidToneBank*)timi_calloc(1, sizeof(MidToneBank));
+				if (!song->drumset[preset]) goto fail;
 				song->drumset[preset]->tone = (MidToneBankElement *) timi_calloc(128, sizeof(MidToneBankElement));
+				if (!song->drumset[preset]->tone) goto fail;
 			}
 		} else {
 			if (!song->tonebank[bank]) {
 				song->tonebank[bank] = (MidToneBank*)timi_calloc(1, sizeof(MidToneBank));
+				if (!song->tonebank[bank]) goto fail;
 				song->tonebank[bank]->tone = (MidToneBankElement *) timi_calloc(128, sizeof(MidToneBankElement));
+				if (!song->tonebank[bank]->tone) goto fail;
 			}
 		}
 		parse_preset(song, &sfrec, &sfinfo, i, order);
@@ -212,6 +216,11 @@ void init_soundfont(MidSong *song, const char *fname, int order)
 	fclose(sfrec.fd);
 	sfrec.fd = NULL;
 #endif
+	return 0;
+fail:
+	song->oom = 1;
+	return -1;
+
 }
 
 
@@ -292,9 +301,11 @@ static MidInstrument *load_from_file(MidSong *song, SFInsts *rec, InstList *ip)
 	DEBUG_MSG("Loading SF bank%d prg%d note%d\n", ip->bank, ip->preset, ip->keynote);
 
 	inst = (MidInstrument*)timi_malloc(sizeof(MidInstrument));
+	if (!inst) goto nomem;
 	inst->type = INST_SF2;
 	inst->samples = ip->samples;
 	inst->sample = (MidSample*) timi_calloc(ip->samples, sizeof(MidSample));
+	if (!inst->sample) goto nomem;
 	for (i = 0, sp = ip->slist; i < ip->samples && sp; i++, sp = sp->next) {
 		MidSample *sample = inst->sample + i;
 #ifdef WORDS_BIGENDIAN
@@ -303,8 +314,10 @@ static MidInstrument *load_from_file(MidSong *song, SFInsts *rec, InstList *ip)
 #endif
 		memcpy(sample, &sp->v, sizeof(MidSample));
 		sample->data = (sample_t*) timi_malloc(sp->endsample + 6);
+		if (!sample->data) goto nomem;
 		fseek(rec->fd, sp->startsample, SEEK_SET);
-		fread(sample->data, sp->endsample, 1, rec->fd);
+		if (fread(sample->data, sp->endsample, 1, rec->fd) != 1)
+			goto badread;
 		/* initialize the 3 extra samples at the end (those +6 bytes) */
 		sample->data[sp->endsample/2] = sample->data[sp->endsample/2 + 1] =
 		sample->data[sp->endsample/2 + 2] = 0;
@@ -334,6 +347,12 @@ static MidInstrument *load_from_file(MidSong *song, SFInsts *rec, InstList *ip)
 			pre_resample(song, sample);
 	}
 	return inst;
+
+nomem:
+	song->oom = 1;
+badread:
+	free_instrument (inst);
+	return NULL;
 }
 
 
@@ -341,15 +360,17 @@ static MidInstrument *load_from_file(MidSong *song, SFInsts *rec, InstList *ip)
  * excluded samples
  *----------------------------------------------------------------*/
 
-void exclude_soundfont(int bank, int preset, int keynote)
+int exclude_soundfont(int bank, int preset, int keynote)
 {
 	SFExclude *rec;
 	rec = (SFExclude*)timi_malloc(sizeof(SFExclude));
+	if (!rec) return -1;
 	rec->bank = bank;
 	rec->preset = preset;
 	rec->keynote = keynote;
 	rec->next = sfexclude;
 	sfexclude = rec;
+	return 0;
 }
 
 /* check the instrument is specified to be excluded */
@@ -381,16 +402,18 @@ static void free_exclude(void)
  * ordered samples
  *----------------------------------------------------------------*/
 
-void order_soundfont(int bank, int preset, int keynote, int order)
+int order_soundfont(int bank, int preset, int keynote, int order)
 {
 	SFOrder *rec;
 	rec = (SFOrder*)timi_malloc(sizeof(SFOrder));
+	if (!rec) return -1;
 	rec->bank = bank;
 	rec->preset = preset;
 	rec->keynote = keynote;
 	rec->order = order;
 	rec->next = sforder;
 	sforder = rec;
+	return 0;
 }
 
 /* check the instrument is specified to be ordered */
@@ -583,6 +606,10 @@ static void make_inst(MidSong *song, SFInsts *rec, Layer *lay, SFInfo *sf, int p
 
 	if (*namep == NULL) {
 		*namep = (char*) timi_malloc(21);
+		if (!*namep) {
+			song->oom = 1;
+			return;
+		}
 		memcpy(*namep, sf->insthdr[in_idx].name, 20);
 		(*namep)[20] = 0;
 	}
@@ -595,6 +622,10 @@ static void make_inst(MidSong *song, SFInsts *rec, Layer *lay, SFInfo *sf, int p
 	}
 	if (ip == NULL) {
 		ip = (InstList*)timi_malloc(sizeof(InstList));
+		if (!ip) {
+			song->oom = 1;
+			return;
+		}
 		ip->bank = bank;
 		ip->preset = preset;
 		ip->keynote = keynote;
@@ -607,6 +638,10 @@ static void make_inst(MidSong *song, SFInsts *rec, Layer *lay, SFInfo *sf, int p
 
 	/* add a sample */
 	sp = (SampleList*)timi_malloc(sizeof(SampleList));
+	if (!sp) {
+		song->oom = 1;
+		return;
+	}
 	sp->next = ip->slist;
 	ip->slist = sp;
 	ip->samples++;
