@@ -8,6 +8,7 @@ Changes by libtimidity-0.2.8:
 - New function mid_set_soundfont() added to api in order to set the
   full path of a soundfont to use. Must be called before mid_init().
   If a soundfont is set, config file will not be parsed by mid_init.
+  See source for details.
 - Support quoted strings in config file.
 - Added back optional use a lookup table for sine values (configure
   with --enable-lookup-sine to enable.)

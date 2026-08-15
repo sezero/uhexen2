@@ -143,8 +143,10 @@ extern "C" {
  */
   TIMI_EXPORT extern long mid_get_version (void);
 
-/* Set the full path of a soundfont (sf2) to use.
- * Must be called before mid_init().
+/* Set the full path of a soundfont (sf2) to use, and do a
+ * preliminary load of the specified file:  MUST BE called
+ * before mid_init(). If loading fails, the soundfont will
+ * NOT be set.
  * If a soundfont is set, config file will not be parsed
  * by mid_init().
  */

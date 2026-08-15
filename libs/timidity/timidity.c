@@ -323,11 +323,11 @@ static int read_config_file(const char *name, int rcf_count)
 	DEBUG_MSG("%s: line %d: Ignoring multiple \"soundfont\" directives.\n", name, line);
       }
      else {
-      sf_file=timi_strdup(w[1]);
-      if (!sf_file) goto fail;
+      if (mid_set_soundfont(w[1]) < 0) goto fail;
       for (j = 2; j < words; j++) {
 	if (!(cp = strchr(w[j], '='))) {
 	  DEBUG_MSG("%s: line %d: bad patch option %s\n", name, line, w[j]);
+	  end_sbk();
 	  goto fail;
 	}
 	*cp++=0;
@@ -335,6 +335,7 @@ static int read_config_file(const char *name, int rcf_count)
 	  k = atoi(cp);
 	  if (k < 0 || (*cp < '0' || *cp > '9')) {
 	    DEBUG_MSG("%s: line %d: order must be a digit", name, line);
+	    end_sbk();
 	    goto fail;
 	  }
 	  sf_order = k;
@@ -539,10 +540,18 @@ int mid_init(const char *config_file)
 
 int mid_set_soundfont(const char *file)
 {
+  if (sf_file) { /* just in case ... */
+      end_sbk();
+      timi_free(sf_file);
+      sf_file = NULL;
+  }
   if (file) {
       char *fname = timi_strdup(file);
       if (!fname) return -1;
-      timi_free(sf_file);
+      if (init_sbk(file) < 0) {
+          timi_free(fname);
+          return -1;
+      }
       sf_file = fname;
   }
   return 0;
@@ -658,7 +667,7 @@ static void do_song_load(MidIStream *stream, MidSongOptions *options, MidSong **
   song->default_program = DEFAULT_PROGRAM;
 
   if (sf_file) {
-    if (init_soundfont(song, sf_file, sf_order) < 0)
+    if (init_soundfont(song, sf_order) < 0)
       goto fail;
   }
 
@@ -745,6 +754,7 @@ void mid_exit(void)
   }
 
   end_soundfont();
+  end_sbk();
   timi_free(sf_file);
   sf_file = NULL;
   sf_order = 0;
