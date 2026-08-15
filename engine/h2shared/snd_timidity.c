@@ -122,7 +122,8 @@ static qboolean S_TIMIDITY_CodecInitialize (void)
 	if (sf2_env) /* user override, no cfg: */
 	{
 		Con_DPrintf("Timidity: setting soundfont: %s\n", sf2_env);
-		mid_set_soundfont(sf2_env);
+		if ((err = mid_set_soundfont(sf2_env)) < 0)
+			goto _finish;
 		err = mid_init(NULL);
 		goto _finish;
 	}
