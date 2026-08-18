@@ -3,7 +3,7 @@
  * Public License: see COPYING for details.
  * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
  * Copyright (C) 2004 Konstantin Korikov <lostclus@ua.fm>
- * Copyright (C) 2014 O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2014-2026 O.Sezer <sezero@users.sourceforge.net>
  *
  * Note that the included TiMidity source, based on timidity-0.2i, was
  * originally licensed under the GPL, but the author extended it so it
@@ -35,6 +35,7 @@
 #ifndef LIBTIMIDITY_H
 #define LIBTIMIDITY_H
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -64,18 +65,28 @@ extern "C" {
 
 /* Core Library Types
  */
-#ifndef __amigaos4__
+#if defined B_BEOS_VERSION
+#include <SupportDefs.h>
+  typedef int8  sint8;
+  typedef int16 sint16;
+  typedef int32 sint32;
+#elif defined __amigaos4__
+#include <exec/types.h>
+  typedef int8  sint8;
+  typedef int16 sint16;
+  typedef int32 sint32;
+#elif defined _arch_dreamcast
+#include <arch/types.h>
+  typedef int8  sint8;
+  typedef int16 sint16;
+  typedef int32 sint32;
+#else /* generic case */
   typedef unsigned char uint8;
   typedef signed char sint8;
   typedef unsigned short uint16;
   typedef signed short sint16;
   typedef unsigned int uint32;
   typedef signed int sint32;
-#else
-#include <exec/types.h>
-  typedef int8  sint8;
-  typedef int16 sint16;
-  typedef int32 sint32;
 #endif
 
   typedef size_t (*MidIStreamReadFunc) (void *ctx, void *ptr, size_t size, size_t nmemb);

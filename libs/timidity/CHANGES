@@ -5,6 +5,8 @@ Changes by libtimidity-0.2.8:
   dating from 1997. Note that more than one soundfont directives in
   the config file is not supported: Only the first encountered font
   in timidity.cfg will be used.
+  Soundfont versions >= 3 (e.g.: sf3 with vorbis-compressed samples
+  of MuseScore.org) aren't supported, yet.
 - New function mid_set_soundfont() added to api in order to set the
   full path of a soundfont to use. Must be called before mid_init().
   If a soundfont is set, config file will not be parsed by mid_init.
