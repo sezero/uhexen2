@@ -228,7 +228,7 @@ static void *MIDI_Play (const char *filename)
 
 	midi_playing = true;
 	midi_paused = false;
-	MIDI_SetVolume ((void **) &hStream, bgmvolume.value);
+	MIDI_SetVolume (NULL, bgmvolume.value);
 
 	return hStream;
 }
