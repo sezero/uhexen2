@@ -28,7 +28,14 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
 # Names of the binaries
-BINARY:=jsh2colour$(exe_ext)
+BASENAMES:=jsh2colour jscolour
+ifeq ($(GAME),quake1)
+BASENAME:=jscolour
+CFLAGS += -DQUAKE1
+else
+BASENAME:=jsh2colour
+endif
+BINARY:=$(BASENAME)$(exe_ext)
 
 # Compiler flags
 
@@ -128,11 +135,11 @@ endif
 all : $(BINARY)
 
 # Rules for turning source files into .o files
-%.o: %.c
+out/$(BASENAME)/%.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
-%.o: $(COMMONDIR)/%.c
+out/$(BASENAME)/%.o: $(COMMONDIR)/%.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
-%.o: $(UHEXEN2_SHARED)/%.c
+out/$(BASENAME)/%.o: $(UHEXEN2_SHARED)/%.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
@@ -154,11 +161,10 @@ OBJECTS= qsnprint.o \
 	jscolor.o \
 	tyrlite.o
 
-$(BINARY) : $(OBJECTS)
-	$(LINKER) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $@
+$(BINARY) : $(patsubst %,out/$(BASENAME)/%,$(OBJECTS))
+	$(LINKER) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
 clean:
-	rm -f *.o core
+	rm -f $(patsubst %,out/%/*.o,$(BASENAMES)) core
 distclean: clean
-	rm -f $(BINARY)
-
+	rm -f $(patsubst %,%$(exe_ext),$(BASENAMES))
