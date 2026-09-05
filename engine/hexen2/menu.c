@@ -3494,6 +3494,7 @@ static void M_Quit_Key (int key)
 		}
 		break;
 
+	case K_ENTER:
 	case 'Y':
 	case 'y':
 		Key_SetDest (key_console);

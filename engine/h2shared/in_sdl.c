@@ -75,9 +75,9 @@ static	cvar_t	joy_sensitivityyaw = {"joy_sensitivityyaw", "-1", CVAR_NONE};		/* 
 /* hack to generate uparrow/leftarrow etc. key events
  * for axes if the stick driver isn't generating them. */
 /* might be useful for menu navigation etc. */
-#define JOY_KEYEVENT_FOR_AXES 0 /* not for now */
+#define JOY_KEYEVENT_FOR_AXES 1
 #if (JOY_KEYEVENT_FOR_AXES)
-static	cvar_t	joy_axiskeyevents = {"joy_axiskeyevents", "0", CVAR_ARCHIVE};
+static	cvar_t	joy_axiskeyevents = {"joy_axiskeyevents", "1", CVAR_ARCHIVE};
 static	cvar_t	joy_axiskeyevents_deadzone = {"joy_axiskeyevents_deadzone", "0.5", CVAR_ARCHIVE};
 
 /* joystick axes state */
@@ -811,7 +811,7 @@ void IN_Commands (void)
 void IN_SendKeyEvents (void)
 {
 	SDL_Event event;
-	int sym, state, modstate;
+	int sym, state, modstate, joy2key;
 	qboolean gamekey;
 
 	if ((gamekey = Key_IsGameKey()) != prev_gamekey)
@@ -1102,13 +1102,23 @@ void IN_SendKeyEvents (void)
 		case SDL_JOYBUTTONUP:
 			if (in_mode_set)
 				break;
+			joy2key = 0;
+			switch (K_JOY1 + event.jbutton.button) {
+			/* Hard code SELECT & START buttons for menu control */
+			case K_AUX5:
+				joy2key = K_ESCAPE;
+				break;
+			case K_AUX6:
+				joy2key = K_ENTER;
+			}
+			Con_DPrintf ("Pressed joystick button %s\n", Key_KeynumToString(K_JOY1 + event.jbutton.button));
 			if (event.jbutton.button > K_AUX28 - K_JOY1)
 			{
 				Con_Printf ("Ignored event for joystick button %d\n",
 							event.jbutton.button);
 				break;
 			}
-			Key_Event(K_JOY1 + event.jbutton.button, event.jbutton.state == SDL_PRESSED);
+			Key_Event(joy2key ? joy2key : (K_JOY1 + event.jbutton.button), event.jbutton.state == SDL_PRESSED);
 			break;
 
 		/* mouse/trackball motion handled by IN_MouseMove() */
