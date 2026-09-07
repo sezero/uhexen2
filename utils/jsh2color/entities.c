@@ -206,8 +206,11 @@ void LoadEntities (void)
 				entity->formula = atoi(com_token);
 			else if (!strcmp(key, "mangle"))
 			{
-				if (sscanf(com_token, "%lf %lf %lf", &v[0], &v[1], &v[2]) != 3)
-					COM_Error ("%s: not 3 values for mangle", __thisfunc__);
+				/* DoE's R1M4 info_intermission has a mangle of just "20":
+				   ED_ParseEpair() zero-fills such short vectors. */
+				v[0] = v[1] = v[2] = 0;
+				if (sscanf(com_token, "%lf %lf %lf", &v[0], &v[1], &v[2]) < 1)
+					COM_Error ("%s: no values for mangle: %s", __thisfunc__, com_token);
 
 				/* Precalculate the direction vector		*/
 				entity->use_mangle = true;
