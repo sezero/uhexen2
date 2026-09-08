@@ -322,8 +322,9 @@ int main (int argc, char **argv)
 
 	if (i != argc - 1)
 	{
-		printf ("Usage: jsh2colour [-threads #] [-light num] [-extra] [-dist num]\n"
-			"\t\t  [-range num] [-nodefault] [-external file] bspfile\n");
+		printf ("Usage: %s [-threads #] [-light num] [-extra] [-dist num]\n"
+			"%*s [-range num] [-nodefault] [-external file] bspfile\n",
+			argv[0], 7 + (int) strlen(argv[0]), "");
 		exit(0);
 	}
 

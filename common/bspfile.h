@@ -22,7 +22,12 @@
 
 // upper design bounds
 
+#ifdef QUAKE1
+#define	MAX_MAP_HULLS		4
+#else
 #define	MAX_MAP_HULLS		8
+#endif
+
 
 #define	MAX_MAP_MODELS		256
 #define	MAX_MAP_BRUSHES		4096

@@ -206,8 +206,11 @@ void LoadEntities (void)
 				entity->formula = atoi(com_token);
 			else if (!strcmp(key, "mangle"))
 			{
-				if (sscanf(com_token, "%lf %lf %lf", &v[0], &v[1], &v[2]) != 3)
-					COM_Error ("%s: not 3 values for mangle", __thisfunc__);
+				/* DoE's R1M4 info_intermission has a mangle of just "20":
+				   ED_ParseEpair() zero-fills such short vectors. */
+				v[0] = v[1] = v[2] = 0;
+				if (sscanf(com_token, "%lf %lf %lf", &v[0], &v[1], &v[2]) < 1)
+					COM_Error ("%s: no values for mangle: %s", __thisfunc__, com_token);
 
 				/* Precalculate the direction vector		*/
 				entity->use_mangle = true;
@@ -268,10 +271,13 @@ void LoadEntities (void)
 			if (entity->formula < 0 || entity->formula > 3)
 				entity->formula = 0;
 
-			// set some colors based on hexen2 entity classname
+			// set some colors based on quake1/hexen2 entity classname
 			if (!q_strncasecmp(entity->classname, "light_flame", 11) ||	/* _large_yellow, _small_yellow */
 			    !q_strncasecmp(entity->classname, "light_torch", 11) ||	/* _castle, _rome, _meso, _egypt, _walltorch */
-			    !q_strcasecmp (entity->classname, "light_gem"))
+			    !q_strcasecmp (entity->classname, "light_gem") ||
+			    !q_strcasecmp (entity->classname, "light_candle") ||
+			    !q_strcasecmp (entity->classname, "light_globe") ||
+			    !q_strcasecmp (entity->classname, "light_lantern"))
 			{
 				// make it orange
 				entity->lightcolor[0] = 255;
@@ -304,8 +310,13 @@ void LoadEntities (void)
 			// number entity->message to be read from strings.txt
 			if (strlen(entity->netname))
 				printf ("Map name : \"%s\"\n\n", entity->netname);
+#ifdef QUAKE1
+			else if (strlen(entity->message))
+				printf ("Map name : \"%s\"\n\n", entity->message);
+#else
 			else if (strlen(entity->message) && atoi(entity->message) > 0)
 				printf ("Map name : at line %d in strings.txt\n\n", atoi(entity->message));
+#endif
 			else
 				printf ("Map name : -- unknown --\n\n");
 
@@ -397,4 +408,3 @@ entity_t *FindEntityWithKeyPair (const char *key, const char *value)
 	}
 	return NULL;
 }
-
