@@ -150,6 +150,386 @@ void FindTexlightColor (int *surf_r, int *surf_g, int *surf_b, const char *texna
 {
 	if (nodefault == false)
 	{
+#ifdef QUAKE1
+		if (strncmp(texname, "*lava", 5) == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strncmp(texname, "*slime", 6) == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 255;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "+0butn") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "+0butnn") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "+0button") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "+0floorsw") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "+0planet") == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 255;
+			*surf_b = 255;
+		}
+		else if (strcmp(texname, "+0shoot") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "ceiling4") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "key03_1") == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 255;
+			*surf_b = 255;
+		}
+		else if (strcmp(texname, "tlight09") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 255;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "key03_2") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 255;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "ceil1_1") == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 255;
+			*surf_b = 255;
+		}
+		else if (strcmp(texname, "dem5_3") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "light1_1") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "wizwin1_2") == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 10;
+			*surf_b = 255;
+		}
+		else if (strcmp(texname, "sfloor4_4") == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 255;
+			*surf_b = 255;
+		}
+		else if (strcmp(texname, "tech03_2") == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 255;
+			*surf_b = 255;
+		}
+		else if (strcmp(texname, "+0light01") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "tech06_2") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "light1_2") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "light1_3") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "tlight10") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 255;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "metal5_8") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "light1_5") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "carch03") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "tlight01") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 255;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "tlight02") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 255;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "light1_7") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "tlight03") == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 255;
+			*surf_b = 255;
+		}
+		else if (strcmp(texname, "light1_8") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "tlight05") == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 255;
+			*surf_b = 255;
+		}
+		else if (strcmp(texname, "basebutn3") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "window01_2") == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 10;
+			*surf_b = 255;
+		}
+		else if (strcmp(texname, "window02_1") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "window01_3") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "sliplite") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "slip2") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "slipside") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "tlight07") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 255;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "window01_4") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "key01_1") == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 10;
+			*surf_b = 255;
+		}
+		else if (strcmp(texname, "tlight01_2") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 255;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "key01_2") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 255;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "tele_top") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 255;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "*rift_1") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 255;
+		}
+		else if (strcmp(texname, "htek04_2") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "smwpwin1") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 255;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "sym08_2") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "sym10_2") == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 255;
+			*surf_b = 255;
+		}
+		else if (strcmp(texname, "tlight06") == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 255;
+			*surf_b = 255;
+		}
+		else if (strcmp(texname, "egypt11") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 128;
+			*surf_b = 64;
+		}
+		else if (strcmp(texname, "window2_1") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "window2_2") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "window2_3") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "window2_4") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strncmp(texname, "*blood", 6) == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strncmp(texname, "*viscera", 8) == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "kngygwin") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "meatfetus") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "musclite") == 0)
+		{
+			*surf_r = 255;
+			*surf_g = 10;
+			*surf_b = 10;
+		}
+		else if (strcmp(texname, "trim1_4") == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 255;
+			*surf_b = 255;
+		}
+		else if (strcmp(texname, "trim_kn") == 0)
+		{
+			*surf_r = 10;
+			*surf_g = 255;
+			*surf_b = 255;
+		}
+#else
 		if (strncmp(texname, "*lava000", 8) == 0)
 		{
 			*surf_r = 255;
@@ -618,6 +998,7 @@ void FindTexlightColor (int *surf_r, int *surf_g, int *surf_b, const char *texna
 			*surf_g = 128;
 			*surf_b = 64;
 		}
+#endif
 		else if (external == true)
 		{
 			FindTexlightColorExt (surf_r, surf_g, surf_b, texname, &tc_list);
